@@ -12,6 +12,8 @@ This is a pivot away from the original Trautonium-style analog design, made to c
 
 Each track has a swappable "machine" that can be either a sampler or a synth. Plaits is the synth engine.
 
+**Each channel also has a looper.** Loop lengths may differ but are integer multiples of a shared base length, so they stay in sync. The mix passes through the stereo LPG, and with the source switch on "resample" that analog output returns to `AUDIO_IN` and can be captured into a channel as new material. **The filter and gate are printed into the sample rather than applied at playback.** See **[workflow.md](workflow.md)**.
+
 ---
 
 ## 2. Architecture

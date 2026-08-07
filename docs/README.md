@@ -5,6 +5,9 @@
 - **[pin-allocation.md](pin-allocation.md)** - **resolved.** Safe to lay out against.
 - **[panel-budget.md](panel-budget.md)** - faceplate area arithmetic. **Working, not decided.**
   The 219 x 110mm in design-state section 11 does not fit the current design.
+- **[workflow.md](workflow.md)** - how the instrument is actually played: four synced loopers,
+  resampled through the analog LPG. **Working, not decided.** Recorded because it constrains
+  hardware still being locked.
 - **[decisions/](decisions/)** - ADRs for choices already made and expensive to revisit.
 - **[notes/](notes/)** - open questions and the worklist. Expected to change.
 

@@ -189,6 +189,45 @@ A 2022 report on Daisy Patch showed audio working but the OLED dead under both `
 combination early rather than discovering it late.
 
 ---
+
+## Q19. What is the analog resample round-trip latency?
+
+**Blocks:** sample-accurate loop sync on resampled material. See [workflow.md](../workflow.md).
+**Status: OPEN. Must be measured, not assumed.**
+
+Resampling leaves through the DAC, crosses the LPG, and returns through the ADC. The delay is
+codec group delay plus at least one audio block, and it puts a **constant offset on the start
+of every resampled loop**.
+
+Constant means correctable, so this is not a threat to the design. The risk is **assuming it is
+negligible**, because the entire sync scheme rests on loops sharing exact sample boundaries. A
+few milliseconds of uncorrected offset is audible as flam against the loop it came from.
+
+**How to measure:** record a click through the resample path, cross-correlate against the
+source, report the lag in samples. Do it at the final block size, because block size is part of
+the answer. Bake the result in as a compile-time constant and re-measure if the block size or
+sample rate ever changes.
+
+---
+
+## Q20. Can a channel resample into itself?
+
+**Blocks:** the resample UI. See [workflow.md](../workflow.md).
+**Status: OPEN. A design choice, not a discovery.**
+
+With the source switch on resample, a destination channel that is still playing into the mix
+feeds its own output back through the LPG into its own input. That is **real feedback through
+an analog path**, and with the gate open it runs away.
+
+| Option | Effect |
+|---|---|
+| Forbid it | Mute the destination during capture. Safe, predictable, less fun. |
+| Allow it | The gate closing limits it. Arguably the correct Buchla-ish answer. |
+| Allow with guardrail | Permit it, but do not let the default state be a screaming board. |
+
+Whichever is chosen, **the default state on power-up should not be the runaway one.**
+
+---
 ---
 
 # Resolved
