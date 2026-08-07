@@ -1,0 +1,19 @@
+# CCS build output
+Debug/
+Release/
+*.obj
+*.out
+*.map
+*.d
+*.lst
+.launches/
+.settings/
+.metadata/
+
+# CapTIvate Design Center scratch
+*.bak
+~$*
+
+# OS
+.DS_Store
+Thumbs.db

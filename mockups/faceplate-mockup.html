@@ -1,0 +1,89 @@
+<div style="padding:0.5rem 0">
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap">Complete four-channel faceplate showing sixty interdigitated comb teeth per pad across four electrodes</h2>
+<svg width="100%" viewBox="0 0 680 360" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Faceplate with full sixty-tooth electrode geometry</title>
+<desc>A board about 219 by 110 millimetres. Above an irregular crack sits a five-rule group with a vertical divider and downward semicircle for the screen, encoder and switches. Below are four scrub pads, each 175 millimetres long and built from four interdigitated electrodes cut into sixty comb teeth, twenty per interpolation zone. A vertical divider crosses all four pads capped by an upward semicircle. Division marks sit in each gutter with crosses at the third, sixth and ninth. Greek acrophonic numerals fill the left, right and bottom margins.</desc>
+<rect x="55" y="30" width="570" height="286" rx="10" fill="none" stroke="var(--border)" stroke-width="0.5"/>
+<g stroke="var(--text-secondary)" stroke-width="0.5" opacity="0.6" fill="none">
+<path d="M210 40h260M210 50h260M210 60h260M210 70h260M210 80h260"/>
+</g>
+<line x1="340" y1="34" x2="340" y2="86" stroke="var(--text-secondary)" stroke-width="1.2" opacity="0.8"/>
+<path d="M330 80 A10 10 0 0 0 350 80" fill="none" stroke="var(--text-secondary)" stroke-width="1.2" opacity="0.8"/>
+<text x="340" y="99" text-anchor="middle" style="font-size:12px;fill:var(--text-secondary)">Screen, encoder, switches</text>
+<path d="M55 108 L130 104 L205 111 L275 105 L340 112 L410 106 L480 113 L545 107 L600 112 L625 106" fill="none" stroke="var(--text-secondary)" stroke-width="1" opacity="0.4"/>
+<g id="pads"></g>
+<line x1="340" y1="110" x2="340" y2="296" stroke="var(--text-secondary)" stroke-width="1.2" opacity="0.75"/>
+<path d="M330 120 A10 10 0 0 1 350 120" fill="none" stroke="var(--text-secondary)" stroke-width="1.2" opacity="0.85"/>
+<g stroke="var(--text-secondary)" stroke-width="0.5" opacity="0.55" fill="none">
+<path d="M112 156.5v4M157.6 156.5v4M248.8 156.5v4M294.4 156.5v4M385.6 156.5v4M431.2 156.5v4M522.4 156.5v4M568 156.5v4"/>
+<path d="M112 202.5v4M157.6 202.5v4M248.8 202.5v4M294.4 202.5v4M385.6 202.5v4M431.2 202.5v4M522.4 202.5v4M568 202.5v4"/>
+<path d="M112 248.5v4M157.6 248.5v4M248.8 248.5v4M294.4 248.5v4M385.6 248.5v4M431.2 248.5v4M522.4 248.5v4M568 248.5v4"/>
+<path d="M112 293v4M157.6 293v4M248.8 293v4M294.4 293v4M385.6 293v4M431.2 293v4M522.4 293v4M568 293v4"/>
+</g>
+<g stroke="var(--text-secondary)" stroke-width="1.2" opacity="0.9" fill="none">
+<path d="M198.2 158.5h10M203.2 153.5v10M471.8 158.5h10M476.8 153.5v10M335 158.5h10"/>
+<path d="M198.2 204.5h10M203.2 199.5v10M471.8 204.5h10M476.8 199.5v10M335 204.5h10"/>
+<path d="M198.2 250.5h10M203.2 245.5v10M471.8 250.5h10M476.8 245.5v10M335 250.5h10"/>
+<path d="M198.2 295h10M203.2 290v10M471.8 295h10M476.8 290v10M335 295h10"/>
+</g>
+<g style="font-size:12px;fill:var(--text-secondary)">
+<text x="104" y="140" text-anchor="end">Ι</text>
+<text x="104" y="186" text-anchor="end">ΙΙ</text>
+<text x="104" y="232" text-anchor="end">ΙΙΙ</text>
+<text x="104" y="278" text-anchor="end">ΙΙΙΙ</text>
+<text x="576" y="140">Ι</text>
+<text x="576" y="186">ΙΙ</text>
+<text x="576" y="232">ΙΙΙ</text>
+<text x="576" y="278">ΙΙΙΙ</text>
+<text x="203.2" y="311" text-anchor="middle">ΙΙΙ</text>
+<text x="340" y="311" text-anchor="middle">ΠΙ</text>
+<text x="476.8" y="311" text-anchor="middle">ΠΙΙΙΙ</text>
+<text x="191" y="340">E1</text>
+<text x="261" y="340">E2</text>
+<text x="331" y="340">E3</text>
+<text x="401" y="340">E4</text>
+</g>
+<rect x="176" y="331" width="10" height="10" fill="#1D9E75"/>
+<rect x="246" y="331" width="10" height="10" fill="#7F77DD"/>
+<rect x="316" y="331" width="10" height="10" fill="#D85A30"/>
+<rect x="386" y="331" width="10" height="10" fill="#D4537E"/>
+</svg>
+<script>
+(function(){
+  var NS="http://www.w3.org/2000/svg";
+  var g=document.getElementById("pads");
+  var X0=112, L=456, N=60, H=31, GAP=0.5;
+  var pitch=L/N, w=pitch-0.55;
+  var col=["#1D9E75","#7F77DD","#D85A30","#D4537E"];
+  function box(x,y,h,c){
+    if(h<0.18) return;
+    var r=document.createElementNS(NS,"rect");
+    r.setAttribute("x",x.toFixed(2));
+    r.setAttribute("y",y.toFixed(2));
+    r.setAttribute("width",w.toFixed(2));
+    r.setAttribute("height",h.toFixed(2));
+    r.setAttribute("fill",c);
+    r.setAttribute("opacity","0.88");
+    g.appendChild(r);
+  }
+  for(var p=0;p<4;p++){
+    var y0=120+46*p;
+    for(var k=0;k<N;k++){
+      var t=3*k/(N-1);
+      var e1=Math.max(0,1-t);
+      var e2=Math.max(0,1-Math.abs(t-1));
+      var e3=Math.max(0,1-Math.abs(t-2));
+      var e4=Math.max(0,t-2);
+      var topV, topC, botV, botC;
+      if(t<=1){ topV=e1; topC=col[0]; botV=e2; botC=col[1]; }
+      else if(t<=2){ topV=e3; topC=col[2]; botV=e2; botC=col[1]; }
+      else { topV=e3; topC=col[2]; botV=e4; botC=col[3]; }
+      var ht=H*topV, hb=H*botV;
+      var x=X0+k*pitch;
+      box(x, y0, ht-GAP/2, topC);
+      box(x, y0+ht+GAP/2, hb-GAP/2, botC);
+    }
+  }
+})();
+</script>
+</div>

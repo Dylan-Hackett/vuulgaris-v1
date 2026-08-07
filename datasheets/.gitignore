@@ -1,0 +1,2 @@
+# Real datasheets are fetched, not committed. See fetch-datasheets.sh
+*.pdf

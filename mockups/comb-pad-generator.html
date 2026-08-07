@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vuulgaris — Comb Pad Geometry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --canvas:#0B1216; --panel:#111C22; --panel-2:#16242C;
+  --rule:#1F333D; --rule-bright:#2C4754;
+  --ink:#DDE9EF; --ink-dim:#7A929E; --ink-faint:#4C6270;
+  --fr4:#16291F; --cad:#48D6E8; --warn:#F0A44B;
+  --e1:#1D9E75; --e2:#7F77DD; --e3:#D85A30; --e4:#D4537E;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --cond:'IBM Plex Sans Condensed','Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--canvas);color:var(--ink);font-family:var(--mono);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+@media (max-width:900px){.wrap{grid-template-columns:1fr}.rail{border-right:none;border-bottom:1px solid var(--rule)}}
+
+.rail{background:var(--panel);border-right:1px solid var(--rule);padding:22px 20px 40px}
+.brand{font-family:var(--cond);font-weight:700;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-dim);margin:0 0 2px}
+.brand b{color:var(--e3)}
+h1{font-family:var(--cond);font-weight:600;font-size:23px;margin:0 0 4px}
+.sub{color:var(--ink-faint);font-size:11.5px;margin:0 0 26px;line-height:1.45}
+
+.group{margin-bottom:24px}
+.group-hd{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);padding-bottom:7px;margin-bottom:14px;border-bottom:1px solid var(--rule)}
+.ctl{margin-bottom:15px}
+.ctl-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.ctl-top label{font-size:11.5px;color:var(--ink-dim)}
+.val{font-size:12.5px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.val i{color:var(--ink-faint);font-style:normal;font-size:10.5px;margin-left:1px}
+.val.hot{color:var(--warn)}
+
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;cursor:pointer;display:block}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--rule-bright)}
+input[type=range]::-moz-range-track{height:2px;background:var(--rule-bright)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:11px;height:11px;margin-top:-4.5px;background:var(--cad);border:none;border-radius:0;transform:rotate(45deg)}
+input[type=range]::-moz-range-thumb{width:9px;height:9px;background:var(--cad);border:none;border-radius:0}
+input[type=range]:focus-visible{outline:1px solid var(--cad);outline-offset:4px}
+
+.btn{display:block;width:100%;background:transparent;border:1px solid var(--rule-bright);color:var(--ink);font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;padding:9px 12px;margin-bottom:8px;cursor:pointer;text-align:left;transition:border-color .12s,color .12s,background .12s}
+.btn:hover{border-color:var(--cad);color:var(--cad)}
+.btn:focus-visible{outline:1px solid var(--cad);outline-offset:2px}
+.btn.primary{border-color:var(--e3);color:var(--e3)}
+.btn.primary:hover{background:rgba(216,90,48,.1)}
+.btn small{display:block;color:var(--ink-faint);font-size:10px;letter-spacing:0;margin-top:2px}
+
+.stage{padding:26px 30px 48px;min-width:0}
+@media (max-width:900px){.stage{padding:20px 16px 40px}}
+.plot{background:var(--panel-2);border:1px solid var(--rule);padding:20px 18px;margin-bottom:22px}
+.plot svg{display:block;width:100%;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:18px;padding:11px 0 0;margin-top:14px;border-top:1px solid var(--rule);font-size:11px;color:var(--ink-dim)}
+.legend span{display:flex;align-items:center;gap:7px}
+.chip{width:9px;height:9px;display:inline-block;transform:rotate(45deg)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:22px}
+.cell{background:var(--panel);padding:13px 14px 14px}
+.cell dt{font-family:var(--cond);font-size:9.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 5px}
+.cell dd{margin:0;font-size:18px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.cell dd i{font-style:normal;font-size:11px;color:var(--ink-faint);margin-left:2px}
+.cell dd.hot{color:var(--warn)}
+.cell dd.good{color:var(--e1)}
+
+.notes{border:1px solid var(--rule);background:var(--panel);padding:16px 18px 18px}
+.notes h2{font-family:var(--cond);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 12px}
+.note{display:flex;gap:11px;padding:8px 0;font-size:11.5px;line-height:1.5;border-top:1px solid var(--rule);color:var(--ink-dim)}
+.note:first-of-type{border-top:none}
+.note .mk{flex:0 0 auto;width:14px;text-align:center;color:var(--ink-faint);font-weight:600}
+.note.bad .mk{color:var(--warn)} .note.bad{color:var(--ink)}
+.note.ok .mk{color:var(--e1)}
+.note b{color:var(--ink);font-weight:500}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <aside class="rail">
+    <p class="brand"><b>VUULGARIS</b> V1</p>
+    <h1>Comb pad</h1>
+    <p class="sub">Vertical comb teeth, each split top and bottom. Position rides the copper ratio between halves. Five segments, RX0 at both ends, four interpolation zones.</p>
+
+    <div class="group">
+      <div class="group-hd">Pad</div>
+      <div class="ctl"><div class="ctl-top"><label for="len">Length</label><span class="val" id="len-v"></span></div>
+        <input type="range" id="len" min="40" max="320" step="2.5" value="175"></div>
+      <div class="ctl"><div class="ctl-top"><label for="wid">Width</label><span class="val" id="wid-v"></span></div>
+        <input type="range" id="wid" min="4" max="30" step="0.5" value="12"></div>
+    </div>
+
+    <div class="group">
+      <div class="group-hd">Comb</div>
+      <div class="ctl"><div class="ctl-top"><label for="tpz">Teeth per zone</label><span class="val" id="tpz-v"></span></div>
+        <input type="range" id="tpz" min="4" max="40" step="1" value="20"></div>
+      <div class="ctl"><div class="ctl-top"><label for="tgap">Tooth-to-tooth gap</label><span class="val" id="tgap-v"></span></div>
+        <input type="range" id="tgap" min="0.1" max="1.2" step="0.01" value="0.21"></div>
+      <div class="ctl"><div class="ctl-top"><label for="mgap">Top-to-bottom gap</label><span class="val" id="mgap-v"></span></div>
+        <input type="range" id="mgap" min="0.1" max="1.2" step="0.01" value="0.20"></div>
+    </div>
+
+    <div class="group">
+      <div class="group-hd">Fab limits</div>
+      <div class="ctl"><div class="ctl-top"><label for="minw">Min copper width</label><span class="val" id="minw-v"></span></div>
+        <input type="range" id="minw" min="0.08" max="0.5" step="0.005" value="0.15"></div>
+      <div class="ctl"><div class="ctl-top"><label for="minc">Min clearance</label><span class="val" id="minc-v"></span></div>
+        <input type="range" id="minc" min="0.08" max="0.5" step="0.005" value="0.15"></div>
+    </div>
+
+    <div class="group">
+      <div class="group-hd">Output</div>
+      <button class="btn primary" id="dl">Download SVG<small>true mm scale, grouped per channel</small></button>
+      <button class="btn" id="copy">Copy build sheet</button>
+      <button class="btn" id="reset">Reset to 175 &times; 12</button>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <div class="plot">
+      <div id="svg-host"></div>
+      <div class="legend">
+        <span><i class="chip" style="background:var(--e1)"></i>RX0 &mdash; both ends, one net</span>
+        <span><i class="chip" style="background:var(--e2)"></i>RX1</span>
+        <span><i class="chip" style="background:var(--e3)"></i>RX2</span>
+        <span><i class="chip" style="background:var(--e4)"></i>RX3</span>
+      </div>
+    </div>
+
+    <dl class="grid">
+      <div class="cell"><dt>Teeth total</dt><dd id="m-teeth"></dd></div>
+      <div class="cell"><dt>Tooth pitch</dt><dd id="m-pitch"></dd></div>
+      <div class="cell"><dt>Tooth width</dt><dd id="m-tw"></dd></div>
+      <div class="cell"><dt>Zone length</dt><dd id="m-zone"></dd></div>
+      <div class="cell"><dt>Thinnest bar</dt><dd id="m-min"></dd></div>
+      <div class="cell"><dt>Bars dropped</dt><dd id="m-drop"></dd></div>
+      <div class="cell"><dt>Copper per channel</dt><dd id="m-area"></dd></div>
+      <div class="cell"><dt>Position step @1000</dt><dd id="m-step"></dd></div>
+    </dl>
+
+    <div class="notes"><h2>Checks</h2><div id="checks"></div></div>
+  </main>
+</div>
+
+<script>
+const COL = ['#1D9E75','#7F77DD','#D85A30','#D4537E'];   // RX0, RX1, RX2, RX3
+const NAME = ['RX0','RX1','RX2','RX3'];
+const el = id => document.getElementById(id);
+const P = {len:el('len'),wid:el('wid'),tpz:el('tpz'),tgap:el('tgap'),mgap:el('mgap'),minw:el('minw'),minc:el('minc')};
+const params = () => ({
+  L:+P.len.value, H:+P.wid.value, tpz:+P.tpz.value,
+  tgap:+P.tgap.value, mgap:+P.mgap.value,
+  minw:+P.minw.value, minc:+P.minc.value
+});
+
+/* Wraparound ramp. t runs 0..4 across four zones.
+   Channel presence:
+     RX0 = max(0,1-t) + max(0,t-3)      <- appears at BOTH ends
+     RX1 = max(0,1-|t-1|)
+     RX2 = max(0,1-|t-2|)
+     RX3 = max(0,1-|t-3|)
+   Sum is always 1.
+   Vertical placement alternates so a strip never stacks the same channel:
+     top half  -> RX0 or RX2
+     bottom half-> RX1 or RX3                                        */
+function presence(t){
+  return [
+    Math.max(0,1-t) + Math.max(0,t-3),
+    Math.max(0,1-Math.abs(t-1)),
+    Math.max(0,1-Math.abs(t-2)),
+    Math.max(0,1-Math.abs(t-3))
+  ];
+}
+function pair(t){
+  if(t<=1) return {top:0, bot:1};
+  if(t<=2) return {top:2, bot:1};
+  if(t<=3) return {top:2, bot:3};
+  return {top:0, bot:3};
+}
+
+function build(p){
+  const {L,H,tpz,tgap,mgap,minw,minc} = p;
+  const N = tpz*4;
+  const pitch = L/N;
+  const w = pitch - tgap;
+  const usable = H - mgap;              // copper height shared by the two bars
+  const bars = [];                      // {ch,x,y,w,h}
+  const areas = [0,0,0,0];
+  let dropped = 0, thinnest = Infinity;
+
+  for(let k=0;k<N;k++){
+    const t = 4*(k+0.5)/N;              // sample at tooth centre
+    const e = presence(t);
+    const {top,bot} = pair(t);
+    let ht = usable*e[top];
+    let hb = usable*e[bot];
+
+    // enforce minimum copper: a bar thinner than the fab limit is removed,
+    // and its height handed to the surviving bar rather than left as a sliver.
+    if(ht < minw && hb < minw){ dropped += 2; continue; }
+    if(ht < minw){ dropped++; ht = 0; hb = usable; }
+    else if(hb < minw){ dropped++; hb = 0; ht = usable; }
+
+    if(ht>0){ bars.push({ch:top,x:k*pitch,y:0,w,h:ht}); areas[top]+=w*ht; thinnest=Math.min(thinnest,ht); }
+    if(hb>0){ bars.push({ch:bot,x:k*pitch,y:ht+mgap,w,h:hb}); areas[bot]+=w*hb; thinnest=Math.min(thinnest,hb); }
+  }
+  if(!isFinite(thinnest)) thinnest = 0;
+  return {bars,areas,N,pitch,w,usable,dropped,thinnest};
+}
+
+function svg(p, out){
+  const {L,H} = p;
+  const g = build(p);
+  const mx=8, mt=7, mb= out?4:26;
+  const vb = `${-mx} ${-mt} ${L+2*mx} ${H+mt+mb}`;
+
+  let body = out ? '' : `<rect x="-1.5" y="-1.5" width="${L+3}" height="${H+3}" fill="#16291F" opacity="0.5"/>`;
+
+  // group bars by channel so the export has one <g> per net
+  for(let c=0;c<4;c++){
+    const mine = g.bars.filter(b=>b.ch===c);
+    if(!mine.length) continue;
+    body += `<g id="${NAME[c]}" fill="${COL[c]}"${out?'':' fill-opacity="0.9"'}>`;
+    mine.forEach(b=>{
+      body += `<rect x="${b.x.toFixed(3)}" y="${b.y.toFixed(3)}" width="${b.w.toFixed(3)}" height="${b.h.toFixed(3)}"/>`;
+    });
+    body += `</g>`;
+  }
+
+  if(!out){
+    // RX0 tie hint
+    const ty = H + 7;
+    body += `<path d="M${(L*0.02).toFixed(2)} ${H} L${(L*0.02).toFixed(2)} ${ty} L${(L*0.98).toFixed(2)} ${ty} L${(L*0.98).toFixed(2)} ${H}"
+      fill="none" stroke="${COL[0]}" stroke-width="0.28" stroke-dasharray="1.6 1.6" opacity="0.8"/>`;
+    // zone boundaries
+    for(let z=1;z<4;z++){
+      const x=(L*z/4).toFixed(2);
+      body += `<line x1="${x}" y1="-2.5" x2="${x}" y2="${H+2.5}" stroke="#2C4754" stroke-width="0.2" stroke-dasharray="1 1.4"/>`;
+    }
+    // ruler
+    const ry = H + 13.5;
+    body += `<line x1="0" y1="${ry}" x2="${L}" y2="${ry}" stroke="#2C4754" stroke-width="0.18"/>`;
+    for(let x=0;x<=L+0.001;x+=10){
+      const maj = x%50===0;
+      body += `<line x1="${x}" y1="${ry}" x2="${x}" y2="${ry+(maj?2.4:1.2)}" stroke="#2C4754" stroke-width="0.18"/>`;
+      if(maj) body += `<text x="${x}" y="${ry+6.4}" fill="#4C6270" font-family="IBM Plex Mono, monospace" font-size="2.6" text-anchor="middle">${x}</text>`;
+    }
+    body += `<text x="${L}" y="${ry+11.4}" fill="#4C6270" font-family="IBM Plex Mono, monospace" font-size="2.6" text-anchor="end">mm</text>`;
+  }
+
+  const head = out
+    ? `<svg xmlns="http://www.w3.org/2000/svg" width="${L+2*mx}mm" height="${H+mt+mb}mm" viewBox="${vb}">
+<title>Vuulgaris V1 comb slider pad ${L}x${H}mm</title>
+<desc>Four-channel self-capacitance slider. Vertical comb teeth split into complementary top and bottom bars. Segment order RX0 RX1 RX2 RX3 RX0 across four interpolation zones; the RX0 group appears at both ends and must be one net on the board.</desc>`
+    : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" role="img" aria-label="Comb slider pad, ${L} by ${H} millimetres">`;
+  return {markup: head + body + '</svg>', g};
+}
+
+function checks(p,g){
+  const o=[];
+  const add=(c,m,h)=>o.push(`<div class="note ${c}"><span class="mk">${m}</span><span>${h}</span></div>`);
+  const {minw,minc,tgap,mgap,L,H} = p;
+
+  if(g.w < minw) add('bad','!',`Tooth width <b>${g.w.toFixed(3)}mm</b> is under the <b>${minw}mm</b> copper limit. Fewer teeth per zone or a smaller tooth gap.`);
+  else add('ok','&check;',`Tooth width <b>${g.w.toFixed(2)}mm</b> clears the copper limit.`);
+
+  const worstGap = Math.min(tgap,mgap);
+  if(worstGap < minc) add('bad','!',`Smallest gap <b>${worstGap.toFixed(2)}mm</b> is under the <b>${minc}mm</b> clearance limit.`);
+  else add('ok','&check;',`Smallest gap <b>${worstGap.toFixed(2)}mm</b> clears the clearance limit.`);
+
+  if(g.thinnest > 0 && g.thinnest < minw)
+    add('bad','!',`Thinnest surviving bar is <b>${g.thinnest.toFixed(3)}mm</b>. Raise min copper width.`);
+  else
+    add('ok','&check;',`Every bar drawn is at least <b>${minw}mm</b> tall. No slivers reach the fab file.`);
+
+  if(g.dropped > 0)
+    add('','&rarr;',`<b>${g.dropped}</b> sub-limit bars removed near ramp ends. Their height went to the surviving bar, which is already the dominant channel there, so the position ramp is unchanged in practice.`);
+
+  if(H > 15) add('bad','!',`<b>${H}mm</b> wide raises base capacitance without helping a lengthwise scrub. 10&ndash;12mm is the useful range.`);
+  else if(H < 7) add('bad','!',`<b>${H}mm</b> may be hard to hit reliably. Check ergonomics.`);
+  else add('ok','&check;',`<b>${H}mm</b> keeps copper area per channel low while staying easy to hit.`);
+
+  if(L > 300) add('bad','!',`<b>${L}mm</b> exceeds the 300mm TI has demonstrated on four electrodes.`);
+  else add('ok','&check;',`<b>${L}mm</b> is inside TI's demonstrated 300mm envelope.`);
+
+  add('','&rarr;',`RX0 is <b>one net</b>. Both end groups must be connected on the board. Route the return on the layer below, not under the electrodes.`);
+  add('','&rarr;',`Assign <b>RX0&rarr;E00, RX1&rarr;E01, RX2&rarr;E02, RX3&rarr;E03</b> in Design Center first, then lay out to match.`);
+  add('','&rarr;',`Endpoints read compressed. Tune <b>Lower_Trim</b> / <b>Upper_Trim</b> and print the usable scrub region inside the copper.`);
+  add('','&rarr;',`No overlay: <b>470R&ndash;1k</b> series per electrode plus a TVS to ground on the electrode side. Specify <b>ENIG</b>, not HASL.`);
+  return o.join('');
+}
+
+let exportSVG='';
+
+function render(){
+  const p = params();
+  const {markup, g} = svg(p,false);
+  exportSVG = svg(p,true).markup;
+  el('svg-host').innerHTML = markup;
+
+  el('len-v').innerHTML  = p.L.toFixed(1)+'<i>mm</i>';
+  el('wid-v').innerHTML  = p.H.toFixed(1)+'<i>mm</i>';
+  el('tpz-v').textContent = p.tpz;
+  el('tgap-v').innerHTML = p.tgap.toFixed(2)+'<i>mm</i>';
+  el('mgap-v').innerHTML = p.mgap.toFixed(2)+'<i>mm</i>';
+  el('minw-v').innerHTML = p.minw.toFixed(3)+'<i>mm</i>';
+  el('minc-v').innerHTML = p.minc.toFixed(3)+'<i>mm</i>';
+
+  el('m-teeth').innerHTML = g.N;
+  el('m-pitch').innerHTML = g.pitch.toFixed(3)+'<i>mm</i>';
+  el('m-tw').innerHTML    = g.w.toFixed(3)+'<i>mm</i>';
+  el('m-tw').className    = g.w < p.minw ? 'hot' : '';
+  el('m-zone').innerHTML  = (p.L/4).toFixed(2)+'<i>mm</i>';
+  el('m-min').innerHTML   = g.thinnest.toFixed(3)+'<i>mm</i>';
+  el('m-min').className   = (g.thinnest>0 && g.thinnest < p.minw) ? 'hot' : 'good';
+  el('m-drop').innerHTML  = g.dropped;
+  el('m-area').innerHTML  = Math.round(g.areas.reduce((a,b)=>a+b,0)/4)+'<i>mm²</i>';
+  el('m-step').innerHTML  = (p.L/1000).toFixed(3)+'<i>mm</i>';
+
+  el('checks').innerHTML = checks(p,g);
+}
+
+Object.values(P).forEach(i=>i.addEventListener('input',render));
+
+el('reset').addEventListener('click',()=>{
+  P.len.value=175; P.wid.value=12; P.tpz.value=20;
+  P.tgap.value=0.21; P.mgap.value=0.20; P.minw.value=0.15; P.minc.value=0.15;
+  render();
+});
+
+el('dl').addEventListener('click',()=>{
+  const p=params();
+  const b=new Blob([exportSVG],{type:'image/svg+xml'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download=`vuulgaris-comb-pad-${p.L}x${p.H}mm.svg`;
+  a.click(); URL.revokeObjectURL(a.href);
+  const btn=el('dl'), keep=btn.innerHTML;
+  btn.innerHTML='Downloaded<small>import as copper, verify scale</small>';
+  setTimeout(()=>{btn.innerHTML=keep;},1800);
+});
+
+el('copy').addEventListener('click',()=>{
+  const p=params(); const g=build(p);
+  const txt=[
+    `Vuulgaris V1 comb slider pad`,
+    `${p.L} x ${p.H} mm`,
+    ``,
+    `segments      RX0 RX1 RX2 RX3 RX0   (RX0 = one net, tie both ends)`,
+    `zones         4`,
+    `zone length   ${(p.L/4).toFixed(2)} mm`,
+    `teeth/zone    ${p.tpz}`,
+    `teeth total   ${g.N}`,
+    `tooth pitch   ${g.pitch.toFixed(3)} mm`,
+    `tooth width   ${g.w.toFixed(3)} mm`,
+    `tooth gap     ${p.tgap.toFixed(2)} mm`,
+    `mid gap       ${p.mgap.toFixed(2)} mm`,
+    `copper height ${g.usable.toFixed(2)} mm  (pad width minus mid gap)`,
+    ``,
+    `min copper    ${p.minw.toFixed(3)} mm  (enforced)`,
+    `min clearance ${p.minc.toFixed(3)} mm`,
+    `thinnest bar  ${g.thinnest.toFixed(3)} mm`,
+    `bars dropped  ${g.dropped}`,
+    ``,
+    `copper by channel (mm2)`,
+    ...g.areas.map((a,i)=>`  ${NAME[i]}  ${a.toFixed(1)}`),
+    ``,
+    `pin order: RX0->E00  RX1->E01  RX2->E02  RX3->E03`
+  ].join('\n');
+  navigator.clipboard.writeText(txt).then(()=>{
+    const b=el('copy'), k=b.textContent; b.textContent='Copied';
+    setTimeout(()=>{b.textContent=k;},1500);
+  }).catch(()=>{
+    const b=el('copy'), k=b.textContent; b.textContent='Clipboard blocked';
+    setTimeout(()=>{b.textContent=k;},1500);
+  });
+});
+
+render();
+</script>
+</body>
+</html>

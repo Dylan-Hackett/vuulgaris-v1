@@ -1,0 +1,59 @@
+<svg width="100%" viewBox="0 0 680 392" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Vuulgaris V1 faceplate, Salamis Tablet layout, dimensioned at 298 x 154mm</title>
+<desc>The Salamis Tablet faceplate drawn to scale at the 6mm inter-pad gap working proposal, 298 by 154mm at 1.946 pixels per millimetre. Above the crack line, twelve potentiometers stand on the second and fourth of five ruled lines: eight channel pots in a four by two grid left of the vertical divider, four envelope pots in a two by two grid right of it. The encoder and two switches sit beside them and the OLED is at the right end. Below the crack, four 216mm scrub pads 12mm wide at 18mm pitch, with a vertical divider, upward semicircle, eleven tick divisions per pad, crosses at the third, sixth and ninth, and Greek acrophonic numerals in the left, right and bottom margins.</desc>
+
+<rect x="42" y="40" width="580" height="300" rx="3" fill="none" stroke="#888780" stroke-width="0.8"/>
+
+<line x1="52" y1="54" x2="317" y2="54" stroke="#B4B2A9" stroke-width="0.5"/>
+<line x1="52" y1="75" x2="317" y2="75" stroke="#B4B2A9" stroke-width="0.5"/>
+<line x1="52" y1="96" x2="317" y2="96" stroke="#B4B2A9" stroke-width="0.5"/>
+<line x1="52" y1="118" x2="317" y2="118" stroke="#B4B2A9" stroke-width="0.5"/>
+<line x1="52" y1="139" x2="317" y2="139" stroke="#B4B2A9" stroke-width="0.5"/>
+<line x1="227" y1="48" x2="227" y2="145" stroke="#5F5E5A" stroke-width="0.8"/>
+<path d="M215 139 A12 12 0 0 0 239 139" fill="none" stroke="#5F5E5A" stroke-width="0.8"/>
+
+<g fill="#EEEDFE" stroke="#534AB7" stroke-width="0.6">
+<circle cx="70" cy="75" r="14"/><circle cx="113" cy="75" r="14"/><circle cx="156" cy="75" r="14"/><circle cx="199" cy="75" r="14"/>
+<circle cx="70" cy="118" r="14"/><circle cx="113" cy="118" r="14"/><circle cx="156" cy="118" r="14"/><circle cx="199" cy="118" r="14"/>
+<circle cx="256" cy="75" r="14"/><circle cx="299" cy="75" r="14"/>
+<circle cx="256" cy="118" r="14"/><circle cx="299" cy="118" r="14"/>
+</g>
+
+<g font-family="sans-serif" font-size="11" fill="#5F5E5A" text-anchor="middle">
+<text x="70" y="48">&#921;</text><text x="113" y="48">&#921;&#921;</text><text x="156" y="48">&#921;&#921;&#921;</text><text x="199" y="48">&#921;&#921;&#921;&#921;</text>
+</g>
+
+<circle cx="352" cy="80" r="18" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="325" y="112" width="42" height="17" rx="2" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="377" y="112" width="42" height="17" rx="2" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.6"/>
+<rect x="470" y="54" width="136" height="82" rx="3" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.6"/>
+<text x="538" y="99" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#2C2C2A">OLED 70x42</text>
+
+<path d="M42 150 L112 146 L182 153 L247 147 L312 154 L382 148 L447 155 L512 149 L572 154 L622 148" fill="none" stroke="#5F5E5A" stroke-width="1.2"/>
+
+<g fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.6">
+<rect x="132" y="164" width="420" height="23" rx="2"/>
+<rect x="132" y="199" width="420" height="23" rx="2"/>
+<rect x="132" y="234" width="420" height="23" rx="2"/>
+<rect x="132" y="269" width="420" height="23" rx="2"/>
+</g>
+
+<line x1="342" y1="160" x2="342" y2="296" stroke="#5F5E5A" stroke-width="0.8"/>
+<path d="M330 164 A12 12 0 0 1 354 164" fill="none" stroke="#5F5E5A" stroke-width="0.8"/>
+
+<path d="M132 190v5M174 190v5M258 190v5M300 190v5M384 190v5M426 190v5M510 190v5M552 190v5M132 225v5M174 225v5M258 225v5M300 225v5M384 225v5M426 225v5M510 225v5M552 225v5M132 260v5M174 260v5M258 260v5M300 260v5M384 260v5M426 260v5M510 260v5M552 260v5M132 295v5M174 295v5M258 295v5M300 295v5M384 295v5M426 295v5M510 295v5M552 295v5" fill="none" stroke="#B4B2A9" stroke-width="0.6"/>
+<path d="M210 192h12M216 186v12M462 192h12M468 186v12M336 192h12M210 227h12M216 221v12M462 227h12M468 221v12M336 227h12M210 262h12M216 256v12M462 262h12M468 256v12M336 262h12M210 297h12M216 291v12M462 297h12M468 291v12M336 297h12" fill="none" stroke="#5F5E5A" stroke-width="0.8"/>
+
+<g font-family="sans-serif" font-size="12" fill="#5F5E5A">
+<text x="122" y="180" text-anchor="end">&#921;</text><text x="122" y="215" text-anchor="end">&#921;&#921;</text><text x="122" y="250" text-anchor="end">&#921;&#921;&#921;</text><text x="122" y="285" text-anchor="end">&#921;&#921;&#921;&#921;</text>
+<text x="562" y="180">&#921;</text><text x="562" y="215">&#921;&#921;</text><text x="562" y="250">&#921;&#921;&#921;</text><text x="562" y="285">&#921;&#921;&#921;&#921;</text>
+<text x="216" y="320" text-anchor="middle">&#921;&#921;&#921;</text><text x="342" y="320" text-anchor="middle">&#928;&#921;</text><text x="468" y="320" text-anchor="middle">&#928;&#921;&#921;&#921;&#921;</text>
+</g>
+
+<circle cx="52" cy="368" r="7" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.6"/>
+<text x="66" y="372" font-family="sans-serif" font-size="12" fill="#5F5E5A">8 channel + 4 envelope, on rules 2 and 4</text>
+<rect x="330" y="362" width="16" height="11" rx="2" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.6"/>
+<text x="354" y="372" font-family="sans-serif" font-size="12" fill="#5F5E5A">OLED, encoder, switches</text>
+<rect x="516" y="362" width="20" height="11" rx="2" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.6"/>
+<text x="544" y="372" font-family="sans-serif" font-size="12" fill="#5F5E5A">4 pads, 216mm</text>
+</svg>

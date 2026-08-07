@@ -1,0 +1,6 @@
+[submodule "fw-daisy/libDaisy"]
+	path = fw-daisy/libDaisy
+	url = https://github.com/electro-smith/libDaisy.git
+[submodule "fw-daisy/DaisySP"]
+	path = fw-daisy/DaisySP
+	url = https://github.com/electro-smith/DaisySP.git

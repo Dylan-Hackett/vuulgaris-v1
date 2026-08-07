@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# editor / office scratch
+*.tmp
+.~lock.*#
+~$*
+
+# Python (the faceplate and pad generators)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# The generated faceplate SVG is COMMITTED on purpose: it is the artefact that
+# goes to the fab house, so it must be reviewable in diffs beside its generator.
