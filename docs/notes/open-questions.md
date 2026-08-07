@@ -228,6 +228,64 @@ an analog path**, and with the gate open it runs away.
 Whichever is chosen, **the default state on power-up should not be the runaway one.**
 
 ---
+
+## Q21. Do the BSL's fixed pins match our chosen runtime UART pins?
+
+**Blocks: layout.** This is a board-respin bug if it is wrong.
+**Status: OPEN. Partly answered, and the partial answer is uncomfortable.**
+
+Verified from **SLAU550AB** (MSP430 FRAM Devices Bootloader), September 2022:
+
+- **BSL pins are factory-programmed in the TLV device descriptor and cannot be changed.**
+  Section 3.6: *"The configuration data in the TLV is factory programmed and cannot be
+  changed."* The user-configurable area (Table 3-2) only selects the **interface** and the
+  **I2C slave address**. It does not move pins.
+- **The BSL supports UART and I2C, and auto-detects between them by default.** Table 3-2,
+  bits 1-0: `00b = Automatic detection of UART or I2C BSL communication`, `01b` UART only,
+  `10b` I2C only. FR267x carries a `B5` BSL, and `0xB0-0xBF` means *combined eUSCI I2C and
+  UART*.
+
+**The problem this creates.** We chose the **remapped** UCA0 for runtime UART (P5.2 TXD /
+P5.1 RXD, pins **45 / 44**) because the default mapping's pin 4 also carries VREF+ and TCK.
+**Factory-fixed BSL pins are almost certainly the default mapping**, which for UCA0 is
+P1.4 / P1.5, pins **4 / 5**. If so, the connector reaches the runtime UART but **not the
+BSL UART**, and [ADR 0005](../decisions/0005-bsl-over-daisy-uart.md) does not work as drawn.
+
+**The consolation, and it is a real one.** Our I2C choice is **UCB0 default** (P1.2 SDA /
+P1.3 SCL, pins **14 / 15**), which *is* the default mapping. **If BSL uses defaults, our I2C
+pins already match the BSL's I2C pins.** That inverts the original reasoning: I2C is not the
+fallback, it may be the *working* BSL path.
+
+**What to do:** confirm the actual FR267x values in **SLAU550 section 7** (device-specific
+tables) before layout. They did not come through in the fetch. Until then, **route pins 4 and
+5 to the connector as well.** Copper is free now and a respin is not.
+
+---
+
+## Q22. Does the FR2675 clock need a crystal for reliable UART?
+
+**Blocks: nothing yet, but it decides whether I2C is needed as insurance.**
+**Status: LIKELY RESOLVED by adding a crystal.**
+
+The one real failure mode for UART is clock disagreement: neither end is told the baud rate,
+each counts on its own clock, and if the MSP430 drifts far enough the link produces garbage.
+I2C does not have this problem because the master supplies the clock on a wire.
+
+From the **FR2676/FR2675 datasheet, SLASEO5D**:
+
+- On-chip 16MHz DCO with FLL, **"±1% accuracy with on-chip reference at room temperature."**
+  Good enough at 25 degrees. Less reassuring across a full temperature range.
+- **XT1 low-frequency crystal oscillator is supported**, and on the **PT package XIN is pin 47
+  and XOUT is pin 46**. Both are **unassigned in our design.**
+
+**A 32.768kHz watch crystal and two load caps, roughly $0.20, removes the risk entirely.**
+Lock the FLL to XT1 and baud accuracy stops being a question. TI's own CapTIvate power tables
+list XT1 alongside REFO as a clock source, so it is a supported configuration for touch too.
+
+**Consequence: the original reason for carrying I2C goes away.** Keep I2C for the Q21 reason
+instead, which is a better reason.
+
+---
 ---
 
 # Resolved
