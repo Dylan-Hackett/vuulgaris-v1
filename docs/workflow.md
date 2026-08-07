@@ -194,6 +194,57 @@ That leaves room, but it is the line item to watch, and it is **the synth machin
 sampler machine**. Four channels all running Plaits at once is the worst case; four channels
 scrubbing samples is nearly free by comparison.
 
+### Estimated load by mode
+
+Ideal cycle counts doubled to allow for pipeline stalls, float conversion and non-ideal
+codegen. Peak assumed at 1.5x average.
+
+| Mode | Average | Peak |
+|---|---|---|
+| 4 channels scrubbing | **~10%** | ~15% |
+| 4 channels scrubbing + 32-tap anti-aliasing | **~15%** | ~22% |
+| 2 Plaits + 2 sampler | ~27% | ~41% |
+| **4 Plaits (the ceiling)** | **~43%** | **~64%** |
+
+### The worst case is not additive, and that is the whole answer
+
+**Each track's machine is either a sampler or a synth** (design-state section 1). A channel
+running Plaits is not also scrubbing a buffer. So the ceiling is **4x Plaits at ~43%**, not
+Plaits stacked on top of the sampler engine.
+
+**There is roughly 2x headroom at the worst case.** That margin exists because of two
+architectural decisions already taken, both of which moved work off this chip:
+
+- **Capacitive sensing is entirely on the MSP430.** Four channels of scanning, filtering and
+  noise immunity cost the H750 nothing. It receives positions over UART at control rate.
+- **The filter is analog.** A stereo four-pole LPG with envelope in firmware would be several
+  percent. The Bergman board does it for free.
+
+The compute budget was effectively spent at the architecture stage rather than in the DSP.
+
+### What to watch, in order
+
+1. **Anti-aliasing on fast scrub.** The one real unknown. Playing back faster than 1x aliases
+   unless the resampler filters, and a proper polyphase FIR is **2.6% at 16 taps, 5.1% at 32,
+   10.2% at 64**, for 8 voices. Plenty of samplers let it alias on purpose and call it
+   character. **Decide whether it is a defect or a feature before building the resampler**,
+   because retrofitting anti-aliasing is much harder than designing it in.
+2. **Block size pulls against [Q19](notes/open-questions.md).** Smaller blocks cut the analog
+   resample round-trip latency, which the loop sync depends on, but raise per-block overhead.
+   **These two decisions have to be made together**, not separately.
+3. **Peaks, not averages.** Cache maintenance, SD access and OLED refresh all contend for the
+   same AXI bus as SDRAM. A 43% average with occasional 100% spikes is a clicking instrument.
+
+### The number least worth trusting
+
+**The 2x realism multiplier**, and **the 10%-per-Plaits figure**.
+
+The Plaits estimate is derived from the throughput ratio of the two chips, and it silently
+assumes Plaits saturates its own F373. It does not: that chip also runs Plaits' UI and CV
+acquisition. **One engine may well land at 6 to 8% rather than 10%**, which would put the
+ceiling nearer 30% than 43%. The estimate is therefore biased pessimistic, which is the correct
+direction for a budget but the wrong direction for planning what else can be afforded.
+
 ### These are estimates, and libDaisy ships the tool to replace them
 
 Everything above is arithmetic from verified part specs, **not measurement**, and cache
