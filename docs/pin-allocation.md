@@ -5,10 +5,11 @@ and added five jacks. Safe to lay out against.
 
 ## The IO plan
 
-- **10 ADC pots.** 2 per channel (8) on CV_1-CV_8, plus **attack** (A2) and **release** (A3).
+- **10 ADC pots.** 7 channel pots on CV_1-CV_7, the 8th on **D8**, plus **attack** (A2) and
+  **release** (A3).
 - **Three knobs are ANALOG and cost zero pins:** LPG offset (dual-gang), CV amount L, CV
   amount R. They act directly on the Bergman LPG and the Daisy never sees them.
-- **Five jacks:** CV in (D8), CV out (C1), gate in / clock (B10), gate out x2 (B5, B6).
+- **Five jacks:** **CV in (C9 / CV_8)**, CV out (C1), gate in / clock (B10), gate out x2 (B5, B6).
 - **Shift button on A9.** Encoder on D3/D4 with push on B9.
 - **No panel USB.** DFU runs over the module's own Micro USB. See "The USB decision".
 - **No mux.** **1-bit SD.**
@@ -20,16 +21,16 @@ and added five jacks. Safe to lay out against.
 |---|---|---|---|---|
 | A1 | -12V in | | B10 | **GATE IN / clock** |
 | A2 | envelope attack | | C1 | **CV OUT jack** |
-| A3 | envelope release | | C2-C9 | 8 channel pots |
-| A4 | GND | | C10 | LPG envelope (one, splits analog) |
-| A5 | +12V in | | D1 | OLED CS |
-| A6 | 5V out | | D2 | OLED DC |
-| A7 | GND | | D3, D4 | encoder A, B |
-| **A8** | **RESERVED** | | D5, D6, D7 | SD 1-bit: D0, CLK, CMD |
-| A9 | shift button | | **D8** | **CV IN** (needs conditioning) |
-| A10 | 3V3 out | | D9 | OLED MOSI (native SPI2) |
-| B1-B4 | audio out/in L/R | | D10 | OLED SCK |
-| B5, B6 | **GATE OUT 1, 2** | | | |
+| A3 | envelope release | | C2-C8 | 7 channel pots |
+| A4 | GND | | **C9** | **CV IN jack** (CV_8, conditioned) |
+| A5 | +12V in | | C10 | LPG envelope (one, splits analog) |
+| A6 | 5V out | | D1 | OLED CS |
+| A7 | GND | | D2 | OLED DC |
+| **A8** | **RESERVED** | | D3, D4 | encoder A, B |
+| A9 | shift button | | D5, D6, D7 | SD 1-bit: D0, CLK, CMD |
+| A10 | 3V3 out | | **D8** | **8th channel pot** (3V3 ref) |
+| B1-B4 | audio out/in L/R | | D9 | OLED MOSI (native SPI2) |
+| B5, B6 | **GATE OUT 1, 2** | | D10 | OLED SCK |
 | B7, B8 | MSP430 link | | | |
 | B9 | encoder push | | | |
 
@@ -113,7 +114,7 @@ flag moves DFU to the external port, which no longer exists on this board.
 | Function | Pins | Note |
 |---|---|---|
 | Envelope pots | **A2** attack, **A3** release | Wire to **3V3 (A10)**, not 5V |
-| **CV IN** | **D8** (ADC_12) | **Needs conditioning and clamps. See below.** |
+| 8th channel pot | **D8** (ADC_12) | Wire to **3V3 (A10)**. See "why the CV in moved". |
 | SD 1-bit | **D5** (D0), **D6** (CLK), **D7** (CMD) | Fixed SDMMC1 pins |
 | OLED SPI2 | **D1** (CS), **D9** (MOSI), **D10** (SCK) | D9 is the **native** SPI2_MOSI |
 | OLED DC | **D2** | Any GPIO |
@@ -142,7 +143,8 @@ turn freed **A9** for the shift button.
 
 | Function | Pin | Note |
 |---|---|---|
-| Pots 1-8 (2 per channel) | **CV_1-CV_8** (C2-C9) | Input only. Wire to **5V (A6)**. Conditioned on-module for +/-5V. |
+| Channel pots 1-7 | **CV_1-CV_7** (C2-C8) | Input only. Wire to **5V (A6)**. |
+| **CV IN jack** | **CV_8** (C9) | **Conditioned on-module. Rated to the +/-12V rails.** |
 | **GATE OUT 1** | **B5** (GATE_OUT_1, PC14) | Native 0-5V, no buffer needed |
 | **GATE OUT 2** | **B6** (GATE_OUT_2, PC13) | Same |
 | **Encoder push** | **B9** (GATE_IN_2, PG14) | `GateIn` inverts by default; flip in software |
@@ -160,23 +162,42 @@ turn freed **A9** for the shift button.
 
 ---
 
-## D8 as a CV input will destroy the pin without a front end
+## Why the CV in moved off D8, and onto CV_8
 
-**This is the one genuinely dangerous item in the plan.**
+**Corrected 2026-08-09.** The CV jack was briefly on D8, which would have needed a divider,
+an offset and clamp diodes, and would have destroyed the pin without them. **Swapping it with
+a channel pot removes the entire problem**, because the module already conditions CV_1-CV_8.
 
-`CV_1` to `CV_8` are conditioned **on the module** for +/-5V. **D8 is not.** It is a bare
-0 to 3.3V ADC pin. A CV jack wired straight to it dies the first time someone patches a
-+/-10V LFO into it.
+Straight from the Patch SM absolute maximum ratings:
 
-Required: a divider and offset mapping the incoming range into 0-3.3V, **plus clamp diodes to
-the rails**, or an op-amp front end doing it properly. Not optional, not a later refinement.
+| Pin type | Min | Max |
+|---|---|---|
+| **CV input** | **negative power in** | **positive power in** |
+| GPIO | -0.3 V | 6 V |
+
+**A CV input is rated to the power rails**, so at +/-12V it survives anything a modular can
+patch into it, with 100K input impedance and the conditioning already on the module. **A GPIO
+dies above 6V.**
+
+And the swap is free in the other direction: **a pot is a benign 0-3.3V source**, so it is
+perfectly happy on a bare ADC pin. Wire it to **3V3 (A10)**, not 5V.
+
+| | Was | Now |
+|---|---|---|
+| CV jack | D8, bare 0-3.3V pin | **CV_8 (C9)**, conditioned, +/-12V tolerant |
+| 8th channel pot | CV_8 | **D8**, 3V3 reference |
+| External parts needed | divider + offset + 2 clamp diodes | **none** |
+
+**The lesson worth keeping:** put the hostile signal on the pin that was built to survive it,
+and the benign one on the pin that was not.
 
 ---
 
 ## Why there is no analog headroom
 
-**All 12 ADC-capable pins are allocated**: CV_1-CV_8 (8, input-only), ADC_9 (A2), ADC_10 (A3),
-ADC_12 (D8 as CV in), and ADC_11 (D9) spent on SPI MOSI. **11 are converting.**
+**All 12 ADC-capable pins are allocated**: CV_1-CV_7 (7 channel pots), CV_8 (the CV jack),
+ADC_9 (A2), ADC_10 (A3), ADC_12 (D8, 8th channel pot), and ADC_11 (D9) spent on SPI MOSI.
+**11 are converting.**
 
 A second CV input would have to come out of a channel pot. A **CD4051 mux costs 3 GPIO** for
 its select lines and only A8 is free, which is reserved.
@@ -190,7 +211,8 @@ two-thirds rotation.
 
 | Pots | Pins | Wire top of pot to |
 |---|---|---|
-| 1-8 (channel, 2 per channel) | CV_1-CV_8 | **5V output (A6)**, +/-5V range |
+| Channel pots 1-7 | CV_1-CV_7 | **5V output (A6)**, +/-5V range |
+| Channel pot 8 | **D8** (ADC_12) | **3V3 output (A10)**, 0-3.3V range |
 | attack, release | ADC_9 (A2), ADC_10 (A3) | **3V3 output (A10)**, 0-3.3V range |
 
 ### Envelope and LPG control map
