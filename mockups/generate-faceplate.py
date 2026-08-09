@@ -5,9 +5,14 @@ Vuulgaris V1 faceplate generator.
 Emits a TRUE-SCALE SVG in millimetres (1 user unit = 1mm) of the Salamis Tablet
 faceplate, including the real comb-tooth electrode geometry per ADR 0003.
 
-    python3 generate-faceplate.py               > faceplate.svg
+    python3 generate-faceplate.py               > faceplate.svg   # fills the view
+    python3 generate-faceplate.py --fab         > faceplate.svg   # exact mm, for the fab
     python3 generate-faceplate.py --check                  # verification report, no SVG
     python3 generate-faceplate.py --set pad_length_mm=264  # one-off override
+
+Both outputs carry the SAME geometry in millimetre coordinates. The only
+difference is the wrapper: the default emits width="100%" with a margin so it
+displays large and centred, --fab emits explicit mm with flush edges.
 
 EVERYTHING tweakable lives in CFG below. To change the layout, change a number
 there. Do not go hunting through the drawing code.
@@ -72,6 +77,11 @@ CFG = {
     # ---- placement ----------------------------------------------------------
     "encoder_lower_right": True,  # False puts it back in the upper strip
     "straight_divider":    True,  # False restores the irregular crack line
+
+    # ---- how the SVG presents itself ----------------------------------------
+    # The panel geometry is IDENTICAL either way. This only changes the wrapper.
+    "fab_output":        False,   # True = explicit mm size, flush edges
+    "view_margin_mm":     10.0,   # breathing room around the panel on screen
 
     # ---- vertical margins in the lower region -------------------------------
     "numeral_row_mm":      9.0,
@@ -245,8 +255,20 @@ def render(c, g):
     A = L_append
     PW_, PH_ = g["PANEL_W"], g["PANEL_H"]
 
-    A(f'<svg xmlns="http://www.w3.org/2000/svg" width="{f(PW_)}mm" height="{f(PH_)}mm" '
-      f'viewBox="0 0 {f(PW_)} {f(PH_)}" role="img">')
+    # Display vs fabrication.
+    #   default : width="100%" and a margin around the panel, so it FILLS the
+    #             view and sits centred with breathing room, like the reference
+    #             mockup. Coordinates are still millimetres, so it stays exact.
+    #   --fab   : explicit mm width/height and zero margin, panel flush to the
+    #             SVG edge, for the board house.
+    M = 0.0 if c["fab_output"] else c["view_margin_mm"]
+    if c["fab_output"]:
+        size = f'width="{f(PW_)}mm" height="{f(PH_)}mm"'
+    else:
+        size = 'width="100%"'
+    A(f'<svg xmlns="http://www.w3.org/2000/svg" {size} '
+      f'viewBox="{f(-M if M else 0.0)} {f(-M if M else 0.0)} '
+      f'{f(PW_ + 2*M)} {f(PH_ + 2*M)}" role="img">')
     A(f'<title>Vuulgaris V1 faceplate, {f(PW_)} x {f(PH_)}mm, true scale</title>')
     A(f'<desc>Salamis Tablet faceplate at true millimetre scale. Four capacitive scrub pads '
       f'{f(g["PL"])}mm long and {f(g["PW"])}mm wide at {f(g["PITCH"])}mm pitch '
@@ -466,6 +488,8 @@ if __name__ == "__main__":
             kv = a.split("=", 1)[1] if "=" in a else args[i + 1]
             k, v = kv.split("=")
             cfg[k] = type(CFG[k])(float(v)) if not isinstance(CFG[k], tuple) else CFG[k]
+    if "--fab" in args:
+        cfg["fab_output"] = True
     geo = derive(cfg)
     if "--check" in args:
         rep, ok = check(cfg, geo)
