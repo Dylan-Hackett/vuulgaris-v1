@@ -17,6 +17,7 @@ displays large and centred, --fab emits explicit mm with flush edges.
 EVERYTHING tweakable lives in CFG below. To change the layout, change a number
 there. Do not go hunting through the drawing code.
 """
+import math
 import sys
 
 # =============================================================================
@@ -40,7 +41,14 @@ CFG = {
     # the pad's four extreme corners, without shortening anything. Sharp
     # corners on exposed copper are where etch undercut starts, so this helps
     # the process as well as the look. Clamped per tooth at render time.
-    "tooth_fillet_mm":    0.35,   # 0 restores hard corners
+    "tooth_fillet_mm":     0.6,   # 0 restores hard corners; max useful = T_WIDTH/2
+
+    # Fillets remove copper from every tooth, and position is read from the
+    # AREA ratio between the top and bottom bars. A fixed area loss on both
+    # bars therefore bends the position curve: at 0.6mm the worst error is
+    # 2.33mm on a 216mm pad. Pre-compensating the bar HEIGHTS so the filleted
+    # AREAS stay linear removes it, and costs nothing but this arithmetic.
+    "compensate_fillet_area": True,
 
     # Taper the pad ENDS along an arc by shortening the teeth near them.
     # Different thing entirely, and off: it makes the last teeth shorter
@@ -228,7 +236,28 @@ def teeth(c, g, y_top):
         p = presences(t)
         tn = 0 if p[0] >= p[2] else 2
         bn = 1 if p[1] >= p[3] else 3
-        ht, hb = (p[0] + p[2]) * usable, (p[1] + p[3]) * usable
+        frac = p[0] + p[2]                       # wanted TOP area fraction
+        if c["compensate_fillet_area"] and c["tooth_fillet_mm"] > 0.0:
+            # Solve for the height split whose FILLETED AREAS hit `frac`.
+            # Closed form does not work: a short bar has its fillet clamped to
+            # h/2, so the copper removed is not the same on both bars, and
+            # assuming it is over-corrects exactly where the error is worst.
+            # Fixed-point iteration handles the clamping and converges fast.
+            W = g["T_WIDTH"]
+            k = lambda h: (lambda rr: 4.0 * (rr * rr - math.pi * rr * rr / 4.0))(
+                min(c["tooth_fillet_mm"], W / 2.0, max(h, 0.0) / 2.0))
+            ht = frac * usable
+            for _ in range(40):
+                kt, kb = k(ht), k(usable - ht)
+                nxt = (frac * (W * usable - kt - kb) + kt) / W
+                nxt = min(max(nxt, 0.0), usable)
+                if abs(nxt - ht) < 1e-12:
+                    ht = nxt
+                    break
+                ht = nxt
+            hb = usable - ht
+        else:
+            ht, hb = frac * usable, (1.0 - frac) * usable
         if ht < c["min_copper_mm"]:
             ht, hb = 0.0, g["PW"]
         elif hb < c["min_copper_mm"]:
@@ -550,6 +579,34 @@ def check(c, g):
         f"r={tf}mm, {clamped} of {len(rects)} teeth clamped to fit",
         worst_rr <= tf + 1e-9)
     row("pad ends not tapered", f"pad_corner_r_mm = {r}", True)
+
+    # THE ONE THAT MATTERS: position is read from the copper AREA ratio between
+    # the top and bottom bars, so fillets bend the position curve unless the
+    # heights are pre-compensated. Measure it on the emitted geometry.
+    # Compare the emitted AREA ratio against the fraction the presence function
+    # ASKED FOR. Comparing area against emitted height would be circular, since
+    # compensation works precisely by making the heights non-linear.
+    cols = {}
+    for net, x, y, w, h in rects:
+        rr = min(tf, w / 2.0, h / 2.0)
+        area = w * h - 4.0 * (rr * rr - math.pi * rr * rr / 4.0)
+        # Classify by NET, not by y. A tooth whose complement fell below the
+        # fab floor takes the FULL pad height and therefore starts at y_top
+        # whichever bar it is, so position is not a reliable classifier.
+        # RX0/RX2 are the top bars, RX1/RX3 the bottom (ADR 0003).
+        d = cols.setdefault(round(x, 6), [0.0, 0.0])
+        d[0 if net in (0, 2) else 1] += area
+    err = 0.0
+    for i in range(g["N_TEETH"]):
+        p = presences((i + 0.5) / g["N_TEETH"] * 4.0)
+        want = p[0] + p[2]
+        d = cols.get(round(g["PAD_X0"] + i * g["T_PITCH"], 6))
+        if not d or d[0] + d[1] <= 0:
+            continue
+        err = max(err, abs(d[0] / (d[0] + d[1]) - want))
+    row("fillet does not bend the position curve",
+        f"worst {err*100:.3f}% of scale = {err*g['PL']:.2f}mm on a {g['PL']:.0f}mm pad",
+        err * g["PL"] < 0.5)
 
     # upper region
     row("upper assembly centred", f"content {g['UP_CONTENT']:.2f}, margins {g['UP_MARG']:.2f}mm",
