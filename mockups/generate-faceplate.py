@@ -36,11 +36,16 @@ CFG = {
     "tooth_gap_mm":       0.21,
     "top_bottom_gap_mm":  0.20,
     "min_copper_mm":      0.15,   # fab floor; slivers are dropped, not drawn
-    # Rounded pad ends. Real geometry, not a clip path: each tooth near an end
-    # is shortened to follow the arc, so the copper is correct in any tool.
-    # Sharp corners on exposed copper are also where etch undercut and lifting
-    # start, so this is not only cosmetic.
-    "pad_corner_r_mm":     2.5,   # 0 restores hard rectangles
+    # Fillet on every tooth's OWN four corners. Softens the outline, including
+    # the pad's four extreme corners, without shortening anything. Sharp
+    # corners on exposed copper are where etch undercut starts, so this helps
+    # the process as well as the look. Clamped per tooth at render time.
+    "tooth_fillet_mm":    0.35,   # 0 restores hard corners
+
+    # Taper the pad ENDS along an arc by shortening the teeth near them.
+    # Different thing entirely, and off: it makes the last teeth shorter
+    # rather than just softening their corners.
+    "pad_corner_r_mm":     0.0,
 
     # ---- pad markings -------------------------------------------------------
     "n_ticks":              13,   # 13 marks = 12 intervals = a TRUE centre mark
@@ -397,7 +402,13 @@ def render(c, g):
     bars = {0: [], 1: [], 2: [], 3: []}
     for y0 in g["PAD_TOPS"]:
         for net, x, y, w, h in teeth(c, g, y0):
-            bars[net].append(f'<rect x="{f(x)}" y="{f(y)}" width="{f(w)}" height="{f(h)}"/>')
+            # Fillet each tooth's own corners. Clamped per tooth, because the
+            # shortest bars are only 0.236mm tall and rx must not exceed half
+            # the smaller dimension or the rect degenerates into a lozenge.
+            rr = min(c["tooth_fillet_mm"], w / 2.0, h / 2.0)
+            rx = f' rx="{f(rr)}"' if rr > 0.0 else ""
+            bars[net].append(f'<rect x="{f(x)}" y="{f(y)}" '
+                             f'width="{f(w)}" height="{f(h)}"{rx}/>')
     for net in (0, 1, 2, 3):
         A(f'<g id="{NET_NAME[net]}" fill="{NET_COLOR[net]}" stroke="none">')
         L.extend(bars[net])
@@ -527,8 +538,18 @@ def check(c, g):
     row("no copper outside the rounded outline", f"worst overhang {worst:.4f}mm",
         worst <= 1e-9)
 
-    row("pad ends are rounded", f"r = {r}mm" if r > 0 else "r = 0, square ends",
-        r >= 0.0)
+    # tooth fillets: must never exceed half the smaller dimension
+    tf = c["tooth_fillet_mm"]
+    worst_rr, clamped = 0.0, 0
+    for _, x, y, w, h in rects:
+        rr = min(tf, w / 2.0, h / 2.0)
+        if rr < tf - 1e-9:
+            clamped += 1
+        worst_rr = max(worst_rr, rr)
+    row("tooth fillet within half the smaller side",
+        f"r={tf}mm, {clamped} of {len(rects)} teeth clamped to fit",
+        worst_rr <= tf + 1e-9)
+    row("pad ends not tapered", f"pad_corner_r_mm = {r}", True)
 
     # upper region
     row("upper assembly centred", f"content {g['UP_CONTENT']:.2f}, margins {g['UP_MARG']:.2f}mm",
