@@ -59,6 +59,14 @@ CFG = {
     "oled_w_mm":          70.0,
     "oled_h_mm":          42.0,
     "encoder_r_mm":        9.2,
+
+    # Shift button, directly below the encoder in the right margin. Wired to
+    # A9 (PB15) on the Daisy, not to the MSP430. Tactile switch on the MAIN
+    # PCB with a tall plunger through the faceplate, same standoff as the
+    # encoder. Deliberately smaller than the encoder so the hierarchy reads.
+    "shift_button":       True,
+    "shift_r_mm":          4.0,   # 8mm cap
+    "shift_gap_mm":        5.0,   # clear space below the encoder
     "group_gap_mm":        6.0,   # between upper-region groups
 
     # ---- Salamis inscription -----------------------------------------------
@@ -160,6 +168,11 @@ def derive(c):
     else:
         g["ENC_CX"] = g["ui_x0"] + c["encoder_r_mm"] + 2.0
         g["ENC_CY"] = g["R2"]
+
+    # shift button: same axis as the encoder, directly below it
+    g["SHIFT_CX"] = g["ENC_CX"]
+    g["SHIFT_CY"] = (g["ENC_CY"] + c["encoder_r_mm"]
+                     + c["shift_gap_mm"] + c["shift_r_mm"])
     return g
 
 
@@ -346,6 +359,10 @@ def render(c, g):
     # encoder
     A(f'<g id="encoder" fill="none" stroke="{INK}" stroke-width="0.3">'
       f'<circle cx="{f(g["ENC_CX"])}" cy="{f(g["ENC_CY"])}" r="{f(c["encoder_r_mm"])}"/></g>')
+    if c["shift_button"]:
+        A(f'<g id="shift-button" fill="none" stroke="{INK}" stroke-width="0.3">'
+          f'<circle cx="{f(g["SHIFT_CX"])}" cy="{f(g["SHIFT_CY"])}" '
+          f'r="{f(c["shift_r_mm"])}"/></g>')
 
     # pad divider + semicircle
     A(f'<g id="pad-marks" stroke="{INK}" stroke-width="0.3" fill="none">'
@@ -451,6 +468,30 @@ def check(c, g):
         ox0, ox1 = g["oled_x0"], g["oled_x0"] + c["oled_w_mm"]
         row("encoder within OLED span", f"{ox0:.1f} <= {g['ENC_CX']:.1f} <= {ox1:.1f}",
             ox0 <= g["ENC_CX"] <= ox1)
+    if c["shift_button"]:
+        sr = c["shift_r_mm"]
+        row("shift on the encoder axis", f"x {g['SHIFT_CX']:.2f}",
+            abs(g["SHIFT_CX"] - g["ENC_CX"]) < 1e-9)
+        row("shift clears the encoder",
+            f"{(g['SHIFT_CY']-sr)-(g['ENC_CY']+er):.2f}mm gap",
+            (g["SHIFT_CY"] - sr) - (g["ENC_CY"] + er) >= 1.0)
+        row("shift clears the pads", f"{g['SHIFT_CX']-sr-g['PAD_X1']:.2f}mm",
+            g["SHIFT_CX"] - sr > g["PAD_X1"])
+        # Right-side pad numerals: x from PAD_X1+2, baseline pad_top + PW*0.72.
+        # Proximity in Y alone is NOT a collision, since the numerals sit well
+        # left of the encoder axis. Test the actual 2D overlap.
+        num_x0 = g["PAD_X1"] + 2.0
+        num_x1 = num_x0 + 4 * 0.45 * 3.2        # widest is 4 glyphs at font-size 3.2
+        gapx = (g["SHIFT_CX"] - sr) - num_x1
+        rows_near = [t + g["PW"] * 0.72 for t in g["PAD_TOPS"]
+                     if abs(t + g["PW"] * 0.72 - g["SHIFT_CY"]) < sr + 3.4]
+        row("shift clears right-side numerals",
+            f"{gapx:.2f}mm horizontal" + (f", {len(rows_near)} row(s) alongside"
+                                          if rows_near else ""),
+            gapx > 2.0)
+        row("shift inside panel",
+            f"bottom {g['SHIFT_CY']+sr:.2f} of {g['PANEL_H']:.2f}",
+            g["SHIFT_CY"] + sr < g["PANEL_H"] - c["bottom_margin_mm"])
     row("switch slots vertical", f"{c['switch_w_mm']} x {c['switch_h_mm']}mm",
         c["switch_h_mm"] > c["switch_w_mm"])
     row("switch count", f"{c['n_switches']} (LPG mode + source, both DPDT)",
