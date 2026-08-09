@@ -36,6 +36,11 @@ CFG = {
     "tooth_gap_mm":       0.21,
     "top_bottom_gap_mm":  0.20,
     "min_copper_mm":      0.15,   # fab floor; slivers are dropped, not drawn
+    # Rounded pad ends. Real geometry, not a clip path: each tooth near an end
+    # is shortened to follow the arc, so the copper is correct in any tool.
+    # Sharp corners on exposed copper are also where etch undercut and lifting
+    # start, so this is not only cosmetic.
+    "pad_corner_r_mm":     2.5,   # 0 restores hard rectangles
 
     # ---- pad markings -------------------------------------------------------
     "n_ticks":              13,   # 13 marks = 12 intervals = a TRUE centre mark
@@ -92,7 +97,11 @@ CFG = {
     "view_margin_mm":     10.0,   # breathing room around the panel on screen
 
     # ---- vertical margins in the lower region -------------------------------
-    "numeral_row_mm":      9.0,
+    # True centres the pad block between the divider rule and the bottom edge.
+    # The numeral row then sits in the space below rather than being reserved
+    # out of the centring, which is what was pushing the pads high.
+    "center_pads_in_region": True,
+    "numeral_row_mm":      5.5,   # pad bottom to numeral baseline
     "bottom_margin_mm":    8.0,
     "below_divider_mm":    5.5,
 }
@@ -127,7 +136,14 @@ def derive(c):
     avail = (g["PANEL_H"] - (g["DIV_Y"] + c["below_divider_mm"])
              - c["numeral_row_mm"] - c["bottom_margin_mm"])
     g["BLOCK_H"], g["AVAIL"] = block, avail
-    g["PAD_Y0"] = g["DIV_Y"] + c["below_divider_mm"] + max(0.0, (avail - block) / 2.0)
+    if c["center_pads_in_region"]:
+        # Centre the pad BLOCK in the whole region between the divider rule and
+        # the bottom edge, and let the numeral row live in the space beneath.
+        # The old behaviour subtracted the numeral row before centring, which
+        # left the pads visibly high: 5.6mm above, 17.1mm below.
+        g["PAD_Y0"] = g["DIV_Y"] + (g["PANEL_H"] - g["DIV_Y"] - block) / 2.0
+    else:
+        g["PAD_Y0"] = g["DIV_Y"] + c["below_divider_mm"] + max(0.0, (avail - block) / 2.0)
     g["PAD_TOPS"] = [g["PAD_Y0"] + i * g["PITCH"] for i in range(4)]
 
     # teeth
@@ -183,8 +199,25 @@ def presences(t):
             max(0.0, 1 - abs(t - 3))]
 
 
+def corner_inset(x, x0, x1, r):
+    """Vertical inset of the pad outline at horizontal position x, for a pad
+    with rounded ends of radius r. Zero outside the corner zones.
+
+    Computed as real geometry rather than an SVG clip path, because this file
+    becomes copper and a clip path may not survive the trip into a PCB tool."""
+    if r <= 0.0:
+        return 0.0
+    d = min(x - x0, x1 - x)          # distance to the nearer end
+    if d >= r:
+        return 0.0
+    d = max(d, 0.0)
+    return r - (r * r - (r - d) ** 2) ** 0.5
+
+
 def teeth(c, g, y_top):
     out, usable = [], g["PW"] - c["top_bottom_gap_mm"]
+    x0, x1 = g["PAD_X0"], g["PAD_X1"]
+    r = c["pad_corner_r_mm"]
     for i in range(g["N_TEETH"]):
         t = (i + 0.5) / g["N_TEETH"] * 4.0
         p = presences(t)
@@ -196,8 +229,22 @@ def teeth(c, g, y_top):
         elif hb < c["min_copper_mm"]:
             hb, ht = 0.0, g["PW"]
         x = g["PAD_X0"] + i * g["T_PITCH"]
-        if ht > 0: out.append((tn, x, y_top, g["T_WIDTH"], ht))
-        if hb > 0: out.append((bn, x, y_top + g["PW"] - hb, g["T_WIDTH"], hb))
+        w = g["T_WIDTH"]
+        # Worst-case inset across the tooth's own width, so no corner of the
+        # rect pokes outside the rounded outline.
+        ins = max(corner_inset(x, x0, x1, r), corner_inset(x + w, x0, x1, r))
+        # Clamp each rect to the rounded envelope at BOTH edges. Doing it as a
+        # general clamp rather than per-case arithmetic is what makes the
+        # full-height teeth (where one bar fell below the fab floor) come out
+        # right; an earlier version inset only one edge and they poked out.
+        lim_top, lim_bot = y_top + ins, y_top + g["PW"] - ins
+        for net, ry0, ry1 in ((tn, y_top, y_top + ht),
+                              (bn, y_top + g["PW"] - hb, y_top + g["PW"])):
+            if ry1 - ry0 <= 0:
+                continue
+            ry0, ry1 = max(ry0, lim_top), min(ry1, lim_bot)
+            if ry1 - ry0 >= c["min_copper_mm"]:
+                out.append((net, x, ry0, w, ry1 - ry0))
     return out
 
 
@@ -441,20 +488,47 @@ def check(c, g):
     row("crosses on clean fractions", f"{fr}", fr == [0.25, 0.5, 0.75])
     row("pad block fits lower region", f"{g['BLOCK_H']:.1f} in {g['AVAIL']:.1f}mm",
         g["BLOCK_H"] <= g["AVAIL"] + 0.01)
+    above = g["PAD_Y0"] - g["DIV_Y"]
+    below = g["PANEL_H"] - (g["PAD_TOPS"][3] + g["PW"])
+    row("pad block centred below the divider", f"{above:.2f} above / {below:.2f} below",
+        abs(above - below) < 0.05)
+    nb = g["PAD_TOPS"][3] + g["PW"] + c["numeral_row_mm"]
+    row("bottom numerals inside the panel", f"baseline {nb:.2f} of {g['PANEL_H']:.2f}",
+        nb < g["PANEL_H"] - 2.0)
 
-    # copper
+    # copper: test the REAL emitted geometry, not the idealised presence
+    # function. An earlier version recomputed from presences() and so never
+    # looked at the rounded ends at all.
     usable = g["PW"] - c["top_bottom_gap_mm"]
-    hs = []
-    for i in range(g["N_TEETH"]):
-        t = (i + 0.5) / g["N_TEETH"] * 4.0
-        p = presences(t)
-        ht, hb = (p[0]+p[2])*usable, (p[1]+p[3])*usable
-        if ht >= c["min_copper_mm"] and hb >= c["min_copper_mm"]:
-            hs += [ht, hb]
-            if abs(ht + hb - usable) > 1e-6: ok = False
-    row("min copper bar >= fab floor", f"{min(hs):.4f} vs {c['min_copper_mm']}mm",
-        min(hs) >= c["min_copper_mm"])
-    row("every tooth pair sums to pad width", f"{usable:.2f}mm", True)
+    r = c["pad_corner_r_mm"]
+    x0, x1 = g["PAD_X0"], g["PAD_X1"]
+    y_top = g["PAD_TOPS"][0]
+    rects = teeth(c, g, y_top)
+
+    row("min copper bar >= fab floor",
+        f"{min(h for _, _, _, _, h in rects):.4f} vs {c['min_copper_mm']}mm",
+        min(h for _, _, _, _, h in rects) >= c["min_copper_mm"])
+
+    # away from the corner zones a top/bottom pair must still fill the pad
+    mids = {}
+    for _, x, y, w, h in rects:
+        if x - x0 > r and x1 - (x + w) > r:
+            mids[round(x, 6)] = mids.get(round(x, 6), 0.0) + h
+    bad = [x for x, s in mids.items() if abs(s - usable) > 1e-6]
+    row("tooth pairs fill the pad, away from the ends",
+        f"{len(mids)} columns, {usable:.2f}mm", not bad)
+
+    # nothing may poke outside the rounded outline
+    worst = 0.0
+    for _, x, y, w, h in rects:
+        for px in (x, x + w):
+            ins = corner_inset(px, x0, x1, r)
+            worst = max(worst, (y_top + ins) - y, (y + h) - (y_top + g["PW"] - ins))
+    row("no copper outside the rounded outline", f"worst overhang {worst:.4f}mm",
+        worst <= 1e-9)
+
+    row("pad ends are rounded", f"r = {r}mm" if r > 0 else "r = 0, square ends",
+        r >= 0.0)
 
     # upper region
     row("upper assembly centred", f"content {g['UP_CONTENT']:.2f}, margins {g['UP_MARG']:.2f}mm",
