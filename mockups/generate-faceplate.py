@@ -85,6 +85,9 @@ CFG = {
     "shift_button":       True,
     "shift_r_mm":          4.0,   # 8mm cap
     "shift_gap_mm":        5.0,   # clear space below the encoder
+    # Centre the encoder + button as ONE group on the pad block, rather than
+    # centring the encoder and letting the button hang below it.
+    "center_encoder_pair": True,
     "group_gap_mm":        6.0,   # between upper-region groups
 
     # ---- Salamis inscription -----------------------------------------------
@@ -193,7 +196,15 @@ def derive(c):
     # encoder
     if c["encoder_lower_right"]:
         g["ENC_CX"] = (g["PAD_X1"] + g["PANEL_W"]) / 2.0
-        g["ENC_CY"] = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + PW) / 2.0
+        mid = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + PW) / 2.0
+        if c["shift_button"] and c["center_encoder_pair"]:
+            # Centre the encoder AND button as one group on the pad block.
+            # Centring the encoder alone and hanging the button off the bottom
+            # left the pair sitting 6.5mm low.
+            pair_h = 2 * c["encoder_r_mm"] + c["shift_gap_mm"] + 2 * c["shift_r_mm"]
+            g["ENC_CY"] = mid - pair_h / 2.0 + c["encoder_r_mm"]
+        else:
+            g["ENC_CY"] = mid
     else:
         g["ENC_CX"] = g["ui_x0"] + c["encoder_r_mm"] + 2.0
         g["ENC_CY"] = g["R2"]
@@ -641,6 +652,11 @@ def check(c, g):
             f"{gapx:.2f}mm horizontal" + (f", {len(rows_near)} row(s) alongside"
                                           if rows_near else ""),
             gapx > 2.0)
+        pad_mid = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + g["PW"]) / 2.0
+        pair_mid = ((g["ENC_CY"] - er) + (g["SHIFT_CY"] + sr)) / 2.0
+        row("encoder+shift centred on the pad block",
+            f"pair mid {pair_mid:.2f} vs pads {pad_mid:.2f}",
+            abs(pair_mid - pad_mid) < 0.05)
         row("shift inside panel",
             f"bottom {g['SHIFT_CY']+sr:.2f} of {g['PANEL_H']:.2f}",
             g["SHIFT_CY"] + sr < g["PANEL_H"] - c["bottom_margin_mm"])
