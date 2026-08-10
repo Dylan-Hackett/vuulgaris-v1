@@ -115,6 +115,15 @@ CFG = {
 
     # ---- how the SVG presents itself ----------------------------------------
     # The panel geometry is IDENTICAL either way. This only changes the wrapper.
+    # ---- enclosure -----------------------------------------------------------
+    # The panel screws down ON TOP of the cheeks, so the cheeks sit UNDER the
+    # panel's outer edge. Anything on the main PCB must clear them, and the main
+    # PCB is therefore narrower than the panel by 2x this plus assembly slop.
+    # At 15mm the upper assembly clears by only 1.14mm; at 20mm it collides.
+    "enclosure_wall_mm":  10.0,
+    "wall_clearance_mm":   4.0,   # minimum air between wall and nearest part
+    "panel_screw_inset_mm": 5.0,  # from panel edge, into the cheek top
+
     "fab_output":        False,   # True = explicit mm size, flush edges
     "view_margin_mm":     10.0,   # breathing room around the panel on screen
 
@@ -696,6 +705,19 @@ def check(c, g):
     row("knob rows inside the upper strip",
         f"top {g['R2']-c['knob_r_mm']:.2f}, bottom {g['R4']+c['knob_r_mm']:.2f} of {g['DIV_Y']:.2f}",
         g["R2"] - c["knob_r_mm"] > 0 and g["R4"] + c["knob_r_mm"] < g["DIV_Y"])
+    # ---- enclosure fit: the main PCB lives INSIDE the cheeks ----------------
+    wall, need = c["enclosure_wall_mm"], c["wall_clearance_mm"]
+    lo, hi = g["UP_MARG"], g["oled_x0"] + c["oled_w_mm"]
+    row("upper assembly clears the enclosure walls",
+        f"{lo-wall:.2f} / {PW_-hi-wall:.2f}mm at {wall:.0f}mm cheeks",
+        min(lo - wall, PW_ - hi - wall) >= need)
+    row("pads clear the enclosure walls",
+        f"{g['PAD_X0']-wall:.2f}mm", g["PAD_X0"] - wall >= need)
+    row("max main PCB width",
+        f"{PW_-2*wall-2:.1f}mm inside {wall:.0f}mm cheeks", PW_ - 2*wall - 2 > 0)
+    scr = c["panel_screw_inset_mm"]
+    row("panel screws land on the cheek, not past it",
+        f"screw at {scr:.1f}mm, cheek spans 0..{wall:.1f}mm", 1.5 <= scr <= wall - 1.5)
     row("OLED inside panel", f"right edge {g['oled_x0']+c['oled_w_mm']:.2f} of {PW_:.2f}",
         g["oled_x0"] + c["oled_w_mm"] <= PW_)
     if c["salamis_marks"]:
