@@ -103,7 +103,10 @@ CFG = {
     #   T  tau     P rho    X chi     F digamma-like    H eta
     #   A  alpha   N pi     G gamma   C lunate sigma
     # LEFT MARGIN ONLY.
-    "salamis_marks":      True,
+    # OFF 2026-08-09. The monoline stroke glyphs running down the left margin
+    # did not read well at 4.4mm. The letterforms are kept here rather than
+    # deleted, so turning this back on restores them unchanged.
+    "salamis_marks":     False,
     "inscription":        "TPXFHFANGFCTX",
     "inscription_h_mm":    4.4,
     "inscription_below_divider": True,   # never in the control strip
