@@ -112,6 +112,9 @@ CFG = {
     # ---- placement ----------------------------------------------------------
     "encoder_lower_right": True,  # False puts it back in the upper strip
     "straight_divider":    True,  # False restores the irregular crack line
+    # Push the divider rule DOWN from where the reference composition puts it.
+    # Also buys the OLED headroom, since the screen centres in the strip above.
+    "divider_nudge_mm":    4.0,
 
     # ---- how the SVG presents itself ----------------------------------------
     # The panel geometry is IDENTICAL either way. This only changes the wrapper.
@@ -174,7 +177,10 @@ def derive(c):
     g["PAD_MID"] = g["PAD_X0"] + PL / 2.0
 
     # pads: distributed through the lower region
-    g["DIV_Y"] = uy(150)
+    # divider_nudge_mm pushes the rule DOWN, independently of the reference
+    # composition. Every millimetre comes out of the lower region, so it is
+    # bounded by the pad block plus the numeral row still fitting.
+    g["DIV_Y"] = uy(150) + c["divider_nudge_mm"]
     block = 4 * PW + 3 * GAP
     avail = (g["PANEL_H"] - (g["DIV_Y"] + c["below_divider_mm"])
              - c["numeral_row_mm"] - c["bottom_margin_mm"])
@@ -202,7 +208,7 @@ def derive(c):
     g["RULE_Y"] = [uy(r) for r in (54, 75, 96, 118, 139)]
     # OLED centred in the upper strip. Tying its top to rule 1 was what made it
     # collide with the top wall: rule 1 scales with the panel and sits near the edge.
-    g["OLED_Y"] = INSET + ((uy(150) - INSET) - c["oled_h_mm"]) / 2.0
+    g["OLED_Y"] = INSET + ((g["DIV_Y"] - INSET) - c["oled_h_mm"]) / 2.0
     g["R2"], g["R3"], g["R4"] = g["RULE_Y"][1], g["RULE_Y"][2], g["RULE_Y"][3]
     ch_w = 3 * KP + 2 * KR
     env_w = 1 * KP + 2 * KR + 2 * c["offset_knob_r_mm"] + 4.0
