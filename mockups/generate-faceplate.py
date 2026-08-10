@@ -29,8 +29,14 @@ CFG = {
     # measured off the reference sketch was an artefact of that sketch drawing
     # pads as single strokes with no thickness. Discarded 2026-08-06.
     "pad_length_mm":     216.0,
-    "pad_width_mm":       12.0,   # ADR 0003 says 10-12mm is the useful band
-    "pad_gap_mm":          9.0,   # Q17. Max that fits the lower region.
+    "pad_width_mm":       10.0,   # ADR 0003 says 10-12mm is the useful band
+    # DO NOT REDUCE. design-state wants >=10mm closest approach for crosstalk,
+    # and 9mm was already a compromise. Crosstalk between adjacent pads is the
+    # untested failure mode in Q1, so this is the wrong place to buy millimetres.
+    "pad_gap_mm":          9.0,
+    # Depth override. None = the original Salamis 1.933:1 ratio (154.29mm).
+    # 129 was chosen 2026-08-09 to shrink the footprint WITHOUT touching the gap.
+    "panel_h_mm":        129.0,
 
     # ---- copper: comb teeth -------------------------------------------------
     "teeth_per_zone":       25,   # x4 zones = 100 teeth/pad
@@ -117,7 +123,7 @@ CFG = {
     # The numeral row then sits in the space below rather than being reserved
     # out of the centring, which is what was pushing the pads high.
     "center_pads_in_region": True,
-    "numeral_row_mm":      5.5,   # pad bottom to numeral baseline
+    "numeral_row_mm":      4.5,   # pad bottom to numeral baseline
     "bottom_margin_mm":    8.0,
     "below_divider_mm":    5.5,
 }
@@ -136,9 +142,13 @@ def derive(c):
     g["PL"], g["PW"], g["GAP"] = PL, PW, GAP
     g["PITCH"] = PW + GAP
     g["PANEL_W"] = PL * (580.0 / 420.0)          # pad is 420/580 of panel width
-    g["PANEL_H"] = g["PANEL_W"] * (300.0 / 580.0)  # panel is 1.933:1
-    g["S"] = g["PANEL_W"] / 580.0                # reference-unit -> mm
-    uy = lambda u: (u - 40.0) * g["S"]
+    # Height was locked to the Salamis 1.933:1 ratio. panel_h_mm now overrides it
+    # so depth can be reduced independently of the pad length. X and Y therefore
+    # need SEPARATE scales; using one for both is what tied them together.
+    g["PANEL_H"] = c["panel_h_mm"] or g["PANEL_W"] * (300.0 / 580.0)
+    g["S"] = g["PANEL_W"] / 580.0                # reference-unit -> mm, HORIZONTAL
+    g["SY"] = g["PANEL_H"] / 300.0               # reference-unit -> mm, VERTICAL
+    uy = lambda u: (u - 40.0) * g["SY"]
     g["uy"] = uy
 
     # pads: centred on the panel width
@@ -537,8 +547,14 @@ def check(c, g):
     row("tick spacing even", f"{sorted(sp)} mm", len(sp) == 1)
     fr = [round((g["TICK_X"][m-1] - g["PAD_X0"]) / PL, 4) for m in c["cross_at"]]
     row("crosses on clean fractions", f"{fr}", fr == [0.25, 0.5, 0.75])
-    row("pad block fits lower region", f"{g['BLOCK_H']:.1f} in {g['AVAIL']:.1f}mm",
-        g["BLOCK_H"] <= g["AVAIL"] + 0.01)
+    if c["center_pads_in_region"]:
+        region = g["PANEL_H"] - g["DIV_Y"]
+        need = g["BLOCK_H"] + c["numeral_row_mm"]
+        row("pad block + numerals fit below the divider",
+            f"{need:.1f} in {region:.1f}mm", need <= region + 0.01)
+    else:
+        row("pad block fits lower region", f"{g['BLOCK_H']:.1f} in {g['AVAIL']:.1f}mm",
+            g["BLOCK_H"] <= g["AVAIL"] + 0.01)
     above = g["PAD_Y0"] - g["DIV_Y"]
     below = g["PANEL_H"] - (g["PAD_TOPS"][3] + g["PW"])
     row("pad block centred below the divider", f"{above:.2f} above / {below:.2f} below",
@@ -664,6 +680,22 @@ def check(c, g):
         c["switch_h_mm"] > c["switch_w_mm"])
     row("switch count", f"{c['n_switches']} (LPG mode + source, both DPDT)",
         c["n_switches"] == 2)
+    # At reduced panel depth the OLED is the VERTICAL floor of the upper strip:
+    # 42mm of screen has to fit above the divider rule. This is the check that
+    # decides how far the depth can be cut.
+    _ot = g["RULE_Y"][0] - 2.0
+    row("OLED clears the divider rule",
+        f"bottom {_ot+c['oled_h_mm']:.2f} vs divider {g['DIV_Y']:.2f} "
+        f"({g['DIV_Y']-(_ot+c['oled_h_mm']):+.2f}mm)",
+        _ot + c["oled_h_mm"] < g["DIV_Y"])
+    # Channel knobs stand on rules 2 and 4, NOT 2 and 3. Rule 3 carries the
+    # offset knob, which sits in a different group horizontally.
+    row("knob rows do not overlap",
+        f"{g['R4']-g['R2']-2*c['knob_r_mm']:+.2f}mm between rows",
+        g["R4"] - g["R2"] > 2 * c["knob_r_mm"])
+    row("knob rows inside the upper strip",
+        f"top {g['R2']-c['knob_r_mm']:.2f}, bottom {g['R4']+c['knob_r_mm']:.2f} of {g['DIV_Y']:.2f}",
+        g["R2"] - c["knob_r_mm"] > 0 and g["R4"] + c["knob_r_mm"] < g["DIV_Y"])
     row("OLED inside panel", f"right edge {g['oled_x0']+c['oled_w_mm']:.2f} of {PW_:.2f}",
         g["oled_x0"] + c["oled_w_mm"] <= PW_)
     if c["salamis_marks"]:
