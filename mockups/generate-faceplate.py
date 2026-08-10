@@ -36,7 +36,7 @@ CFG = {
     "pad_gap_mm":          9.0,
     # Depth override. None = the original Salamis 1.933:1 ratio (154.29mm).
     # 129 was chosen 2026-08-09 to shrink the footprint WITHOUT touching the gap.
-    "panel_h_mm":        129.0,
+    "panel_h_mm":        139.0,
 
     # ---- copper: comb teeth -------------------------------------------------
     "teeth_per_zone":       25,   # x4 zones = 100 teeth/pad
@@ -120,9 +120,15 @@ CFG = {
     # panel's outer edge. Anything on the main PCB must clear them, and the main
     # PCB is therefore narrower than the panel by 2x this plus assembly slop.
     # At 15mm the upper assembly clears by only 1.14mm; at 20mm it collides.
-    "enclosure_wall_mm":  10.0,
-    "wall_clearance_mm":   4.0,   # minimum air between wall and nearest part
-    "panel_screw_inset_mm": 5.0,  # from panel edge, into the cheek top
+    "enclosure_wall_mm":   6.0,
+    "wall_clearance_mm":   2.0,   # minimum air between wall and nearest part
+    # The composition is INSET from the panel edge by wall+clearance, so the
+    # main PCB and everything on it lives inside the cavity. Without this the
+    # OLED sat 4mm from the panel edge and the top wall went straight through
+    # it. That bug predated the depth change; it was never caught because
+    # nothing checked against an enclosure.
+    "inset_composition": True,
+    "panel_screw_inset_mm": 3.0,  # from panel edge, into the wall top
 
     "fab_output":        False,   # True = explicit mm size, flush edges
     "view_margin_mm":     10.0,   # breathing room around the panel on screen
@@ -156,8 +162,10 @@ def derive(c):
     # need SEPARATE scales; using one for both is what tied them together.
     g["PANEL_H"] = c["panel_h_mm"] or g["PANEL_W"] * (300.0 / 580.0)
     g["S"] = g["PANEL_W"] / 580.0                # reference-unit -> mm, HORIZONTAL
-    g["SY"] = g["PANEL_H"] / 300.0               # reference-unit -> mm, VERTICAL
-    uy = lambda u: (u - 40.0) * g["SY"]
+    INSET = (c["enclosure_wall_mm"] + c["wall_clearance_mm"]) if c["inset_composition"] else 0.0
+    g["INSET"] = INSET
+    g["SY"] = (g["PANEL_H"] - 2.0 * INSET) / 300.0   # reference-unit -> mm, VERTICAL
+    uy = lambda u: INSET + (u - 40.0) * g["SY"]
     g["uy"] = uy
 
     # pads: centred on the panel width
@@ -192,6 +200,9 @@ def derive(c):
     # upper region: four groups, equal gaps, symmetric outer margins
     KR, KP, UG = c["knob_r_mm"], c["knob_pitch_mm"], c["group_gap_mm"]
     g["RULE_Y"] = [uy(r) for r in (54, 75, 96, 118, 139)]
+    # OLED centred in the upper strip. Tying its top to rule 1 was what made it
+    # collide with the top wall: rule 1 scales with the panel and sits near the edge.
+    g["OLED_Y"] = INSET + ((uy(150) - INSET) - c["oled_h_mm"]) / 2.0
     g["R2"], g["R3"], g["R4"] = g["RULE_Y"][1], g["RULE_Y"][2], g["RULE_Y"][3]
     ch_w = 3 * KP + 2 * KR
     env_w = 1 * KP + 2 * KR + 2 * c["offset_knob_r_mm"] + 4.0
@@ -214,7 +225,9 @@ def derive(c):
 
     # encoder
     if c["encoder_lower_right"]:
-        g["ENC_CX"] = (g["PAD_X1"] + g["PANEL_W"]) / 2.0
+        # centre in the CAVITY margin: the panel edge is not the limit,
+        # the inner wall face is. The encoder was overhanging it by 3mm.
+        g["ENC_CX"] = (g["PAD_X1"] + g["PANEL_W"] - c["enclosure_wall_mm"]) / 2.0
         mid = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + PW) / 2.0
         if c["shift_button"] and c["center_encoder_pair"]:
             # Centre the encoder AND button as one group on the pad block.
@@ -444,7 +457,7 @@ def render(c, g):
           f'width="{f(c["switch_w_mm"])}" height="{f(c["switch_h_mm"])}" rx="{f(c["switch_w_mm"]/2)}"/>')
     A('</g>')
     A(f'<g id="oled" fill="none" stroke="{INK}" stroke-width="0.3">'
-      f'<rect x="{f(g["oled_x0"])}" y="{f(g["RULE_Y"][0]-2)}" width="{f(c["oled_w_mm"])}" '
+      f'<rect x="{f(g["oled_x0"])}" y="{f(g["OLED_Y"])}" width="{f(c["oled_w_mm"])}" '
       f'height="{f(c["oled_h_mm"])}" rx="1"/></g>')
 
     # divider rule
@@ -650,9 +663,11 @@ def check(c, g):
     er = c["encoder_r_mm"]
     if c["encoder_lower_right"]:
         row("encoder clears pads", f"{g['ENC_CX']-er-g['PAD_X1']:.2f}mm", g["ENC_CX"]-er > g["PAD_X1"])
-        row("encoder centred in right margin",
-            f"{g['ENC_CX']-er-g['PAD_X1']:.2f} / {PW_-(g['ENC_CX']+er):.2f}mm",
-            abs((g["ENC_CX"]-er-g["PAD_X1"]) - (PW_-(g["ENC_CX"]+er))) < 0.01)
+        # measured against the INNER WALL FACE, not the panel edge
+        _rlim = PW_ - c["enclosure_wall_mm"]
+        row("encoder centred in the cavity margin",
+            f"{g['ENC_CX']-er-g['PAD_X1']:.2f} / {_rlim-(g['ENC_CX']+er):.2f}mm",
+            abs((g["ENC_CX"]-er-g["PAD_X1"]) - (_rlim-(g["ENC_CX"]+er))) < 0.01)
         ox0, ox1 = g["oled_x0"], g["oled_x0"] + c["oled_w_mm"]
         row("encoder within OLED span", f"{ox0:.1f} <= {g['ENC_CX']:.1f} <= {ox1:.1f}",
             ox0 <= g["ENC_CX"] <= ox1)
@@ -692,7 +707,7 @@ def check(c, g):
     # At reduced panel depth the OLED is the VERTICAL floor of the upper strip:
     # 42mm of screen has to fit above the divider rule. This is the check that
     # decides how far the depth can be cut.
-    _ot = g["RULE_Y"][0] - 2.0
+    _ot = g["OLED_Y"]
     row("OLED clears the divider rule",
         f"bottom {_ot+c['oled_h_mm']:.2f} vs divider {g['DIV_Y']:.2f} "
         f"({g['DIV_Y']-(_ot+c['oled_h_mm']):+.2f}mm)",
@@ -711,6 +726,32 @@ def check(c, g):
     row("upper assembly clears the enclosure walls",
         f"{lo-wall:.2f} / {PW_-hi-wall:.2f}mm at {wall:.0f}mm cheeks",
         min(lo - wall, PW_ - hi - wall) >= need)
+    # FOUR-SIDED cavity check. The earlier version only tested left and right,
+    # which is why a 6mm top-wall collision with the OLED went unnoticed for the
+    # whole life of the layout. Every object that lives INSIDE the box goes in.
+    box = []
+    for cx in g["CH_CX"]:
+        for cy in (g["R2"], g["R4"]):
+            box.append((cx-c["knob_r_mm"], cx+c["knob_r_mm"], cy-c["knob_r_mm"], cy+c["knob_r_mm"]))
+    for cx in g["EN_CX"]:
+        for cy in (g["R2"], g["R4"]):
+            box.append((cx-c["knob_r_mm"], cx+c["knob_r_mm"], cy-c["knob_r_mm"], cy+c["knob_r_mm"]))
+    orr = c["offset_knob_r_mm"]
+    box.append((g["OFFSET_CX"]-orr, g["OFFSET_CX"]+orr, g["R3"]-orr, g["R3"]+orr))
+    box.append((g["oled_x0"], g["oled_x0"]+c["oled_w_mm"], g["OLED_Y"], g["OLED_Y"]+c["oled_h_mm"]))
+    sy0 = g["R3"] - c["switch_h_mm"]/2.0
+    for i in range(c["n_switches"]):
+        sx = g["ui_x0"]+3+i*(c["switch_w_mm"]+4)
+        box.append((sx, sx+c["switch_w_mm"], sy0, sy0+c["switch_h_mm"]))
+    box.append((g["ENC_CX"]-er, g["ENC_CX"]+er, g["ENC_CY"]-er, g["ENC_CY"]+er))
+    if c["shift_button"]:
+        sr2 = c["shift_r_mm"]
+        box.append((g["SHIFT_CX"]-sr2, g["SHIFT_CX"]+sr2, g["SHIFT_CY"]-sr2, g["SHIFT_CY"]+sr2))
+    bx0, bx1 = min(b[0] for b in box), max(b[1] for b in box)
+    by0, by1 = min(b[2] for b in box), max(b[3] for b in box)
+    for nm, clr in (("LEFT", bx0-wall), ("RIGHT", (PW_-wall)-bx1),
+                    ("TOP", by0-wall), ("BOTTOM", (g["PANEL_H"]-wall)-by1)):
+        row(f"cavity clearance, {nm}", f"{clr:+.2f}mm", clr >= need)
     row("pads clear the enclosure walls",
         f"{g['PAD_X0']-wall:.2f}mm", g["PAD_X0"] - wall >= need)
     row("max main PCB width",
