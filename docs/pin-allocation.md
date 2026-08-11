@@ -5,36 +5,92 @@ and added five jacks. Safe to lay out against.
 
 ## The IO plan
 
-- **10 ADC pots.** 7 channel pots on CV_1-CV_7, the 8th on **D8**, plus **attack** (A2) and
-  **release** (A3).
-- **Three knobs are ANALOG and cost zero pins:** LPG offset (dual-gang), CV amount L, CV
-  amount R. They act directly on the Bergman LPG and the Daisy never sees them.
-- **Five jacks:** **CV in (C9 / CV_8)**, CV out (C1), gate in / clock (B10), gate out x2 (B5, B6).
-- **Shift button on A9.** Encoder on D3/D4 with push on B9.
-- **No panel USB.** DFU runs over the module's own Micro USB. See "The USB decision".
-- **No mux.** **1-bit SD.**
-- **One spare bidirectional GPIO: A8**, and it is **reserved**, see below.
+**Changed 2026-08-09: the ten Daisy-facing knobs are ENCODERS, not pots.**
 
-### The full header
+- **10 rotary encoders** on **2x MCP23017 I2C expanders**, both on the MAIN PCB
+  beside the encoders themselves. 20 lines into the expanders, **2 wires out**.
+- **3 knobs stay ANALOG POTS wired straight to the Bergman LPG board**: offset
+  (dual-gang), CV amount L, CV amount R. Zero pins, zero conversion, and the
+  Daisy never sees them. **Deliberate: no DAC.**
+- **The MSP430 link is now I2C**, sharing B7/B8 with the expanders.
+- **Five jacks:** CV in (C9 / CV_8), CV out (C1), gate in / clock (B10),
+  gate out x2 (B5, B6).
+- **Shift button on A9.** Main encoder on D3/D4 with push on B9.
+- **A8 reserved**, see below. **1-bit SD.** No panel USB.
+
+### One bus, four devices, two pins
+
+| Device | Address | Carries |
+|---|---|---|
+| MSP430FR2675 | 0x40 | touch position, 4 pads |
+| MCP23017 #1 | 0x20 | encoders 1-8 |
+| MCP23017 #2 | 0x21 | encoders 9-10, 12 pins spare |
+| *(reserved)* | 0x60 | *a DAC, if the analog controls ever go digital* |
+
+**Polled, not interrupt-driven.** At 500Hz a poll of all devices is roughly
+470us of traffic, **24% of a 400kHz bus**, and catches up to 125 detents per
+second against the 20-30 human hands actually produce. That is what keeps A8
+free: no shared interrupt line is needed.
+
+### Why encoders freed ten analog pins
+
+The ten pots were the entire ADC budget. Moving them to expanders returns:
+
+| Freed | Kind |
+|---|---|
+| **CV_1 to CV_7** | **conditioned, rated to the +/-12V rails** |
+| A2, A3 | bare 0-3.3V ADC |
+| D8 | bare 0-3.3V ADC |
+
+**CV_8 already carries the CV in jack, so this makes eight conditioned CV
+inputs available** on an instrument that had one. That is a larger change to
+what the product *is* than the encoders themselves.
+
+### What this costs
+
+| | |
+|---|---|
+| 10x ALPS EC11 (LCSC C202365) | +$12.12 |
+| less 10 pots no longer needed | -$7.00 |
+| 2x MCP23017 | +$3.60 |
+| **Net** | **+$8.72, about 5% of BOM** |
+
+**The panel stops being readable at a glance.** No knob position to see. On a
+Salamis counting board, whose visual logic is positions on lines, that is a
+real loss and it was accepted knowingly.
+
+**The three analog pots are the exception, and that reads as intentional.**
+Pots with end stops for the analog domain, endless encoders for the digital
+one. The offset knob is already drawn larger than the rest, so the distinction
+is visible before it is felt.
+
+**Consequence, accepted:** offset and CV amount L/R cannot be saved in a preset
+or shown on the OLED, because nothing digital is in their path. Load a patch
+and those three are wherever they were physically left.
+
+---
+
+## The full header
 
 | Pin | Use | | Pin | Use |
 |---|---|---|---|---|
 | A1 | -12V in | | B10 | **GATE IN / clock** |
-| A2 | envelope attack | | C1 | **CV OUT jack** |
-| A3 | envelope release | | C2-C8 | 7 channel pots |
-| A4 | GND | | **C9** | **CV IN jack** (CV_8, conditioned) |
+| **A2** | **free** (ADC) | | C1 | **CV OUT jack** |
+| **A3** | **free** (ADC) | | **C2-C8** | **free** (CV_1-CV_7, conditioned) |
+| A4 | GND | | **C9** | **CV IN jack** (CV_8) |
 | A5 | +12V in | | C10 | LPG envelope (one, splits analog) |
 | A6 | 5V out | | D1 | OLED CS |
 | A7 | GND | | D2 | OLED DC |
-| **A8** | **RESERVED** | | D3, D4 | encoder A, B |
+| **A8** | **RESERVED** | | D3, D4 | main encoder A, B |
 | A9 | shift button | | D5, D6, D7 | SD 1-bit: D0, CLK, CMD |
-| A10 | 3V3 out | | **D8** | **8th channel pot** (3V3 ref) |
+| A10 | 3V3 out | | **D8** | **free** (ADC) |
 | B1-B4 | audio out/in L/R | | D9 | OLED MOSI (native SPI2) |
 | B5, B6 | **GATE OUT 1, 2** | | D10 | OLED SCK |
-| B7, B8 | MSP430 link | | | |
-| B9 | encoder push | | | |
+| B7, B8 | **I2C bus** (4 devices) | | | |
+| B9 | main encoder push | | | |
 
-**Bidirectional GPIO 15 of 16. ADC 11 of 12 converting**, the twelfth (D9) on SPI.
+**Bidirectional GPIO 15 of 16. ADC 10 of 12 FREE**, the other two being the CV
+in jack and D9 on SPI MOSI.
 
 ---
 
@@ -58,21 +114,12 @@ Spending A8 on anything else closes that door. Nothing else currently needs it.
 | **Board area** beside the LPG section | 0 | ~30 x 40mm is enough for a stereo BBD |
 | **2-3 spare pins on the inter-board connector** | 0 | connector pins are free, Daisy pins are not |
 
-### The one thing worth FITTING now rather than reserving
+### Explicitly NOT fitting: a DAC
 
-**A quad DAC (MCP4728, I2C, ~$2.50), driven by the MSP430.** It pays for itself immediately
-by making the three analog knobs presettable, and leaves a channel for the delay later:
-
-| DAC channel | V1 use | Later |
-|---|---|---|
-| 1 | LPG offset | unchanged |
-| 2 | CV amount L | unchanged |
-| 3 | CV amount R | unchanged |
-| 4 | spare | **delay dry/wet** |
-
-That converts the standing complaint about the analog controls, that they cannot be saved in
-a preset or shown on the OLED, into a solved problem, and it costs **zero Daisy pins** because
-the MSP430 owns the I2C bus and relays over the existing link.
+An MCP4728 quad DAC on the I2C bus would make offset and CV amount L/R
+presettable and OLED-visible. **Decided against 2026-08-09.** Those three
+controls go straight to the Bergman board as analog pots, and that is the whole
+point of them. Address 0x60 is left unused on the bus if that ever changes.
 
 ---
 
@@ -113,15 +160,18 @@ flag moves DFU to the external port, which no longer exists on this board.
 
 | Function | Pins | Note |
 |---|---|---|
-| Envelope pots | **A2** attack, **A3** release | Wire to **3V3 (A10)**, not 5V |
-| 8th channel pot | **D8** (ADC_12) | Wire to **3V3 (A10)**. See "why the CV in moved". |
+| **I2C bus** | **B7** SCL, **B8** SDA | MSP430 + 2x MCP23017. Pull-ups once, on the main PCB. |
 | SD 1-bit | **D5** (D0), **D6** (CLK), **D7** (CMD) | Fixed SDMMC1 pins |
 | OLED SPI2 | **D1** (CS), **D9** (MOSI), **D10** (SCK) | D9 is the **native** SPI2_MOSI |
 | OLED DC | **D2** | Any GPIO |
-| MSP430 link | **B7**, **B8** | UART primary, I2C routed as fallback |
-| Encoder A, B | **D3**, **D4** | |
+| Main encoder A, B | **D3**, **D4** | The one beside the pads. The other ten are on expanders. |
 | Shift button | **A9** | Internal pull-up, button to ground, `daisy::Switch` |
 | **A8** | **RESERVED** | BBD clock in a later rev. Do not spend. |
+| **A2, A3, D8** | **FREE** | ADC-capable, bare 0-3.3V |
+
+**The main encoder stayed on the Daisy deliberately.** It drives the UI and wants
+the lowest latency; the ten parameter encoders are polled over I2C at 500Hz,
+which is fine for knobs but not what you want under a menu.
 
 ### Two pins came back, and it is worth recording why
 
@@ -143,7 +193,7 @@ turn freed **A9** for the shift button.
 
 | Function | Pin | Note |
 |---|---|---|
-| Channel pots 1-7 | **CV_1-CV_7** (C2-C8) | Input only. Wire to **5V (A6)**. |
+| **CV_1 to CV_7** (C2-C8) | **FREE** | Input only, conditioned. Seven more CV jacks available. |
 | **CV IN jack** | **CV_8** (C9) | **Conditioned on-module. Rated to the +/-12V rails.** |
 | **GATE OUT 1** | **B5** (GATE_OUT_1, PC14) | Native 0-5V, no buffer needed |
 | **GATE OUT 2** | **B6** (GATE_OUT_2, PC13) | Same |
@@ -185,7 +235,7 @@ perfectly happy on a bare ADC pin. Wire it to **3V3 (A10)**, not 5V.
 | | Was | Now |
 |---|---|---|
 | CV jack | D8, bare 0-3.3V pin | **CV_8 (C9)**, conditioned, +/-12V tolerant |
-| 8th channel pot | CV_8 | **D8**, 3V3 reference |
+| 8th channel pot | CV_8 | gone: it is an encoder now, D8 is free |
 | External parts needed | divider + offset + 2 clamp diodes | **none** |
 
 **The lesson worth keeping:** put the hostile signal on the pin that was built to survive it,
@@ -193,27 +243,33 @@ and the benign one on the pin that was not.
 
 ---
 
-## Why there is no analog headroom
+## Analog headroom: ten pins, and seven of them conditioned
 
-**All 12 ADC-capable pins are allocated**: CV_1-CV_7 (7 channel pots), CV_8 (the CV jack),
-ADC_9 (A2), ADC_10 (A3), ADC_12 (D8, 8th channel pot), and ADC_11 (D9) spent on SPI MOSI.
-**11 are converting.**
+Moving the knobs to encoders inverted this section. It used to read "all 12 ADC
+pins are allocated, there is no headroom".
 
-A second CV input would have to come out of a channel pot. A **CD4051 mux costs 3 GPIO** for
-its select lines and only A8 is free, which is reserved.
-
----
-
-## Pot wiring, by group
-
-Two different references. Getting this wrong gives a control that reads full-scale at
-two-thirds rotation.
-
-| Pots | Pins | Wire top of pot to |
+| Free | Kind | Good for |
 |---|---|---|
-| Channel pots 1-7 | CV_1-CV_7 | **5V output (A6)**, +/-5V range |
-| Channel pot 8 | **D8** (ADC_12) | **3V3 output (A10)**, 0-3.3V range |
-| attack, release | ADC_9 (A2), ADC_10 (A3) | **3V3 output (A10)**, 0-3.3V range |
+| **CV_1 to CV_7** (C2-C8) | conditioned, rated to the rails | **CV input jacks** |
+| A2, A3, D8 | bare 0-3.3V | pots, trimmers, anything benign |
+
+Only **CV_8** (the CV in jack) and **ADC_11 / D9** (spent on SPI MOSI) are taken.
+
+**Do not put a CV jack on A2, A3 or D8.** Those are bare GPIO rated -0.3 to 6V.
+See "Why the CV in moved off D8" above; the reasoning did not change just
+because there are now spare pins.
+
+## Pot wiring: only three pots remain
+
+| Pot | Goes to | Note |
+|---|---|---|
+| LPG offset (dual-gang) | Bergman board | never seen by the Daisy |
+| CV amount L | Bergman board | attenuates CV_OUT_1 |
+| CV amount R | Bergman board | attenuates CV_OUT_1 |
+
+The 5V-vs-3V3 reference trap that used to live here is **gone with the pots**.
+Nothing analog reaches the Daisy any more except the CV in jack on CV_8, which
+is conditioned on-module.
 
 ### Envelope and LPG control map
 
