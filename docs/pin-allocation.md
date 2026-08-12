@@ -12,25 +12,48 @@ and added five jacks. Safe to lay out against.
 - **3 knobs stay ANALOG POTS wired straight to the Bergman LPG board**: offset
   (dual-gang), CV amount L, CV amount R. Zero pins, zero conversion, and the
   Daisy never sees them. **Deliberate: no DAC.**
-- **The MSP430 link is now I2C**, sharing B7/B8 with the expanders.
+- **The MSP430 link is UART on A2/A3**, point-to-point across the cable.
+  **NOT on the I2C bus.** See "why the touch link is UART" below.
 - **Five jacks:** CV in (C9 / CV_8), CV out (C1), gate in / clock (B10),
   gate out x2 (B5, B6).
 - **Shift button on A9.** Main encoder on D3/D4 with push on B9.
 - **A8 reserved**, see below. **1-bit SD.** No panel USB.
 
-### One bus, four devices, two pins
+### Two links, deliberately separate
 
-| Device | Address | Carries |
-|---|---|---|
-| MSP430FR2675 | 0x40 | touch position, 4 pads |
-| MCP23017 #1 | 0x20 | encoders 1-8 |
-| MCP23017 #2 | 0x21 | encoders 9-10, 12 pins spare |
-| *(reserved)* | 0x60 | *a DAC, if the analog controls ever go digital* |
+| Link | Daisy pins | Devices | Crosses the cable? |
+|---|---|---|---|
+| **UART4** | **A2** (RX), **A3** (TX) | MSP430FR2675 | **yes**, point-to-point |
+| **I2C1** | B7 (SCL), B8 (SDA) | MCP23017 x2 @ 0x20, 0x21 | **no**, main PCB only |
 
-**Polled, not interrupt-driven.** At 500Hz a poll of all devices is roughly
-470us of traffic, **24% of a 400kHz bus**, and catches up to 125 detents per
-second against the 20-30 human hands actually produce. That is what keeps A8
-free: no shared interrupt line is needed.
+**Encoders are polled at 500Hz**, about 24% of a 400kHz bus, catching 125
+detents per second against the 20-30 hands produce.
+
+### Why the touch link is UART, not I2C
+
+**TI's CapTIvate protocol is 2 wires over UART and 3 over I2C.** From the
+CapTIvate Technology Guide: *"the UART operates in a full duplex mode using RX
+and TX pins, and the I2C operates as an I2C Slave using SDA and SCL pins with an
+additional pin P1.2/IRQ to generate interrupt requests."*
+
+**That third wire would be A8**, the pin reserved for the BBD clock. I2C for the
+touch chip costs the delay upgrade.
+
+Four more reasons, on this board specifically:
+
+| | |
+|---|---|
+| **Point-to-point** | a hung touch chip cannot take the encoders down with it |
+| **Push-pull, not open-drain** | actively driven both ways, across a cable |
+| **Self-resynchronising** | a glitch costs one frame. I2C can leave a slave stuck mid-byte holding SDA low, recoverable only by a deliberate routine |
+| **Low impedance both states** | I2C idles high through a pull-up, and high-impedance nodes couple more into a capacitive front end |
+
+**I2C's one real advantage was that the master supplies the clock**, so there is
+no baud agreement and no exposure to oscillator drift. **That is retired by the
+32.768kHz crystal** on pins 46/47, which cost about $0.20 and were already free.
+
+Both interfaces are officially supported by CapTIvate, so this is not off-label
+either way.
 
 ### Why encoders freed ten analog pins
 
@@ -39,8 +62,8 @@ The ten pots were the entire ADC budget. Moving them to expanders returns:
 | Freed | Kind |
 |---|---|
 | **CV_1 to CV_7** | **conditioned, rated to the +/-12V rails** |
-| A2, A3 | bare 0-3.3V ADC |
 | D8 | bare 0-3.3V ADC |
+| ~~A2, A3~~ | *spent again on the touch UART* |
 
 **CV_8 already carries the CV in jack, so this makes eight conditioned CV
 inputs available** on an instrument that had one. That is a larger change to
@@ -75,8 +98,8 @@ and those three are wherever they were physically left.
 | Pin | Use | | Pin | Use |
 |---|---|---|---|---|
 | A1 | -12V in | | B10 | **GATE IN / clock** |
-| **A2** | **free** (ADC) | | C1 | **CV OUT jack** |
-| **A3** | **free** (ADC) | | **C2-C8** | **free** (CV_1-CV_7, conditioned) |
+| **A2** | **MSP430 UART RX** | | C1 | **CV OUT jack** |
+| **A3** | **MSP430 UART TX** | | **C2-C8** | **free** (CV_1-CV_7, conditioned) |
 | A4 | GND | | **C9** | **CV IN jack** (CV_8) |
 | A5 | +12V in | | C10 | LPG envelope (one, splits analog) |
 | A6 | 5V out | | D1 | OLED CS |
@@ -86,11 +109,11 @@ and those three are wherever they were physically left.
 | A10 | 3V3 out | | **D8** | **free** (ADC) |
 | B1-B4 | audio out/in L/R | | D9 | OLED MOSI (native SPI2) |
 | B5, B6 | **GATE OUT 1, 2** | | D10 | OLED SCK |
-| B7, B8 | **I2C bus** (4 devices) | | | |
+| B7, B8 | **I2C** (2 expanders, local) | | | |
 | B9 | main encoder push | | | |
 
-**Bidirectional GPIO 15 of 16. ADC 10 of 12 FREE**, the other two being the CV
-in jack and D9 on SPI MOSI.
+**Bidirectional GPIO 15 of 16. ADC 8 of 12 free** (CV_1-CV_7 and D8). A2 and A3
+are now the touch UART, CV_8 is the CV in jack, D9 is SPI MOSI.
 
 ---
 
@@ -160,14 +183,15 @@ flag moves DFU to the external port, which no longer exists on this board.
 
 | Function | Pins | Note |
 |---|---|---|
-| **I2C bus** | **B7** SCL, **B8** SDA | MSP430 + 2x MCP23017. Pull-ups once, on the main PCB. |
+| **I2C** | **B7** SCL, **B8** SDA | **2x MCP23017 only, both local.** Pull-ups once, on the main PCB. |
+| **MSP430 UART4** | **A2** RX, **A3** TX | point-to-point across the cable |
 | SD 1-bit | **D5** (D0), **D6** (CLK), **D7** (CMD) | Fixed SDMMC1 pins |
 | OLED SPI2 | **D1** (CS), **D9** (MOSI), **D10** (SCK) | D9 is the **native** SPI2_MOSI |
 | OLED DC | **D2** | Any GPIO |
 | Main encoder A, B | **D3**, **D4** | The one beside the pads. The other ten are on expanders. |
 | Shift button | **A9** | Internal pull-up, button to ground, `daisy::Switch` |
 | **A8** | **RESERVED** | BBD clock in a later rev. Do not spend. |
-| **A2, A3, D8** | **FREE** | ADC-capable, bare 0-3.3V |
+| **D8** | **FREE** | ADC-capable, bare 0-3.3V |
 
 **The main encoder stayed on the Daisy deliberately.** It drives the UI and wants
 the lowest latency; the ten parameter encoders are polled over I2C at 500Hz,
@@ -251,11 +275,11 @@ pins are allocated, there is no headroom".
 | Free | Kind | Good for |
 |---|---|---|
 | **CV_1 to CV_7** (C2-C8) | conditioned, rated to the rails | **CV input jacks** |
-| A2, A3, D8 | bare 0-3.3V | pots, trimmers, anything benign |
+| D8 | bare 0-3.3V | a pot, a trimmer, anything benign |
 
 Only **CV_8** (the CV in jack) and **ADC_11 / D9** (spent on SPI MOSI) are taken.
 
-**Do not put a CV jack on A2, A3 or D8.** Those are bare GPIO rated -0.3 to 6V.
+**Do not put a CV jack on D8.** Those are bare GPIO rated -0.3 to 6V.
 See "Why the CV in moved off D8" above; the reasoning did not change just
 because there are now spare pins.
 
@@ -375,17 +399,25 @@ a supply input. Easy to miss.
 |---|---|---|
 | 3V3 | DVCC (pin 1) | **Its own LDO.** Not shared with the OLED or audio. |
 | **GND x2-3** | DVSS (pin 48) | More than one. Cheapest noise mitigation there is. |
-| UART TXD | pin 45 (P5.2) | B7 or B8 |
-| UART RXD | pin 44 (P5.1) | B8 or B7 |
-| I2C SDA | pin 14 (P1.2) | B8 (populate one interface, not both) |
-| I2C SCL | pin 15 (P1.3) | B7 |
+| **UART TXD** | **pin 4 (P1.4), DEFAULT UCA0** | **A2** (UART4_RX) |
+| **UART RXD** | **pin 5 (P1.5), DEFAULT UCA0** | **A3** (UART4_TX) |
+| UART TXD alt | pin 45 (P5.2), remapped | route as a fallback |
+| UART RXD alt | pin 44 (P5.1), remapped | route as a fallback |
 | IRQ | footprint only | **Do NOT wire to A8.** Redundant over UART. |
 | **BSL RST** | pin 2 | **Test pad only.** Software BSL invocation instead. |
 | **BSL TEST** | pin 3 | **Test pad only.** |
 
-**Connector pins are cheap, Daisy pins are not.** Route all four serial wires and pick the
-interface with jumpers rather than economising on the connector. Spend the saved positions on
-extra grounds, since this cable carries digital edges into a capacitive sensing front end.
+**Use the DEFAULT UCA0 mapping, pins 4 and 5.** That is the change that probably
+resolves [Q21](notes/open-questions.md): BSL pins are factory-fixed and are almost
+certainly the defaults, so runtime UART and BSL UART become the same two wires.
+Pin 4 also carries TCK and VREF+, but **SBW is 2-wire so TCK is idle**, and
+CapTIvate does not use VREF+. Confirm on the bench, then close Q21.
+
+**Route the remapped pins 44/45 as well.** Connector positions are free and a
+respin is not. Spend the rest on extra grounds, since this cable carries digital
+edges into a capacitive sensing front end.
+
+**No I2C crosses this cable any more.** The expanders are local to the main PCB.
 
 **SBW test pads** (TEST pin 3, RST pin 2, 3V3, GND) are now the *only* hardware BSL path, and
 they are the recovery route for a touch chip whose firmware is too broken to accept the

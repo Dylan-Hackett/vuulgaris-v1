@@ -256,9 +256,21 @@ P1.3 SCL, pins **14 / 15**), which *is* the default mapping. **If BSL uses defau
 pins already match the BSL's I2C pins.** That inverts the original reasoning: I2C is not the
 fallback, it may be the *working* BSL path.
 
-**What to do:** confirm the actual FR267x values in **SLAU550 section 7** (device-specific
-tables) before layout. They did not come through in the fetch. Until then, **route pins 4 and
-5 to the connector as well.** Copper is free now and a respin is not.
+**PROPOSED RESOLUTION 2026-08-09: use the DEFAULT UCA0 mapping for runtime too.**
+
+The touch link went back to UART (see [pin-allocation.md](../pin-allocation.md),
+"why the touch link is UART"). If runtime UART sits on the **default** P1.4/P1.5,
+pins 4 and 5, then **runtime and BSL are the same two wires** and the whole
+question dissolves rather than being answered.
+
+The original objection to pins 4/5 was that pin 4 also carries **TCK** and
+**VREF+**. Neither bites here: **SBW is 2-wire on TEST/RST so 4-wire JTAG and its
+TCK are unused**, and CapTIvate does not need VREF+.
+
+**Still to confirm on the bench**, and only then close this: that BSL really does
+answer on pins 4/5, and that nothing about pin 4's shared functions interferes.
+**Route the remapped pins 44/45 as well** as a fallback. Copper is free now and a
+respin is not.
 
 ---
 
@@ -282,8 +294,9 @@ From the **FR2676/FR2675 datasheet, SLASEO5D**:
 Lock the FLL to XT1 and baud accuracy stops being a question. TI's own CapTIvate power tables
 list XT1 alongside REFO as a clock source, so it is a supported configuration for touch too.
 
-**Consequence: the original reason for carrying I2C goes away.** Keep I2C for the Q21 reason
-instead, which is a better reason.
+**Consequence: the original reason for carrying I2C goes away**, and with the
+touch link back on UART the crystal is doing real work rather than being
+insurance. Fit the footprint; populating it is a 20 cent decision made later.
 
 ---
 ---

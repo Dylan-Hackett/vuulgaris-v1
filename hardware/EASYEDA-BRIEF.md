@@ -117,17 +117,24 @@ infer pin functions from names. Notable:
 - `B10` is **gate in / clock**.
 - `C1` is **CV out**, `C10` is the **LPG envelope** (one output, splits in analog).
 
-### 5.2 I2C bus — four devices, two pins
+### 5.2 Two separate links — do not merge them
 
-`B7` = SCL, `B8` = SDA. **One pair of pull-ups only, on the main PCB**, 2.2k to 3V3.
+| Link | Daisy pins | Devices | Crosses the cable? |
+|---|---|---|---|
+| **UART4** | **A2** RX, **A3** TX | MSP430FR2675 | **yes**, point-to-point |
+| **I2C1** | B7 SCL, B8 SDA | MCP23017 x2 @ 0x20, 0x21 | **no**, main PCB only |
 
-| Device | Address |
-|---|---|
-| MSP430FR2675 (faceplate) | 0x40 |
-| MCP23017 #1 | 0x20 |
-| MCP23017 #2 | 0x21 |
+**The touch chip is NOT on the I2C bus.** TI's CapTIvate protocol needs a third
+IRQ wire over I2C but only two over UART, and that third wire would be `A8`,
+which is reserved. Putting them on one bus also means a hung touch chip takes the
+encoders down with it.
 
-Strap the expander address pins A0/A1/A2 to ground or 3V3 accordingly.
+**One pair of I2C pull-ups only**, on the main PCB, 2.2k to 3V3. Strap the
+expander address pins A0/A1/A2 to ground or 3V3 accordingly.
+
+**MSP430 UART goes on the DEFAULT UCA0 mapping, pins 4 (TXD) and 5 (RXD)**, not
+the remapped 44/45, so that runtime and BSL share the same wires. **Route 44/45
+to the connector as well** as a fallback.
 
 ### 5.3 Encoders
 
@@ -244,8 +251,9 @@ the exposed copper is the touch surface.
 ## 8. Unresolved — ask, do not guess
 
 1. **Q21, BSL pin mapping.** The MSP430's bootloader pins are factory-fixed in TLV.
-   Our I2C is the default UCB0 mapping so it probably matches, but this is
-   unconfirmed. **Route pins 4 and 5 to the connector as well**, as insurance.
+   Using the **default UCA0 mapping (pins 4/5)** for runtime UART should make
+   runtime and BSL the same wires, which dissolves the question. Unconfirmed on
+   hardware. **Route the remapped pins 44/45 as well**, as a fallback.
 2. **Enclosure height.** Not yet determined. It sets the encoder shaft and shift
    plunger length. Do not choose part variants that depend on it.
 3. **Q1, whether the pads work at all.** Untested. Everything else is contingent.
