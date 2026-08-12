@@ -1,0 +1,40 @@
+# Vuulgaris V1 panel-facing placement, generated from mockups/generate-faceplate.py
+# ORIGIN: panel top-left corner. X right, Y DOWN. Millimetres.
+# Panel 298.286 x 139.000mm. All parts on the MAIN PCB, protruding
+# through faceplate openings, EXCEPT the pads which are faceplate copper.
+
+REF     PART                                       X         Y  NOTE
+ENC1    EC11 encoder, ch1 A                   24.143    22.350  -> MCP23017
+ENC2    EC11 encoder, ch1 B                   24.143    39.980  -> MCP23017
+ENC3    EC11 encoder, ch2 A                   46.143    22.350  -> MCP23017
+ENC4    EC11 encoder, ch2 B                   46.143    39.980  -> MCP23017
+ENC5    EC11 encoder, ch3 A                   68.143    22.350  -> MCP23017
+ENC6    EC11 encoder, ch3 B                   68.143    39.980  -> MCP23017
+ENC7    EC11 encoder, ch4 A                   90.143    22.350  -> MCP23017
+ENC8    EC11 encoder, ch4 B                   90.143    39.980  -> MCP23017
+ENC9    EC11 encoder, envelope ATTACK        118.143    22.350  -> MCP23017
+ENC10   EC11 encoder, envelope RELEASE       118.143    39.980  -> MCP23017
+RV2     POT, CV amount L                     140.143    22.350  ANALOG -> LPG board
+RV3     POT, CV amount R                     140.143    39.980  ANALOG -> LPG board
+RV1     POT dual-gang, LPG OFFSET            160.143    30.960  ANALOG -> LPG board
+SW1     DPDT LPG mode VCF/VCA                185.643    30.960  ANALOG -> LPG board
+SW2     DPDT SOURCE resample/ext             198.643    30.960  ANALOG -> LPG board
+DS1     OLED 2.42in SSD1309 (TOP-LEFT)       212.143    11.550  SPI -> Daisy
+ENC0    EC11 encoder + PUSH, main UI         274.714    91.550  -> Daisy D3/D4/B9
+SW3     tactile, SHIFT                       274.714   109.750  -> Daisy A9
+
+# 10 encoders on expanders + 1 main encoder on the Daisy = 11 EC11 total
+# 3 analog pots + 2 DPDT switches go to the Bergman LPG board, NOT the Daisy
+
+# FACEPLATE COPPER (layer 1, exposed, no soldermask):
+#   pad1  x 41.143..257.143   y 64.550..74.550
+#   pad2  x 41.143..257.143   y 83.550..93.550
+#   pad3  x 41.143..257.143   y 102.550..112.550
+#   pad4  x 41.143..257.143   y 121.550..131.550
+#   100 comb teeth per pad, pitch 2.160mm, width 1.950mm
+#   geometry is in mockups/faceplate-v1-298x139-FAB.svg, groups RX0..RX3
+
+# ENCLOSURE: 6mm walls all round, panel screws onto the wall tops
+#   cavity        286.29 x 127.00mm
+#   MAIN PCB MAX  284.3 x 125.0mm
+#   panel screws at 3.0mm from each edge
