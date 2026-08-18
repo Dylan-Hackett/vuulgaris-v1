@@ -72,8 +72,11 @@ SYM = {
 for i in range(1, 11):
     SYM[f"ENC{i}"] = "EC12E2430803"
 # J2-J5: 3.5mm CV/gate. Four, not five -- CV out, gate out, CV in, gate in.
+# PJ-376 is RIGHT ANGLE: barrel parallel to the board, exiting the top edge, the
+# same as the 1/4" jacks. The old WQP-PJ398SM was a vertical Thonkiconn whose
+# plug axis is perpendicular to the board -- it cannot exit an edge at all.
 for j in range(2, 6):
-    SYM[f"J{j}"] = "WQP-WQP518MA_WQP-PJ398SM"
+    SYM[f"J{j}"] = "PJ-376"
 # J7-J10: 1/4" audio, L/R in and L/R out. PJ-603 is a horizontal jack -- the
 # barrel runs parallel to the board and exits the top edge. Four contacts
 # (2,3,4,5); which is tip/sleeve/switch is NOT yet established, see netmap.
@@ -125,7 +128,7 @@ FPMAP = {
 for _i in range(1, 11):
     FPMAP[f"ENC{_i}"] = "SW-TH_EC12EXXXX"
 for _j in range(2, 6):
-    FPMAP[f"J{_j}"] = "CONN-TH_WQP-WQP518MA"
+    FPMAP[f"J{_j}"] = "AUDIO-TH_PJ-376"
 for _j in range(7, 11):
     FPMAP[f"J{_j}"] = "AUDIO-TH_PJ-603"
 
