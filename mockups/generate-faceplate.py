@@ -83,12 +83,24 @@ CFG = {
     "oled_w_mm":          70.0,
     "oled_h_mm":          42.0,
     "encoder_r_mm":        9.2,
+    # Controls live in ONE column in the left margin: encoder, shift, then the
+    # four channel buttons. Decided 2026-08-17. The pad block is pushed right to
+    # open that margin; every panel-facing coordinate moves with it.
+    "controls_left":      True,
+    "pad_x_shift_mm":     20.0,
+    "n_buttons":             4,
+    "button_r_mm":         3.5,
+    # Cherry MX keycaps in a 2x2 cluster. The four buttons are general UI keys,
+    # not per-channel, so a cluster reads better than a column. Shift is gone.
+    "mx_buttons":         True,
+    "mx_cap_mm":          18.0,
+    "mx_pitch_mm":        19.05,
 
     # Shift button, directly below the encoder in the right margin. Wired to
     # A9 (PB15) on the Daisy, not to the MSP430. Tactile switch on the MAIN
     # PCB with a tall plunger through the faceplate, same standoff as the
     # encoder. Deliberately smaller than the encoder so the hierarchy reads.
-    "shift_button":       True,
+    "shift_button":      False,
     "shift_r_mm":          4.0,   # 8mm cap
     "shift_gap_mm":        5.0,   # clear space below the encoder
     # Centre the encoder + button as ONE group on the pad block, rather than
@@ -175,7 +187,7 @@ def derive(c):
     g["uy"] = uy
 
     # pads: centred on the panel width
-    g["PAD_X0"] = (g["PANEL_W"] - PL) / 2.0
+    g["PAD_X0"] = (g["PANEL_W"] - PL) / 2.0 + c.get("pad_x_shift_mm", 0.0)
     g["PAD_X1"] = g["PAD_X0"] + PL
     g["PAD_MID"] = g["PAD_X0"] + PL / 2.0
 
@@ -214,7 +226,7 @@ def derive(c):
     g["OLED_Y"] = INSET + ((g["DIV_Y"] - INSET) - c["oled_h_mm"]) / 2.0
     g["R2"], g["R3"], g["R4"] = g["RULE_Y"][1], g["RULE_Y"][2], g["RULE_Y"][3]
     ch_w = 3 * KP + 2 * KR
-    env_w = 1 * KP + 2 * KR + 2 * c["offset_knob_r_mm"] + 4.0
+    env_w = 2 * KP + 2 * KR          # 3 columns x 2 rows: 2 encoders, 4 pots
     NSW = c["n_switches"]
     ui_w = NSW * c["switch_w_mm"] + max(0, NSW - 1) * 4.0 + 6.0
     if not c["encoder_lower_right"]:
@@ -228,8 +240,8 @@ def derive(c):
     g["ui_x0"] = g["env_x0"] + env_w + UG
     g["oled_x0"] = g["ui_x0"] + ui_w + UG
     g["CH_CX"] = [g["ch_x0"] + KR + i * KP for i in range(4)]
-    g["EN_CX"] = [g["env_x0"] + KR, g["env_x0"] + KR + KP]
-    g["OFFSET_CX"] = g["env_x0"] + env_w - c["offset_knob_r_mm"] - 2.0
+    g["EN_CX"] = [g["env_x0"] + KR + i * KP for i in range(3)]
+    g["OFFSET_CX"] = g["EN_CX"][2]      # RV1 now sits in column 3, top row
     g["ENV_W"] = env_w
 
     # encoder
@@ -254,6 +266,27 @@ def derive(c):
     g["SHIFT_CX"] = g["ENC_CX"]
     g["SHIFT_CY"] = (g["ENC_CY"] + c["encoder_r_mm"]
                      + c["shift_gap_mm"] + c["shift_r_mm"])
+
+    # One control column in the left margin. Overrides encoder_lower_right.
+    g["BTN_CX"], g["BTN_CY"] = None, []
+    if c.get("controls_left"):
+        col = (c["enclosure_wall_mm"] + g["PAD_X0"]) / 2.0
+        g["ENC_CX"] = g["SHIFT_CX"] = g["BTN_CX"] = col
+        if c.get("mx_buttons"):
+            P, CAP, er = c["mx_pitch_mm"], c["mx_cap_mm"], c["encoder_r_mm"]
+            pad_mid = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + PW) / 2.0
+            gap = 6.0
+            top = pad_mid - (2 * er + gap + (P + CAP)) / 2.0
+            g["ENC_CY"] = top + er
+            g["SHIFT_CY"] = None
+            g["MX_CX"] = [col - P / 2.0, col + P / 2.0]
+            first = top + 2 * er + gap + CAP / 2.0
+            g["MX_CY"] = [first, first + P]
+            g["BTN_CY"] = []
+        else:
+            g["ENC_CY"] = 72.0
+            g["SHIFT_CY"] = 87.0
+            g["BTN_CY"] = [97.0, 106.0, 115.0, 124.0][:c.get("n_buttons", 4)]
     return g
 
 
@@ -455,8 +488,8 @@ def render(c, g):
         for cy in (g["R2"], g["R4"]):
             A(f'<circle cx="{f(cx)}" cy="{f(cy)}" r="{f(c["knob_r_mm"])}"/>')
     A('</g>')
-    A(f'<g id="knob-offset" fill="none" stroke="{OFFSET_INK}" stroke-width="0.4">'
-      f'<circle cx="{f(g["OFFSET_CX"])}" cy="{f(g["R3"])}" r="{f(c["offset_knob_r_mm"])}"/></g>')
+    # RV1 (dual-gang offset) is column 3 top; drawn like the rest now that the
+    # group is a uniform 2x2x2 block.
 
     # switches (vertical slots) + OLED
     sw_y = g["R3"] - c["switch_h_mm"] / 2.0
@@ -502,6 +535,23 @@ def render(c, g):
         A(f'<g id="shift-button" fill="none" stroke="{INK}" stroke-width="0.3">'
           f'<circle cx="{f(g["SHIFT_CX"])}" cy="{f(g["SHIFT_CY"])}" '
           f'r="{f(c["shift_r_mm"])}"/></g>')
+
+    # MX keycaps, 2x2 cluster
+    if c.get("controls_left") and c.get("mx_buttons"):
+        cap = c["mx_cap_mm"]
+        A(f'<g id="mx-buttons" fill="none" stroke="{INK}" stroke-width="0.3">')
+        for cy in g["MX_CY"]:
+            for cx in g["MX_CX"]:
+                A(f'<rect x="{f(cx-cap/2)}" y="{f(cy-cap/2)}" width="{f(cap)}" '
+                  f'height="{f(cap)}" rx="1.6"/>')
+        A('</g>')
+
+    # the four channel buttons, in the left control column
+    if c.get("controls_left") and g["BTN_CY"]:
+        A(f'<g id="buttons" fill="none" stroke="{INK}" stroke-width="0.3">')
+        for cy in g["BTN_CY"]:
+            A(f'<circle cx="{f(g["BTN_CX"])}" cy="{f(cy)}" r="{f(c["button_r_mm"])}"/>')
+        A('</g>')
 
     # pad divider + semicircle
     A(f'<g id="pad-marks" stroke="{INK}" stroke-width="0.3" fill="none">'
@@ -569,7 +619,15 @@ def check(c, g):
     out.append("")
 
     lm, rm = g["PAD_X0"], PW_ - g["PAD_X1"]
-    row("pads centred on panel width", f"margins {lm:.3f} / {rm:.3f}mm", abs(lm - rm) < 1e-6)
+    if c.get("controls_left"):
+        # deliberately asymmetric: the left margin carries the control column
+        row("pads clear both walls",
+            f"margins {lm:.3f} / {rm:.3f}mm, wall {c['enclosure_wall_mm']}mm",
+            lm > c["enclosure_wall_mm"] and rm > c["enclosure_wall_mm"])
+        row("pad shift matches config", f"{c['pad_x_shift_mm']:.3f}mm right",
+            abs((lm - rm) / 2.0 - c["pad_x_shift_mm"]) < 1e-6)
+    else:
+        row("pads centred on panel width", f"margins {lm:.3f} / {rm:.3f}mm", abs(lm - rm) < 1e-6)
     row("pad divider on pad midpoint", f"{g['PAD_MID']:.3f}mm", True)
     mid_tick = g["TICK_X"][c["n_ticks"] // 2]
     row("centre tick == pad divider", f"{mid_tick:.3f} vs {g['PAD_MID']:.3f}",
@@ -671,15 +729,35 @@ def check(c, g):
         g["UP_MARG"] > 0)
     er = c["encoder_r_mm"]
     if c["encoder_lower_right"]:
-        row("encoder clears pads", f"{g['ENC_CX']-er-g['PAD_X1']:.2f}mm", g["ENC_CX"]-er > g["PAD_X1"])
+        if c.get("controls_left"):
+            row("control column clears pads",
+                f"{g['PAD_X0']-(g['ENC_CX']+er):.2f}mm",
+                g["ENC_CX"] + er < g["PAD_X0"])
+        else:
+            row("encoder clears pads", f"{g['ENC_CX']-er-g['PAD_X1']:.2f}mm", g["ENC_CX"]-er > g["PAD_X1"])
         # measured against the INNER WALL FACE, not the panel edge
         _rlim = PW_ - c["enclosure_wall_mm"]
-        row("encoder centred in the cavity margin",
-            f"{g['ENC_CX']-er-g['PAD_X1']:.2f} / {_rlim-(g['ENC_CX']+er):.2f}mm",
-            abs((g["ENC_CX"]-er-g["PAD_X1"]) - (_rlim-(g["ENC_CX"]+er))) < 0.01)
-        ox0, ox1 = g["oled_x0"], g["oled_x0"] + c["oled_w_mm"]
-        row("encoder within OLED span", f"{ox0:.1f} <= {g['ENC_CX']:.1f} <= {ox1:.1f}",
-            ox0 <= g["ENC_CX"] <= ox1)
+        if c.get("controls_left"):
+            _llim = c["enclosure_wall_mm"]
+            row("control column centred in the left margin",
+                f"{(g['ENC_CX']-er)-_llim:.2f} / {g['PAD_X0']-(g['ENC_CX']+er):.2f}mm",
+                abs(((g["ENC_CX"]-er)-_llim) - (g["PAD_X0"]-(g["ENC_CX"]+er))) < 2.0)
+            btm = (g["MX_CY"][-1] + c["mx_cap_mm"]/2.0) if c.get("mx_buttons") else \
+                  ((g["BTN_CY"][-1] + c["button_r_mm"]) if g["BTN_CY"] else g["SHIFT_CY"])
+            row("control column inside the walls (vertical)",
+                f"{g['ENC_CY']-er:.2f} .. {btm:.2f} of {c['enclosure_wall_mm']}..{g['PANEL_H']-c['enclosure_wall_mm']:.1f}",
+                g["ENC_CY"]-er > c["enclosure_wall_mm"] and btm < g["PANEL_H"]-c["enclosure_wall_mm"])
+            _bx = (g["MX_CX"][-1] + c["mx_cap_mm"]/2.0) if c.get("mx_buttons") \
+                  else (g["BTN_CX"] + c["button_r_mm"])
+            row("buttons clear the pads", f"{g['PAD_X0']-_bx:.2f}mm", _bx < g["PAD_X0"])
+        else:
+            row("encoder centred in the cavity margin",
+                f"{g['ENC_CX']-er-g['PAD_X1']:.2f} / {_rlim-(g['ENC_CX']+er):.2f}mm",
+                abs((g["ENC_CX"]-er-g["PAD_X1"]) - (_rlim-(g["ENC_CX"]+er))) < 0.01)
+        if not c.get("controls_left"):
+            ox0, ox1 = g["oled_x0"], g["oled_x0"] + c["oled_w_mm"]
+            row("encoder within OLED span", f"{ox0:.1f} <= {g['ENC_CX']:.1f} <= {ox1:.1f}",
+                ox0 <= g["ENC_CX"] <= ox1)
     if c["shift_button"]:
         sr = c["shift_r_mm"]
         row("shift on the encoder axis", f"x {g['SHIFT_CX']:.2f}",
@@ -687,25 +765,39 @@ def check(c, g):
         row("shift clears the encoder",
             f"{(g['SHIFT_CY']-sr)-(g['ENC_CY']+er):.2f}mm gap",
             (g["SHIFT_CY"] - sr) - (g["ENC_CY"] + er) >= 1.0)
-        row("shift clears the pads", f"{g['SHIFT_CX']-sr-g['PAD_X1']:.2f}mm",
-            g["SHIFT_CX"] - sr > g["PAD_X1"])
+        if c.get("controls_left"):
+            row("shift clears the pads", f"{g['PAD_X0']-(g['SHIFT_CX']+sr):.2f}mm",
+                g["SHIFT_CX"] + sr < g["PAD_X0"])
+        else:
+            row("shift clears the pads", f"{g['SHIFT_CX']-sr-g['PAD_X1']:.2f}mm",
+                g["SHIFT_CX"] - sr > g["PAD_X1"])
         # Right-side pad numerals: x from PAD_X1+2, baseline pad_top + PW*0.72.
-        # Proximity in Y alone is NOT a collision, since the numerals sit well
-        # left of the encoder axis. Test the actual 2D overlap.
-        num_x0 = g["PAD_X1"] + 2.0
-        num_x1 = num_x0 + 4 * 0.45 * 3.2        # widest is 4 glyphs at font-size 3.2
-        gapx = (g["SHIFT_CX"] - sr) - num_x1
-        rows_near = [t + g["PW"] * 0.72 for t in g["PAD_TOPS"]
-                     if abs(t + g["PW"] * 0.72 - g["SHIFT_CY"]) < sr + 3.4]
-        row("shift clears right-side numerals",
-            f"{gapx:.2f}mm horizontal" + (f", {len(rows_near)} row(s) alongside"
-                                          if rows_near else ""),
-            gapx > 2.0)
+        # Only meaningful when the controls are on the right; the left column is
+        # nowhere near them.
+        if not c.get("controls_left"):
+            num_x0 = g["PAD_X1"] + 2.0
+            num_x1 = num_x0 + 4 * 0.45 * 3.2
+            gapx = (g["SHIFT_CX"] - sr) - num_x1
+            rows_near = [t + g["PW"] * 0.72 for t in g["PAD_TOPS"]
+                         if abs(t + g["PW"] * 0.72 - g["SHIFT_CY"]) < sr + 3.4]
+            row("shift clears right-side numerals",
+                f"{gapx:.2f}mm horizontal" + (f", {len(rows_near)} row(s) alongside"
+                                              if rows_near else ""),
+                gapx > 2.0)
         pad_mid = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + g["PW"]) / 2.0
-        pair_mid = ((g["ENC_CY"] - er) + (g["SHIFT_CY"] + sr)) / 2.0
-        row("encoder+shift centred on the pad block",
-            f"pair mid {pair_mid:.2f} vs pads {pad_mid:.2f}",
-            abs(pair_mid - pad_mid) < 0.05)
+        if c.get("controls_left"):
+            # the whole column is what gets centred now, not the encoder+shift pair
+            btm = (g["MX_CY"][-1] + c["mx_cap_mm"]/2.0) if c.get("mx_buttons") else \
+                  ((g["BTN_CY"][-1] + c["button_r_mm"]) if g["BTN_CY"] else g["SHIFT_CY"] + sr)
+            col_mid = ((g["ENC_CY"] - er) + btm) / 2.0
+            row("control column centred on the pad block",
+                f"column mid {col_mid:.2f} vs pads {pad_mid:.2f}",
+                abs(col_mid - pad_mid) < 6.0)
+        else:
+            pair_mid = ((g["ENC_CY"] - er) + (g["SHIFT_CY"] + sr)) / 2.0
+            row("encoder+shift centred on the pad block",
+                f"pair mid {pair_mid:.2f} vs pads {pad_mid:.2f}",
+                abs(pair_mid - pad_mid) < 0.05)
         row("shift inside panel",
             f"bottom {g['SHIFT_CY']+sr:.2f} of {g['PANEL_H']:.2f}",
             g["SHIFT_CY"] + sr < g["PANEL_H"] - c["bottom_margin_mm"])
@@ -745,8 +837,7 @@ def check(c, g):
     for cx in g["EN_CX"]:
         for cy in (g["R2"], g["R4"]):
             box.append((cx-c["knob_r_mm"], cx+c["knob_r_mm"], cy-c["knob_r_mm"], cy+c["knob_r_mm"]))
-    orr = c["offset_knob_r_mm"]
-    box.append((g["OFFSET_CX"]-orr, g["OFFSET_CX"]+orr, g["R3"]-orr, g["R3"]+orr))
+
     box.append((g["oled_x0"], g["oled_x0"]+c["oled_w_mm"], g["OLED_Y"], g["OLED_Y"]+c["oled_h_mm"]))
     sy0 = g["R3"] - c["switch_h_mm"]/2.0
     for i in range(c["n_switches"]):
@@ -792,6 +883,72 @@ def check(c, g):
     return "\n".join(out), ok
 
 
+def placement(c, g):
+    """Emit hardware/placement-panel-facing.txt.
+
+    This is the ONLY place these coordinates should come from. The file used to
+    say it was generated here while actually being hand-maintained, which meant
+    the panel artwork and the PCB placement could drift apart silently.
+    """
+    L = []
+    A = L.append
+    A("# Vuulgaris V1 panel-facing placement, generated from mockups/generate-faceplate.py")
+    A("#   python3 mockups/generate-faceplate.py --placement > hardware/placement-panel-facing.txt")
+    A("# ORIGIN: panel top-left corner. X right, Y DOWN. Millimetres.")
+    A(f"# Panel {g['PANEL_W']:.3f} x {g['PANEL_H']:.3f}mm. All parts on the MAIN PCB,")
+    A("# protruding through faceplate openings, EXCEPT the pads which are faceplate copper.")
+    A("")
+    A(f"{'REF':<7} {'PART':<42} {'X':>9} {'Y':>9}  NOTE")
+    rows = []
+    for i, cx in enumerate(g["CH_CX"]):
+        for j, cy in enumerate((g["R2"], g["R4"])):
+            n = i * 2 + j + 1
+            rows.append((f"ENC{n}", f"encoder, ch{i+1} {'AB'[j]}", cx, cy, "-> MCP23017"))
+    for j, cy in enumerate((g["R2"], g["R4"])):
+        rows.append((f"ENC{9+j}", f"encoder, envelope {'ATTACK RELEASE'.split()[j]}",
+                     g["EN_CX"][0], cy, "-> MCP23017"))
+    rows.append(("RV2", "POT 9mm, CV amount L", g["EN_CX"][1], g["R2"], "ANALOG -> LPG"))
+    rows.append(("RV3", "POT 9mm, CV amount R", g["EN_CX"][1], g["R4"], "ANALOG -> LPG"))
+    rows.append(("RV1", "POT 9mm DUAL-GANG, LPG OFFSET", g["EN_CX"][2], g["R2"], "ANALOG -> LPG"))
+    rows.append(("RV4", "POT 9mm, RESONANCE", g["EN_CX"][2], g["R4"], "ANALOG -> LPG"))
+    for i in range(c["n_switches"]):
+        sx = g["ui_x0"] + 3 + i * (c["switch_w_mm"] + 4.0) + c["switch_w_mm"] / 2.0
+        rows.append((f"SW{1+i}",
+                     "DPDT LPG mode VCF/VCA" if i == 0 else "DPDT SOURCE resample/ext",
+                     sx, g["R3"], "ANALOG -> LPG"))
+    rows.append(("DS1", "OLED 2.42in SSD1309 (TOP-LEFT)", g["oled_x0"], g["OLED_Y"], "SPI -> Daisy"))
+    rows.append(("ENC0", "encoder + PUSH, main UI", g["ENC_CX"], g["ENC_CY"], "-> Daisy D3/D4/B9"))
+    if c.get("shift_button"):
+        rows.append(("SW3", "tactile, SHIFT", g["SHIFT_CX"], g["SHIFT_CY"], "-> Daisy A9"))
+    if c.get("mx_buttons"):
+        n = 0
+        for cy in g["MX_CY"]:
+            for cx in g["MX_CX"]:
+                rows.append((f"SW{4+n}", f"Cherry MX key {n+1} (general UI)", cx, cy,
+                             f"-> MCP23017 U4 GPA{4+n}"))
+                n += 1
+    else:
+        for k, cy in enumerate(g["BTN_CY"]):
+            rows.append((f"SW{4+k}", f"tactile, UI button {k+1}", g["BTN_CX"], cy,
+                         f"-> MCP23017 U4 GPA{4+k}"))
+    for ref, part, x, y, note in rows:
+        A(f"{ref:<7} {part:<42} {x:9.3f} {y:9.3f}  {note}")
+    A("")
+    A("# FACEPLATE COPPER (layer 1, exposed, no soldermask):")
+    for i, t in enumerate(g["PAD_TOPS"], 1):
+        A(f"#   pad{i}  x {g['PAD_X0']:.3f}..{g['PAD_X1']:.3f}   y {t:.3f}..{t + g['PW']:.3f}")
+    A(f"#   {g['N_TEETH']} comb teeth per pad, pitch {g['T_PITCH']:.3f}mm, width {g['T_WIDTH']:.3f}mm")
+    A("")
+    A(f"# ENCLOSURE: {c['enclosure_wall_mm']:.0f}mm walls all round, panel screws onto the wall tops")
+    cav_w = g["PANEL_W"] - 2 * c["enclosure_wall_mm"]
+    cav_h = g["PANEL_H"] - 2 * c["enclosure_wall_mm"]
+    A(f"#   cavity        {cav_w:.2f} x {cav_h:.2f}mm")
+    A(f"#   MAIN PCB MAX  {cav_w - 2:.1f} x {cav_h - 2:.1f}mm")
+    A("#   PCB ORIGIN sits at panel (%.3f, %.3f); pcb = panel - that offset"
+      % (c["enclosure_wall_mm"] + 0.995, c["enclosure_wall_mm"] + 1.0))
+    return "\n".join(L)
+
+
 if __name__ == "__main__":
     cfg = dict(CFG)
     args = sys.argv[1:]
@@ -804,6 +961,9 @@ if __name__ == "__main__":
     if "--fab" in args:
         cfg["fab_output"] = True
     geo = derive(cfg)
+    if "--placement" in args:
+        print(placement(cfg, geo))
+        sys.exit(0)
     if "--check" in args:
         rep, ok = check(cfg, geo)
         print(rep)
