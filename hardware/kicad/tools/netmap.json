@@ -1,0 +1,230 @@
+{
+ "U1": {
+  "A1": "NEG12V",
+  "A2": "MSP430_TXD",
+  "A3": "MSP430_RXD",
+  "A4": "GND",
+  "A5": "POS12V",
+  "A6": "P5V",
+  "A10": "P3V3_DAISY",
+  "B1": "AUDIO_OUT_R",
+  "B2": "AUDIO_OUT_L",
+  "B3": "AUDIO_IN_R",
+  "B4": "AUDIO_IN_L",
+  "B5": "GATE_OUT_1",
+  "B6": "GATE_OUT_2",
+  "B7": "I2C_SCL",
+  "B8": "I2C_SDA",
+  "B9": "ENC0_PUSH",
+  "B10": "GATE_IN",
+  "C1": "CV_OUT_JACK",
+  "C9": "CV_IN_JACK",
+  "C10": "LPG_ENV",
+  "D1": "OLED_CS",
+  "D2": "OLED_DC",
+  "D3": "ENC0_A",
+  "D4": "ENC0_B",
+  "D5": "SD_D0",
+  "D6": "SD_CLK",
+  "D7": "SD_CMD",
+  "D9": "OLED_MOSI",
+  "D10": "OLED_SCK"
+ },
+ "U3": {
+  "12": "I2C_SCL",
+  "13": "I2C_SDA",
+  "9": "P3V3_DAISY",
+  "10": "GND",
+  "18": "P3V3_DAISY",
+  "15": "GND",
+  "16": "GND",
+  "17": "GND",
+  "21": "ENC1_A",
+  "22": "ENC1_B",
+  "23": "ENC2_A",
+  "24": "ENC2_B",
+  "25": "ENC3_A",
+  "26": "ENC3_B",
+  "27": "ENC4_A",
+  "28": "ENC4_B",
+  "1": "ENC5_A",
+  "2": "ENC5_B",
+  "3": "ENC6_A",
+  "4": "ENC6_B",
+  "5": "ENC7_A",
+  "6": "ENC7_B",
+  "7": "ENC8_A",
+  "8": "ENC8_B"
+ },
+ "U4": {
+  "12": "I2C_SCL",
+  "13": "I2C_SDA",
+  "9": "P3V3_DAISY",
+  "10": "GND",
+  "18": "P3V3_DAISY",
+  "15": "P3V3_DAISY",
+  "16": "GND",
+  "17": "GND",
+  "21": "ENC9_A",
+  "22": "ENC9_B",
+  "23": "ENC10_A",
+  "24": "ENC10_B",
+  "25": "BTN1",
+  "26": "BTN2",
+  "27": "BTN3",
+  "28": "BTN4"
+ },
+ "DS1": {
+  "1": "GND",
+  "2": "P3V3_OLED",
+  "3": "OLED_SCK",
+  "4": "OLED_MOSI",
+  "5": "OLED_RES",
+  "6": "OLED_DC",
+  "7": "OLED_CS"
+ },
+ "J1": {
+  "3": "SD_CMD",
+  "5": "SD_CLK",
+  "7": "SD_D0",
+  "4": "P3V3_DAISY",
+  "6": "GND",
+  "10": "GND",
+  "11": "GND",
+  "12": "GND",
+  "13": "GND"
+ },
+ "R20": {
+  "1": "I2C_SCL",
+  "2": "P3V3_DAISY"
+ },
+ "R21": {
+  "1": "I2C_SDA",
+  "2": "P3V3_DAISY"
+ },
+ "U5": {
+  "1": "GND",
+  "2": "P3V3_OLED",
+  "3": "P5V_OLED",
+  "4": "P3V3_OLED"
+ },
+ "U6": {
+  "1": "GND",
+  "2": "P3V3_MSP430",
+  "3": "P5V_MSP",
+  "4": "P3V3_MSP430"
+ },
+ "FB1": {
+  "1": "P5V",
+  "2": "P5V_OLED"
+ },
+ "FB2": {
+  "1": "P5V",
+  "2": "P5V_MSP"
+ },
+ "ENC0": {
+  "A": "ENC0_A",
+  "B": "ENC0_B",
+  "C": "GND",
+  "D": "ENC0_PUSH",
+  "E": "GND"
+ },
+ "ENC1": {
+  "A": "ENC1_A",
+  "B": "ENC1_B",
+  "C": "GND"
+ },
+ "ENC2": {
+  "A": "ENC2_A",
+  "B": "ENC2_B",
+  "C": "GND"
+ },
+ "ENC3": {
+  "A": "ENC3_A",
+  "B": "ENC3_B",
+  "C": "GND"
+ },
+ "ENC4": {
+  "A": "ENC4_A",
+  "B": "ENC4_B",
+  "C": "GND"
+ },
+ "ENC5": {
+  "A": "ENC5_A",
+  "B": "ENC5_B",
+  "C": "GND"
+ },
+ "ENC6": {
+  "A": "ENC6_A",
+  "B": "ENC6_B",
+  "C": "GND"
+ },
+ "ENC7": {
+  "A": "ENC7_A",
+  "B": "ENC7_B",
+  "C": "GND"
+ },
+ "ENC8": {
+  "A": "ENC8_A",
+  "B": "ENC8_B",
+  "C": "GND"
+ },
+ "ENC9": {
+  "A": "ENC9_A",
+  "B": "ENC9_B",
+  "C": "GND"
+ },
+ "ENC10": {
+  "A": "ENC10_A",
+  "B": "ENC10_B",
+  "C": "GND"
+ },
+ "C20": {
+  "1": "P3V3_OLED",
+  "2": "GND"
+ },
+ "C21": {
+  "1": "P3V3_OLED",
+  "2": "GND"
+ },
+ "C22": {
+  "1": "P3V3_MSP430",
+  "2": "GND"
+ },
+ "C23": {
+  "1": "P3V3_MSP430",
+  "2": "GND"
+ },
+ "C24": {
+  "1": "P5V_OLED",
+  "2": "GND"
+ },
+ "C25": {
+  "1": "P5V_MSP",
+  "2": "GND"
+ },
+ "C26": {
+  "1": "P3V3_DAISY",
+  "2": "GND"
+ },
+ "C27": {
+  "1": "P3V3_DAISY",
+  "2": "GND"
+ },
+ "SW4": {
+  "1": "BTN1",
+  "2": "GND"
+ },
+ "SW5": {
+  "1": "BTN2",
+  "2": "GND"
+ },
+ "SW6": {
+  "1": "BTN3",
+  "2": "GND"
+ },
+ "SW7": {
+  "1": "BTN4",
+  "2": "GND"
+ }
+}

@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "vuulgaris")(type "KiCad")(uri "${KIPRJMOD}/lib/vuulgaris.kicad_sym")(options "")(descr "LCSC parts via easyeda2kicad"))
+  (lib (name "daisy_es")(type "KiCad")(uri "${KIPRJMOD}/lib/daisy_es.kicad_sym")(options "")(descr "Electrosmith Daisy Patch SM + Eurorack parts"))
+)

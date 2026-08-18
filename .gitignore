@@ -15,3 +15,14 @@ venv/
 
 # The generated faceplate SVG is COMMITTED on purpose: it is the artefact that
 # goes to the fab house, so it must be reviewable in diffs beside its generator.
+
+# KiCad local state, NOT design data. The .kicad_prl is per-machine window and
+# layer visibility; fp-info-cache is rebuilt on load; the -backups zips and the
+# .lck files are KiCad's own housekeeping. The .bak* boards are hand-made
+# snapshots from the tooling in hardware/kicad/tools.
+*.kicad_prl
+fp-info-cache
+*-backups/
+~*.lck
+*.kicad_pcb.bak*
+*.kicad_sch.bak*
