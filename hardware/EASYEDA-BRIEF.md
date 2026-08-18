@@ -14,11 +14,18 @@ stop and ask rather than guessing.**
 Confirm all of these, in this order, and stop if any fails:
 
 1. `node --version` is 18 or higher
-2. **EasyEDA Pro DESKTOP client** is running. The browser version cannot load
-   extensions and will not work.
-3. The `run-api-gateway` extension is installed from <https://jlc-ext.com/item/oshwhub/run-api-gateway>
-4. `npm run server` in the skill directory, then `curl http://localhost:49620/health`
-   returns healthy with the client connected.
+2. **EasyEDA Pro DESKTOP client** is running, and it is **version 3.2.x**. The
+   browser version cannot load extensions and will not work. The version matters:
+   `run-api-gateway` declares `"engines": {"eda": "~3.2.0"}`, and on a 2.x client
+   it installs, shows its menu, and silently never connects, because the menu is
+   declarative manifest data while the code that opens the socket never runs.
+3. The `run-api-gateway` extension is installed from <https://jlc-ext.com/item/oshwhub/run-api-gateway>,
+   **enabled, and granted its External Interactions permission** — without that
+   permission it loads but never reaches the bridge.
+4. The bridge is up: `node ~/.claude/skills/easyeda-api/scripts/bridge-server.mjs &`
+   The server picks the first free port in **49620-49629**, so probe the range
+   rather than assuming 49620. `/health` must report `"edaConnected": true` and
+   `/eda-windows` must list at least one window.
 
 Then read, in the repo root:
 
@@ -86,7 +93,8 @@ Do not report success. Report what you did.
 | U2 | MSP430FR2675TPTR | **C2052972** | LQFP-48. **Faceplate, back side.** |
 | DS1 | 2.42" SSD1309 OLED SPI | **C5139768** | |
 | U3, U4 | MCP23017 I2C GPIO expander | search | SSOP-28 or SOIC-28 |
-| ENC0-ENC10 | ALPS EC11 rotary encoder | **C202365** | 11 total. ENC0 has a push. |
+| ENC1-ENC10 | ALPS EC12E2430803, **DETENTLESS 0/24** | **C470684** | 10 parameter encoders. 3 pins, no switch. |
+| ENC0 | ALPS EC11L1525G01, 30/15 detents, **with push** | **C2991196** | Main UI encoder only. Detents are wanted here. **25mm shaft, matches ENC1-10.** |
 | RV1 | dual-gang 10K pot | search | LPG offset |
 | RV2, RV3 | 10K pot | search | CV amount L / R |
 | SW1, SW2 | DPDT toggle, break-before-make | search | **non-shorting** |
@@ -105,6 +113,15 @@ Also: TL07x op-amps for the LPG, 2x 3.3V LDO (§5.5), decoupling throughout.
 ## 5. Schematic, by section
 
 ### 5.1 Daisy Patch SM header
+
+**The symbol in use is missing pin A7.** `Electrosmith-Boards_ES_DAISY_PATCH_SM_REV1`
+has 39 pins, not 40; **A7 is GND** and has to be connected by hand. It lives in a
+read-only community library, so it cannot be edited in place — the API refuses copy,
+edit and open on it. Both KiCad sources
+([Kad-Luka](https://github.com/Kad-Luka/ES-Patch-SM-KiCad-Footprint),
+[GregBurns](https://github.com/GregBurns/sm_kicad)) carry all 40 with A7 = GND, if a
+correct symbol is ever wanted. **A missing pin passes ERC silently** — there is no pin,
+so there is nothing to report as unconnected. Check A7 by eye before fab.
 
 **Transcribe `docs/pin-allocation.md` "The full header" table exactly.** Do not
 infer pin functions from names. Notable:
@@ -248,6 +265,69 @@ the exposed copper is the touch surface.
 
 ---
 
+### 4.1 The encoders must be DETENTLESS — decided 2026-08-13
+
+**C202365 was wrong and is withdrawn.** It is an ALPS **EC11E18244AU**: LCSC lists it
+as **36 detents / 18 pulses**. Thirty-six clicks per turn on ten continuously-variable
+parameters is the opposite of what this instrument wants.
+
+The replacement must be **smooth, no detents, no notches**. Bourns **PEC11R** is the
+obvious family — the detent code sits in the part number (`S` = no detent, `N` =
+detented, **confirm against the Bourns datasheet, not a distributor field**).
+`PEC11R-4015K-S0024` is detentless at 24 PPR but reads **out of stock at LCSC**, which
+matters if JLC is assembling.
+
+**CHOSEN 2026-08-13 and fitted in the schematic: `C470684`, ALPS Alpine `EC12E2430803`.**
+All eleven are placed and wired (A/B/C, plus D/E on ENC0). Dylan confirmed the faceplate
+artwork can move to suit the part rather than the reverse.
+
+**Consequence for the panel: `mockups/generate-faceplate.py` still cuts EC11 bushing
+holes.** EC12 is a different body and bushing, so the generator has to be updated and
+`hardware/placement-panel-facing.txt` regenerated before any fab output. The *positions*
+in that file stay valid; the hole diameters do not.
+
+| | |
+|---|---|
+| Detents / pulses | **0 / 24** — detentless, confirmed on LCSC's spec table |
+| Stock | **1541** at LCSC, ~$0.50 |
+| Mount | through hole, straight |
+| Footprint | `SW-TH_EC12EXXXX` — **EC12, not EC11.** Different body, different footprint. |
+
+**RESOLVED from the ALPS datasheets, 2026-08-13. Detentless and push-switch are
+mutually exclusive in this family**, so the two roles take two part numbers:
+
+| | ENC1-ENC10 | ENC0 |
+|---|---|---|
+| Part | `C470684` EC12E2430803 | `C2991196` EC11L1525G01 |
+| Detents / pulses | **0 / 24** | 30 / 15 |
+| Push switch | none (3-pin) | **yes** (A/B/C + D/E) |
+| Shaft | **25mm** | **25mm — matched** |
+| LCSC stock | 1541 | 3720 |
+
+**Shaft lengths are matched at 25mm deliberately.** The first pick for ENC0 was
+`C202365` EC11E18244AU, which has the switch but a **20mm** actuator — 5mm shorter than
+the EC12E, so its knob would have sat visibly low. `C2991196` is the same idea at 25mm
+and is better stocked. The alternative was moving all ten parameter encoders to a 20mm
+part (`C470602`), but that one is the 标准型 body with **no threaded bushing**, leaving
+the solder joints to carry side load from a knob next to a 175mm touch pad — rejected.
+
+The datasheet evidence, so nobody re-opens this: ALPS lists switched EC12 parts only
+under **EC12D** (`EC12D1524403`, `EC12D1564402`, `EC12D1524406`, `EC12D1564404`) and
+**every one has 30 detents**. The detentless parts are all EC12E, which is a 3-pin body
+with no switch section. The 5-pin EasyEDA symbol is a generic family symbol and is not
+evidence of a switch. EC11E18244AU's own datasheet states `Push-on switch: With`.
+
+Detents on ENC0 are **wanted**, not tolerated — it is the menu/UI encoder, where
+discrete steps suit navigation. The ten parameter encoders stay smooth.
+
+Still open: **shaft length**, which waits on the enclosure height (unresolved item 2).
+It now has to be resolved for *two* different bodies, EC11 and EC12.
+
+**Also note the pulses-per-detent trap** that made the old part wrong in a second way:
+36 detents against 18 pulses is two detents per quadrature cycle. On a detentless part
+this stops being a feel problem and becomes purely a counts-per-revolution decision,
+but the firmware still has to know the number.
+
 ## 8. Unresolved — ask, do not guess
 
 1. **Q21, BSL pin mapping.** The MSP430's bootloader pins are factory-fixed in TLV.
@@ -261,6 +341,33 @@ the exposed copper is the touch surface.
 5. The **32.768kHz crystal** may go unpopulated. Fit the footprint regardless.
 
 ---
+
+## 8b. API behaviour worth knowing before you start
+
+Learned the hard way on 2026-08-12. All three cost time.
+
+| Trap | What actually happens |
+|---|---|
+| `sch_PrimitiveWire.getAll()` / `getAllPrimitiveId()` | **Under-reports.** Returned 1 when the document held 30 wires. **Verify against `sys_FileManager.getDocumentSource()`** and count `"type":"WIRE"` atoms. The source is the only truth. |
+| `sch_PrimitiveAttribute.createNetLabel()` | **Hangs.** 30s timeout, creates nothing. Use `sch_PrimitiveWire.create([x,y,x2,y2], netName)` instead — a short stub off each pin carries the net and works reliably. |
+| `lib_Symbol.get` / `openInEditor` / `copy` | **Throw on read-only community libraries**, and the error message is literally `[object Object]`. Symbols from imported libraries cannot be edited or copied through the API. |
+
+Also: `createProject` silently returns `undefined` in **half-offline mode**, and
+`deleteBoard` **orphans** its schematic and PCB rather than deleting them — clean
+those up by uuid afterwards.
+
+**The bridge enforces a 30-second server-side request timeout**, whatever the client
+timeout says. One `/execute` call fits roughly 40 API round trips. Batch work into
+chunks under that, and **cache pin lookups per component** — re-reading pins inside a
+loop is what blows the budget. A timeout does **not** roll back: the work already done
+persists, so re-query state before retrying or you will place everything twice.
+
+`lib_Symbol.getRenderImage` and `lib_Device.searchByProperties` are also unreliable —
+the first throws, the second returned an inductor when asked for a 470uF capacitor.
+
+**Pin stubs connect by net name.** Two pins carrying the same net name are connected
+whether or not a wire is drawn between them, which is what makes a 40-pin fan-out
+tractable through the API.
 
 ## 9. When you are done
 

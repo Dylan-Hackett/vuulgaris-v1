@@ -19,6 +19,46 @@ and added five jacks. Safe to lay out against.
 - **Shift button on A9.** Main encoder on D3/D4 with push on B9.
 - **A8 reserved**, see below. **1-bit SD.** No panel USB.
 
+### Four channel buttons — added 2026-08-16
+
+**Four momentary buttons on U4's spare GPIO**, one per channel, sitting in the left
+margin beside the pads. They cost **no Daisy pins**: U3 is full at 16 GPIO for eight
+encoders, but U4 only used 4 of 16 for ENC9/ENC10, so the buttons take `GPA4`-`GPA7`
+and eight of its GPIO are still free after them.
+
+| Button | Net | U4 pin |
+|---|---|---|
+| SW4 | `BTN1` | 25 (GPA4) |
+| SW5 | `BTN2` | 26 (GPA5) |
+| SW6 | `BTN3` | 27 (GPA6) |
+| SW7 | `BTN4` | 28 (GPA7) |
+
+Wired **button to ground with the MCP23017's internal pull-ups enabled** — the same
+arrangement as the encoders, so no external resistors. Polled with everything else at
+500Hz, i.e. 2ms, which is irrelevant for a button.
+
+**Placement, revised 2026-08-17:** all six controls form ONE column in the left margin
+at panel **x 33.571** — encoder (y 72.0), shift (y 87.0), then the four buttons at
+y 97 / 106 / 115 / 124. The pad block moved **20mm right** to open that margin, so the
+pads now run x 61.143-277.143. The encoder and shift used to sit in the RIGHT margin;
+they moved with the buttons so the UI reads as one group.
+
+Everything else on the panel is unchanged — the ten parameter encoders, three pots, two
+DPDT switches and the OLED keep their coordinates, because the upper region is centred
+independently of the pad block.
+
+**This displaced the MSP430 power cluster**, which was in that left margin. It moved to
+pcb (40-62, 98-105) — still nowhere near the OLED rail, which is the only thing §5.5
+actually requires of it.
+
+**`placement-panel-facing.txt` is now genuinely generated:**
+`python3 mockups/generate-faceplate.py --placement > hardware/placement-panel-facing.txt`.
+It previously claimed to be generated while being hand-maintained, which let the panel
+artwork and the PCB placement drift apart with nothing to catch it.
+
+**Net names are placeholders.** `BTN1`-`BTN4` should be renamed once the function is
+decided (mute? solo? channel select? record-arm?).
+
 ### Two links, deliberately separate
 
 | Link | Daisy pins | Devices | Crosses the cable? |
@@ -27,7 +67,13 @@ and added five jacks. Safe to lay out against.
 | **I2C1** | B7 (SCL), B8 (SDA) | MCP23017 x2 @ 0x20, 0x21 | **no**, main PCB only |
 
 **Encoders are polled at 500Hz**, about 24% of a 400kHz bus, catching 125
-detents per second against the 20-30 hands produce.
+transitions per second against the 20-30 hands produce.
+
+**The encoders are DETENTLESS** (decided 2026-08-13, see the brief §4.1). The original
+C202365 was an EC11E18244AU at 36 detents/18 pulses and is withdrawn — thirty-six
+clicks per turn is wrong for ten continuously-variable parameters. The replacement part
+is not yet chosen; it gates on stock, on shaft length (which waits on enclosure
+height), and on ENC0 needing a push switch the other ten do not.
 
 ### Why the touch link is UART, not I2C
 
@@ -73,7 +119,7 @@ what the product *is* than the encoders themselves.
 
 | | |
 |---|---|
-| 10x ALPS EC11 (LCSC C202365) | +$12.12 |
+| 10x detentless encoder (part TBD; C202365 withdrawn) | +$12.12 **[stale — detentless parts cost more]** |
 | less 10 pots no longer needed | -$7.00 |
 | 2x MCP23017 | +$3.60 |
 | **Net** | **+$8.72, about 5% of BOM** |
@@ -114,6 +160,18 @@ and those three are wherever they were physically left.
 
 **Bidirectional GPIO 15 of 16. ADC 8 of 12 free** (CV_1-CV_7 and D8). A2 and A3
 are now the touch UART, CV_8 is the CV in jack, D9 is SPI MOSI.
+
+### The CV pins are NOT in ascending order
+
+**Verified 2026-08-12 against the Patch SM symbol.** "C2-C8 = CV_1-CV_7" above is
+shorthand for *which pins are free*, *not* a 1:1 map. The first four are reversed:
+
+| Pin | C2 | C3 | C4 | C5 | C6 | C7 | C8 | C9 |
+|---|---|---|---|---|---|---|---|---|
+| **Signal** | CV**4** | CV**3** | CV**2** | CV**1** | CV5 | CV6 | CV7 | CV8 |
+
+Wire a jack to C2 expecting CV_1 and you get CV_4. This costs nothing if the jacks
+are labelled from this table and a silkscreen respin if they are not.
 
 ---
 
@@ -362,8 +420,8 @@ RX3->E03`.
 
 | Interface | Module + mapping | PT pins | Verdict |
 |---|---|---|---|
-| **UART** | UCA0 remapped (P5.2 TXD / P5.1 RXD) | **45 / 44** | **Use this.** No conflicts. |
-| UART | UCA0 default (P1.4 TXD / P1.5 RXD) | 4 / 5 | Works, but pin 4 also carries VREF+ and TCK. |
+| **UART** | UCA0 default (P1.4 TXD / P1.5 RXD) | **4 / 5** | **Use this.** Runtime and BSL become the same two wires — see "Inter-board interface". Pin 4 also carries VREF+ and TCK, both idle here. |
+| UART | UCA0 remapped (P5.2 TXD / P5.1 RXD) | 45 / 44 | **Route as a fallback.** No conflicts, but runtime and BSL stop being the same wires. |
 | UART | UCA1 (P2.6 TXD / P2.5 RXD) | 30 / 29 | **Unusable. Collides with CAP1.3 and CAP1.2.** |
 | **I2C** | UCB0 default (P1.2 SDA / P1.3 SCL) | **14 / 15** | **Use this.** No conflicts. |
 | I2C | UCB0 remapped (P4.6 SDA / P4.5 SCL) | 18 / 17 | Also fine. |

@@ -107,7 +107,7 @@ TI documents that most slider layouts can't reach 0 and max at the physical extr
 Direct finger-to-copper contact. This is outside TI's design assumptions (all their tuning guidance assumes 1.5–4mm of plastic).
 
 - **Larger signal delta** than TI's reference designs. Retune for lower conversion counts. Buys margin on latency and filtering.
-- **ESD is now on you.** TI's fallback for no-overlay: 470R–1k series resistor per electrode + TVS clamp (they name TPD1E10B06) between electrode and ground, on the electrode side of the resistor. 5 electrodes × 4 pads = 20 of each. Place near the MCU with a low-impedance ground path.
+- **ESD is now on you.** TI's fallback for no-overlay: 470R–1k series resistor per electrode + TVS clamp (they name TPD1E10B06) between electrode and ground, on the electrode side of the resistor. **4 electrodes × 4 pads = 16 of each** — the pad has 5 *segments* but only 4 *nets*, because RX0 appears at both ends and is one net. Place near the MCU with a low-impedance ground path.
 - **Specify ENIG, not HASL.** HASL leaves uneven solder — looks bad, feels worse under a sliding finger, and won't wear well. ENIG is flat and won't tarnish.
 - Upside: no bubble-induced dead spots, uniform sensitivity along the whole pad.
 
@@ -249,6 +249,21 @@ Bootloader lives in internal 128KB flash; the application always lives in QSPI a
 
 Keeps the **VCA / VCF / both** mode switch so the sampler/synth engine can run through an analog VCA and VCF.
 
+### Signal levels — the LPG interface is Eurorack level, and that comes from the module
+
+**Verified 2026-08-16 from the Patch SM datasheet v1.0.5.** Patch SM lists "Stereo
+**Eurorack Level** Audio Input / Outputs" as a feature and benchmarks SNR against a
+**9.5Vpp** reference sine (±4.75V). Bergman's LPG is a Eurorack design and expects the
+same, so `AUDIO_OUT_L/R` → LPG → `AUDIO_IN_L/R` is level-matched as designed. Nothing
+to do.
+
+**The catch: that level shifting is on the Patch SM, not in the codec.** It is listed as
+a distinguishing feature of the module, so a bare **Daisy Seed does not have it** — Seed
+is the AK4556 at line level. Any migration to Seed (see the EOL note below) therefore
+needs **~5x gain on both audio outputs and ~5x attenuation on both inputs**, on top of
+the CV conditioning and power stage. That is an extra quad op-amp sitting directly in
+the audio path.
+
 ### Vactrol count
 Bergman's design uses **two vactrols for one channel** (one VCA path, one filter path). **Stereo needs four.**
 
@@ -295,7 +310,14 @@ Interference ranking, worst → best: I2C anything → TFT over SPI → SSD1322 
 Cheaper fallback: **C5139767**, 1.54" SPI, 49 in stock, $7.21@1 / $5.06@100.
 
 Notes:
-- These are **bare panels with an FPC tail**, not breakout boards. Board needs an FPC connector, not a 2.54mm header. Check pin count and pitch on the datasheet.
+- **CORRECTED 2026-08-12 from the datasheet.** This is **not** a bare panel with an FPC
+  tail — C5139768 is a **module on its own 68.00 x 43.00 x 4.2mm PCB** with a **9-pin**
+  interface, which is why the EasyEDA footprint is `LCD-TH_HS242L01W4S01` (through-hole).
+  Pins: `1 GND, 2 VCC, 3 SCL, 4 SDA, 5 RES, 6 DC, 7 CS1, 8 FS0, 9 CS2`. **Pins 8 and 9 are
+  a separate on-board font chip** (`FS0` data out, `CS2` chip select) — nothing in libDaisy
+  uses it, so leave both unconnected, but the footprint has to carry them.
+  **The 68 x 43mm module outline is a placement constraint** on a main PCB limited to
+  284.3 x 125.0mm, and it is 4.2mm tall behind the panel.
 - SSD1309 panels usually need external charge-pump caps and an IREF resistor.
 - **[unverified]** Whether MISO (D8) is truly free — depends on the panel being write-only. Usually yes for SSD130x; confirm.
 - libDaisy SPI DMA is documented as non-blocking, and IRQ handlers exist for SPI2–SPI5. `OneBitGraphicsDisplay::Update()` returns true when finished, described as being for chained DMA transfers. **[unverified]** — the `SendDataDma` line in SSD130x source appears commented out, so the shipped `Update()` may still be blocking. At 1KB it doesn't matter much either way.
@@ -305,6 +327,11 @@ Notes:
 ---
 
 ## 8. Pin allocation (Daisy Patch SM)
+
+> **SUPERSEDED 2026-08-09 by [pin-allocation.md](pin-allocation.md). Do not lay out
+> against this section.** The knobs became encoders on two I2C expanders, the MSP430
+> IRQ line was dropped, BSL moved to software invocation, and the CV jack moved to
+> CV_8. Kept only as the record of what the plan was before those changes.
 
 **Note:** memory records a later IO plan of *three ADC inputs per channel (12 total), all panel pots, no CV jacks into the Daisy*, with the encoder on the main PCB and the two CV outputs generating LPG cutoff envelopes shaped by two of the 12 pots. **Reconcile that against the allocation below before layout — they may conflict on pin count.**
 
@@ -326,6 +353,13 @@ Also: display DC and RST are two GPIO not counted in early estimates. Some modul
 ---
 
 ## 9. Inter-board interface
+
+> **SUPERSEDED 2026-08-09 by [pin-allocation.md](pin-allocation.md) "Inter-board
+> interface".** Three things below are now wrong: **no I2C crosses this cable**
+> (the expanders are local to the main PCB), **there is no IRQ wire** (redundant
+> over UART — that is what freed A8), and **RST/TEST are test pads, not Daisy
+> pins** (BSL is invoked in software). The UART pin question it calls unverified
+> is also settled: default UCA0, pins 4/5.
 
 Only ~8–10 pins cross from faceplate to main board:
 - 3V3, GND
@@ -364,7 +398,7 @@ Estimated remainder (not verified):
 - Encoder: <$1
 - Two switches (one 4P3T or rotary): $2–6
 - Jacks: $6–12
-- ESD (20× TVS + 20× resistors): $3
+- ESD (16× TVS + 16× resistors): $3
 - PCBs (4-layer faceplate + main), low qty: $20–50
 - Board-to-board connectors, power regulation: $4–7
 
