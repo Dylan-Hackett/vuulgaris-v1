@@ -26,3 +26,4 @@ fp-info-cache
 ~*.lck
 *.kicad_pcb.bak*
 *.kicad_sch.bak*
+*.kicad_sym.bak
