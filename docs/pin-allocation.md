@@ -227,8 +227,20 @@ etc. without having to have it powered by eurorack)."
 | Bootloader firmware-from-USB-drive | **SD card firmware drop** |
 | Future USB MIDI host (plug in a keyboard) | **USB MIDI device**, when the module is reachable |
 
-The practical cost: **USB access means unscrewing the module from the rack.** Accepted, because
-firmware ships via SD card and the SD path is already in the design.
+**Revised 2026-08-17: the module's connector is now exposed, so there is no practical cost.**
+U1 sits rotated 90 degrees hard against the right wall, putting its USB-C at pcb (282.5, 85.2),
+1.8mm inside the edge. Cut the enclosure for it there. This costs no pins — DFU and USB MIDI
+device both run on that connector, and A8/A9 stay free for IO exactly as decided above.
+
+The layout constraint that produced this: **USB, the D header and the C header are all on the
+same long edge of the module**, so whichever wall the USB faces, the SD and CV face it too.
+Only the right wall works — the left is blocked by ENC0 and the MX cluster (about 16mm clear
+against the module's 68mm), and the top 47mm is entirely panel controls.
+
+**The SD card is not user-accessible, and that is accepted.** The module occupies 68mm of the
+77mm of clear height at that wall, so J1 cannot sit beside its own D header; it is parked to
+the left at (234, 114), a 44mm run, with the module between. Swapping a card means opening the
+case. Fine, because firmware ships over USB now and samples are written over the wire.
 
 **Build the bootloader with the default config**, i.e. **without** `DSY_DFU_USE_EXT_USB`. That
 flag moves DFU to the external port, which no longer exists on this board.

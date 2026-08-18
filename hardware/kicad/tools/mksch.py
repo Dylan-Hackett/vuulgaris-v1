@@ -71,8 +71,14 @@ SYM = {
 }
 for i in range(1, 11):
     SYM[f"ENC{i}"] = "EC12E2430803"
-for j in range(2, 7):
+# J2-J5: 3.5mm CV/gate. Four, not five -- CV out, gate out, CV in, gate in.
+for j in range(2, 6):
     SYM[f"J{j}"] = "WQP-WQP518MA_WQP-PJ398SM"
+# J7-J10: 1/4" audio, L/R in and L/R out. PJ-603 is a horizontal jack -- the
+# barrel runs parallel to the board and exits the top edge. Four contacts
+# (2,3,4,5); which is tip/sleeve/switch is NOT yet established, see netmap.
+for j in range(7, 11):
+    SYM[f"J{j}"] = "PJ-603_C41409498"
 
 POS = {
     # --- top band: the digital core -------------------------------------
@@ -92,8 +98,10 @@ POS = {
 for i in range(1, 11):
     col, row = (i - 1) % 5, (i - 1) // 5
     POS[f"ENC{i}"] = (180 + col * 85, 310 + row * 110)
-for j in range(2, 7):
+for j in range(2, 6):
     POS[f"J{j}"] = (180 + (j - 2) * 95, 545)
+for j in range(7, 11):
+    POS[f"J{j}"] = (180 + (j - 7) * 95, 630)
 
 
 # footprint per reference; nickname must match fp-lib-table, name must match the
@@ -116,8 +124,10 @@ FPMAP = {
 }
 for _i in range(1, 11):
     FPMAP[f"ENC{_i}"] = "SW-TH_EC12EXXXX"
-for _j in range(2, 7):
+for _j in range(2, 6):
     FPMAP[f"J{_j}"] = "CONN-TH_WQP-WQP518MA"
+for _j in range(7, 11):
+    FPMAP[f"J{_j}"] = "AUDIO-TH_PJ-603"
 
 NET = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "netmap.json")))
 
