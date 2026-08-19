@@ -16,7 +16,7 @@ and added five jacks. Safe to lay out against.
   **NOT on the I2C bus.** See "why the touch link is UART" below.
 - **Five jacks:** CV in (C9 / CV_8), CV out (C1), gate in / clock (B10),
   gate out x2 (B5, B6).
-- **Shift button on A9.** Main encoder on D3/D4 with push on B9.
+- **Main encoder on U4 (GPB0-2), not the Daisy.** A9 is free (shift was dropped).
 - **A8 reserved**, see below. **1-bit SD.** No panel USB.
 
 ### Four channel buttons — added 2026-08-16
@@ -150,13 +150,13 @@ and those three are wherever they were physically left.
 | A5 | +12V in | | C10 | LPG envelope (one, splits analog) |
 | A6 | 5V out | | D1 | OLED CS |
 | A7 | GND | | D2 | OLED DC |
-| **A8** | **RESERVED** | | D3, D4 | main encoder A, B |
-| A9 | shift button | | D5, D6, D7 | SD 1-bit: D0, CLK, CMD |
+| **A8** | **RESERVED** | | **D3, D4** | **FREE** (SDMMC_D2, SDMMC_D1) |
+| A9 | **FREE** | | D5, D6, D7 | SD 1-bit: D0, CLK, CMD |
 | A10 | 3V3 out | | **D8** | **free** (ADC) |
 | B1-B4 | audio out/in L/R | | D9 | OLED MOSI (native SPI2) |
 | B5, B6 | **GATE OUT 1, 2** | | D10 | OLED SCK |
 | B7, B8 | **I2C** (2 expanders, local) | | | |
-| B9 | main encoder push | | | |
+| **B9** | **FREE** (GATE_IN_2) | | | |
 
 **Bidirectional GPIO 15 of 16. ADC 8 of 12 free** (CV_1-CV_7 and D8). A2 and A3
 are now the touch UART, CV_8 is the CV in jack, D9 is SPI MOSI.
@@ -263,9 +263,36 @@ flag moves DFU to the external port, which no longer exists on this board.
 | **A8** | **RESERVED** | BBD clock in a later rev. Do not spend. |
 | **D8** | **FREE** | ADC-capable, bare 0-3.3V |
 
-**The main encoder stayed on the Daisy deliberately.** It drives the UI and wants
-the lowest latency; the ten parameter encoders are polled over I2C at 500Hz,
-which is fine for knobs but not what you want under a menu.
+### The main encoder moved to U4 — and poll Port B at 2kHz
+
+**Revised 2026-08-19.** ENC0's A, B and push now go to **U4 GPB0, GPB1, GPB2**
+instead of D3, D4 and B9. U4's Port B was completely unused; U3 is full at 16/16.
+
+It was on the Daisy for latency. The reason it can move is that the real problem
+was never latency, it was the **500Hz poll rate**:
+
+```
+realistic fast flick   3-5 rev/sec on a 24-detent encoder
+                       = 72-120 detents/s = 288-480 quadrature transitions/s
+
+ 500 Hz  ->  1-2 samples per transition   marginal, drops steps
+2 kHz    ->  4-7 samples per transition   comfortable
+```
+
+**So poll GPB on U4 at 2kHz.** One GPIOB read at 400kHz is about 100us, so 2kHz
+costs ~20% of the bus. The ten parameter encoders can stay at 500Hz — knobs do not
+get flicked through a menu.
+
+**An interrupt line was considered and rejected.** U4's INTB (pin 19) is free and
+could drive a freed Daisy pin, but the MCP23017's INT latches until GPIO or INTCAP
+is read, and any code path that misses that clear leaves the encoder dead
+intermittently. It also does not make the decode lossless -- the part queues
+nothing, so a fast spin can still slip a transition between the interrupt and the
+I2C read. Fixed-rate sampling is what a quadrature decoder wants anyway.
+
+**What this bought:** about 508mm of trace (ENC0 sat 250mm from the Daisy's D
+header and 75mm from U4), and **D3 and D4 back, both SDMMC data lines** -- 4-bit SD
+now needs only D2, currently OLED DC.
 
 ### Two pins came back, and it is worth recording why
 
@@ -291,7 +318,7 @@ turn freed **A9** for the shift button.
 | **CV IN jack** | **CV_8** (C9) | **Conditioned on-module. Rated to the +/-12V rails.** |
 | **GATE OUT 1** | **B5** (GATE_OUT_1, PC14) | Native 0-5V, no buffer needed |
 | **GATE OUT 2** | **B6** (GATE_OUT_2, PC13) | Same |
-| **Encoder push** | **B9** (GATE_IN_2, PG14) | `GateIn` inverts by default; flip in software |
+| **GATE IN 2** | **B9** (GATE_IN_2, PG14) | **Free.** Was the main encoder push before it moved to U4. |
 | **GATE IN / clock** | **B10** (GATE_IN_1, PG13) | Doubles as the external envelope trigger |
 | LPG envelope out | **CV_OUT_1** (C10) | **One output.** Splits on the LPG board into the two analog CV-amount attenuators. |
 | **CV OUT jack** | **CV_OUT_2** (C1) | Freed because one envelope needs one DAC |
