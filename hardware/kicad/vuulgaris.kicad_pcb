@@ -3579,7 +3579,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-376" (layer "B.Cu")
     (tstamp 041c9bb8-c2ca-407b-9483-2af01942abb1)
-    (at 173.15 62.5 -90)
+    (at 173.15 55.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/49bfc191-b680-40a5-a8fd-9bfd33015e92")
@@ -3646,7 +3646,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-376" (layer "B.Cu")
     (tstamp 0eebb683-b972-41c9-baf7-d5673391f1b4)
-    (at 151.15 62.5 -90)
+    (at 151.15 55.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/a0069228-8401-4ed5-a15e-e18fc576d8db")
@@ -3713,7 +3713,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-376" (layer "B.Cu")
     (tstamp 2ac05a35-daaa-4721-8e2d-1cbdfb4dfdd2)
-    (at 129.15 62.5 -90)
+    (at 129.15 55.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/15409716-7f64-4260-a3fb-eb106a02476b")
@@ -3780,7 +3780,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-376" (layer "B.Cu")
     (tstamp 38502f13-29a0-4935-9a80-e5c412d24e27)
-    (at 195.15 62.5 -90)
+    (at 195.15 55.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/de6121b6-d882-43a5-ac74-39eff835e98c")
@@ -3847,7 +3847,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-603" (layer "B.Cu")
     (tstamp 973cb841-8b0f-4f02-b502-f0b70d08e31e)
-    (at 313.6 74.55 -90)
+    (at 315.3 65.05 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/9c065415-a1e7-4cb8-8deb-2f00d1c95bf0")
@@ -4087,7 +4087,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-603" (layer "B.Cu")
     (tstamp bfc3497c-3175-4ad1-88c7-e7adae5f0c1a)
-    (at 361.6 74.55 -90)
+    (at 360.0 65.05 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/5ab30810-18c7-4237-ae1a-ae7429b635b1")
@@ -4327,7 +4327,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-603" (layer "B.Cu")
     (tstamp c0e1fcee-0ba6-40e8-8429-0c0fb485b8ac)
-    (at 345.6 74.55 -90)
+    (at 345.1 65.05 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/b3dbf620-7844-469a-97bd-2d205a57f5fb")
@@ -4567,7 +4567,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-603" (layer "B.Cu")
     (tstamp de1d2bb6-3344-477a-aa62-5cd363a94088)
-    (at 329.6 74.55 -90)
+    (at 330.2 65.05 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/797cd66b-8357-445f-83f2-070f9a36ecae")

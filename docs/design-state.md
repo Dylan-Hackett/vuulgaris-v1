@@ -434,6 +434,33 @@ Decoration and instructions in silkscreen. Exposed copper pads, ENIG finish.
 
 **LCSC does not stock display modules usefully**, and JLCPCB does not do overlay lamination (that's a membrane-switch/graphic-overlay industry — vendors like JRPanel). Not needed given the no-overlay decision, but noted for the record.
 
+### Enclosure TODO: counterbore the top wall at the four CV jacks
+
+**Decided 2026-08-18. Do this when the enclosure is built.** Pocket the **outside** face of the top wall from 6.0mm down to ~3.0mm at four spots, so the 3.5mm CV/gate jacks have enough thread proud of the wall to take a nut.
+
+| | board x | panel x |
+|---|---|---|
+| J2 | 29.15 | 36.145 |
+| J3 | 51.15 | 58.145 |
+| J4 | 73.15 | 80.145 |
+| J5 | 95.15 | 102.145 |
+
+The geometry, all in board coordinates (board edge y = 0):
+
+```
+board edge        y   0.00
+wall inner face   y  -1.00     1.0mm assembly gap
+wall outer face   y  -7.00     6.0mm wall
+```
+
+**PJ-376 lands exactly flush at y −7.00 and cannot go further.** Its barrel is 12.00mm from origin to tip while its pads reach 4.30mm the other way, so pushing it forward any more walks the pads off the board edge. Counterboring to 3mm gains ~3mm of exposed thread, which is a real nut.
+
+Two alternatives were considered and rejected. **Closing the 1.0mm board-to-wall gap** buys only 1mm — not enough for a nut — and spends the entire fit tolerance doing it; JLC holds board outline to about ±0.2mm, so at zero designed clearance an oversize board will not go into the cavity. **Accepting PCB-held jacks** works and is normal for right-angle parts, but a hard pull on a patch cable then loads the solder joints instead of the enclosure.
+
+**The four 1/4" jacks need none of this.** PJ-603 sits 2.00mm proud already and can reach 8.20mm, so those nut to the wall normally and will take the abuse.
+
+Still unverified: the split between threaded bushing and shoulder is not in either footprint — the silk outline's far end is the whole barrel. If PJ-603's thread is shorter than the 2mm currently protruding, the nut will not bite. Check both datasheets before ordering.
+
 ---
 
 ## 12. Immediate next steps
