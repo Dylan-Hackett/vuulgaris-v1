@@ -347,7 +347,7 @@
 
   (footprint "vuulgaris:R0402" (layer "F.Cu")
     (tstamp 079d54c4-e69e-4537-84ed-cc9b51fb6aaa)
-    (at 340.0 114.0)
+    (at 338.0 114.0)
     (descr "2.2KΩ (2201) ±1%")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -592,7 +592,7 @@
 
   (footprint "vuulgaris:R0805" (layer "F.Cu")
     (tstamp 0be7b0da-8937-4c15-93f3-51716c3fb070)
-    (at 296.0 103.0)
+    (at 322.0 106.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/9bfff1cd-80c9-4bf6-82a1-8cedf560bbe0")
@@ -644,7 +644,7 @@
 
   (footprint "vuulgaris:R0402" (layer "F.Cu")
     (tstamp 0c787bea-90c5-4538-8e70-b04ddb536540)
-    (at 340.0 108.0)
+    (at 338.0 108.0)
     (descr "2.2KΩ (2201) ±1%")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -753,7 +753,7 @@
 
   (footprint "vuulgaris:SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR" (layer "F.Cu")
     (tstamp 180d8535-99fe-49b3-ae68-bd690c941d12)
-    (at 307.0 103.0)
+    (at 309.0 106.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "Linear Voltage Regulators (LDO)")
@@ -808,7 +808,7 @@
 
   (footprint "vuulgaris:C0805" (layer "F.Cu")
     (tstamp 19829c92-828c-4119-a27d-6e616ab79fae)
-    (at 317.0 103.0)
+    (at 297.0 106.0)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -1742,7 +1742,7 @@
 
   (footprint "vuulgaris:SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR" (layer "F.Cu")
     (tstamp 4ac5c910-8ff6-4480-9c85-4ece72733521)
-    (at 167.0 145.0)
+    (at 272.0 155.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "Linear Voltage Regulators (LDO)")
@@ -1797,7 +1797,7 @@
 
   (footprint "vuulgaris:SOIC-28_L18.0-W7.5-P1.27-LS10.3-BL" (layer "F.Cu")
     (tstamp 4ecc9a78-b20f-454b-ba56-6a97106e858d)
-    (at 145.0 102.0)
+    (at 151.0 105.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "I/O Expanders")
@@ -2124,7 +2124,7 @@
 
   (footprint "vuulgaris:C0402" (layer "F.Cu")
     (tstamp 60deba03-b08b-4d9a-b09a-38e3030f0a9b)
-    (at 190.0 111.0)
+    (at 205.0 113.0)
     (descr "100nF (104) ±10% 16V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -2187,7 +2187,7 @@
 
   (footprint "vuulgaris:C0402" (layer "F.Cu")
     (tstamp 61982c46-4d59-4773-8651-d5e1a6b5f817)
-    (at 145.0 111.0)
+    (at 151.0 113.0)
     (descr "100nF (104) ±10% 16V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -2250,7 +2250,7 @@
 
   (footprint "vuulgaris:R0805" (layer "F.Cu")
     (tstamp 634c22ff-0c6e-406f-9799-aadcce4728f1)
-    (at 155.0 145.0)
+    (at 285.0 155.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/44723010-f71d-4386-b9c3-07ec8363cd9b")
@@ -2374,7 +2374,7 @@
 
   (footprint "vuulgaris:C0805" (layer "F.Cu")
     (tstamp 80fd80ef-4fef-4725-8da3-9651a91cecf2)
-    (at 155.0 152.0)
+    (at 279.0 155.0)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -2627,7 +2627,7 @@
 
   (footprint "vuulgaris:C0402" (layer "F.Cu")
     (tstamp 9e29cf38-65a2-4d8a-afdb-e41059a26434)
-    (at 178.0 152.0)
+    (at 266.0 155.0)
     (descr "100nF (104) ±10% 16V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -2854,7 +2854,7 @@
 
   (footprint "vuulgaris:C0402" (layer "F.Cu")
     (tstamp a7d4ed0a-ef17-4fc0-bcc8-53dcd958d29f)
-    (at 323.0 109.0)
+    (at 303.0 106.0)
     (descr "100nF (104) ±10% 16V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -2917,7 +2917,7 @@
 
   (footprint "vuulgaris:SOIC-28_L18.0-W7.5-P1.27-LS10.3-BL" (layer "F.Cu")
     (tstamp af0ebf00-970a-401c-a048-69d899c9767a)
-    (at 190.0 102.0)
+    (at 205.0 105.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "I/O Expanders")
@@ -3026,7 +3026,7 @@
 
   (footprint "vuulgaris:TF-SMD_TF-PUSH" (layer "B.Cu")
     (tstamp c6bb4456-4d49-46f9-9891-8cbcff909fd2)
-    (at 336.0 150.0 90)
+    (at 336.0 142.0 90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "SIM Card Connectors")
@@ -3276,7 +3276,7 @@
 
   (footprint "vuulgaris:C0805" (layer "F.Cu")
     (tstamp d8d48581-87be-4917-80f7-f971761494a0)
-    (at 296.0 109.0)
+    (at 316.0 106.0)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -3447,7 +3447,7 @@
 
   (footprint "vuulgaris:C0805" (layer "F.Cu")
     (tstamp df9be4a0-b72f-41a6-a47b-b2c2fbf9fe90)
-    (at 178.0 145.0)
+    (at 260.0 155.0)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
