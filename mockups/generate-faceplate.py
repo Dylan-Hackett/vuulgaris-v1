@@ -917,7 +917,7 @@ def placement(c, g):
                      "DPDT LPG mode VCF/VCA" if i == 0 else "DPDT SOURCE resample/ext",
                      sx, g["R3"], "ANALOG -> LPG"))
     rows.append(("DS1", "OLED 2.42in SSD1309 (TOP-LEFT)", g["oled_x0"], g["OLED_Y"], "SPI -> Daisy"))
-    rows.append(("ENC0", "encoder + PUSH, main UI", g["ENC_CX"], g["ENC_CY"], "-> Daisy D3/D4/B9"))
+    rows.append(("ENC0", "encoder + PUSH, main UI", g["ENC_CX"], g["ENC_CY"], "-> MCP23017 U4 GPB0-2"))
     if c.get("shift_button"):
         rows.append(("SW3", "tactile, SHIFT", g["SHIFT_CX"], g["SHIFT_CY"], "-> Daisy A9"))
     if c.get("mx_buttons"):

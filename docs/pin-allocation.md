@@ -37,11 +37,15 @@ Wired **button to ground with the MCP23017's internal pull-ups enabled** — the
 arrangement as the encoders, so no external resistors. Polled with everything else at
 500Hz, i.e. 2ms, which is irrelevant for a button.
 
-**Placement, revised 2026-08-17:** all six controls form ONE column in the left margin
-at panel **x 33.571** — encoder (y 72.0), shift (y 87.0), then the four buttons at
-y 97 / 106 / 115 / 124. The pad block moved **20mm right** to open that margin, so the
-pads now run x 61.143-277.143. The encoder and shift used to sit in the RIGHT margin;
-they moved with the buttons so the UI reads as one group.
+**Placement, revised 2026-08-17:** the controls sit in the left margin centred on panel
+**x 33.571** — the main encoder at y 76.525, then the four keys as a **2x2 Cherry MX
+cluster** on 19.05mm pitch at x 24.046 / 43.096, y 100.725 / 119.775. The pad block moved
+**20mm right** to open that margin, so the pads now run x 61.143-277.143. The encoder
+used to sit in the RIGHT margin; it moved with the keys so the UI reads as one group.
+
+**There is no shift button.** It was dropped 2026-08-16 — the four keys are general UI
+keys, not per-channel modifiers, which is why they read better as a cluster than a
+column. A9 came back with it.
 
 Everything else on the panel is unchanged — the ten parameter encoders, three pots, two
 DPDT switches and the OLED keep their coordinates, because the upper region is centred
@@ -66,8 +70,25 @@ decided (mute? solo? channel select? record-arm?).
 | **UART4** | **A2** (RX), **A3** (TX) | MSP430FR2675 | **yes**, point-to-point |
 | **I2C1** | B7 (SCL), B8 (SDA) | MCP23017 x2 @ 0x20, 0x21 | **no**, main PCB only |
 
-**Encoders are polled at 500Hz**, about 24% of a 400kHz bus, catching 125
-transitions per second against the 20-30 hands produce.
+### Poll rates, and the arithmetic behind them
+
+Quadrature edges per second is `rev/sec x PPR x 4`. For a 24-PPR encoder that is
+**96 edges per revolution**, so:
+
+| turn | rev/sec | edges/sec | at 500Hz | at 2kHz |
+|---|---|---|---|---|
+| deliberate parameter twist | ~1 | ~96 | 5 samples/edge | 21 |
+| **fast menu flick** | 3-5 | **288-480** | **1-2 samples/edge** | 4-7 |
+
+**ENC1-ENC10 stay at 500Hz** — about 24% of a 400kHz bus for both expanders. Parameter
+knobs are turned deliberately and never flicked through a list.
+
+**U4's Port B is polled at 2kHz** because ENC0 lives there and ENC0 is the one encoder
+that does get spun hard. One GPIOB read is about 100us, so that is roughly 20% more bus.
+
+*An earlier revision of this document claimed hands produce "20-30 transitions per
+second". That is about 0.25 rev/sec — too slow even for a deliberate twist, and it is
+what made 500Hz look sufficient everywhere. The table above supersedes it.*
 
 **The encoders are DETENTLESS** (decided 2026-08-13, see the brief §4.1). The original
 C202365 was an EC11E18244AU at 36 detents/18 pulses and is withdrawn — thirty-six

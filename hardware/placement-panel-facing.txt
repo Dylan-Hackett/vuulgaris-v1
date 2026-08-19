@@ -22,7 +22,7 @@ RV4     POT 9mm, RESONANCE                           163.143    39.980  ANALOG -
 SW1     DPDT LPG mode VCF/VCA                        184.643    30.960  ANALOG -> LPG
 SW2     DPDT SOURCE resample/ext                     197.643    30.960  ANALOG -> LPG
 DS1     OLED 2.42in SSD1309 (TOP-LEFT)               211.143    11.550  SPI -> Daisy
-ENC0    encoder + PUSH, main UI                       33.571    76.525  -> Daisy D3/D4/B9
+ENC0    encoder + PUSH, main UI                       33.571    76.525  -> MCP23017 U4 GPB0-2
 SW4     Cherry MX key 1 (general UI)                  24.046   100.725  -> MCP23017 U4 GPA4
 SW5     Cherry MX key 2 (general UI)                  43.096   100.725  -> MCP23017 U4 GPA5
 SW6     Cherry MX key 3 (general UI)                  24.046   119.775  -> MCP23017 U4 GPA6
