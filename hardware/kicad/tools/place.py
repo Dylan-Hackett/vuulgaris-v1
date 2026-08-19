@@ -294,6 +294,8 @@ for ref, block, _, _ in fp_blocks(src):
     fpm = re.match(r'\(footprint "([^"]+)"', block)
     a = re.search(r'\(at [-\d.]+ [-\d.]+( [-\d.]+)?\)', block)
     fang = float(a.group(1)) if (a and a.group(1)) else 0.0
+    Lm = re.match(r'\(footprint "[^"]*" \(layer "([^"]+)"', block)
+    onback = (Lm.group(1) if Lm else "F.Cu") != "F.Cu"
     lp = lib_pads(fpm.group(1).split(":")[-1]) if fpm else None
     if lp is None:
         skipped.append(ref); continue
@@ -305,12 +307,16 @@ for ref, block, _, _ in fp_blocks(src):
         want_rel = lp.get((round(float(x), 3), round(float(y), 3)))
         if want_rel is None:
             continue
-        want = (fang + want_rel[1]) % 360.0
+        # Mirroring negates the pad's relative angle, so a back-side footprint
+        # is fp_angle MINUS the library angle, not plus.
+        rel = -want_rel[1] if onback else want_rel[1]
+        want = (fang + rel) % 360.0
         checked += 1
         if abs((cur - want + 180) % 360 - 180) > 0.01:
             bad_ang += 1
             print(f"   {ref:5} pad {num:>4} {shape:9} angle {cur:6.1f}, expected {want:6.1f} "
-                  f"(footprint {fang:+.0f} + library {want_rel[1]:.0f}) -- SHAPE NOT ROTATED")
+                  f"(footprint {fang:+.0f} {'-' if onback else '+'} library "
+                  f"{abs(want_rel[1]):.0f}{', BACK' if onback else ''}) -- SHAPE NOT ROTATED")
 print(f"   {checked} non-circular pads checked, {bad_ang} wrong"
       + (f"; {len(skipped)} footprints not in the local library" if skipped else ""))
 
