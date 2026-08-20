@@ -80,6 +80,22 @@ FREE_SEED = {
     "FB2": (55, 95), "U6": (67, 95), "C25": (55, 102),
     "C22": (78, 95), "C23": (78, 102),
     "J2": (60, 117), "J3": (90, 117), "J4": (120, 117), "J5": (150, 117),
+    # power input stage, left-edge pocket, clear of the touch electrodes (x54+)
+    "J11": (3.8, 48.0),
+    "D1": (12.0, 45.0),
+    "L1": (18.0, 45.0),
+    "C29": (23.0, 45.0),
+    "C30": (27.0, 45.0),
+    "D3": (32.0, 45.0),
+    "C28": (12.0, 59.0),
+    "U7": (30.0, 59.0),
+    "L2": (22.0, 51.0),
+    "C31": (26.0, 51.0),
+    "C32": (30.0, 51.0),
+    "D2": (35.0, 51.0),
+    "R22": (39.5, 45.0),
+    "R23": (39.5, 49.0),
+    "R24": (39.5, 53.0),
     # 1/4" audio, rotated 270 so the barrel exits the TOP edge. y = 24.55 puts
     # the bushing at the board edge; the body runs 34mm inward on the back side,
     # under the OLED, which is on standoffs on the front.
