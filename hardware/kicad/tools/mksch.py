@@ -68,6 +68,17 @@ SYM = {
     "C22": "CL21A106KAYNNNE", "C23": "CL05B104KO5NNNC",
     "C24": "CL21A106KAYNNNE", "C25": "CL21A106KAYNNNE",
     "C26": "CL05B104KO5NNNC", "C27": "CL05B104KO5NNNC",
+    # ---- power input stage, 12V barrel -> +12V direct, -12V via an isolated
+    # module with its +Vout grounded. Topology follows mesotokyo/cheap-power-board
+    # (CC-BY 4.0); the module, the bleeder and the absent +5V/linear stages differ.
+    "J11": "DC-005-20A",
+    "D1": "SS34_C8678", "D2": "SS34_C8678", "D3": "SS34_C8678",
+    "L1": "CMP201209UD4R7MT", "L2": "CMP201209UD4R7MT",
+    "C28": "25YXJ470M10X12.5",
+    "C29": "CL21A106KAYNNNE", "C31": "CL21A106KAYNNNE",
+    "C30": "CL05B104KO5NNNC", "C32": "CL05B104KO5NNNC",
+    "R22": "0402WGF2201TCE", "R23": "0402WGF2201TCE", "R24": "0402WGF2201TCE",
+    "U7": "B1212S-1WR3_C3031174",
 }
 for i in range(1, 11):
     SYM[f"ENC{i}"] = "EC12E2430803"
@@ -105,6 +116,13 @@ for j in range(2, 6):
     POS[f"J{j}"] = (180 + (j - 2) * 95, 545)
 for j in range(7, 11):
     POS[f"J{j}"] = (180 + (j - 7) * 95, 630)
+# power input stage, its own band on the sheet
+POS.update({
+    "J11": (80, 720), "D1": (170, 720), "L1": (250, 720),
+    "C28": (330, 720), "C29": (400, 720), "C30": (470, 720), "D3": (540, 720),
+    "U7": (250, 810), "L2": (350, 810), "C31": (430, 810), "C32": (500, 810),
+    "D2": (570, 810), "R22": (650, 810), "R23": (720, 810), "R24": (790, 810),
+})
 
 
 # footprint per reference; nickname must match fp-lib-table, name must match the
@@ -131,6 +149,16 @@ for _j in range(2, 6):
     FPMAP[f"J{_j}"] = "AUDIO-TH_PJ-376"
 for _j in range(7, 11):
     FPMAP[f"J{_j}"] = "AUDIO-TH_PJ-603"
+FPMAP.update({
+    "J11": "DC-IN-TH_DC005",
+    "D1": "SMA_L4.3-W2.6-LS5.2-RD", "D2": "SMA_L4.3-W2.6-LS5.2-RD",
+    "D3": "SMA_L4.3-W2.6-LS5.2-RD",
+    "L1": "L0805", "L2": "L0805",
+    "C28": "CAP-TH_BD10.0-P5.00-D1.0-FD",
+    "C29": "C0805", "C31": "C0805", "C30": "C0402", "C32": "C0402",
+    "R22": "R0402", "R23": "R0402", "R24": "R0402",
+    "U7": "PWRM-TH_4P-L11.5-W6.1-P2.54_1",
+})
 
 NET = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "netmap.json")))
 
