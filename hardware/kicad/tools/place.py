@@ -81,21 +81,21 @@ FREE_SEED = {
     "C22": (78, 95), "C23": (78, 102),
     "J2": (60, 117), "J3": (90, 117), "J4": (120, 117), "J5": (150, 117),
     # power input stage, left-edge pocket, clear of the touch electrodes (x54+)
-    "J11": (3.8, 48.0),
-    "D1": (12.0, 45.0),
-    "L1": (18.0, 45.0),
-    "C29": (23.0, 45.0),
-    "C30": (27.0, 45.0),
-    "D3": (32.0, 45.0),
-    "C28": (12.0, 59.0),
-    "U7": (30.0, 59.0),
-    "L2": (22.0, 51.0),
-    "C31": (26.0, 51.0),
-    "C32": (30.0, 51.0),
-    "D2": (35.0, 51.0),
-    "R22": (39.5, 45.0),
-    "R23": (39.5, 49.0),
-    "R24": (39.5, 53.0),
+    "J11": (245.0, 3.8),
+    "D1": (272.0, 16.0),
+    "L1": (265.0, 16.0),
+    "C29": (260.0, 16.0),
+    "C30": (256.0, 16.0),
+    "D3": (251.0, 16.0),
+    "C28": (246.0, 28.0),
+    "U7": (262.0, 30.0),
+    "L2": (250.0, 38.0),
+    "C31": (245.0, 38.0),
+    "C32": (241.0, 38.0),
+    "D2": (256.0, 38.0),
+    "R22": (264.0, 38.0),
+    "R23": (267.0, 38.0),
+    "R24": (270.0, 38.0),
     # 1/4" audio, rotated 270 so the barrel exits the TOP edge. y = 24.55 puts
     # the bushing at the board edge; the body runs 34mm inward on the back side,
     # under the OLED, which is on standoffs on the front.
@@ -236,7 +236,7 @@ if reverted:
 else:
     print("panel parts on their holes: all 20")
 oob = [r for r, (x, y) in targets.items() if not (0 <= x <= W and 0 <= y <= H)]
-print(f"outside board outline: {oob or 'none'}")
+print(f"outside board outline (origins): {oob or 'none'}")
 
 # ------------------------------------------------- shaft offset, independently
 # ORIGIN_OFFSET is the one input nothing else can check: comparing board
@@ -384,6 +384,28 @@ def ov(A, B):
     dx = min(ax1, bx1) - max(ax0, bx0)
     dy = min(ay1, by1) - max(ay0, by0)
     return (dx, dy) if dx > 0 and dy > 0 else None
+
+# A footprint's ORIGIN can sit inside the outline while its BODY hangs off the
+# edge -- that is how J11 ended up 3.5mm over the right edge and passed. Bound by
+# geometry, not by origin.
+# These deliberately overhang: their barrels pass through the enclosure wall,
+# which sits 1mm beyond the board edge and is 6mm thick.
+EDGE_OK = {"J2", "J3", "J4", "J5", "J7", "J8", "J9", "J10", "J11"}
+edge = []
+for ref, (x0, y0, x1, y1) in box.items():
+    if ref in EDGE_OK:
+        continue
+    # box{} is in SHEET coordinates; the outline is board coordinates
+    x0, y0, x1, y1 = x0 - ORG[0], y0 - ORG[1], x1 - ORG[0], y1 - ORG[1]
+    over = max(0 - x0, 0 - y0, x1 - W, y1 - H)
+    if over > 0.01:
+        edge.append((ref, round(over, 2)))
+if edge:
+    print(f"BODY OVER THE BOARD EDGE ({len(edge)}):")
+    for ref, o in sorted(edge, key=lambda t: -t[1]):
+        print(f"   {ref:5} by {o} mm")
+else:
+    print("bodies inside the outline: all")
 
 hard, soft = [], []
 refs = sorted(box)
