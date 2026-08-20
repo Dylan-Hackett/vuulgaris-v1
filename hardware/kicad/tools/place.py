@@ -81,7 +81,7 @@ FREE_SEED = {
     "C22": (78, 95), "C23": (78, 102),
     "J2": (60, 117), "J3": (90, 117), "J4": (120, 117), "J5": (150, 117),
     # power input stage, left-edge pocket, clear of the touch electrodes (x54+)
-    "J11": (261.0, 5.0),
+    "J11": (261.0, 6.2),
     "D1": (272.0, 16.0),
     "L1": (265.0, 16.0),
     "C29": (260.0, 16.0),
@@ -355,8 +355,15 @@ for ref, block, _, _ in fp_blocks(src):
     #   x' = lx*cos + ly*sin ;  y' = -lx*sin + ly*cos
     # Bounding a rotated part with its unrotated extents silently swaps its
     # width and height, which is wrong by 28mm on the Daisy alone.
+    # A BACK-side footprint is mirrored: KiCad negates the local Y before
+    # rotating, so back = front(lx, -ly). Verified against Gerber flash positions
+    # for J7 and J11. Without this the box is mirrored in X for every part on
+    # B.Cu, and since the same arithmetic placed those parts, the check agreed
+    # with the mistake -- J11's pad sat 0.40mm over the outline and passed.
+    mir = -1.0 if (Lm.group(1) if Lm else "F.Cu") != "F.Cu" else 1.0
     ca, sa = math.cos(math.radians(ang)), math.sin(math.radians(ang))
     def place(lx, ly):
+        ly = ly * mir
         return ax + lx * ca + ly * sa, ay - lx * sa + ly * ca
     pts, ppts, prects = [], [], []
     for p in re.finditer(r'\(pad "[^"]*" \w+ \w+ \(at ([-\d.]+) ([-\d.]+)[^)]*\) \(size ([\d.]+) ([\d.]+)\)', block):
