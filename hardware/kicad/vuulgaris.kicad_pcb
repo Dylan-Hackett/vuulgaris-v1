@@ -4359,7 +4359,7 @@
 
   (footprint "vuulgaris:DC-IN-TH_DC005" (layer "B.Cu")
     (tstamp b20d4057-5eb8-4548-b371-be2d0f19dc39)
-    (at 361.0 53.8 270)
+    (at 361.0 55.0 270)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "AC/DC Power Connectors")

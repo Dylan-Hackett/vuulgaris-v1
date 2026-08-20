@@ -81,7 +81,7 @@ FREE_SEED = {
     "C22": (78, 95), "C23": (78, 102),
     "J2": (60, 117), "J3": (90, 117), "J4": (120, 117), "J5": (150, 117),
     # power input stage, left-edge pocket, clear of the touch electrodes (x54+)
-    "J11": (261.0, 3.8),
+    "J11": (261.0, 5.0),
     "D1": (272.0, 16.0),
     "L1": (265.0, 16.0),
     "C29": (260.0, 16.0),
@@ -406,6 +406,21 @@ if edge:
         print(f"   {ref:5} by {o} mm")
 else:
     print("bodies inside the outline: all")
+
+padedge = []
+for ref, rects in padbox.items():
+    for (x0, y0, x1, y1) in rects:
+        x0, y0, x1, y1 = x0 - ORG[0], y0 - ORG[1], x1 - ORG[0], y1 - ORG[1]
+        over = max(0 - x0, 0 - y0, x1 - W, y1 - H)
+        if over > 0.005:
+            padedge.append((ref, round(over, 2)))
+            break
+if padedge:
+    print(f"PADS OVER THE BOARD EDGE ({len(padedge)}) -- these get milled through:")
+    for ref, o in sorted(padedge, key=lambda t: -t[1]):
+        print(f"   {ref:5} by {o} mm")
+else:
+    print("pads inside the outline: all")
 
 hard, soft = [], []
 refs = sorted(box)
