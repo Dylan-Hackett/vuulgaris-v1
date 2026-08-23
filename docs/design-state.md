@@ -434,53 +434,47 @@ Decoration and instructions in silkscreen. Exposed copper pads, ENIG finish.
 
 **LCSC does not stock display modules usefully**, and JLCPCB does not do overlay lamination (that's a membrane-switch/graphic-overlay industry — vendors like JRPanel). Not needed given the no-overlay decision, but noted for the record.
 
-### Power: 12V DC barrel in, -12V made on board
+### Power: USB-C 5V in, +/-12V from a DKM10E-12
 
-**Decided 2026-08-20.** A 12V centre-positive barrel, +12V straight through, and the
-negative rail from a **1W isolated DC-DC with its +Vout tied to ground** — an
-ordinary 12V-to-12V module referenced upside down, so its floating output becomes
--12V. Topology follows [mesotokyo/cheap-power-board](https://github.com/mesotokyo/cheap-power-board)
-(CC-BY 4.0), which does the same thing with a 10W TDK CC10.
+**Decided 2026-08-23, reversing the 2026-08-20 barrel decision.** USB-C to a
+Mean Well DKM10E-12, which makes both rails. Full circuit, part numbers and
+designator mapping in [power-usbc-dkm.md](power-usbc-dkm.md).
 
-| | part | LCSC | |
-|---|---|---|---|
-| barrel | DC-005-20A | C130239 | $0.14, mates 5.5x2.1, **0.5A rated** |
-| series diode | SS34 | C8678 | $0.03, reverse polarity |
-| bulk | 25YXJ470M10X12.5 | C88740 | $0.15, 470uF/25V Rubycon |
-| converter | B1212S-1WR3 | C3031174 | $0.93, 1W, 84mA, 1.5kV iso |
-| filter | CMP201209UD4R7MT x2 | C139243 | 4.7uH |
-| clamps | SS34 x2 | C8678 | shunt, both rails |
-| bleeder | 3x 2.2k 0402 in series | | see below |
+**Why the reversal.** The barrel stage was cheaper -- about $1.39 against $15.36 --
+and smaller, 70mm2 against 645mm2. It was also **entirely untested**, invented here
+from a datasheet and an adaptation of someone else's topology, with a
+minimum-load problem serious enough that it needed a bleeder network that no
+single 0402 could legally dissipate. The USB-C design is a circuit Dylan has
+already built and run. It was read back **pad by pad out of the routed EasyEDA
+board**, not re-derived, so the thing in this repo is the thing that works.
 
-**About $1.39, against $15.36 for the USB-C + Mean Well DKM10E-12 alternative** —
-which was also out of stock at LCSC and 645mm2 of board against 70mm2.
+Beyond "it's tested", three real advantages:
 
-**Pin traps, all verified against datasheets rather than assumed:**
+- **No reverse-polarity diode and no TVS**, because a USB-C receptacle cannot be
+  plugged in backwards. That also removes the barrel design's 0.35V drop, so
+  +12V is actually 12V and the rails are symmetric. The dropout-headroom worry
+  that forced "the supply must be regulated" is gone with it.
+- **The minimum-load problem is gone.** The DKM is regulated, and the two
+  indicator LEDs put ~4.5mA permanently on each rail through their 2k2 ballast.
+  The -12V rail behaves whether or not the LPG is populated. Compare the barrel
+  stage, which needed a purpose-built bleeder and still sat near the boundary.
+- **A USB-C powered instrument is unusual**, and it ships without a wall wart.
 
-```
-SS34          pin 1 = K (cathode), pin 2 = A     <- reversed from convention
-DC-005-A      1 = tip (+12V), 2 = sleeve (GND), 3 = switch, leave NC
-B1212S        1 = -Vin, 2 = +Vin, 3 = -Vout, 4 = +Vout
-electrolytic  pad 1 = +, pad 2 = -  (silk band on the pad-2 side)
-```
+**Consequences accepted:**
 
-**The bleeder is not optional.** The module needs a minimum load of 10% of rated
-(8.4mA) or it stops regulating and the negative rail climbs. The Patch SM draws
-**5mA** on -12V and the LPG's op-amps 3-6mA, so without help you sit on the
-boundary. Three 2.2k 0402s in series give 1.82mA at 7.3mW each — the datasheet
-requires the resistor's rating to exceed 5x its dissipation, which one 0402 at 2.2k
-(65mW in a 62.5mW part) badly violates. A single 3.3k 1206 would be tidier if one is
-ever in stock.
+- **Cost.** ~$15 of converter, against ~$1.39. On a one-off this is noise; it
+  would matter at volume.
+- **Board area.** U7 is a 25.4mm square through-hole module standing ~10mm, in
+  the right-edge pocket on the back. The B1212S it replaces was 11.5 x 6.1mm.
+- **Two USB ports on one instrument.** The Daisy's own port is **micro USB**, not
+  USB-C, so they are not confusable by cable. Label them anyway.
+- **Stock.** DKM10E-12 was out of stock at LCSC when the barrel decision was
+  made. It is through-hole, so hand-fitting it after assembly is easy, but
+  **confirm availability before the fab order** -- from Mouser if not LCSC.
 
-**Consequences accepted:** the Schottky drops ~0.35V, so +12V is really ~11.65V and
-the rails are slightly asymmetric. Nothing cares — the Patch SM takes 6-17V and the
-regulated -12V is unaffected — but it does leave only 0.85V above the module's 10.8V
-dropout, so **the supply must be regulated**. Spec it as 12V, 1A, centre-positive.
-
-**Untested.** Breadboard it before committing to the fab. The netlist check confirms
-the board matches `netmap.json`; it cannot confirm `netmap.json` is right.
-
----
+**Untested in THIS layout.** The circuit is proven; its placement here is not.
+`netcheck.py` confirms the board matches `netmap.json` and the extraction
+confirms `netmap.json` matches the working board. Neither says the parts fit.
 
 ### Enclosure TODO: counterbore the top wall at the four CV jacks
 

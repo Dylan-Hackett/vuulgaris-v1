@@ -4,8 +4,8 @@
 declarative netlist and verified against KiCad's own netlister. Requires KiCad 7.
 
 ```
-vuulgaris.kicad_sch   43 components, 160 connections, 58 nets — VERIFIED 160/160
-vuulgaris.kicad_pcb   43 footprints placed, 284.3 x 125.0mm on Edge.Cuts
+vuulgaris.kicad_sch   69 components, 217 connections, 66 nets — VERIFIED 217/217
+vuulgaris.kicad_pcb   284.3 x 125.0mm on Edge.Cuts
 lib/                  symbols + footprints (see below)
 tools/                the generator and the netlist it generates from
 ```
@@ -30,12 +30,20 @@ This is the thing worth preserving. `tools/netmap.json` is the **intent**: every
 pin that carries a net, taken from `docs/pin-allocation.md`. The check is:
 
 ```bash
-kicad-cli sch export netlist --output net.net vuulgaris.kicad_sch
-# then diff every (ref,pin) -> net against tools/netmap.json
+python3 tools/mksch.py && python3 tools/netcheck.py
 ```
 
-Runs headless in seconds, needs nobody, and is authoritative because it is KiCad's
-own netlister rather than a proxy measurement. **Re-run it after any change.**
+`netcheck.py` exports the netlist with `kicad-cli` — KiCad's own code, not a
+reimplementation — and diffs every `(ref, pin) -> net` both ways. The reverse
+direction is the one that matters: a pin KiCad bound to a net that `netmap.json`
+never asked for is exactly the `P3V3_DAISY`-shorted-to-`I2C_SDA` failure above,
+and no ERC will ever flag it. **Re-run it after any change.**
+
+Then, before plotting fab files:
+
+```bash
+python3 tools/place.py --check && python3 tools/gerbercheck.py
+```
 
 ## Libraries
 

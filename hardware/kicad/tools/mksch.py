@@ -68,17 +68,27 @@ SYM = {
     "C22": "CL21A106KAYNNNE", "C23": "CL05B104KO5NNNC",
     "C24": "CL21A106KAYNNNE", "C25": "CL21A106KAYNNNE",
     "C26": "CL05B104KO5NNNC", "C27": "CL05B104KO5NNNC",
-    # ---- power input stage, 12V barrel -> +12V direct, -12V via an isolated
-    # module with its +Vout grounded. Topology follows mesotokyo/cheap-power-board
-    # (CC-BY 4.0); the module, the bleeder and the absent +5V/linear stages differ.
-    "J11": "DC-005-20A",
-    "D1": "SS34_C8678", "D2": "SS34_C8678", "D3": "SS34_C8678",
-    "L1": "CMP201209UD4R7MT", "L2": "CMP201209UD4R7MT",
-    "C28": "25YXJ470M10X12.5",
-    "C29": "CL21A106KAYNNNE", "C31": "CL21A106KAYNNNE",
-    "C30": "CL05B104KO5NNNC", "C32": "CL05B104KO5NNNC",
-    "R22": "0402WGF2201TCE", "R23": "0402WGF2201TCE", "R24": "0402WGF2201TCE",
-    "U7": "B1212S-1WR3_C3031174",
+    # ---- power input stage: USB-C 5V -> DKM10E-12 -> +/-12V.
+    # Transcribed pad-for-pad from the routed EasyEDA board `postpcb` in
+    # origin2.2.eprj -- see docs/power-usbc-dkm.md. The parts are the same LCSC
+    # ones, so pin numbering carries over with no translation.
+    "J11": "TYPE-C-31-M-12",           # USB-C receptacle, power only
+    "F1":  "ASMD1812-200",             # resettable PTC, 2A hold
+    "R22": "RT0603BRD075K1L", "R23": "RT0603BRD075K1L",   # CC1/CC2 5k1
+    "C28": "CC0603JRNPO9BN103",        # 10nF at the connector
+    "C29": "RVT1H220M0605",            # 22uF 50V, input bulk
+    "C30": "CC0805KKX7R9BB105",        # 1uF
+    "C31": "CC0603JRX7R8BB104",        # 100nF
+    "U7":  "DKM10E-12",
+    "C32": "RVT1E470M0505_C2977553", "C33": "RVT1E470M0505_C2977553",  # 47uF raw
+    "C34": "CC0603JRX7R8BB104", "C35": "CC0603JRX7R8BB104",            # 100nF raw
+    "L1":  "BLM18PG121SN1D_C14709", "L2": "BLM18PG121SN1D_C14709",     # 120R beads
+    "C36": "RVT1H220M0605", "C37": "RVT1H220M0605",                    # 22uF rail
+    "C38": "CC0603JRX7R8BB104", "C39": "CC0603JRX7R8BB104",            # 100nF rail
+    "R24": "RT0603BRD072K2L", "R25": "RT0603BRD072K2L",                # 2k2 LED ballast
+    # Rail-present LEDs. They are also the permanent minimum load on each rail,
+    # ~4.5mA, which is why the -12V rail behaves with the LPG unpopulated.
+    "D1":  "YLED0402Y", "D2": "YLED0402Y",
 }
 for i in range(1, 11):
     SYM[f"ENC{i}"] = "EC12E2430803"
@@ -118,10 +128,17 @@ for j in range(7, 11):
     POS[f"J{j}"] = (180 + (j - 7) * 95, 630)
 # power input stage, its own band on the sheet
 POS.update({
-    "J11": (80, 720), "D1": (170, 720), "L1": (250, 720),
-    "C28": (330, 720), "C29": (400, 720), "C30": (470, 720), "D3": (540, 720),
-    "U7": (250, 810), "L2": (350, 810), "C31": (430, 810), "C32": (500, 810),
-    "D2": (570, 810), "R22": (650, 810), "R23": (720, 810), "R24": (790, 810),
+    # inlet row
+    "J11": (80, 760), "C28": (170, 760), "F1": (240, 760),
+    "R22": (100, 850), "R23": (170, 850),
+    "C29": (310, 760), "C30": (375, 760), "C31": (440, 760),
+    "U7":  (530, 800),
+    # +12V rail, above the converter
+    "C32": (620, 720), "C34": (685, 720), "L1": (755, 720),
+    "C36": (830, 720), "C38": (895, 720), "R24": (965, 720), "D1": (1035, 720),
+    # -12V rail, below it
+    "C33": (620, 880), "C35": (685, 880), "L2": (755, 880),
+    "C37": (830, 880), "C39": (895, 880), "R25": (965, 880), "D2": (1035, 880),
 })
 
 
@@ -150,14 +167,20 @@ for _j in range(2, 6):
 for _j in range(7, 11):
     FPMAP[f"J{_j}"] = "AUDIO-TH_PJ-603"
 FPMAP.update({
-    "J11": "DC-IN-TH_DC005",
-    "D1": "SMA_L4.3-W2.6-LS5.2-RD", "D2": "SMA_L4.3-W2.6-LS5.2-RD",
-    "D3": "SMA_L4.3-W2.6-LS5.2-RD",
-    "L1": "L0805", "L2": "L0805",
-    "C28": "CAP-TH_BD10.0-P5.00-D1.0-FD",
-    "C29": "C0805", "C31": "C0805", "C30": "C0402", "C32": "C0402",
-    "R22": "R0402", "R23": "R0402", "R24": "R0402",
-    "U7": "PWRM-TH_4P-L11.5-W6.1-P2.54_1",
+    "J11": "USB-C_SMD-TYPE-C-31-M-12_1",
+    "F1":  "F1812",
+    "R22": "R0603", "R23": "R0603", "R24": "R0603", "R25": "R0603",
+    "C28": "C0603", "C30": "C0805", "C31": "C0603",
+    "C34": "C0603", "C35": "C0603", "C38": "C0603", "C39": "C0603",
+    # SMD aluminium cans -- 6.6mm square / 5.3mm square footprints, and they
+    # stand 6.0mm and 5.4mm tall. Height matters near the OLED standoff.
+    "C29": "CAP-SMD_BD6.3-L6.6-W6.6-FD", "C36": "CAP-SMD_BD6.3-L6.6-W6.6-FD",
+    "C37": "CAP-SMD_BD6.3-L6.6-W6.6-FD",
+    "C32": "CAP-SMD_BD5.0-L5.3-W5.3-LS6.3-FD",
+    "C33": "CAP-SMD_BD5.0-L5.3-W5.3-LS6.3-FD",
+    "L1": "L0603", "L2": "L0603",
+    "D1": "LED0402-R-RD", "D2": "LED0402-R-RD",
+    "U7": "PWRM-TH_DKMW30F-12",
 })
 
 NET = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "netmap.json")))

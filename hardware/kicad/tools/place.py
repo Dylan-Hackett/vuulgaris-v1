@@ -80,22 +80,23 @@ FREE_SEED = {
     "FB2": (55, 95), "U6": (67, 95), "C25": (55, 102),
     "C22": (78, 95), "C23": (78, 102),
     "J2": (60, 117), "J3": (90, 117), "J4": (120, 117), "J5": (150, 117),
-    # power input stage, left-edge pocket, clear of the touch electrodes (x54+)
-    "J11": (261.0, 6.2),
-    "D1": (272.0, 16.0),
-    "L1": (265.0, 16.0),
-    "C29": (260.0, 16.0),
-    "C30": (256.0, 16.0),
-    "D3": (251.0, 16.0),
-    "C28": (246.0, 28.0),
-    "U7": (262.0, 30.0),
-    "L2": (250.0, 38.0),
-    "C31": (245.0, 38.0),
-    "C32": (241.0, 38.0),
-    "D2": (256.0, 38.0),
-    "R22": (264.0, 38.0),
-    "R23": (267.0, 38.0),
-    "R24": (270.0, 38.0),
+    # Power stage: USB-C -> DKM10E-12 -> +/-12V, in the right-edge pocket.
+    # The pocket is bounded below by the Daisy, whose body starts around y 63,
+    # and on the left by the 1/4" jacks, which end at x 231. U7 is a 25.4mm
+    # SQUARE through-hole module -- far bigger than the B1212S it replaces --
+    # so it takes the middle of the pocket and everything else works around it.
+    "J11": (261.0, 5.0),                     # USB-C, mouth at the top edge
+    "F1":  (245.0, 6.0), "C28": (252.0, 6.0),
+    "R22": (270.0, 6.0), "R23": (274.0, 6.0),
+    "C29": (243.0, 13.0), "C30": (252.0, 13.0), "C31": (257.0, 13.0),
+    "U7":  (262.0, 30.0),                    # spans x[249.3,274.7] y[17.3,42.7]
+    # rail filtering below the module, two rows: +12V then -12V
+    "C32": (241.0, 48.0), "C34": (250.0, 48.0), "L1": (256.0, 48.0),
+    "C36": (264.0, 48.0), "C38": (274.0, 48.0),
+    "R24": (279.0, 48.0), "D1": (282.0, 48.0),
+    "C33": (241.0, 56.0), "C35": (250.0, 56.0), "L2": (256.0, 56.0),
+    "C37": (264.0, 56.0), "C39": (274.0, 56.0),
+    "R25": (279.0, 56.0), "D2": (282.0, 56.0),
     # 1/4" audio, rotated 270 so the barrel exits the TOP edge. y = 24.55 puts
     # the bushing at the board edge; the body runs 34mm inward on the back side,
     # under the OLED, which is on standoffs on the front.
