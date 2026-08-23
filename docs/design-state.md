@@ -473,8 +473,11 @@ Beyond "it's tested", three real advantages:
   **confirm availability before the fab order** -- from Mouser if not LCSC.
 
 **Untested in THIS layout.** The circuit is proven; its placement here is not.
-`netcheck.py` confirms the board matches `netmap.json` and the extraction
-confirms `netmap.json` matches the working board. Neither says the parts fit.
+Two checks, and it is worth being precise about what each one buys:
+`tools/edapower.py` regenerates the power block straight out of the `.eprj` and
+reports 57/57 against the routed board, so `netmap.json` IS the working circuit
+rather than a retyping of it. `tools/netcheck.py` reports 217/217, so the KiCad
+schematic is what `netmap.json` says. Neither says the parts physically fit.
 
 ### Enclosure TODO: counterbore the top wall at the four CV jacks
 

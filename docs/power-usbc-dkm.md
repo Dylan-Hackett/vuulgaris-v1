@@ -88,9 +88,19 @@ USB-C  A4/B9,B4/A9 ── DKM5V ──┬── C105 10nF ── GND
 
 ## As built into this repo
 
-Transcribed into `hardware/kicad/tools/netmap.json` and verified 217/217 by
-`tools/netcheck.py` against `kicad-cli`'s netlist. Designators are renumbered to
-fit this project's sequence:
+**Generated** into `hardware/kicad/tools/netmap.json` by `tools/edapower.py`,
+which reads the `.eprj` directly -- not hand-transcribed. Re-run it to check:
+
+```bash
+python3 tools/edapower.py          # 57/57 pin-nets match the EasyEDA board
+```
+
+The first version of this WAS hand-typed, and nine two-terminal parts came
+across with pins 1 and 2 swapped -- six ceramics and three resistors, all
+non-polar, so electrically identical, but not what the board says. Every
+polarised part was right. Generating it removes the question.
+
+Designators are renumbered to fit this project's sequence:
 
 | here | EasyEDA | part | LCSC |
 |---|---|---|---|
