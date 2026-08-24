@@ -479,6 +479,56 @@ reports 57/57 against the routed board, so `netmap.json` IS the working circuit
 rather than a retyping of it. `tools/netcheck.py` reports 217/217, so the KiCad
 schematic is what `netmap.json` says. Neither says the parts physically fit.
 
+### Layout: the Daisy moved to the bottom wall to make room for U7
+
+**2026-08-24.** The DKM10E-12 is a **25.4mm square through-hole module**. The
+B1212S it replaced was 11.5 x 6.1mm and lived quietly under the OLED. This one
+cannot.
+
+Only two parts in the power stage have through-hole pins at all -- **U7 and the
+USB-C's four shell legs**. The other 21 are SMD on the back, and the OLED is on
+the front, so the board itself separates them; those stay under the screen and
+nothing touches. It was never the parts under the screen that were the problem,
+it was the pins coming through it.
+
+**The constraint that decides everything here:** the capacitive scrub pads on the
+faceplate cover panel x 61-277, y 64.5-131.5, which is **pcb x 54-270, y
+57.5-124.5** -- the entire lower two-thirds of the board. Above that band the
+only 25.4mm-square opening is the OLED itself. So U7 goes either under the screen
+or under the electrodes. There is no third option on a 284 x 125 board.
+
+Under the screen is a *hard* failure -- pins against a standoff of unverified
+height, and it either assembles or it doesn't. Under the electrodes is a *soft*
+one: degraded sensing, mitigated by the faceplate's L3 hatched ground (§ the
+cap-sense notes above), and by the DKM being an encapsulated brick rather than an
+open switching layout. The Daisy has been sitting over those same electrodes all
+along. Soft loses to hard.
+
+| | from | to |
+|---|---|---|
+| U1 Daisy | x[243,283] y[54,122], rot 90 | **x[46,114] y[83,123], rot 0** |
+| J1 SD | x[224,240] y[86,102] | **x[118,135] y[87,103]** — follows U1, SDIO stays short |
+| U7 | did not exist here | **x[257,283] y[49,75]** — 1.66mm below the OLED |
+| J11 USB-C | — | **x[274,284] y[0,9]** — top edge, right of the OLED |
+
+U7 clears the OLED by 1.66mm and the right board edge by 1.60mm. About half its
+width sits outboard of the electrode area, which ends at x 270.
+
+**Two things here are provisional and must be checked against hardware:**
+
+1. **U1's rotation.** `DAISY_PATCH_SM` is a carrier footprint -- four 2x5
+   headers -- and does not mark where the micro-USB is. Rot 0 was chosen to make
+   the body fit the bottom wall, not to aim the USB. Confirm which edge it exits
+   before fab. Accepted consequence either way: the bottom wall is the
+   **player-facing front** of the instrument, since the scrub pads run along the
+   bottom of the panel. A MIDI cable will come out the front.
+2. **J11's rotation.** The USB-C mouth has to overhang y < 0. Its slot is
+   274.27-284.13 against a board edge at 284.3 and an OLED ending at 273.65 --
+   **0.17mm and 0.62mm of margin.** Verify with `gerbercheck.py` and a render,
+   not arithmetic; that reasoning has been wrong on this board three times.
+
+---
+
 ### Enclosure TODO: counterbore the top wall at the four CV jacks
 
 **Decided 2026-08-18. Do this when the enclosure is built.** Pocket the **outside** face of the top wall from 6.0mm down to ~3.0mm at four spots, so the 3.5mm CV/gate jacks have enough thread proud of the wall to take a nut.

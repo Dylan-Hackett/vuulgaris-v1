@@ -68,11 +68,17 @@ PANEL = {
 # Starting positions ONLY. Once a part is in free-placement.json the board wins
 # and these are ignored -- see the module docstring.
 FREE_SEED = {
-    "U1": (120, 90),                       # Daisy, centre of the board
+    # Daisy moved to the BOTTOM wall 2026-08-24 to clear the right side for the
+    # power stage. U7 is 25.4mm square and the only place on this board with a
+    # 25.4mm slot outside the OLED is the column the Daisy used to occupy.
+    # NOTE: rotation is provisional. This carrier footprint is four 2x5 headers
+    # and does not mark where the micro-USB sits, so which wall it exits is not
+    # derivable from the file. Confirm against the hardware before fab.
+    "U1": (80, 103),                       # 68 x 40, spans x[46,111] y[83,123]
     "U3": (45, 52), "U4": (90, 52),        # expanders under the encoder rows
     "C26": (45, 61), "C27": (90, 61),      # their decoupling
     "R20": (122, 48), "R21": (128, 48),    # I2C pull-ups, on the bus
-    "J1": (172, 84),                       # SD hard against the Daisy
+    "J1": (126.5, 93.4),                   # SD follows the Daisy -- SDIO stays short
     "FB1": (196, 53), "U5": (207, 53), "C24": (196, 59),
     "C20": (217, 53), "C21": (223, 59),    # OLED rail, at the OLED
     # MSP430 rail: moved again to clear the MX cluster. Still far from the OLED
@@ -80,23 +86,31 @@ FREE_SEED = {
     "FB2": (55, 95), "U6": (67, 95), "C25": (55, 102),
     "C22": (78, 95), "C23": (78, 102),
     "J2": (60, 117), "J3": (90, 117), "J4": (120, 117), "J5": (150, 117),
-    # Power stage: USB-C -> DKM10E-12 -> +/-12V, in the right-edge pocket.
-    # The pocket is bounded below by the Daisy, whose body starts around y 63,
-    # and on the left by the 1/4" jacks, which end at x 231. U7 is a 25.4mm
-    # SQUARE through-hole module -- far bigger than the B1212S it replaces --
-    # so it takes the middle of the pocket and everything else works around it.
-    "J11": (261.0, 5.0),                     # USB-C, mouth at the top edge
-    "F1":  (245.0, 6.0), "C28": (252.0, 6.0),
-    "R22": (270.0, 6.0), "R23": (274.0, 6.0),
-    "C29": (243.0, 13.0), "C30": (252.0, 13.0), "C31": (257.0, 13.0),
-    "U7":  (262.0, 30.0),                    # spans x[249.3,274.7] y[17.3,42.7]
-    # rail filtering below the module, two rows: +12V then -12V
-    "C32": (241.0, 48.0), "C34": (250.0, 48.0), "L1": (256.0, 48.0),
-    "C36": (264.0, 48.0), "C38": (274.0, 48.0),
-    "R24": (279.0, 48.0), "D1": (282.0, 48.0),
-    "C33": (241.0, 56.0), "C35": (250.0, 56.0), "L2": (256.0, 56.0),
-    "C37": (264.0, 56.0), "C39": (274.0, 56.0),
-    "R25": (279.0, 56.0), "D2": (282.0, 56.0),
+    # Power stage: USB-C -> DKM10E-12 -> +/-12V, down the right edge.
+    #
+    # Only TWO parts here are through-hole: U7 and the USB-C's shell legs. The
+    # other 21 are SMD on the back, and the OLED is on the front, so the board
+    # itself separates them -- they sit under the screen and nothing touches.
+    # It is the through-hole pins that could not stay there.
+    #
+    # U7 is 25.4mm SQUARE. There is no 25.4mm slot in the band above the
+    # capacitive pads (y < 57.5) that is not already the OLED, so it goes below
+    # them, pushed as far right as it fits: the pads stop at x 270, so its right
+    # third is outside the electrode area entirely.
+    "J11": (279.2, 4.0),                     # USB-C at the top edge, right of DS1
+    # input side, along the right edge under the OLED -- all SMD
+    "R22": (267.0, 10.0), "R23": (267.0, 13.0),
+    "C28": (272.0, 10.0), "F1": (277.0, 14.0),
+    "C29": (272.0, 20.0), "C30": (278.0, 26.0), "C31": (278.0, 30.0),
+    "U7":  (270.0, 62.0),                    # spans x[257.3,282.7] y[49.3,74.7]
+    # raw rails, left of the module
+    "C32": (247.0, 52.0), "C34": (247.0, 57.0), "L1": (247.0, 61.0),
+    "C33": (247.0, 66.0), "C35": (247.0, 70.0), "L2": (247.0, 74.0),
+    # filtered rails, below it, in space the Daisy vacated
+    "C36": (255.0, 80.0), "C38": (255.0, 85.0),
+    "R24": (262.0, 80.0), "D1": (266.0, 80.0),
+    "C37": (255.0, 90.0), "C39": (255.0, 95.0),
+    "R25": (262.0, 90.0), "D2": (266.0, 90.0),
     # 1/4" audio, rotated 270 so the barrel exits the TOP edge. y = 24.55 puts
     # the bushing at the board edge; the body runs 34mm inward on the back side,
     # under the OLED, which is on standoffs on the front.
