@@ -81,7 +81,7 @@ FREE_SEED = {
     # U1 is on the BACK now, same face as this, so it needs clearance in front
     # of the mouth, not merely no overlap: 15.3mm to the board edge, 12.2mm back
     # to the Daisy.
-    "J1": (138.0, 100.0),                  # body y[94.7,109.7], mouth at 109.7
+    "J1": (112.0, 78.0),                   # body x[104,119.3] y[72.7,87.7], mouth at 87.7
     "FB1": (196, 53), "U5": (207, 53), "C24": (196, 59),
     "C20": (217, 53), "C21": (223, 59),    # OLED rail, at the OLED
     # MSP430 rail: moved again to clear the MX cluster. Still far from the OLED

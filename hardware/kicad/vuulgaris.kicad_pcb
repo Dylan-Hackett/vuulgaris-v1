@@ -5629,7 +5629,7 @@
 
   (footprint "vuulgaris:TF-SMD_TF-PUSH" (layer "B.Cu")
     (tstamp c6bb4456-4d49-46f9-9891-8cbcff909fd2)
-    (at 238.0 150.0 180)
+    (at 212.0 128.0 180)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "SIM Card Connectors")
