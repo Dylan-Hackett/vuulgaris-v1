@@ -68,17 +68,16 @@ PANEL = {
 # Starting positions ONLY. Once a part is in free-placement.json the board wins
 # and these are ignored -- see the module docstring.
 FREE_SEED = {
-    # Daisy moved to the BOTTOM wall 2026-08-24 to clear the right side for the
-    # power stage. U7 is 25.4mm square and the only place on this board with a
-    # 25.4mm slot outside the OLED is the column the Daisy used to occupy.
-    # NOTE: rotation is provisional. This carrier footprint is four 2x5 headers
-    # and does not mark where the micro-USB sits, so which wall it exits is not
-    # derivable from the file. Confirm against the hardware before fab.
-    "U1": (80, 103),                       # 68 x 40, spans x[46,111] y[83,123]
-    "U3": (45, 52), "U4": (90, 52),        # expanders under the encoder rows
-    "C26": (45, 61), "C27": (90, 61),      # their decoupling
-    "R20": (122, 48), "R21": (128, 48),    # I2C pull-ups, on the bus
-    "J1": (126.5, 93.4),                   # SD follows the Daisy -- SDIO stays short
+    # Daisy. No longer needs an edge -- MIDI was dropped 2026-08-25 and firmware
+    # goes on by opening the box, so the micro-USB does not have to reach a wall.
+    # Placed instead where the SIGNALS want it: directly under the four 1/4"
+    # jacks, so the analog audio runs are ~30mm instead of ~100mm across the
+    # board. Audio is the one thing here that cannot be cleaned up afterwards.
+    # 37mm clear of U7, which is an encapsulated module with two-stage LC on
+    # both rails, so that is enough. Rotation is now free -- nothing depends
+    # on where the USB points.
+    "U1": (159.5, 62.5),                   # 68 x 40, spans x[125.5,193.5] y[42.5,82.5]
+    "J1": (138.4, 92.1),                   # SD hard under the Daisy, SDIO stays short
     "FB1": (196, 53), "U5": (207, 53), "C24": (196, 59),
     "C20": (217, 53), "C21": (223, 59),    # OLED rail, at the OLED
     # MSP430 rail: moved again to clear the MX cluster. Still far from the OLED
@@ -375,7 +374,12 @@ for ref, block, _, _ in fp_blocks(src):
     # for J7 and J11. Without this the box is mirrored in X for every part on
     # B.Cu, and since the same arithmetic placed those parts, the check agreed
     # with the mistake -- J11's pad sat 0.40mm over the outline and passed.
-    mir = -1.0 if (Lm.group(1) if Lm else "F.Cu") != "F.Cu" else 1.0
+    # side[ref], NOT Lm -- Lm belongs to the pad-orientation loop above. Reading
+    # it here gave every part the mirror flag of whichever footprint that loop
+    # happened to end on, so every box in this check was mirrored together or
+    # not at all. It invented a 3.18mm RV3/RV4-vs-U1 collision and, worse, would
+    # hide a real one just as silently. Third mirror bug in this file.
+    mir = -1.0 if side[ref] != "F.Cu" else 1.0
     ca, sa = math.cos(math.radians(ang)), math.sin(math.radians(ang))
     def place(lx, ly):
         ly = ly * mir
