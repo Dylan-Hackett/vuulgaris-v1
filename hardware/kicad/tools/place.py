@@ -76,12 +76,12 @@ FREE_SEED = {
     # 37mm clear of U7, which is an encapsulated module with two-stage LC on
     # both rails, so that is enough. Rotation is now free -- nothing depends
     # on where the USB points.
-    "U1": (159.5, 62.5),                   # 68 x 40, spans x[125.5,193.5] y[42.5,82.5]
+    "U1": (120.0, 105.0),                  # 68 x 40, spans x[86,154] y[85,125] -- BOTTOM EDGE for USB
     # SD. Slot mouth is local +y, so the card ejects toward the bottom edge.
     # U1 is on the BACK now, same face as this, so it needs clearance in front
     # of the mouth, not merely no overlap: 15.3mm to the board edge, 12.2mm back
     # to the Daisy.
-    "J1": (112.0, 78.0),                   # body x[104,119.3] y[72.7,87.7], mouth at 87.7
+    "J1": (100.0, 75.0),                   # rot 0 now: mouth at y 65.3 (ejects UP), contacts at 80.3
     "FB1": (196, 53), "U5": (207, 53), "C24": (196, 59),
     "C20": (217, 53), "C21": (223, 59),    # OLED rail, at the OLED
     # MSP430 rail: moved again to clear the MX cluster. Still far from the OLED
