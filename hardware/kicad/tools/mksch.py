@@ -15,7 +15,8 @@ import json, re, math, uuid, sys, os
 
 SCRATCH = "/private/tmp/claude-501/-Users-dylanhackett-V1/4d61871d-02f0-409c-8779-744109130e35/scratchpad"
 KI = "/Users/dylanhackett/V1/hardware/kicad"
-LIBS = [f"{KI}/lib/vuulgaris.kicad_sym", f"{KI}/lib/daisy_es.kicad_sym"]
+LIBS = [f"{KI}/lib/vuulgaris.kicad_sym", f"{KI}/lib/daisy_es.kicad_sym",
+        "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Switch.kicad_sym"]
 STUB = 10.16                     # 8 grid units - keeps labels clear of bodies
 SHEET = str(uuid.uuid4())
 
@@ -62,6 +63,11 @@ SYM = {
     # until Bergman's circuit is in the repo (see design-state §6).
     "RV1": "RK09L1240A12",                       # dual-gang, LPG offset
     "RV2": "RK09D117000C", "RV3": "RK09D117000C", "RV4": "RK09D117000C",
+    # SW1 LPG MODE (stereo VCF / stereo VCA), SW2 SOURCE (resample / external).
+    # Both DPDT, both pure analog routing on the LPG, both cost zero Daisy pins.
+    # Pins intentionally unwired until Bergman's circuit is in the repo -- same
+    # treatment as RV1-RV4.
+    "SW1": "SW_DPDT_x2", "SW2": "SW_DPDT_x2",
     "SW4": "CPG151101S03", "SW5": "CPG151101S03",
     "SW6": "CPG151101S03", "SW7": "CPG151101S03",
     "C20": "CL21A106KAYNNNE", "C21": "CL05B104KO5NNNC",
@@ -115,6 +121,7 @@ POS = {
     "ENC0": (70, 310),
     "RV1": (300, 430), "RV2": (370, 430), "RV3": (300, 490), "RV4": (370, 490),
     "SW4": (70, 430), "SW5": (150, 430), "SW6": (70, 490), "SW7": (150, 490),
+    "SW1": (440, 430), "SW2": (440, 490),
     # --- right: the two 3V3 rails, kept apart from each other ------------
     "FB1": (600, 330), "U5": (690, 330), "C24": (600, 400), "C20": (690, 400), "C21": (770, 400),
     "FB2": (600, 480), "U6": (690, 480), "C25": (600, 550), "C22": (690, 550), "C23": (770, 550),
@@ -154,6 +161,14 @@ FPMAP = {
     "RV1": "RES-ADJ-TH_RK09L1240A12",
     "RV2": "RES-ADJ-TH_RK09D1130C4G", "RV3": "RES-ADJ-TH_RK09D1130C4G",
     "RV4": "RES-ADJ-TH_RK09D1130C4G",
+    # PROVISIONAL FOOTPRINT. This is a real, KiCad-stock, through-hole DPDT --
+    # but it is a SUB-MINIATURE slide switch, 9.5 x 5.2mm with a ~2mm actuator,
+    # which will NOT reach a faceplate sitting ~10mm above the board. It is here
+    # so SW1/SW2 exist in the schematic and the netlist; the pin count and
+    # numbering are the same for any DPDT, so swapping it is a one-line change
+    # once the physical switch is chosen and measured. DO NOT FAB WITH THIS.
+    "SW1": "SW_CuK_JS202011CQN_DPDT_Straight",
+    "SW2": "SW_CuK_JS202011CQN_DPDT_Straight",
     "SW4": "KEY-TH_CPG1511F01S0X", "SW5": "KEY-TH_CPG1511F01S0X",
     "SW6": "KEY-TH_CPG1511F01S0X", "SW7": "KEY-TH_CPG1511F01S0X",
     "C20": "C0805", "C22": "C0805", "C24": "C0805", "C25": "C0805",

@@ -45,6 +45,8 @@ CHECK = "--check" in sys.argv
 # against the old panel.
 PANEL_FILE = "/Users/dylanhackett/V1/hardware/placement-panel-facing.txt"
 
+_BOARD_REFS = set(re.findall(r'\(fp_text reference "([^"]+)"', open(PCB).read()))
+
 def _read_panel(path):
     out = {}
     for line in open(path):
@@ -61,9 +63,12 @@ def _read_panel(path):
     # header on that left edge, vertically centred on the 43mm body.
     if "DS1" in out:
         out["DS1"] = (out["DS1"][0], out["DS1"][1] + 21.5)
-    # SW1/SW2 are LPG panel controls with no footprint on this PCB yet.
+    # SW1/SW2 are LPG panel controls. They are dropped only while they have no
+    # footprint on this PCB; once they exist they are panel parts like any other
+    # and must line up with their faceplate slots.
     for k in ("SW1", "SW2"):
-        out.pop(k, None)
+        if k not in _BOARD_REFS:
+            out.pop(k, None)
     return out
 
 PANEL = _read_panel(PANEL_FILE)
