@@ -92,6 +92,8 @@ CFG = {
     # 8.2mm puts them clear of the jacks (which end at pcb y 25) and level with
     # the lower pot row, which reads fine.
     "switch_y_shift_mm":   8.2,
+    # Nudge the pair LEFT. At 0 SW2's body sits 0.33mm off the OLED.
+    "switch_x_shift_mm":  -8.0,
     "switch_w_mm":         9.0,
     "switch_h_mm":        20.0,
     "oled_w_mm":          70.0,
@@ -266,6 +268,11 @@ def derive(c):
     g["UP_DIV"] = g["ch_x0"] + ch_w + UG
     g["env_x0"] = g["UP_DIV"] + UG
     g["ui_x0"] = g["env_x0"] + env_w + UG
+    # Switch group left edge. Computed ONCE, like SW_CY. The SVG used to read
+    # a g["sw_x0"] that was never assigned, so render() raised KeyError and
+    # emitted NOTHING -- while --check and --placement, which skip render(),
+    # both passed. A generator that crashes only on its main output.
+    g["SW_X0"] = g["ui_x0"] + 3 + c.get("switch_x_shift_mm", 0.0)
     g["oled_x0"] = g["ui_x0"] + ui_w + UG + c.get("oled_x_shift_mm", 0.0)
     g["CH_CX"] = [g["ch_x0"] + KR + i * KP for i in range(4)]
     g["EN_CX"] = [g["env_x0"] + KR + i * KP for i in range(3)]
@@ -523,7 +530,7 @@ def render(c, g):
     sw_cy = g["SW_CY"]
     sw_y = sw_cy - c["switch_h_mm"] / 2.0
     for i in range(c["n_switches"]):
-        sx = g["sw_x0"] + i * (c["switch_w_mm"] + 4.0)
+        sx = g["SW_X0"] + i * (c["switch_w_mm"] + 4.0)
         A(f'<circle cx="{f(sx + c["switch_w_mm"]/2)}" cy="{f(g["R3"])}" '
           f'r="{f(c["switch_hole_d_mm"]/2)}"/>')
     A('</g>')
@@ -871,7 +878,7 @@ def check(c, g):
     box.append((g["oled_x0"], g["oled_x0"]+c["oled_w_mm"], g["OLED_Y"], g["OLED_Y"]+c["oled_h_mm"]))
     sy0 = g["SW_CY"] - c["switch_h_mm"]/2.0
     for i in range(c["n_switches"]):
-        sx = g["ui_x0"]+3+i*(c["switch_w_mm"]+4)
+        sx = g["SW_X0"]+i*(c["switch_w_mm"]+4)
         box.append((sx, sx+c["switch_w_mm"], sy0, sy0+c["switch_h_mm"]))
     box.append((g["ENC_CX"]-er, g["ENC_CX"]+er, g["ENC_CY"]-er, g["ENC_CY"]+er))
     if c["shift_button"]:
@@ -942,7 +949,7 @@ def placement(c, g):
     rows.append(("RV1", "POT 9mm DUAL-GANG, LPG OFFSET", g["EN_CX"][2], g["R2"], "ANALOG -> LPG"))
     rows.append(("RV4", "POT 9mm, RESONANCE", g["EN_CX"][2], g["R4"], "ANALOG -> LPG"))
     for i in range(c["n_switches"]):
-        sx = g["ui_x0"] + 3 + i * (c["switch_w_mm"] + 4.0) + c["switch_w_mm"] / 2.0
+        sx = g["SW_X0"] + i * (c["switch_w_mm"] + 4.0) + c["switch_w_mm"] / 2.0
         rows.append((f"SW{1+i}",
                      "DPDT LPG mode VCF/VCA" if i == 0 else "DPDT SOURCE resample/ext",
                      sx, g["SW_CY"], "ANALOG -> LPG"))
