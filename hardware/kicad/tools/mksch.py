@@ -63,17 +63,14 @@ SYM = {
     # until Bergman's circuit is in the repo (see design-state §6).
     "RV1": "RK09L1240A12",                       # dual-gang, LPG offset
     "RV2": "RK09D117000C", "RV3": "RK09D117000C", "RV4": "RK09D117000C",
-    # SW1 LPG MODE (stereo VCF / stereo VCA), SW2 SOURCE (resample / external).
-    # Both DPDT, both pure analog routing on the LPG, both cost zero Daisy pins.
-    # Pins intentionally unwired until Bergman's circuit is in the repo -- same
-    # treatment as RV1-RV4.
-    "SW1": "SW_DPDT_x2", "SW2": "SW_DPDT_x2",
+    # SW1/SW2 replaced by DG419 analog switches 2026-08-27 -- see U8-U11 below.
     "SW4": "CPG151101S03", "SW5": "CPG151101S03",
     "SW6": "CPG151101S03", "SW7": "CPG151101S03",
     "C20": "CL21A106KAYNNNE", "C21": "CL05B104KO5NNNC",
     "C22": "CL21A106KAYNNNE", "C23": "CL05B104KO5NNNC",
     "C24": "CL21A106KAYNNNE", "C25": "CL21A106KAYNNNE",
     "C26": "CL05B104KO5NNNC", "C27": "CL05B104KO5NNNC",
+    "C40": "CL05B104KO5NNNC", "C41": "CL05B104KO5NNNC", "C42": "CL05B104KO5NNNC", "C43": "CL05B104KO5NNNC", "C44": "CL05B104KO5NNNC", "C45": "CL05B104KO5NNNC", "C46": "CL05B104KO5NNNC", "C47": "CL05B104KO5NNNC",
     # ---- power input stage: USB-C 5V -> DKM10E-12 -> +/-12V.
     # Transcribed pad-for-pad from the routed EasyEDA board `postpcb` in
     # origin2.2.eprj -- see docs/power-usbc-dkm.md. The parts are the same LCSC
@@ -86,6 +83,13 @@ SYM = {
     "C30": "CC0805KKX7R9BB105",        # 1uF
     "C31": "CC0603JRX7R8BB104",        # 100nF
     "U7":  "DKM10E-12",
+    # Analog SPDT switches replacing the two DPDT panel toggles. Four SPDT = two
+    # DPDT: U8/U9 are the MODE switch's L and R poles, U10/U11 the SOURCE
+    # switch's. Ganged in software by sharing one GPIO each, which is what the
+    # mechanical version achieved with a single actuator. D/S1/S2 stay unwired
+    # until Bergman's circuit lands, as with RV1-RV4.
+    "U8": "DG419DY-T1-E3", "U9": "DG419DY-T1-E3",
+    "U10": "DG419DY-T1-E3", "U11": "DG419DY-T1-E3",
     "C32": "RVT1E470M0505_C2977553", "C33": "RVT1E470M0505_C2977553",  # 47uF raw
     "C34": "CC0603JRX7R8BB104", "C35": "CC0603JRX7R8BB104",            # 100nF raw
     "L1":  "BLM18PG121SN1D_C14709", "L2": "BLM18PG121SN1D_C14709",     # 120R beads
@@ -121,8 +125,16 @@ POS = {
     "ENC0": (70, 310),
     "RV1": (300, 430), "RV2": (370, 430), "RV3": (300, 490), "RV4": (370, 490),
     "SW4": (70, 430), "SW5": (150, 430), "SW6": (70, 490), "SW7": (150, 490),
-    "SW1": (440, 430), "SW2": (440, 490),
     # --- right: the two 3V3 rails, kept apart from each other ------------
+    "U8": (860, 300), "U9": (860, 370), "U10": (860, 440), "U11": (860, 510),
+    "C40": (940, 300),
+    "C41": (1000, 300),
+    "C42": (940, 370),
+    "C43": (1000, 370),
+    "C44": (940, 440),
+    "C45": (1000, 440),
+    "C46": (940, 510),
+    "C47": (1000, 510),
     "FB1": (600, 330), "U5": (690, 330), "C24": (600, 400), "C20": (690, 400), "C21": (770, 400),
     "FB2": (600, 480), "U6": (690, 480), "C25": (600, 550), "C22": (690, 550), "C23": (770, 550),
 }
@@ -161,19 +173,22 @@ FPMAP = {
     "RV1": "RES-ADJ-TH_RK09L1240A12",
     "RV2": "RES-ADJ-TH_RK09D1130C4G", "RV3": "RES-ADJ-TH_RK09D1130C4G",
     "RV4": "RES-ADJ-TH_RK09D1130C4G",
-    # PROVISIONAL FOOTPRINT. This is a real, KiCad-stock, through-hole DPDT --
-    # but it is a SUB-MINIATURE slide switch, 9.5 x 5.2mm with a ~2mm actuator,
-    # which will NOT reach a faceplate sitting ~10mm above the board. It is here
-    # so SW1/SW2 exist in the schematic and the netlist; the pin count and
-    # numbering are the same for any DPDT, so swapping it is a one-line change
-    # once the physical switch is chosen and measured. DO NOT FAB WITH THIS.
-    "SW1": "SW_CuK_JS202011CQN_DPDT_Straight",
-    "SW2": "SW_CuK_JS202011CQN_DPDT_Straight",
     "SW4": "KEY-TH_CPG1511F01S0X", "SW5": "KEY-TH_CPG1511F01S0X",
     "SW6": "KEY-TH_CPG1511F01S0X", "SW7": "KEY-TH_CPG1511F01S0X",
     "C20": "C0805", "C22": "C0805", "C24": "C0805", "C25": "C0805",
     "C21": "C0402", "C23": "C0402", "C26": "C0402", "C27": "C0402",
     "FB1": "R0805", "FB2": "R0805",
+    "U8": "SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL", "U9": "SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL",
+    "U10": "SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL", "U11": "SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL",
+    "C40": "C0402",
+    "C41": "C0402",
+    "C42": "C0402",
+    "C43": "C0402",
+    "C44": "C0402",
+    "C45": "C0402",
+    "C46": "C0402",
+    "C47": "C0402",
+
 }
 for _i in range(1, 11):
     FPMAP[f"ENC{_i}"] = "SW-TH_EC12EXXXX"

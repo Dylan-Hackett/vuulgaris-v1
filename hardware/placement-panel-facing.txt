@@ -19,8 +19,6 @@ RV2     POT 9mm, CV amount L                         141.143    21.395  ANALOG -
 RV3     POT 9mm, CV amount R                         141.143    37.851  ANALOG -> LPG
 RV1     POT 9mm DUAL-GANG, LPG OFFSET                163.143    21.395  ANALOG -> LPG
 RV4     POT 9mm, RESONANCE                           163.143    37.851  ANALOG -> LPG
-SW1     DPDT LPG mode VCF/VCA                        184.643    29.431  ANALOG -> LPG
-SW2     DPDT SOURCE resample/ext                     197.643    29.431  ANALOG -> LPG
 DS1     OLED 2.42in SSD1309 (TOP-LEFT)               205.043    10.049  SPI -> Daisy
 ENC0    encoder + PUSH, main UI                       33.571    70.928  -> MCP23017 U4 GPB0-2
 SW4     Cherry MX key 1 (general UI)                  24.046    95.129  -> MCP23017 U4 GPA4

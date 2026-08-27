@@ -80,7 +80,12 @@ CFG = {
     # There is NOT a separate VCF/VCA switch per channel. The LPG is one stereo
     # unit, so mode is a single decision applied to both sides. Clarified
     # 2026-08-07 after that was described wrongly.
-    "n_switches":            2,
+    # 0 since 2026-08-27. The two DPDT panel toggles became DG419 analog
+    # switches on the main board (U8-U11), thrown by MCP23017 GPB3/GPB4 -- so
+    # mode and source are software state, recallable with the patch, and neither
+    # needs a slot, an actuator that reaches the panel, or a bushing.
+    "n_switches":            0,
+    "switch_reserve_slots":  2,   # hold the row where it was; see ui_w
     "switch_w_mm":         9.0,   # vertical slots
     "switch_h_mm":        20.0,
     "oled_w_mm":          70.0,
@@ -236,7 +241,12 @@ def derive(c):
     ch_w = 3 * KP + 2 * KR
     env_w = 2 * KP + 2 * KR          # 3 columns x 2 rows: 2 encoders, 4 pots
     NSW = c["n_switches"]
-    ui_w = NSW * c["switch_w_mm"] + max(0, NSW - 1) * 4.0 + 6.0
+    # Reserve the width the switches used to occupy even when none are drawn.
+    # Letting the row re-centre when they went away moved every encoder and pot
+    # 11mm right and drove RV1's pads through J7's -- a cosmetic change breaking
+    # a verified layout. Set to 0 to genuinely reclaim the space.
+    RSV = c.get("switch_reserve_slots", NSW)
+    ui_w = RSV * c["switch_w_mm"] + max(0, RSV - 1) * 4.0 + 6.0
     if not c["encoder_lower_right"]:
         ui_w += 2 * c["encoder_r_mm"] + 6.0
     content = ch_w + UG + UG + env_w + UG + ui_w + UG + c["oled_w_mm"]
@@ -811,8 +821,11 @@ def check(c, g):
             g["SHIFT_CY"] + sr < g["PANEL_H"] - c["bottom_margin_mm"])
     row("switch slots vertical", f"{c['switch_w_mm']} x {c['switch_h_mm']}mm",
         c["switch_h_mm"] > c["switch_w_mm"])
-    row("switch count", f"{c['n_switches']} (LPG mode + source, both DPDT)",
-        c["n_switches"] == 2)
+    # The two DPDT panel toggles became DG419 analog switches on the main board
+    # on 2026-08-27, so zero slots is now the correct answer, not a failure.
+    row("switch count", f'{c["n_switches"]} (LPG mode + source are now U8-U11, '
+        f'DG419 analog switches thrown by MCP23017 GPB3/GPB4)',
+        c["n_switches"] in (0, 2))
     # At reduced panel depth the OLED is the VERTICAL floor of the upper strip:
     # 42mm of screen has to fit above the divider rule. This is the check that
     # decides how far the depth can be cut.
