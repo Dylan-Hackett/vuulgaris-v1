@@ -2956,7 +2956,7 @@
 
   (footprint "vuulgaris:SW-TH_DW3_DPDT_2MD1T1B1M2QES" (layer "F.Cu")
     (tstamp 9a60c189-fb66-457b-885d-dddf01ec2b46)
-    (at 282.648 80.631)
+    (at 286.648 80.631)
     (descr "Dailywell 2MD1T1B1M2QES sub-miniature toggle, DPDT ON-ON, PC pin. Sold by Thonk as DW3. Drawn from the manufacturer drawing 2MDP0428 rev C (07.10.2012): P.C. MOUNTING gives two columns 5.08mm apart, three pins per column at 2.54mm, hole dia 1.09mm. Panel hole 4.95mm, bushing 10-48 UNS-2A x 5.59mm. Pins 2 and 5 are the COMMONS; throws are 1/3 and 4/6.")
     (tags "switch toggle DPDT SPDT panel dailywell thonk")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -3902,7 +3902,7 @@
 
   (footprint "vuulgaris:SW-TH_DW3_DPDT_2MD1T1B1M2QES" (layer "F.Cu")
     (tstamp d6132c07-3022-4dc9-89cd-77a5262a2833)
-    (at 269.648 80.631)
+    (at 273.648 80.631)
     (descr "Dailywell 2MD1T1B1M2QES sub-miniature toggle, DPDT ON-ON, PC pin. Sold by Thonk as DW3. Drawn from the manufacturer drawing 2MDP0428 rev C (07.10.2012): P.C. MOUNTING gives two columns 5.08mm apart, three pins per column at 2.54mm, hole dia 1.09mm. Panel hole 4.95mm, bushing 10-48 UNS-2A x 5.59mm. Pins 2 and 5 are the COMMONS; throws are 1/3 and 4/6.")
     (tags "switch toggle DPDT SPDT panel dailywell thonk")
     (property "Sheetfile" "vuulgaris.kicad_sch")

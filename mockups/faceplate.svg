@@ -34,8 +34,8 @@
 <circle cx="163.143" cy="21.395" r="8"/>
 <circle cx="163.143" cy="37.851" r="8"/>
 </g>
-<circle cx="176.643" cy="29.431" r="2.475"/>
-<circle cx="189.643" cy="29.431" r="2.475"/>
+<circle cx="180.643" cy="29.431" r="2.475"/>
+<circle cx="193.643" cy="29.431" r="2.475"/>
 </g>
 <g id="oled" fill="none" stroke="#5F5E5A" stroke-width="0.3"><rect x="205.043" y="10.049" width="70" height="42" rx="1"/></g>
 <line id="divider-rule" x1="0" y1="54.097" x2="298.286" y2="54.097" stroke="#5F5E5A" stroke-width="0.45"/>

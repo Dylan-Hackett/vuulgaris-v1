@@ -93,7 +93,7 @@ CFG = {
     # the lower pot row, which reads fine.
     "switch_y_shift_mm":   8.2,
     # Nudge the pair LEFT. At 0 SW2's body sits 0.33mm off the OLED.
-    "switch_x_shift_mm":  -8.0,
+    "switch_x_shift_mm":  -4.0,
     "switch_w_mm":         9.0,
     "switch_h_mm":        20.0,
     "oled_w_mm":          70.0,
