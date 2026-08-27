@@ -1,41 +1,41 @@
 # Vuulgaris V1 panel-facing placement, generated from mockups/generate-faceplate.py
 #   python3 mockups/generate-faceplate.py --placement > hardware/placement-panel-facing.txt
 # ORIGIN: panel top-left corner. X right, Y DOWN. Millimetres.
-# Panel 298.286 x 139.000mm. All parts on the MAIN PCB,
+# Panel 298.286 x 130.810mm. All parts on the MAIN PCB,
 # protruding through faceplate openings, EXCEPT the pads which are faceplate copper.
 
 REF     PART                                               X         Y  NOTE
-ENC1    encoder, ch1 A                                25.143    22.350  -> MCP23017
-ENC2    encoder, ch1 B                                25.143    39.980  -> MCP23017
-ENC3    encoder, ch2 A                                47.143    22.350  -> MCP23017
-ENC4    encoder, ch2 B                                47.143    39.980  -> MCP23017
-ENC5    encoder, ch3 A                                69.143    22.350  -> MCP23017
-ENC6    encoder, ch3 B                                69.143    39.980  -> MCP23017
-ENC7    encoder, ch4 A                                91.143    22.350  -> MCP23017
-ENC8    encoder, ch4 B                                91.143    39.980  -> MCP23017
-ENC9    encoder, envelope ATTACK                     119.143    22.350  -> MCP23017
-ENC10   encoder, envelope RELEASE                    119.143    39.980  -> MCP23017
-RV2     POT 9mm, CV amount L                         141.143    22.350  ANALOG -> LPG
-RV3     POT 9mm, CV amount R                         141.143    39.980  ANALOG -> LPG
-RV1     POT 9mm DUAL-GANG, LPG OFFSET                163.143    22.350  ANALOG -> LPG
-RV4     POT 9mm, RESONANCE                           163.143    39.980  ANALOG -> LPG
-SW1     DPDT LPG mode VCF/VCA                        184.643    30.960  ANALOG -> LPG
-SW2     DPDT SOURCE resample/ext                     197.643    30.960  ANALOG -> LPG
-DS1     OLED 2.42in SSD1309 (TOP-LEFT)               211.143    11.550  SPI -> Daisy
-ENC0    encoder + PUSH, main UI                       33.571    76.525  -> MCP23017 U4 GPB0-2
-SW4     Cherry MX key 1 (general UI)                  24.046   100.725  -> MCP23017 U4 GPA4
-SW5     Cherry MX key 2 (general UI)                  43.096   100.725  -> MCP23017 U4 GPA5
-SW6     Cherry MX key 3 (general UI)                  24.046   119.775  -> MCP23017 U4 GPA6
-SW7     Cherry MX key 4 (general UI)                  43.096   119.775  -> MCP23017 U4 GPA7
+ENC1    encoder, ch1 A                                25.143    21.395  -> MCP23017
+ENC2    encoder, ch1 B                                25.143    37.851  -> MCP23017
+ENC3    encoder, ch2 A                                47.143    21.395  -> MCP23017
+ENC4    encoder, ch2 B                                47.143    37.851  -> MCP23017
+ENC5    encoder, ch3 A                                69.143    21.395  -> MCP23017
+ENC6    encoder, ch3 B                                69.143    37.851  -> MCP23017
+ENC7    encoder, ch4 A                                91.143    21.395  -> MCP23017
+ENC8    encoder, ch4 B                                91.143    37.851  -> MCP23017
+ENC9    encoder, envelope ATTACK                     119.143    21.395  -> MCP23017
+ENC10   encoder, envelope RELEASE                    119.143    37.851  -> MCP23017
+RV2     POT 9mm, CV amount L                         141.143    21.395  ANALOG -> LPG
+RV3     POT 9mm, CV amount R                         141.143    37.851  ANALOG -> LPG
+RV1     POT 9mm DUAL-GANG, LPG OFFSET                163.143    21.395  ANALOG -> LPG
+RV4     POT 9mm, RESONANCE                           163.143    37.851  ANALOG -> LPG
+SW1     DPDT LPG mode VCF/VCA                        184.643    29.431  ANALOG -> LPG
+SW2     DPDT SOURCE resample/ext                     197.643    29.431  ANALOG -> LPG
+DS1     OLED 2.42in SSD1309 (TOP-LEFT)               205.043    10.049  SPI -> Daisy
+ENC0    encoder + PUSH, main UI                       33.571    70.928  -> MCP23017 U4 GPB0-2
+SW4     Cherry MX key 1 (general UI)                  24.046    95.129  -> MCP23017 U4 GPA4
+SW5     Cherry MX key 2 (general UI)                  43.096    95.129  -> MCP23017 U4 GPA5
+SW6     Cherry MX key 3 (general UI)                  24.046   114.178  -> MCP23017 U4 GPA6
+SW7     Cherry MX key 4 (general UI)                  43.096   114.178  -> MCP23017 U4 GPA7
 
 # FACEPLATE COPPER (layer 1, exposed, no soldermask):
-#   pad1  x 61.143..277.143   y 64.550..74.550
-#   pad2  x 61.143..277.143   y 83.550..93.550
-#   pad3  x 61.143..277.143   y 102.550..112.550
-#   pad4  x 61.143..277.143   y 121.550..131.550
+#   pad1  x 61.143..277.143   y 58.953..68.953
+#   pad2  x 61.143..277.143   y 77.953..87.953
+#   pad3  x 61.143..277.143   y 96.953..106.953
+#   pad4  x 61.143..277.143   y 115.953..125.953
 #   100 comb teeth per pad, pitch 2.160mm, width 1.950mm
 
 # ENCLOSURE: 6mm walls all round, panel screws onto the wall tops
-#   cavity        286.29 x 127.00mm
-#   MAIN PCB MAX  284.3 x 125.0mm
+#   cavity        286.29 x 118.81mm
+#   MAIN PCB MAX  284.3 x 116.8mm
 #   PCB ORIGIN sits at panel (6.995, 7.000); pcb = panel - that offset

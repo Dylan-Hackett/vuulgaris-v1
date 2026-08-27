@@ -36,7 +36,8 @@ CFG = {
     "pad_gap_mm":          9.0,
     # Depth override. None = the original Salamis 1.933:1 ratio (154.29mm).
     # 129 was chosen 2026-08-09 to shrink the footprint WITHOUT touching the gap.
-    "panel_h_mm":        139.0,
+    "panel_h_mm":        130.81,   # was 139.0. Shrunk 2026-08-26: the board
+                                  # bottoms out at 116.81 on U1, panel = board + 14.
 
     # ---- copper: comb teeth -------------------------------------------------
     "teeth_per_zone":       25,   # x4 zones = 100 teeth/pad
@@ -81,6 +82,10 @@ CFG = {
     "switch_w_mm":         9.0,   # vertical slots
     "switch_h_mm":        20.0,
     "oled_w_mm":          70.0,
+    # Nudge the OLED left of where the composition flow puts it. At 0 its pads
+    # collide with the SD socket and the USB-C, which live in the top-right
+    # corner of the board -- a board-side constraint the composition cannot see.
+    "oled_x_shift_mm":    -6.1,
     "oled_h_mm":          42.0,
     "encoder_r_mm":        9.2,
     # Controls live in ONE column in the left margin: encoder, shift, then the
@@ -238,7 +243,7 @@ def derive(c):
     g["UP_DIV"] = g["ch_x0"] + ch_w + UG
     g["env_x0"] = g["UP_DIV"] + UG
     g["ui_x0"] = g["env_x0"] + env_w + UG
-    g["oled_x0"] = g["ui_x0"] + ui_w + UG
+    g["oled_x0"] = g["ui_x0"] + ui_w + UG + c.get("oled_x_shift_mm", 0.0)
     g["CH_CX"] = [g["ch_x0"] + KR + i * KP for i in range(4)]
     g["EN_CX"] = [g["env_x0"] + KR + i * KP for i in range(3)]
     g["OFFSET_CX"] = g["EN_CX"][2]      # RV1 now sits in column 3, top row

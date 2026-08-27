@@ -33,37 +33,40 @@ PCB = f"{KI}/vuulgaris.kicad_pcb"
 FREE_JSON = f"{KI}/tools/free-placement.json"
 ORG = (100.0, 50.0)          # board top-left on the sheet
 OX, OY = 6.995, 7.000        # panel -> pcb
-W, H = 284.3, 125.0
+W, H = 284.3, 116.81      # board shrunk 2026-08-26; H was 125.0
 RESET = "--reset" in sys.argv
 CHECK = "--check" in sys.argv
 
-PANEL = {
-    # GENERATED coordinates, from:
-    #   python3 mockups/generate-faceplate.py --placement
-    "ENC1": (25.143, 22.35),
-    "ENC2": (25.143, 39.98),
-    "ENC3": (47.143, 22.35),
-    "ENC4": (47.143, 39.98),
-    "ENC5": (69.143, 22.35),
-    "ENC6": (69.143, 39.98),
-    "ENC7": (91.143, 22.35),
-    "ENC8": (91.143, 39.98),
-    "ENC9": (119.143, 22.35),
-    "ENC10": (119.143, 39.98),
-    "ENC0": (33.571, 76.525),
-    "SW4": (24.046, 100.725),
-    "SW5": (43.096, 100.725),
-    "SW6": (24.046, 119.775),
-    "SW7": (43.096, 119.775),
-    # LPG analog controls, 2x2x2 group
-    "RV1": (163.143, 22.35),
-    "RV2": (141.143, 22.35),
-    "RV3": (141.143, 39.98),
-    "RV4": (163.143, 39.98),
-    # DS1 origin is the 9-pin HEADER; panel file gives the module TOP-LEFT,
+# READ from the generated placement file, NOT transcribed. This used to be a
+# hardcoded copy of generate-faceplate.py's output, which meant regenerating the
+# faceplate silently changed nothing here -- the two drifted apart and place.py
+# went on enforcing coordinates from a panel that no longer existed. That cost a
+# whole shrink cycle to notice, because every delta it reported was measured
+# against the old panel.
+PANEL_FILE = "/Users/dylanhackett/V1/hardware/placement-panel-facing.txt"
+
+def _read_panel(path):
+    out = {}
+    for line in open(path):
+        if line.startswith("#") or not line.strip():
+            continue
+        m = re.match(r'(\w+)\s+.*?([-\d.]+)\s+([-\d.]+)\s*(?:#|\S.*)?$', line.rstrip())
+        if not m:
+            continue
+        ref, x, y = m.group(1), float(m.group(2)), float(m.group(3))
+        if ref == "REF":
+            continue
+        out[ref] = (x, y)
+    # DS1's origin is the 9-pin HEADER; the panel file gives the module TOP-LEFT,
     # header on that left edge, vertically centred on the 43mm body.
-    "DS1": (211.143, 11.55 + 21.5),
-}
+    if "DS1" in out:
+        out["DS1"] = (out["DS1"][0], out["DS1"][1] + 21.5)
+    # SW1/SW2 are LPG panel controls with no footprint on this PCB yet.
+    for k in ("SW1", "SW2"):
+        out.pop(k, None)
+    return out
+
+PANEL = _read_panel(PANEL_FILE)
 
 # Starting positions ONLY. Once a part is in free-placement.json the board wins
 # and these are ignored -- see the module docstring.
