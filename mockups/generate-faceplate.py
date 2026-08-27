@@ -33,7 +33,9 @@ CFG = {
     # DO NOT REDUCE. design-state wants >=10mm closest approach for crosstalk,
     # and 9mm was already a compromise. Crosstalk between adjacent pads is the
     # untested failure mode in Q1, so this is the wrong place to buy millimetres.
-    "pad_gap_mm":          9.0,
+    "pad_gap_mm":          8.0,   # was 9.0; 1mm off each of 3 gaps to fit
+                                  # the shorter panel. Width stays 10.0 --
+                                  # that is the sensitivity number, ADR 0003 floor.
     # Depth override. None = the original Salamis 1.933:1 ratio (154.29mm).
     # 129 was chosen 2026-08-09 to shrink the footprint WITHOUT touching the gap.
     "panel_h_mm":        130.81,   # was 139.0. Shrunk 2026-08-26: the board
@@ -161,7 +163,8 @@ CFG = {
     # The numeral row then sits in the space below rather than being reserved
     # out of the centring, which is what was pushing the pads high.
     "center_pads_in_region": True,
-    "numeral_row_mm":      4.5,   # pad bottom to numeral baseline
+    "numeral_row_mm":      3.6,   # pad bottom to numeral baseline (was 4.5)
+    "numeral_pt_mm":       2.7,   # glyph size (was a hardcoded 3.2)
     "bottom_margin_mm":    8.0,
     "below_divider_mm":    5.5,
 }
@@ -578,7 +581,7 @@ def render(c, g):
     A(f'<g id="crosses" stroke="{INK}" stroke-width="0.3" fill="none"><path d="{"".join(cr)}"/></g>')
 
     # numerals
-    A(f'<g id="numerals" font-family="sans-serif" font-size="3.2" fill="{INK}">')
+    A(f'<g id="numerals" font-family="sans-serif" font-size="{c["numeral_pt_mm"]}" fill="{INK}">')
     for y0, n in zip(g["PAD_TOPS"], range(1, 5)):
         A(f'<text x="{f(g["PAD_X0"]-2)}" y="{f(y0+g["PW"]*0.72)}" text-anchor="end">{attic(n)}</text>')
         A(f'<text x="{f(g["PAD_X1"]+2)}" y="{f(y0+g["PW"]*0.72)}">{attic(n)}</text>')

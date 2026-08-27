@@ -29,10 +29,10 @@ SW6     Cherry MX key 3 (general UI)                  24.046   114.178  -> MCP23
 SW7     Cherry MX key 4 (general UI)                  43.096   114.178  -> MCP23017 U4 GPA7
 
 # FACEPLATE COPPER (layer 1, exposed, no soldermask):
-#   pad1  x 61.143..277.143   y 58.953..68.953
-#   pad2  x 61.143..277.143   y 77.953..87.953
-#   pad3  x 61.143..277.143   y 96.953..106.953
-#   pad4  x 61.143..277.143   y 115.953..125.953
+#   pad1  x 61.143..277.143   y 60.453..70.453
+#   pad2  x 61.143..277.143   y 78.453..88.453
+#   pad3  x 61.143..277.143   y 96.453..106.453
+#   pad4  x 61.143..277.143   y 114.453..124.453
 #   100 comb teeth per pad, pitch 2.160mm, width 1.950mm
 
 # ENCLOSURE: 6mm walls all round, panel screws onto the wall tops
