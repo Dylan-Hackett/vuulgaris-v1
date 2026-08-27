@@ -260,7 +260,8 @@ if reverted:
     if CHECK:
         print("   run without --check to snap them back")
 else:
-    print("panel parts on their holes: all 20")
+    # count, not a literal -- "all 20" stayed on screen after SW1/SW2 made it 22
+    print(f"panel parts on their holes: all {sum(1 for r in targets if r in PANEL)}")
 oob = [r for r, (x, y) in targets.items() if not (0 <= x <= W and 0 <= y <= H)]
 print(f"outside board outline (origins): {oob or 'none'}")
 

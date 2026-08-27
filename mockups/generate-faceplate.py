@@ -86,6 +86,12 @@ CFG = {
     # bushing hole, not a slot. switch_w/h stay as the LAYOUT footprint the
     # switch occupies in the row; switch_hole_d_mm is what actually gets cut.
     "switch_hole_d_mm":    4.95,
+    # Drop the switch pair below rule 3. Centred on R3 their through-holes land
+    # inside the 1/4" jack footprints, and J8's pad 5 sits BETWEEN SW2's two pad
+    # columns -- nowhere to nudge it, J7 blocks left and DS1/J9 block right.
+    # 8.2mm puts them clear of the jacks (which end at pcb y 25) and level with
+    # the lower pot row, which reads fine.
+    "switch_y_shift_mm":   8.2,
     "switch_w_mm":         9.0,
     "switch_h_mm":        20.0,
     "oled_w_mm":          70.0,
@@ -238,6 +244,10 @@ def derive(c):
     # collide with the top wall: rule 1 scales with the panel and sits near the edge.
     g["OLED_Y"] = INSET + ((g["DIV_Y"] - INSET) - c["oled_h_mm"]) / 2.0
     g["R2"], g["R3"], g["R4"] = g["RULE_Y"][1], g["RULE_Y"][2], g["RULE_Y"][3]
+    # Switch centre-line. Computed ONCE here: the SVG, the validation box and
+    # the placement rows all read it. They used to each recompute from R3,
+    # which is how a y-shift reached the drawing but not the placement file.
+    g["SW_CY"] = g["R3"] + c.get("switch_y_shift_mm", 0.0)
     ch_w = 3 * KP + 2 * KR
     env_w = 2 * KP + 2 * KR          # 3 columns x 2 rows: 2 encoders, 4 pots
     NSW = c["n_switches"]
@@ -510,7 +520,8 @@ def render(c, g):
     # group is a uniform 2x2x2 block.
 
     # switches (vertical slots) + OLED
-    sw_y = g["R3"] - c["switch_h_mm"] / 2.0
+    sw_cy = g["SW_CY"]
+    sw_y = sw_cy - c["switch_h_mm"] / 2.0
     for i in range(c["n_switches"]):
         sx = g["sw_x0"] + i * (c["switch_w_mm"] + 4.0)
         A(f'<circle cx="{f(sx + c["switch_w_mm"]/2)}" cy="{f(g["R3"])}" '
@@ -858,7 +869,7 @@ def check(c, g):
             box.append((cx-c["knob_r_mm"], cx+c["knob_r_mm"], cy-c["knob_r_mm"], cy+c["knob_r_mm"]))
 
     box.append((g["oled_x0"], g["oled_x0"]+c["oled_w_mm"], g["OLED_Y"], g["OLED_Y"]+c["oled_h_mm"]))
-    sy0 = g["R3"] - c["switch_h_mm"]/2.0
+    sy0 = g["SW_CY"] - c["switch_h_mm"]/2.0
     for i in range(c["n_switches"]):
         sx = g["ui_x0"]+3+i*(c["switch_w_mm"]+4)
         box.append((sx, sx+c["switch_w_mm"], sy0, sy0+c["switch_h_mm"]))
@@ -934,7 +945,7 @@ def placement(c, g):
         sx = g["ui_x0"] + 3 + i * (c["switch_w_mm"] + 4.0) + c["switch_w_mm"] / 2.0
         rows.append((f"SW{1+i}",
                      "DPDT LPG mode VCF/VCA" if i == 0 else "DPDT SOURCE resample/ext",
-                     sx, g["R3"], "ANALOG -> LPG"))
+                     sx, g["SW_CY"], "ANALOG -> LPG"))
     rows.append(("DS1", "OLED 2.42in SSD1309 (TOP-LEFT)", g["oled_x0"], g["OLED_Y"], "SPI -> Daisy"))
     rows.append(("ENC0", "encoder + PUSH, main UI", g["ENC_CX"], g["ENC_CY"], "-> MCP23017 U4 GPB0-2"))
     if c.get("shift_button"):
