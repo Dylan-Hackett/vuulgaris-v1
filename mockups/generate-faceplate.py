@@ -80,13 +80,13 @@ CFG = {
     # There is NOT a separate VCF/VCA switch per channel. The LPG is one stereo
     # unit, so mode is a single decision applied to both sides. Clarified
     # 2026-08-07 after that was described wrongly.
-    # 0 since 2026-08-27. The two DPDT panel toggles became DG419 analog
-    # switches on the main board (U8-U11), thrown by MCP23017 GPB3/GPB4 -- so
-    # mode and source are software state, recallable with the patch, and neither
-    # needs a slot, an actuator that reaches the panel, or a bushing.
-    "n_switches":            0,
+    "n_switches":            2,
     "switch_reserve_slots":  2,   # hold the row where it was; see ui_w
-    "switch_w_mm":         9.0,   # vertical slots
+    # Dailywell 2MD1T1B1M2QES (Thonk DW3): the panel opening is a ROUND 4.95mm
+    # bushing hole, not a slot. switch_w/h stay as the LAYOUT footprint the
+    # switch occupies in the row; switch_hole_d_mm is what actually gets cut.
+    "switch_hole_d_mm":    4.95,
+    "switch_w_mm":         9.0,
     "switch_h_mm":        20.0,
     "oled_w_mm":          70.0,
     # Nudge the OLED left of where the composition flow puts it. At 0 its pads
@@ -473,7 +473,7 @@ def render(c, g):
       f'top and bottom bars across four interpolation zones in the order RX0 RX1 RX2 RX3 RX0. '
       f'Above a straight divider rule, eight channel knobs on rules 2 and 4, a vertical divider, '
       f'four envelope and CV amount knobs with the larger analog offset knob on rule 3, '
-      f'{c["n_switches"]} vertical switch slots, LPG mode and source, '
+      f'{c["n_switches"]} round toggle bushing holes, LPG mode and source, '
       f'and the OLED at the right. {c["n_ticks"]} tick divisions per pad '
       f'with crosses at marks {", ".join(str(m) for m in c["cross_at"])}, Greek acrophonic '
       f'numerals in the margins, and the rotary encoder in the right margin beside the pads.</desc>')
@@ -511,10 +511,10 @@ def render(c, g):
 
     # switches (vertical slots) + OLED
     sw_y = g["R3"] - c["switch_h_mm"] / 2.0
-    A(f'<g id="switches" fill="none" stroke="{INK}" stroke-width="0.3">')
     for i in range(c["n_switches"]):
-        A(f'<rect x="{f(g["ui_x0"]+3+i*(c["switch_w_mm"]+4))}" y="{f(sw_y)}" '
-          f'width="{f(c["switch_w_mm"])}" height="{f(c["switch_h_mm"])}" rx="{f(c["switch_w_mm"]/2)}"/>')
+        sx = g["sw_x0"] + i * (c["switch_w_mm"] + 4.0)
+        A(f'<circle cx="{f(sx + c["switch_w_mm"]/2)}" cy="{f(g["R3"])}" '
+          f'r="{f(c["switch_hole_d_mm"]/2)}"/>')
     A('</g>')
     A(f'<g id="oled" fill="none" stroke="{INK}" stroke-width="0.3">'
       f'<rect x="{f(g["oled_x0"])}" y="{f(g["OLED_Y"])}" width="{f(c["oled_w_mm"])}" '
@@ -819,13 +819,11 @@ def check(c, g):
         row("shift inside panel",
             f"bottom {g['SHIFT_CY']+sr:.2f} of {g['PANEL_H']:.2f}",
             g["SHIFT_CY"] + sr < g["PANEL_H"] - c["bottom_margin_mm"])
-    row("switch slots vertical", f"{c['switch_w_mm']} x {c['switch_h_mm']}mm",
-        c["switch_h_mm"] > c["switch_w_mm"])
-    # The two DPDT panel toggles became DG419 analog switches on the main board
-    # on 2026-08-27, so zero slots is now the correct answer, not a failure.
-    row("switch count", f'{c["n_switches"]} (LPG mode + source are now U8-U11, '
-        f'DG419 analog switches thrown by MCP23017 GPB3/GPB4)',
-        c["n_switches"] in (0, 2))
+    row("switch bushing hole fits its slot",
+        f'dia {c["switch_hole_d_mm"]}mm in a {c["switch_w_mm"]}mm column',
+        c["switch_hole_d_mm"] < c["switch_w_mm"])
+    row("switch count", f'{c["n_switches"]} (LPG mode + source, both DPDT '
+        f'Dailywell 2MD1T1B1M2QES / Thonk DW3)', c["n_switches"] == 2)
     # At reduced panel depth the OLED is the VERTICAL floor of the upper strip:
     # 42mm of screen has to fit above the divider rule. This is the check that
     # decides how far the depth can be cut.
