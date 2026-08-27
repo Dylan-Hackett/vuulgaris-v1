@@ -526,12 +526,11 @@ def render(c, g):
     # RV1 (dual-gang offset) is column 3 top; drawn like the rest now that the
     # group is a uniform 2x2x2 block.
 
-    # switches (vertical slots) + OLED
-    sw_cy = g["SW_CY"]
-    sw_y = sw_cy - c["switch_h_mm"] / 2.0
+    # switch bushing holes + OLED
+    A(f'<g id="switches" fill="none" stroke="{INK}" stroke-width="0.3">')
     for i in range(c["n_switches"]):
         sx = g["SW_X0"] + i * (c["switch_w_mm"] + 4.0)
-        A(f'<circle cx="{f(sx + c["switch_w_mm"]/2)}" cy="{f(g["R3"])}" '
+        A(f'<circle cx="{f(sx + c["switch_w_mm"]/2)}" cy="{f(g["SW_CY"])}" '
           f'r="{f(c["switch_hole_d_mm"]/2)}"/>')
     A('</g>')
     A(f'<g id="oled" fill="none" stroke="{INK}" stroke-width="0.3">'
@@ -915,6 +914,31 @@ def check(c, g):
             max(rows) <= g["PANEL_H"] - 1.0)
         row("letters do not collide vertically", f"step {step:.2f} vs height "
             f"{c['inscription_h_mm']}mm", step > c["inscription_h_mm"] + 1.0)
+    # --- check the OUTPUT, not just the geometry -----------------------------
+    # Everything above reads `g` and `c`. None of it had ever looked at what
+    # render() actually emits, so the two shared no code path: render() spent a
+    # day raising KeyError and emitting nothing while these rows all reported
+    # ALL CHECKS PASS, and later emitted an orphaned </g> that no check could
+    # see. A validator that cannot observe its own product is decoration.
+    import xml.etree.ElementTree as _ET
+    import re as _re
+    try:
+        _svg = render(c, g)
+        _ET.fromstring(_svg)
+        row("rendered SVG is well-formed XML", f"{len(_svg)} chars parsed", True)
+    except Exception as _e:
+        _svg = ""
+        row("rendered SVG is well-formed XML", f"{type(_e).__name__}: {_e}", False)
+    if _svg and c["n_switches"]:
+        _drawn = _re.findall(r'<circle cx="([\d.]+)" cy="([\d.]+)" '
+                            r'r="%s"/>' % _re.escape(f'{c["switch_hole_d_mm"]/2:g}'), _svg)
+        _want = [(g["SW_X0"] + i * (c["switch_w_mm"] + 4.0) + c["switch_w_mm"] / 2.0,
+                  g["SW_CY"]) for i in range(c["n_switches"])]
+        _okxy = (len(_drawn) == c["n_switches"] and
+                 all(abs(float(a) - wx) < 0.01 and abs(float(b) - wy) < 0.01
+                     for (a, b), (wx, wy) in zip(_drawn, _want)))
+        row("drawn switch holes match the placement file",
+            f"{len(_drawn)} drawn at {_drawn}", _okxy)
     out.append("")
     out.append("  ALL CHECKS PASS" if ok else "  *** FAILURES ABOVE ***")
     return "\n".join(out), ok
