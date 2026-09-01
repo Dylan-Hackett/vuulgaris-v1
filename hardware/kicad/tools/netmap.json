@@ -219,6 +219,22 @@
   "1": "P5V",
   "2": "GND"
  },
+ "C75": {
+  "1": "BBD_L_EXIN",
+  "2": "BBD_L_EXO"
+ },
+ "C76": {
+  "1": "BBD_L_CLMP",
+  "2": "BBD_L_CV"
+ },
+ "C77": {
+  "1": "BBD_R_EXIN",
+  "2": "BBD_R_EXO"
+ },
+ "C78": {
+  "1": "BBD_R_CLMP",
+  "2": "BBD_R_CV"
+ },
  "D1": {
   "1": "LED_POS",
   "2": "GND"
@@ -346,6 +362,16 @@
   "1": "NEG12V_RAW",
   "2": "NEG12V"
  },
+ "Q1": {
+  "1": "VCLAMP",
+  "2": "BBD_L_CLMP",
+  "3": "BBD_L_EXO"
+ },
+ "Q2": {
+  "1": "VCLAMP",
+  "2": "BBD_R_CLMP",
+  "3": "BBD_R_EXO"
+ },
  "R20": {
   "1": "I2C_SCL",
   "2": "P3V3_DAISY"
@@ -438,10 +464,6 @@
   "1": "BBD_L_SUM",
   "2": "BBD_L_MIX"
  },
- "R43": {
-  "1": "DAC_L",
-  "2": "BBD_L_CV"
- },
  "R44": {
   "1": "BBD_R_SEND",
   "2": "GND"
@@ -499,12 +521,48 @@
   "2": "BBD_R_SUM"
  },
  "R58": {
-  "1": "BBD_R_SUM",
-  "2": "BBD_R_MIX"
+  "1": "MODE_M",
+  "2": "NEG12V"
  },
  "R59": {
+  "1": "DAC_L",
+  "2": "BBD_L_EXIN"
+ },
+ "R60": {
+  "1": "BBD_L_EXIN",
+  "2": "BBD_L_EXO"
+ },
+ "R61": {
+  "1": "NEG12V",
+  "2": "BBD_L_EXIN"
+ },
+ "R62": {
+  "1": "BBD_L_EXO",
+  "2": "BBD_L_CLMP"
+ },
+ "R63": {
   "1": "DAC_R",
-  "2": "BBD_R_CV"
+  "2": "BBD_R_EXIN"
+ },
+ "R64": {
+  "1": "BBD_R_EXIN",
+  "2": "BBD_R_EXO"
+ },
+ "R65": {
+  "1": "NEG12V",
+  "2": "BBD_R_EXIN"
+ },
+ "R66": {
+  "1": "BBD_R_EXO",
+  "2": "BBD_R_CLMP"
+ },
+ "R67": {
+  "1": "POS12V",
+  "2": "VCLAMP"
+ },
+ "R68": {
+  "1": "VCLAMP",
+  "2": "GND"
  },
  "RV5": {
   "1": "BBD_L_O1",
@@ -683,12 +741,12 @@
   "7": "BBD_R_MIX",
   "4": "POS12V",
   "11": "NEG12V",
-  "9": "U9_C_N",
+  "9": "BBD_L_EXIN",
   "10": "GND",
-  "8": "U9_C_N",
-  "13": "U9_D_N",
+  "8": "BBD_L_EXO",
+  "13": "BBD_R_EXIN",
   "12": "GND",
-  "14": "U9_D_N"
+  "14": "BBD_R_EXO"
  },
  "U10": {
   "1": "GND",
@@ -717,10 +775,10 @@
   "7": "BBD_R_VIN",
   "6": "BBD_R_CV",
   "5": "BBD_R_SUM",
-  "1": "GND",
   "8": "GND",
   "9": "NEG12V",
-  "16": "POS12V"
+  "16": "POS12V",
+  "1": "MODE_M"
  },
  "U13": {
   "1": "P3V3_DAISY",

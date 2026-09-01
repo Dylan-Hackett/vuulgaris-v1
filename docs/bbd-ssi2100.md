@@ -87,3 +87,65 @@ The BBD sits after the LPG in the chain, and **the LPG is not designed yet**, so
 the attenuation into the BBD and the make-up gain out of it cannot be fixed
 until its output level is known. Build the block with the reference values, keep
 the input scaling on parts that are easy to change, and bring test points out.
+
+---
+
+# Wet/dry VCA — SSI2164
+
+**Rebuilt 2026-08-27 from the SSI2164 datasheet.** The first version of this
+section was invented from general principles about current-mode VCAs and was
+wrong in most of its numbers. Recorded here so the mistake is not repeated.
+
+## What the datasheet actually says
+
+| | |
+|---|---|
+| control port input impedance | **9–11kΩ** (typ 10k) — *not* high impedance |
+| gain constant | **−33 mV/dB** |
+| control law | **positive VC attenuates, negative amplifies; unity at VC = 0.0V** |
+| max attenuation / gain | −100dB / +20dB |
+| R_IN | **20kΩ recommended**, range 7.5k–100k; lower = better noise, more THD |
+| R_OUT (feedback) | equal to R_IN gives unity gain |
+| feedback cap | **100pF** preserves phase margin |
+| MODE | **resistor R_M to V−**, not a short to ground |
+| control port | optional **series 10µF** improves control feedthrough |
+
+Class A mode resistor: `R_M = (|V−| − 0.65) / (2·I_M)`. At ±12V with I_M = 1mA
+that is 5.675k, so **5.6kΩ**. The datasheet's own worked example (9V → 3.9k)
+confirms the formula uses the supply magnitude.
+
+## Figure 10: 0–5V exponential control
+
+An inverting summing amp turns a positive control voltage into the negative-going
+swing the port wants, with an offset resistor from the negative rail and a PNP
+clamp limiting attenuation:
+
+```
+control 0-5V ── 100kΩ ──┬── 100kΩ ──┬── op-amp out ── to VC
+                        │           │
+              −12V ── 270kΩ      100pF
+                        │           │
+                     op-amp (−) ────┘        Q1 PNP clamp, base at V_CLAMP
+                     op-amp (+) ── GND       V_CLAMP = +2.7V (3k:10k off +12V)
+                                             1kΩ in series stabilises the loop
+```
+
+V_CLAMP of +2.7V gives the maximum 100dB attenuation. Q1 is a small-signal high
+gain PNP — BC557 / 2N2907 or equivalent.
+
+## What was wrong the first time
+
+| | first attempt | correct |
+|---|---|---|
+| DAC → VC | 100kΩ straight into the port | Figure 10 summing amp |
+| effective range | **~9dB** (100k into a 10k port is a 10:1 divider) | 100dB |
+| R_IN / R_OUT | 100kΩ | 20kΩ |
+| MODE | shorted to GND | 5.6kΩ to V− |
+| control feedthrough cap | absent | 10µF in series |
+| clamp | absent | PNP + 2.7V reference |
+
+## Still to check
+
+Q1's pin mapping was taken as base/emitter/collector = 1/2/3 from KiCad's
+`Q_PNP_BEC`. The orientation against Figure 10 has **not** been verified against
+the drawing — confirm before fab.
