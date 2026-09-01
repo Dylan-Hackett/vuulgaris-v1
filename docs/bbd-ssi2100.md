@@ -149,3 +149,26 @@ gain PNP — BC557 / 2N2907 or equivalent.
 Q1's pin mapping was taken as base/emitter/collector = 1/2/3 from KiCad's
 `Q_PNP_BEC`. The orientation against Figure 10 has **not** been verified against
 the drawing — confirm before fab.
+
+## Decided: delay LEVEL, not a wet/dry crossfade
+
+**2026-08-27.** U9 is an inverting summing amp holding its (−) input at virtual
+ground. The VCA's output current (wet) and the dry current through R41 both land
+on that node and R42 turns the sum back into a voltage — 20k/20k/20k, so unity
+throughout.
+
+Dry is therefore **fixed at unity and always present**; the VCA only sets how
+much wet is added. **Wet-only is unreachable.** That is the right control for a
+delay and it is what most delays do. It is *not* right for vibrato, which needs
+100% wet.
+
+**Upgrade path if that ever matters.** The SSI2164 has four cells and only two
+are used — channels 3 and 4 (pins 10/11/12 and 15/14/13) are idle. The MCP4728
+has two spare outputs. Route dry through VCAs 3 and 4, drive them from DAC_C/D
+with the complementary curve computed on the Daisy, and it becomes a true
+crossfade — constant-power rather than linear, since software is generating both
+sides. Costs one more TL074 (U8 and U9 are both full at four sections), two more
+PNP clamps and about eight passives.
+
+Until then those two VCA cells and two DAC channels are spare capacity for
+anything else that wants voltage control.
