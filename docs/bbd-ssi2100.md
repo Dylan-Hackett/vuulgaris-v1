@@ -172,3 +172,38 @@ PNP clamps and about eight passives.
 
 Until then those two VCA cells and two DAC channels are spare capacity for
 anything else that wants voltage control.
+
+---
+
+# SUPERSEDED 2026-09-01 — the SSI2100 block was scrapped
+
+Everything above is kept because the SSI2100 analysis and the SSI2164 correction
+are both worth having on record, but **none of it is on the board any more**.
+103 parts were removed in da40b48.
+
+The delay is now **Moritz Klein's mki x es.edu BBD, used as designed**: V3205SD
+(4096 stages), CD4046 clock, TL072s. Manual is in `docs/`.
+
+## Decided: TWO CD4046s, one per channel
+
+Not a shared clock. Two free-running oscillators, both nominally set by the
+dual-gang TIME pot.
+
+**Why this is the right call here.** A dual-gang pot tracks to a few percent at
+best, so the two sides never land on exactly the same clock — and that mismatch
+*is* the stereo width. A single shared clock gives two channels delayed by
+identical amounts, which sums to mono in the middle and has no image at all.
+
+**The intermodulation worry is narrower than it first looks.** Two clocks a
+percent apart at 100kHz differ by ~1kHz, which is squarely audible — but that
+beat only exists where the two clocks actually meet. In a true stereo path they
+never sum: each channel has its own reconstruction filter and they go to separate
+outputs. So this is a **layout and supply problem, not a signal-path one**:
+
+- decouple each 4046 locally, don't let them share a rail impedance
+- keep the two clock traces apart and away from both audio paths
+- series resistors on the clock lines to damp edges
+- the wet/dry mix sums wet and dry *within* a channel, never across channels
+
+Worth measuring at bring-up rather than assuming: scope the output with both
+channels running and the TIME pot swept, listening for a whistle that moves.
