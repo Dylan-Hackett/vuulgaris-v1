@@ -489,7 +489,7 @@ def render(c, g):
       f'({f(g["GAP"])}mm gap), each drawn as {g["N_TEETH"]} comb teeth split into complementary '
       f'top and bottom bars across four interpolation zones in the order RX0 RX1 RX2 RX3 RX0. '
       f'Above a straight divider rule, eight channel knobs on rules 2 and 4, a vertical divider, '
-      f'four envelope and CV amount knobs with the larger analog offset knob on rule 3, '
+      f'six dual-gang analog knobs for the filter and delay, '
       f'{c["n_switches"]} round toggle bushing holes, LPG mode and source, '
       f'and the OLED at the right. {c["n_ticks"]} tick divisions per pad '
       f'with crosses at marks {", ".join(str(m) for m in c["cross_at"])}, Greek acrophonic '
@@ -965,13 +965,18 @@ def placement(c, g):
         for j, cy in enumerate((g["R2"], g["R4"])):
             n = i * 2 + j + 1
             rows.append((f"ENC{n}", f"encoder, ch{i+1} {'AB'[j]}", cx, cy, "-> MCP23017"))
-    for j, cy in enumerate((g["R2"], g["R4"])):
-        rows.append((f"ENC{9+j}", f"encoder, envelope {'ATTACK RELEASE'.split()[j]}",
-                     g["EN_CX"][0], cy, "-> MCP23017"))
-    rows.append(("RV2", "POT 9mm, CV amount L", g["EN_CX"][1], g["R2"], "ANALOG -> LPG"))
-    rows.append(("RV3", "POT 9mm, CV amount R", g["EN_CX"][1], g["R4"], "ANALOG -> LPG"))
-    rows.append(("RV1", "POT 9mm DUAL-GANG, LPG OFFSET", g["EN_CX"][2], g["R2"], "ANALOG -> LPG"))
-    rows.append(("RV4", "POT 9mm, RESONANCE", g["EN_CX"][2], g["R4"], "ANALOG -> LPG"))
+    # Six ANALOG pots, all DUAL-GANG so one knob moves both stereo sides.
+    # Columns left to right: filter, filter, delay. ENC9/ENC10 (envelope
+    # attack/release) were removed 2026-09-01 and column 0 became pots -- the
+    # group was already 3 columns x 2 rows, so no geometry moved.
+    POTS = [("RV1", "CUTOFF"),        ("RV2", "RESONANCE"),
+            ("RV3", "FILTER CV AMT"), ("RV4", "TIME"),
+            ("RV5", "FEEDBACK"),      ("RV6", "WET/DRY")]
+    for k, (ref, label) in enumerate(POTS):
+        cx = g["EN_CX"][k // 2]
+        cy = (g["R2"], g["R4"])[k % 2]
+        dest = "ANALOG -> LPG" if k < 3 else "ANALOG -> BBD"
+        rows.append((ref, f"POT 9mm DUAL-GANG, {label}", cx, cy, dest))
     for i in range(c["n_switches"]):
         sx = g["SW_X0"] + i * (c["switch_w_mm"] + 4.0) + c["switch_w_mm"] / 2.0
         rows.append((f"SW{1+i}",

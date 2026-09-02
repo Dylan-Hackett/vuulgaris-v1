@@ -140,8 +140,9 @@ FREE_SEED = {
 ORIGIN_OFFSET = {
     "SW4": (0.63, 3.81), "SW5": (0.63, 3.81),   # Cherry MX: body centre is the
     "SW6": (0.63, 3.81), "SW7": (0.63, 3.81),   # centre post at local (0.63, 3.81)
-    "RV1": (0.0, -4.83),                        # dual-gang, deeper body
-    "RV2": (0.0, -3.56), "RV3": (0.0, -3.56), "RV4": (0.0, -3.56),
+    # All six pots are RK09L1240A12 dual-gang now, so they share one offset.
+    "RV1": (0.0, -4.83), "RV5": (0.0, -4.83), "RV6": (0.0, -4.83),                        # dual-gang, deeper body
+    "RV2": (0.0, -4.83), "RV3": (0.0, -4.83), "RV4": (0.0, -4.83),
     "ENC0": (0.0, -0.20),
 }
 for _i in range(1, 11):                         # ENC1-ENC10 are all EC12

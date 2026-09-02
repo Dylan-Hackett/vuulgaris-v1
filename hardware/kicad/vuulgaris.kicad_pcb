@@ -574,7 +574,7 @@
 
   (footprint "vuulgaris:Potentiometer_Bourns_3266W_Vertical" (layer "F.Cu")
     (tstamp 079b22b2-1039-46cf-85c1-008d0b12d72d)
-    (at 245.305 227.26)
+    (at 256.148 64.395)
     (descr "Potentiometer, vertical, Bourns 3266W, https://www.bourns.com/docs/Product-Datasheets/3266.pdf")
     (tags "Potentiometer vertical Bourns 3266W")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -2224,7 +2224,7 @@
 
   (footprint "vuulgaris:SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL" (layer "F.Cu")
     (tstamp 1fb437e6-a017-4a48-93d1-600dffbbbe52)
-    (at 256.567612 238.775)
+    (at 256.568 238.775)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "512-stage bucket brigade delay, single 5V, on-chip clock driver and VTBIAS, SOP-8")
@@ -2838,7 +2838,7 @@
 
   (footprint "vuulgaris:SOIC-8_L4.9-W3.9-P1.27-LS6.0-BL" (layer "F.Cu")
     (tstamp 35e73d14-f8c4-4d75-b5ee-e641d7e8ad44)
-    (at 250.356306 238.775)
+    (at 250.356 238.775)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "512-stage bucket brigade delay, single 5V, on-chip clock driver and VTBIAS, SOP-8")
@@ -2980,7 +2980,7 @@
 
   (footprint "vuulgaris:Potentiometer_Bourns_3266W_Vertical" (layer "F.Cu")
     (tstamp 3ba4d74b-ee7f-422c-8472-67c94e6d51bc)
-    (at 245.305 233.36)
+    (at 256.148 80.851)
     (descr "Potentiometer, vertical, Bourns 3266W, https://www.bourns.com/docs/Product-Datasheets/3266.pdf")
     (tags "Potentiometer vertical Bourns 3266W")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -3278,7 +3278,7 @@
 
   (footprint "vuulgaris:RES-ADJ-TH_RK09L1240A12" (layer "F.Cu")
     (tstamp 44d2e6cb-99b3-49dd-9f5f-6bf4997394f8)
-    (at 256.148 69.225)
+    (at 212.148 69.225)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "Variable Resistors/Potentiometers")
@@ -3551,7 +3551,7 @@
 
   (footprint "vuulgaris:SOIC-28_L18.0-W7.5-P1.27-LS10.3-BL" (layer "F.Cu")
     (tstamp 4ecc9a78-b20f-454b-ba56-6a97106e858d)
-    (at 151 105)
+    (at 151.0 105.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "I/O Expanders")
@@ -4109,7 +4109,7 @@
 
   (footprint "vuulgaris:RES-ADJ-TH_RK09D1130C4G" (layer "F.Cu")
     (tstamp 5d05fddb-74e2-4056-885b-55b0a6456d70)
-    (at 256.148 84.411)
+    (at 234.148 84.411)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "Variable Resistors/Potentiometers")
@@ -4504,7 +4504,7 @@
 
   (footprint "vuulgaris:C0402" (layer "F.Cu")
     (tstamp 60deba03-b08b-4d9a-b09a-38e3030f0a9b)
-    (at 205 113)
+    (at 205.0 113.0)
     (descr "100nF (104) ±10% 16V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -4567,7 +4567,7 @@
 
   (footprint "vuulgaris:C0402" (layer "F.Cu")
     (tstamp 61982c46-4d59-4773-8651-d5e1a6b5f817)
-    (at 151 113)
+    (at 151.0 113.0)
     (descr "100nF (104) ±10% 16V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -6728,7 +6728,7 @@
 
   (footprint "vuulgaris:RES-ADJ-TH_RK09D1130C4G" (layer "F.Cu")
     (tstamp a6705c77-27e7-4f13-a22a-042558874468)
-    (at 234.148 67.955)
+    (at 212.148 84.411)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "Variable Resistors/Potentiometers")
@@ -7081,7 +7081,7 @@
 
   (footprint "vuulgaris:SOIC-28_L18.0-W7.5-P1.27-LS10.3-BL" (layer "F.Cu")
     (tstamp af0ebf00-970a-401c-a048-69d899c9767a)
-    (at 205 105)
+    (at 205.0 105.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "I/O Expanders")
@@ -7781,7 +7781,7 @@
 
   (footprint "vuulgaris:RES-ADJ-TH_RK09D1130C4G" (layer "F.Cu")
     (tstamp d7dc9d1f-2c56-4868-92bb-7b42ccc93397)
-    (at 234.148 84.411)
+    (at 234.148 67.955)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "Variable Resistors/Potentiometers")
@@ -9401,7 +9401,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-376" (layer "B.Cu")
     (tstamp 041c9bb8-c2ca-407b-9483-2af01942abb1)
-    (at 173.15 55 -90)
+    (at 173.15 55.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/d2756941-ec0d-4d94-ab08-b0ddd59d76d7")
@@ -9468,7 +9468,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-376" (layer "B.Cu")
     (tstamp 0eebb683-b972-41c9-baf7-d5673391f1b4)
-    (at 151.15 55 -90)
+    (at 151.15 55.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/c5349554-65c5-4d07-adbe-e89b54bdf970")
@@ -9597,7 +9597,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-376" (layer "B.Cu")
     (tstamp 2ac05a35-daaa-4721-8e2d-1cbdfb4dfdd2)
-    (at 129.15 55 -90)
+    (at 129.15 55.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/f76c8768-e630-46b3-a928-85e665242a85")
@@ -9725,7 +9725,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-376" (layer "B.Cu")
     (tstamp 38502f13-29a0-4935-9a80-e5c412d24e27)
-    (at 195.15 55 -90)
+    (at 195.15 55.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/b4cd3d78-fbac-4f1a-afec-887abbb6888d")
@@ -10353,7 +10353,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-603" (layer "B.Cu")
     (tstamp bfc3497c-3175-4ad1-88c7-e7adae5f0c1a)
-    (at 328 65.05 -90)
+    (at 328.0 65.05 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/3d565c7a-bed7-4c8b-aef7-75a58daa92fa")
@@ -10593,7 +10593,7 @@
 
   (footprint "vuulgaris:AUDIO-TH_PJ-603" (layer "B.Cu")
     (tstamp c0e1fcee-0ba6-40e8-8429-0c0fb485b8ac)
-    (at 313 65.05 -90)
+    (at 313.0 65.05 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/73077592-6291-4506-8563-d434bbc78017")

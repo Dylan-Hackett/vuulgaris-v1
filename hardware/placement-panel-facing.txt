@@ -13,12 +13,12 @@ ENC5    encoder, ch3 A                                69.143    21.395  -> MCP23
 ENC6    encoder, ch3 B                                69.143    37.851  -> MCP23017
 ENC7    encoder, ch4 A                                91.143    21.395  -> MCP23017
 ENC8    encoder, ch4 B                                91.143    37.851  -> MCP23017
-ENC9    encoder, envelope ATTACK                     119.143    21.395  -> MCP23017
-ENC10   encoder, envelope RELEASE                    119.143    37.851  -> MCP23017
-RV2     POT 9mm, CV amount L                         141.143    21.395  ANALOG -> LPG
-RV3     POT 9mm, CV amount R                         141.143    37.851  ANALOG -> LPG
-RV1     POT 9mm DUAL-GANG, LPG OFFSET                163.143    21.395  ANALOG -> LPG
-RV4     POT 9mm, RESONANCE                           163.143    37.851  ANALOG -> LPG
+RV1     POT 9mm DUAL-GANG, CUTOFF                    119.143    21.395  ANALOG -> LPG
+RV2     POT 9mm DUAL-GANG, RESONANCE                 119.143    37.851  ANALOG -> LPG
+RV3     POT 9mm DUAL-GANG, FILTER CV AMT             141.143    21.395  ANALOG -> LPG
+RV4     POT 9mm DUAL-GANG, TIME                      141.143    37.851  ANALOG -> BBD
+RV5     POT 9mm DUAL-GANG, FEEDBACK                  163.143    21.395  ANALOG -> BBD
+RV6     POT 9mm DUAL-GANG, WET/DRY                   163.143    37.851  ANALOG -> BBD
 SW1     DPDT LPG mode VCF/VCA                        180.643    37.631  ANALOG -> LPG
 SW2     DPDT SOURCE resample/ext                     193.643    37.631  ANALOG -> LPG
 DS1     OLED 2.42in SSD1309 (TOP-LEFT)               205.043    10.049  SPI -> Daisy
