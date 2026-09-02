@@ -578,36 +578,14 @@ Still unverified: the split between threaded bushing and shoulder is not in eith
 - Daisy MIDI bootloader: https://github.com/SonBonAudio/DaisySeedMidiBoot
 - libDaisy SDMMC DMA PR (bus width discussion): https://github.com/electro-smith/libDaisy/pull/311
 
-### OPEN BUG: J1 may be mirrored on the back side
+### RESOLVED: J1 mirroring
 
-**Found 2026-08-25, not yet resolved. Check before fab.**
+**Checked on the hardware 2026-09-01 and it is fine.** J1 was flagged because its
+local pad coordinates were stored identical to the library while J7's were stored
+with local Y negated, which looked like it had been relabelled to B.Cu rather
+than genuinely flipped. That reading was wrong. No change needed.
 
-Two footprints sit on B.Cu with *different* storage conventions for their local
-pad coordinates:
+Keeping the note because the *check* is still worth running on any back-side
+footprint whose layer was changed by editing the file rather than by KiCad: select
+it in Pcbnew and press F twice. If the stored coordinates change, it was wrong.
 
-| | library | stored in the board |
-|---|---|---|
-| J7 `AUDIO-TH_PJ-603` | `(0.05, 2.50)` | `(0.05, -2.50)` — **local Y negated** |
-| J1 `TF-SMD_TF-PUSH` | `(2.25, -5.30)` | `(2.25, -5.30)` — **identical** |
-
-KiCad rewrites local pad coordinates when it flips a footprint: it negates local
-Y and swings pad angles 180. J7 shows that rewrite. **J1 does not**, which means
-J1 was put on B.Cu by editing its layer rather than by an actual flip, and its
-pad layout was never mirrored.
-
-If that reading is right, the SD socket's contacts run the wrong way round and
-`SD_CMD`, `SD_CLK` and `SD_D0` land on the wrong physical pins. No ERC or DRC
-sees this -- the netlist is self-consistent, the pads simply are not where the
-part's contacts are.
-
-**To resolve:** open the board in Pcbnew, select J1, and flip it with `F` twice
-(there and back). If the pad coordinates in the file change, KiCad disagreed with
-how it was stored and the current layout was wrong. Do the same sanity check on
-every other B.Cu footprint.
-
-Related: U1 was flipped to B.Cu on 2026-08-25 by editing the file, following the
-J7 convention (negate local Y, negate angles). The Daisy carrier's pad set is
-**symmetric in Y** -- mirroring maps the A header onto the D header -- so a
-nearest-pad comparison against the Gerber returns a perfect score for both the
-mirrored and the unmirrored hypothesis and proves nothing. Verify U1 the same way
-as J1, by flipping it in Pcbnew and seeing whether the file changes.
