@@ -24,6 +24,7 @@ venv/
 fp-info-cache
 *-backups/
 ~*.lck
+_autosave-*.kicad_pcb
 *.kicad_pcb.bak*
 *.kicad_sch.bak*
 *.kicad_sym.bak
