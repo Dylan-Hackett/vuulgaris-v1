@@ -83,7 +83,11 @@ SYM = {
     "RV4": "RK09L1240A12",
     "RV5": "RK09L1240A12",
     "RV6": "RK09L1240A12",
-    "SW1": "SW_DPDT_x2", "SW2": "SW_DPDT_x2",
+    # SW_DPDT_x2 is a TWO-UNIT symbol: pins 1/4, 2/5 and 3/6 sit at identical
+    # symbol coordinates, so this generator (one instance, unit 1) would stub
+    # them onto each other the moment either switch is wired.  SW_DPDT_FLAT is
+    # the same part with all six pins at distinct points -- same footprint.
+    "SW1": "SW_DPDT_FLAT", "SW2": "SW_DPDT_FLAT",
     "SW4": "CPG151101S03", "SW5": "CPG151101S03",
     "SW6": "CPG151101S03", "SW7": "CPG151101S03",
     "C20": "CL21A106KAYNNNE", "C21": "CL05B104KO5NNNC",
@@ -141,7 +145,14 @@ POS = {
     "ENC0": (70, 310),
     "RV1": (300, 430), "RV2": (370, 430), "RV3": (440, 430),
     "RV4": (300, 490), "RV5": (370, 490), "RV6": (440, 490),
-    "SW1": (440, 430), "SW2": (440, 490),
+    # SW1/SW2 used to sit at (440,430)/(440,490) -- exactly on top of RV3/RV6.
+    # SW_DPDT_x2 pin 1 is at symbol (5.08, 2.54), which is RK09L1240A12 pin 1;
+    # pin 3 is at (5.08,-2.54), which is pot pin 4. Coincident pins bind to the
+    # same net. Invisible while both parts were unwired; the moment RV6 got
+    # nets, netcheck reported SW2.1 -> BBD_DRY_L and SW2.3 -> BBD_DRY_R, i.e.
+    # the LPG SOURCE switch shorted onto the dry audio bus in both channels.
+    # Sheet coordinates only -- POS is not read by place.py or mkpcb.py.
+    "SW1": (530, 430), "SW2": (530, 490),
     "SW4": (70, 430), "SW5": (150, 430), "SW6": (70, 490), "SW7": (150, 490),
     # --- right: the two 3V3 rails, kept apart from each other ------------
     "FB1": (600, 330), "U5": (690, 330), "C24": (600, 400), "C20": (690, 400), "C21": (770, 400),
@@ -223,6 +234,76 @@ VALUE = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "values.json")) else {}
 
 NET = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "netmap.json")))
+
+# ---------------------------------------------------------------- stereo BBD
+# Moritz Klein's mki x es.edu BBD, two channels, TWO CD4046 clocks (one per
+# channel -- the dual-gang TIME pot's mistracking IS the stereo width, see
+# docs/bbd-ssi2100.md).  Topology transcribed from page 61 of the manual;
+# docs/bbd-mki.md is the readable form and the thing to check this against.
+#
+# Passives are the generic Device:R / Device:C symbols rather than one LCSC
+# symbol per exact part number: a resistor symbol carries nothing its value
+# does not, Device.kicad_sym is already in LIBS above, and R0603/C0603 are
+# already in the footprint library.  The ICs are real LCSC pulls because their
+# PIN NUMBERING has to come from somewhere trustworthy.
+BBD_SYM = {
+    "U101": "V3205SD",    "U201": "V3205SD",
+    "U102": "TL072_FLAT",  "U202": "TL072_FLAT",     # input buffer + S&H comparator
+    "U103": "TL072_FLAT",  "U203": "TL072_FLAT",     # summing amp + mix buffer
+    "U106": "TL072_FLAT",  "U206": "TL072_FLAT",     # S&H buffer + output amp
+    "U104": "CD4046BNSR", "U204": "CD4046BNSR",   # one clock EACH, not shared
+    "Q1":   "MMBFJ113",   "Q2":   "MMBFJ113",     # J113 equivalent, S&H switch
+    "U8":   "78L05_C181132",                      # +5V for both channels
+}
+BBD_FP = {
+    "V3205SD":       "DIP-8_SPECIAL_V3205SD",
+    "TL072_FLAT":    "SOIC-8_L4.9-W3.9-P1.27-LS6.1-BL",
+    "CD4046BNSR":    "SO-16_L10.3-W5.3-P1.27-LS7.8-BL",
+    "MMBFJ113":      "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR",
+    "78L05_C181132": "SOT-89-3_L4.5-W2.5-P1.50-LS4.2-BR",
+    "1N4148WT4":     "SOD-123_L2.8-W1.8-LS3.7-RD",
+    "SW_DPDT_FLAT":  "SW-TH_DW3_DPDT_2MD1T1B1M2QES",
+}
+# Caps that must NOT be 0603 X7R.  C_19 is the sample-and-hold storage cap on a
+# high-impedance node -- X7R's voltage coefficient and piezoelectric response
+# both land straight in the audio there, so it is 0805 C0G.  C_13 and C_20 are
+# marked "Film" on the drawing, in the signal path.  C_10 and C42 are just too
+# big for 0603 at a sane voltage rating.
+BBD_C0805 = {"C110", "C113", "C119", "C120", "C210", "C213", "C219", "C220", "C42"}
+
+for _ref in NET:
+    if _ref in SYM:
+        continue
+    if _ref in BBD_SYM:
+        SYM[_ref] = BBD_SYM[_ref]
+    elif _ref.startswith("D"):
+        SYM[_ref] = "1N4148WT4"
+    elif _ref.startswith("R"):
+        SYM[_ref] = "R"
+    elif _ref.startswith("C"):
+        SYM[_ref] = "C"
+    else:
+        raise SystemExit(f"BBD: no symbol for {_ref}")
+    _sym = SYM[_ref]
+    FPMAP[_ref] = ("C0805" if _ref in BBD_C0805 else
+                   "C0603" if _sym == "C" else
+                   "R0603" if _sym == "R" else BBD_FP[_sym])
+
+# Sheet layout.  Generous spacing on purpose: every pin here gets a 10.16mm
+# stub, and two stubs that happen to land on the same point are one net with
+# nothing to show for it -- the SW1/RV3 failure above, in a new place.  netcheck
+# is what actually proves this did not happen.
+_BBD_BANDS = [
+    ([r for r in sorted(NET) if r not in POS and r.endswith(("1", "2", "3", "4", "5",
+      "6", "7", "8", "9", "0")) and re.match(r"^[A-Z]+1\d\d$", r)], 1000),   # left
+    ([r for r in sorted(NET) if re.match(r"^[A-Z]+2\d\d$", r)], 1700),        # right
+    (["Q1", "Q2", "U8", "C40", "C41", "C42"], 2400),                           # shared
+]
+for _refs, _y0 in _BBD_BANDS:
+    for _i, _r in enumerate(_refs):
+        if _r in POS:
+            continue
+        POS[_r] = (120 + (_i % 8) * 150, _y0 + (_i // 8) * 80)
 
 # ---------------------------------------------------------------- emit
 def U():
