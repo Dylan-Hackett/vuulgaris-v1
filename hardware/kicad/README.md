@@ -130,6 +130,26 @@ not from disk.** An Eeschema window left open while these tools run will silentl
 overwrite them on its next save, and F8 from a stale window reports "no changes"
 for edits that are sitting on disk. **Close Eeschema and Pcbnew between hand-offs.**
 
+## Power test points
+
+`TP1`-`TP5` in the top-left corner, 4.5mm pitch, footprint `TestPoint_TH_D1.0mm`
+(1.0mm drill / 2.0mm pad -- a probe hooks it or a wire loop solders into it).
+
+| ref | net | silk |
+|---|---|---|
+| TP1 | `POS12V` | **+12V** |
+| TP2 | `NEG12V` | **-12V** |
+| TP3 | `P5V` | **+5V** — the Daisy's 5V, feeding the OLED and MSP430 regulators |
+| TP4 | `P5V_BBD` | **+5V BBD** — the AMS1117 output; **this is the unmeasured one** |
+| TP5 | `GND` | **GND** |
+
+Three deliberate choices: the silk carries the **value, not the reference** (`TP3`
+tells you nothing at a bench, `+5V` does); they are **through-hole** so they can be
+probed from either face, which matters because the front is under the faceplate;
+and they sit at the **far end from the power stage** on purpose, because what you
+want at bring-up is what the far end of the board receives, not what the regulator
+makes. GND is in the row so probe loops stay short.
+
 ## Chassis lugs are grounded, deliberately
 
 All 30 mounting tabs go to GND: `ENC0` pins 6/7, `ENC1`-`ENC8` pins D/E, `RV1`-`RV6`

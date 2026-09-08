@@ -175,6 +175,14 @@ FREE_SEED = {
     # starts at y 47.27, so the only pocket near J1 is the strip above the Daisy
     # and right of the OLED.
     "R506": (272.0, 25.0), "R507": (276.0, 25.0), "R508": (280.0, 25.0),
+    # Power test points, top-left corner: the one part of the board with nothing
+    # near it, at an edge, and through-hole so they can be probed from EITHER
+    # face -- which matters because the front is under the faceplate. Deliberately
+    # at the far end from the power stage: what you want to know at bring-up is
+    # what the far end of the board actually receives, not what the regulator
+    # makes. 4.5mm pitch, GND in the row so probe loops stay short.
+    "TP1": (4.0, 4.0), "TP2": (8.5, 4.0), "TP3": (13.0, 4.0),
+    "TP4": (17.5, 4.0), "TP5": (22.0, 4.0),
     # U8's decoupling. Shifted right and down 2026-09-07 when U8 went from SOT-89
     # to SOT-223 and grew into C40.
     "C40": (58.0, 113.5), "C41": (62.0, 113.5), "C42": (66.0, 113.5),
