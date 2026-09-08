@@ -194,4 +194,27 @@ KeyError.
 - **Jack panel positions.** J2-J5 and J7-J10 have board positions in
   `free-placement.json` and the counterbore geometry is in `design-state` §11, but
   nothing states where they land on the **enclosure wall**, which is a different part
-  from the faceplate. See the over-constraint note below.
+  from the faceplate.
+
+### The board is located by two different parts at once
+
+With no mounting holes, the main PCB's position is set entirely by parts soldered to
+it, and those parts reference **two different things**:
+
+| | clamped to | sets |
+|---|---|---|
+| 6 pot bushings, nutted | the **faceplate** | height below the panel (10mm) |
+| 8 jack barrels, nutted | the **enclosure wall** | position along the top edge |
+
+The faceplate screws to the enclosure at the cheeks, so these are one rigid
+assembly rather than two floating parts — which makes this a **tolerance stack, not
+a mechanism**. But the board still has to satisfy both references simultaneously,
+and it has no compliance: any disagreement is taken up by bending FR4 and loading
+the solder joints that `design-state` already names as the load path.
+
+**This shows up at first fit-up, not on screen.** The thing to check on the first
+enclosure is whether the wall's jack holes and the faceplate's bushing holes agree
+on where the board sits, to better than the boards can flex. If they do not, the
+cheap fix is to stop nutting the jacks and let them float in oversized wall
+holes — accepting that a hard cable pull then loads solder joints, which is the
+trade `design-state` §11 was already weighing for a different reason.
