@@ -30,6 +30,28 @@ and added five jacks. Safe to lay out against.
 - **Main encoder on U4 (GPB0-2), not the Daisy.** A9 is free (shift was dropped).
 - **A8 reserved**, see below. **1-bit SD.** No panel USB.
 
+### MSP430 reset on U4 GPB3 — added 2026-09-08
+
+`U4.4` (GPB3) drives `MSP_RST` across `J12.7`. **This is not BSL.** Blank detection
+means the Daisy never needs the entry sequence; this is a recovery reset for a
+touch chip that has hung, and the way to re-arm the BSL after SLAU550 §3.4's
+ten-second time-out without power-cycling the module.
+
+**On an expander GPIO, not a Daisy pin**, for three reasons. Every Daisy candidate
+is gone — `B5` is the gate out jack, `B6` the BBD inhibit, `A9` the OLED reset,
+`A8` reserved. U4 uses 9 of 16. And the expander runs on `P3V3_DAISY` against an
+MSP430 absolute max of 3.6V, so it is a **direct wire with no divider** — which
+is precisely what [Q13](notes/open-questions.md) called a day lost with a logic
+analyser. Being on I2C rather than the UART also means it still works when the
+touch chip is too wedged to answer on the serial link.
+
+> **This makes a faceplate part load-bearing.** MCP23017 GPIO power up as
+> **inputs (high-Z)**, so `MSP_RST` floats until firmware configures GPB3. The
+> pullup and capacitor TI specifies on RST/NMI must be on the faceplate. It was
+> good practice before; it is now required.
+
+`MSP_TEST` stays undriven on `J12.9` and still wants a pulldown at the chip end.
+
 ### Four channel buttons — added 2026-08-16
 
 **Four momentary buttons on U4's spare GPIO**, one per channel, sitting in the left
