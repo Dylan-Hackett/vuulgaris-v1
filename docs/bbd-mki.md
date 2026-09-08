@@ -648,7 +648,7 @@ switch pair with 5 on the opposite side, exactly the drawing's PCB layout.
 |---|---|
 | **XS3 AUDIO IN** | **not a jack.** The BBD is an insert *after* the LPG, so its input is the LPG's output. The netmap calls it `BBD_IN_L`/`BBD_IN_R` and leaves it as the block boundary. J7/J8 feed the Daisy's `AUDIO_IN_L/R` **through SW2** and never touch this block. |
 | **XS5 DRY/WET OUT** | **RESOLVED 2026-09-06.** `BBD_OUT_L`/`BBD_OUT_R` → **J9/J10 pin 4 (tip)**. The same node also feeds `SW2`'s resample leg, so what you resample is exactly what the output jack sends. |
-| **XS4 WET OUT** | **no jack, and no slot for one.** `R132`/`R232` and `BBD_WETOUT_L/R` are transcribed and left terminating on nothing. Bring them out as pads/a 2-pin header for bring-up, or depopulate `R132`/`R232` and drop the nets. Do not add a panel jack without a panel-budget decision. |
+| **XS4 WET OUT** | **CLOSED 2026-09-08: leave the resistors, add nothing.** `R132`/`R232` stay populated and `BBD_WETOUT_L/R` terminate on nothing. No jack, no header, no test pads. This is a **branch, not a link** — it taps `BBD_WETAC` ahead of the WET/DRY pot, in parallel with `R131`/`R231`, so the main output is unaffected either way. **`netcheck` will keep listing `BBD_WETOUT_L/R` as single-node nets. That is expected — do not re-open this.** |
 | **XS1 TIME CV** | **resolved** — Daisy `CV_OUT_2` (U1 pin C1). See above. |
 | **XS2 INHIBIT CV** | **RESOLVED 2026-09-06.** Not a jack — **Daisy `GATE_OUT_2` (U1 pin B6)**, one gate to both channels, straight onto `R117.1`/`R217.1`. The `BBD_INHCV_L/_R` net names are gone; the gate *is* the inhibit CV. Stutter is now sequencer-driven rather than patch-cable-driven, which suits an instrument with a looper in it. |
 
