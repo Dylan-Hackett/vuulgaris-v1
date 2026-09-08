@@ -168,7 +168,7 @@ KeyError.
 
 ## Still open (unchanged by the migration)
 
-- **The LPG.** Bergman's circuit is still not in the repo — the critical path.
+- ~~**The LPG.**~~ **DONE 2026-09-06** — stereo Bergman LPG is in `netmap.json` and on the board. See [lpg-bergman.md](../../docs/lpg-bergman.md).
 - **Jack pinout.** `PJ-603` (J7-J10) **RESOLVED 2026-09-06** from the Legion/Haoyu
   drawing behind LCSC C41409498: **2 = sleeve, 4 = tip, 3 = normalling switch onto
   the tip, 5 = ring.** The drawing's SCHEMATIC box settles it -- the mono variant
