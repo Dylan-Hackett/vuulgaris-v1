@@ -115,14 +115,18 @@ CFG = {
     # the same panel area. The tactile's pads splay to 14.7mm, so the COLUMNS
     # keep the 19.05 pitch and only the ROWS tighten, to 12.7mm. Net effect on
     # the cluster envelope is 0.2mm, so ENC0 above it does not move.
+    # 2026-09-08: no cap. TS1103S-12X12X14DIP (LCSC C54573007) is 14.0mm tall
+    # against a panel outer face at 11.6mm, so its plunger stands 2.4mm proud and
+    # IS the button face. A separate snap-on cap was only ever needed because the
+    # old 7.3mm part could not reach the panel at all.
     "mx_buttons":         True,
-    "mx_cap_mm":          12.0,      # snap-on cap; sits ON the panel
+    "mx_plunger_mm":       6.2,      # the plunger IS the button; nothing sits on the panel
     "mx_pitch_mm":        15.50,     # column pitch; floor is ~15.0, the TH pads collide below that
-    "mx_row_pitch_mm":    12.7,
+    "mx_row_pitch_mm":    12.7,      # bodies are 12.0 square, so 0.7mm between them
     "mx_rows":               3,
-    # The panel hole clears the 4mm STEM only -- the cap goes on from the front
-    # and can be wider than its hole. That is what makes 12.7mm rows possible.
-    "mx_hole_r_mm":        2.25,
+    # Clearance hole for the plunger. Was 2.25 (4.5mm) when a 3.8mm SQUARE stem
+    # was assumed -- which never fitted anyway, its diagonal is 5.37mm.
+    "mx_hole_r_mm":        3.30,     # 6.6mm, clearing the 6.2mm round plunger
 
     # Shift button, directly below the encoder in the right margin. Wired to
     # A9 (PB15) on the Daisy, not to the MSP430. Tactile switch on the MAIN
@@ -316,7 +320,7 @@ def derive(c):
         col = (c["enclosure_wall_mm"] + g["PAD_X0"]) / 2.0
         g["ENC_CX"] = g["SHIFT_CX"] = g["BTN_CX"] = col
         if c.get("mx_buttons"):
-            P, CAP, er = c["mx_pitch_mm"], c["mx_cap_mm"], c["encoder_r_mm"]
+            P, CAP, er = c["mx_pitch_mm"], 2 * c["mx_hole_r_mm"], c["encoder_r_mm"]
             RP, NR = c["mx_row_pitch_mm"], c["mx_rows"]
             pad_mid = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + PW) / 2.0
             gap = 6.0
@@ -585,13 +589,13 @@ def render(c, g):
     # outline, which sits on the panel surface, and the actual HOLE, which only
     # has to pass the stem.
     if c.get("controls_left") and c.get("mx_buttons"):
-        cap, hr = c["mx_cap_mm"], c["mx_hole_r_mm"]
+        hr, pl = c["mx_hole_r_mm"], c["mx_plunger_mm"]
         A(f'<g id="ui-buttons" fill="none" stroke="{INK}" stroke-width="0.3">')
         for cy in g["MX_CY"]:
             for cx in g["MX_CX"]:
-                A(f'<rect x="{f(cx-cap/2)}" y="{f(cy-cap/2)}" width="{f(cap)}" '
-                  f'height="{f(cap)}" rx="1.2"/>')
                 A(f'<circle cx="{f(cx)}" cy="{f(cy)}" r="{f(hr)}"/>')
+                A(f'<circle cx="{f(cx)}" cy="{f(cy)}" r="{f(pl/2)}" '
+                  f'stroke-dasharray="0.8 0.8"/>')
         A('</g>')
 
     # the four channel buttons, in the left control column
@@ -790,12 +794,12 @@ def check(c, g):
             row("control column centred in the left margin",
                 f"{(g['ENC_CX']-er)-_llim:.2f} / {g['PAD_X0']-(g['ENC_CX']+er):.2f}mm",
                 abs(((g["ENC_CX"]-er)-_llim) - (g["PAD_X0"]-(g["ENC_CX"]+er))) < 2.0)
-            btm = (g["MX_CY"][-1] + c["mx_cap_mm"]/2.0) if c.get("mx_buttons") else \
+            btm = (g["MX_CY"][-1] + c["mx_hole_r_mm"]) if c.get("mx_buttons") else \
                   ((g["BTN_CY"][-1] + c["button_r_mm"]) if g["BTN_CY"] else g["SHIFT_CY"])
             row("control column inside the walls (vertical)",
                 f"{g['ENC_CY']-er:.2f} .. {btm:.2f} of {c['enclosure_wall_mm']}..{g['PANEL_H']-c['enclosure_wall_mm']:.1f}",
                 g["ENC_CY"]-er > c["enclosure_wall_mm"] and btm < g["PANEL_H"]-c["enclosure_wall_mm"])
-            _bx = (g["MX_CX"][-1] + c["mx_cap_mm"]/2.0) if c.get("mx_buttons") \
+            _bx = (g["MX_CX"][-1] + c["mx_hole_r_mm"]) if c.get("mx_buttons") \
                   else (g["BTN_CX"] + c["button_r_mm"])
             row("buttons clear the pads", f"{g['PAD_X0']-_bx:.2f}mm", _bx < g["PAD_X0"])
             if c.get("mx_buttons"):
@@ -808,6 +812,27 @@ def check(c, g):
                 row("button columns clear each other's pads",
                     f"{_pgap:.2f}mm copper at {c['mx_pitch_mm']:.2f}mm pitch",
                     _pgap >= 0.5)
+                # The two facts that were wrong before 2026-09-08, now checked.
+                # The panel Z-stack is fixed by design-state "Panel mounting":
+                # the pots are the datum, faceplate underside at 10mm above the
+                # main PCB and the outer face at 11.6mm.
+                _PANEL_OUTER_MM = 11.6
+                _SW_H_MM        = 14.0      # TS1103S-12X12X14DIP, LCSC C54573007
+                _proud = _SW_H_MM - _PANEL_OUTER_MM
+                row("button reaches through the panel",
+                    f"{_proud:.2f}mm proud of the {_PANEL_OUTER_MM}mm outer face",
+                    1.5 <= _proud <= 5.0)
+                _hgap = 2 * c["mx_hole_r_mm"] - c["mx_plunger_mm"]
+                row("plunger clears its panel hole",
+                    f"{_hgap:.2f}mm on dia, {c['mx_plunger_mm']}mm in "
+                    f"{2*c['mx_hole_r_mm']:.1f}mm",
+                    _hgap >= 0.2)
+                # Bodies are 12.0 square and sit BEHIND the panel, so this is a
+                # PCB-side fit, not a panel one.
+                _bodygap = c["mx_row_pitch_mm"] - 12.0
+                row("switch bodies clear each other, row to row",
+                    f"{_bodygap:.2f}mm at {c['mx_row_pitch_mm']}mm rows",
+                    _bodygap >= 0.5)
         else:
             row("encoder centred in the cavity margin",
                 f"{g['ENC_CX']-er-g['PAD_X1']:.2f} / {_rlim-(g['ENC_CX']+er):.2f}mm",
@@ -845,7 +870,7 @@ def check(c, g):
         pad_mid = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + g["PW"]) / 2.0
         if c.get("controls_left"):
             # the whole column is what gets centred now, not the encoder+shift pair
-            btm = (g["MX_CY"][-1] + c["mx_cap_mm"]/2.0) if c.get("mx_buttons") else \
+            btm = (g["MX_CY"][-1] + c["mx_hole_r_mm"]) if c.get("mx_buttons") else \
                   ((g["BTN_CY"][-1] + c["button_r_mm"]) if g["BTN_CY"] else g["SHIFT_CY"] + sr)
             col_mid = ((g["ENC_CY"] - er) + btm) / 2.0
             row("control column centred on the pad block",

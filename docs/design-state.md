@@ -677,16 +677,37 @@ it can be wider than its own hole.
 
 | | |
 |---|---|
-| Columns | 19.05mm, **unchanged from MX** — the pads splay to 14.7mm even on the THT part, so 3-across is impossible |
+| Columns | 15.50mm — the pads splay to 14.7mm, which is the hard floor; 19.05 until 2026-09-06 |
 | Rows | 12.7mm, tightened from 19.05 |
-| Cluster | 33.8 x 37.4mm vs the MX cluster's 37 x 37 |
-| ENC0 | **does not move** — 12mm caps on tighter rows put the top edge within 0.2mm of where 18mm MX caps were |
+| Cluster | 22.1 x 32.0mm to the holes; the 12.0mm bodies behind it span 27.5 x 37.4mm |
+| ENC0 | moved to y 73.453 on 2026-09-08 when the caps went away and the column re-centred on a 6.6mm hole instead of a 12mm cap |
 | GPIO | `BTN5`/`BTN6` onto U4's spare GPA0/GPA1; 7 pins still free |
 | Land pattern | `KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5`, 14.70 x 12.00mm, **identical at every height in the family** |
 
-Symbol and footprint are `C2845239` (HCTL TC-1212), which is the 7.3mm height —
-**the ordering code must be swapped for the 16mm variant.** Nothing else changes:
-not the footprint, not the netlist, not the panel hole, not the placement.
+### CLOSED 2026-09-08: `TS1103S-12X12X14DIP`, LCSC **C54573007**
+
+The old note here said to swap `C2845239` for "the 16mm variant" and that *"not the
+panel hole"* would change. **Both halves were wrong.**
+
+- **There is no 16mm TC-1212 at LCSC.** That family stops at 12.0H
+  (`TC-1212DR-12.0H-250`, C17702632). The faceplate outer face is at 11.6mm, so
+  even the tallest one would have stood **0.4mm** proud — not a button.
+- **The panel hole was wrong too.** It was 4.5mm, sized for a "4mm stem". The
+  HCTL part's stem is **3.8mm SQUARE**, whose diagonal is **5.37mm** — it would
+  never have passed, at any height.
+
+`TS1103S-12X12X14DIP` (CAX) fixes both. **14.0mm tall → 2.4mm proud** of the panel,
+and a **∅6.2 round plunger** through a hole now widened to **6.6mm**. Its PCB
+pattern is `4 x ∅1.2 at 12.5 x 5.0`, which is what
+`KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5` already is — so the footprint, the netlist and
+the button placement really are unchanged. The series runs 4.3mm to 20mm if the
+stack ever moves.
+
+**The snap-on cap is gone.** It only existed because a 7.3mm switch could not reach
+the panel; the plunger is the button face now. That also retires the 0.7mm
+cap-to-cap gap the 12.7mm rows used to imply — the 0.7mm that remains is between
+the 12.0mm switch *bodies*, behind the panel, and `generate-faceplate.py` now
+checks it along with the proud height and the plunger/hole fit.
 
 ## 12. Immediate next steps
 

@@ -92,8 +92,15 @@ SYM = {
     # Cherry MX 2026-09-06: MX caps are 18mm on 19.05 pitch and six will not fit
     # the same panel area. The tactile's pads splay to 14.7mm so the columns keep
     # the 19.05 pitch and only the ROWS tighten, to 12.7mm.
-    "SW4": "TC-1212-7.3-160G", "SW5": "TC-1212-7.3-160G", "SW6": "TC-1212-7.3-160G",
-    "SW7": "TC-1212-7.3-160G", "SW8": "TC-1212-7.3-160G", "SW9": "TC-1212-7.3-160G",
+    # TS1103S-12X12X14DIP (LCSC C54573007), swapped in 2026-09-08. The old
+    # TC-1212-7.3-160G is 7.3mm tall and the panel's outer face is at 11.6mm, so
+    # it could never have reached through -- and its 3.8mm SQUARE stem has a
+    # 5.37mm diagonal, which would not have passed the 4.5mm hole either. Same
+    # 12x12 body and the same 4-pin 12.5 x 5.0 pattern, so the FOOTPRINT is
+    # unchanged; this is a part-number swap only.
+    "SW4": "TS1103S-12X12X14DIP", "SW5": "TS1103S-12X12X14DIP",
+    "SW6": "TS1103S-12X12X14DIP", "SW7": "TS1103S-12X12X14DIP",
+    "SW8": "TS1103S-12X12X14DIP", "SW9": "TS1103S-12X12X14DIP",
     "C20": "CL21A106KAYNNNE", "C21": "CL05B104KO5NNNC",
     "C22": "CL21A106KAYNNNE", "C23": "CL05B104KO5NNNC",
     "C24": "CL21A106KAYNNNE", "C25": "CL21A106KAYNNNE",

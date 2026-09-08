@@ -22,7 +22,7 @@ RV6     POT 9mm DUAL-GANG, WET/DRY                   163.143    37.851  ANALOG -
 SW1     DPDT LPG mode VCF/VCA                        180.643    37.631  ANALOG -> LPG
 SW2     DPDT SOURCE resample/ext                     193.643    37.631  ANALOG -> LPG
 DS1     OLED 2.42in SSD1309 (TOP-LEFT)               205.043    10.049  SPI -> Daisy
-ENC0    encoder + PUSH, main UI                       33.571    70.753  -> MCP23017 U4 GPB0-2
+ENC0    encoder + PUSH, main UI                       33.571    73.453  -> MCP23017 U4 GPB0-2
 SW4     12x12 tactile, UI button 1                    25.821    91.953  -> MCP23017 U4 GPA4
 SW5     12x12 tactile, UI button 2                    41.321    91.953  -> MCP23017 U4 GPA5
 SW6     12x12 tactile, UI button 3                    25.821   104.653  -> MCP23017 U4 GPA6
