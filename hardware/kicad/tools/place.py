@@ -152,20 +152,21 @@ FREE_SEED = {
     # (mean 9.3), which is far enough that the trace inductance undoes most of
     # what a 100nF is for. Now 2.1-3.1mm. Each sits beside the pad it feeds, on
     # the same face as its chip, so there is no via in the path. Positions are
-    # a nearest-free-spot search around the power pad, not hand-placed --
+    # a nearest-free-spot search around the power pad, not hand-placed, with a
+    # 1.0mm pad-to-pad floor so a chip can still be reworked --
     # "bypass caps hug their chip" below is what keeps them honest.
-    "C105": (125.292, 57.238), "C106": (128.372, 47.692),   # U102
-    "C107": (61.644, 54.768), "C108": (64.724, 45.222),   # U103
-    "C121": (106.614, 57.238), "C122": (109.694, 47.692),   # U106
-    "C205": (125.22, 94.768), "C206": (128.3, 85.222),   # U202
-    "C207": (61.644, 94.768), "C208": (64.724, 85.222),   # U203
-    "C221": (106.542, 94.768), "C222": (109.622, 85.222),   # U206
-    "C301": (115.731, 72.802), "C302": (126.775, 72.0),   # U301
-    "C303": (138.731, 85.802), "C304": (149.775, 85.0),   # U302
-    "C401": (115.731, 96.802), "C402": (126.775, 96.0),   # U401
-    "C403": (138.731, 109.802), "C404": (149.775, 109.0),   # U402
-    "C111": (90.705, 44.3), "C109": (80.862, 72.603),   # U101 V3205, U104 4046
-    "C211": (90.776, 81.405), "C209": (80.862, 112.603),   # U201 V3205, U204 4046
+    "C105": (122.532, 55.327), "C106": (131.137, 49.76),   # U102
+    "C107": (58.884, 52.857), "C108": (64.253, 44.828),   # U103
+    "C121": (103.854, 55.327), "C122": (109.223, 47.298),   # U106
+    "C205": (122.46, 92.857), "C206": (131.065, 87.29),   # U202
+    "C207": (58.884, 92.857), "C208": (64.253, 84.828),   # U203
+    "C221": (103.782, 92.857), "C222": (109.151, 84.828),   # U206
+    "C301": (115.634, 72.828), "C302": (126.875, 72.0),   # U301
+    "C303": (138.634, 85.828), "C304": (149.875, 85.0),   # U302
+    "C401": (115.634, 96.828), "C402": (126.875, 96.0),   # U401
+    "C403": (138.634, 109.828), "C404": (149.275, 109.0),   # U402
+    "C111": (90.855, 44.3), "C109": (80.746, 72.973),   # U101 V3205, U104 4046
+    "C211": (91.04, 81.795), "C209": (80.746, 112.973),   # U201 V3205, U204 4046
     # Series protection on the two output jacks, beside J3/J2 on the top edge.
     # Below the encoder block: the top strip is full -- ENC columns at x 18.15,
     # 40.15, 62.15, 84.15 and the jacks' bodies run 12mm inward between them.
@@ -566,6 +567,52 @@ for i, a in enumerate(refs):
             sft = ov(box[a], box[b])
             if sft:
                 soft.append((a, b, round(sft[0], 2), round(sft[1], 2), side.get(a)))
+# --- crowding: parts need room around them, connected or not ---------------
+# Overlap is not the only failure. A 0603 sitting 0.3mm off a SOIC pin passes
+# every overlap check and still cannot be reworked -- you cannot get hot air or an
+# iron on the chip without lifting the neighbour. Being on the same NET does not
+# earn a part the right to crowd: the connection is made by copper, not proximity.
+#
+# JLC's floor for assembly is ~0.2mm. That is a fabrication limit, not a working
+# clearance, so WARN well above it and only FAIL near it.
+CROWD_WARN, CROWD_FAIL = 1.00, 0.45
+
+def _pgap(A, B):
+    dx = max(B[0] - A[2], A[0] - B[2])
+    dy = max(B[1] - A[3], A[1] - B[3])
+    return -1.0 if (dx < 0 and dy < 0) else math.hypot(max(dx, 0), max(dy, 0))
+
+_crowd = []
+_crefs = sorted(padbox)
+for _i, _a in enumerate(_crefs):
+    for _b in _crefs[_i + 1:]:
+        _same = side.get(_a) == side.get(_b)
+        _worst = None
+        for *_ra, _tha in padbox[_a]:
+            for *_rb, _thb in padbox[_b]:
+                # across faces only a through-going pad can crowd anything
+                if not _same and not (_tha or _thb):
+                    continue
+                _g = _pgap(tuple(_ra), tuple(_rb))
+                if _worst is None or _g < _worst:
+                    _worst = _g
+        if _worst is not None and 0 <= _worst < CROWD_WARN:
+            _crowd.append((round(_worst, 2), _a, _b))
+_crowd.sort()
+_bad = [c for c in _crowd if c[0] < CROWD_FAIL]
+if _bad:
+    print(f"\nPADS TOO CLOSE TO WORK WITH ({len(_bad)} pairs, under {CROWD_FAIL}mm):")
+    for _g, _a, _b in _bad:
+        print(f"   {_g:5.2f}mm  {_a:6} x {_b:6}")
+if _crowd:
+    print(f"tightest pad-to-pad clearance: {_crowd[0][0]:.2f}mm "
+          f"({_crowd[0][1]} x {_crowd[0][2]}); {len(_crowd)} pairs under {CROWD_WARN}mm"
+          + (f", {len(_bad)} under {CROWD_FAIL}" if _bad else ""))
+    for _g, _a, _b in _crowd[:8]:
+        print(f"   {_g:5.2f}mm  {_a:6} x {_b:6}")
+else:
+    print(f"pad-to-pad clearance: everything is at least {CROWD_WARN}mm apart")
+
 # --- bypass caps have to be NEXT TO the pin they decouple -------------------
 # A 100nF 10mm from its power pin is decoration: the trace inductance in series
 # with it undoes most of what it is for. Nothing noticed this until it was
