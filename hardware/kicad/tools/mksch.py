@@ -138,6 +138,16 @@ SYM = {
     # measured against a ground 100mm away tells you about the ground.
     "TP1": "TestPoint", "TP2": "TestPoint", "TP3": "TestPoint",
     "TP4": "TestPoint", "TP5": "TestPoint",
+    # Signal test points. TP6-TP9 are the mki manual's TP1/TP3 equivalents, asked
+    # for in docs/bbd-mki.md so R104's value can be chosen with a scope instead of
+    # by ear. TP10/TP11 are the vactrol LED drive: RT301/RT401 have to be trimmed
+    # by hand, and you cannot set a trimmer you cannot measure. TP12/TP13 are the
+    # two 4046 clocks -- their mistracking IS the stereo width. TP14/TP15 are the
+    # two DAC outputs, which split a fault into firmware or analog in one probe.
+    "TP6": "TestPoint", "TP7": "TestPoint", "TP8": "TestPoint",
+    "TP9": "TestPoint", "TP10": "TestPoint", "TP11": "TestPoint",
+    "TP12": "TestPoint", "TP13": "TestPoint", "TP14": "TestPoint",
+    "TP15": "TestPoint",
 
     # ---- stereo BBD delay, SSI2100. See docs/bbd-ssi2100.md.
 
@@ -174,6 +184,9 @@ POS = {
     "R20": (500,  60), "R21": (570,  60),
     "TP1": (860, 60), "TP2": (920, 60), "TP3": (980, 60),
     "TP4": (1040, 60), "TP5": (1100, 60),
+    "TP6": (860, 130), "TP7": (920, 130), "TP8": (980, 130), "TP9": (1040, 130),
+    "TP10": (1100, 130), "TP11": (860, 200), "TP12": (920, 200),
+    "TP13": (980, 200), "TP14": (1040, 200), "TP15": (1100, 200),
     "DS1": (660, 110), "J1":  (660, 230),
     # --- left column: UI ------------------------------------------------
     "ENC0": (70, 310),
@@ -227,6 +240,11 @@ FPMAP = {
     "DS1": "LCD-TH_HS242L01W4S01", "J1": "TF-SMD_TF-PUSH",
     "ENC0": "SW-TH_ALPS_EC11L1525G01",
     "U5": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR", "U6": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
+    "TP6": "TestPoint_TH_D1.0mm", "TP7": "TestPoint_TH_D1.0mm",
+    "TP8": "TestPoint_TH_D1.0mm", "TP9": "TestPoint_TH_D1.0mm",
+    "TP10": "TestPoint_TH_D1.0mm", "TP11": "TestPoint_TH_D1.0mm",
+    "TP12": "TestPoint_TH_D1.0mm", "TP13": "TestPoint_TH_D1.0mm",
+    "TP14": "TestPoint_TH_D1.0mm", "TP15": "TestPoint_TH_D1.0mm",
     "TP1": "TestPoint_TH_D1.0mm", "TP2": "TestPoint_TH_D1.0mm",
     "TP3": "TestPoint_TH_D1.0mm", "TP4": "TestPoint_TH_D1.0mm",
     "TP5": "TestPoint_TH_D1.0mm",

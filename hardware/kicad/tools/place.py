@@ -183,6 +183,18 @@ FREE_SEED = {
     # makes. 4.5mm pitch, GND in the row so probe loops stay short.
     "TP1": (4.0, 4.0), "TP2": (8.5, 4.0), "TP3": (13.0, 4.0),
     "TP4": (17.5, 4.0), "TP5": (22.0, 4.0),
+    # Signal test points sit next to the node they probe, not in a row --
+    # findability is the whole point. Nearest-free-spot search, 2.6-7.4mm.
+    "TP6": (122.57, 50.86),   # BBD_DRY_L
+    "TP7": (122.5, 88.39),    # BBD_DRY_R
+    "TP8": (58.72, 46.84),    # BBD_SIGIN_L
+    "TP9": (58.92, 88.39),    # BBD_SIGIN_R
+    "TP10": (133.15, 70.21),  # LPG_LED_L
+    "TP11": (133.15, 94.21),  # LPG_LED_R
+    "TP12": (77.52, 61.62),   # BBD_CLK_L
+    "TP13": (77.52, 104.98),  # BBD_CLK_R
+    "TP14": (63.04, 60.56),   # TIME_CV
+    "TP15": (149.87, 81.71),  # LPG_ENV
     # U8's decoupling. Shifted right and down 2026-09-07 when U8 went from SOT-89
     # to SOT-223 and grew into C40.
     "C40": (58.0, 113.5), "C41": (62.0, 113.5), "C42": (66.0, 113.5),
