@@ -628,31 +628,53 @@ choose the value at bring-up; do not fit a trimmer.**
 ### 2. Jacks — XS1–XS5 onto the existing connectors
 
 This module has **J7–J10** (1/4", `PJ-603`) for audio and **J2–J5** (3.5mm,
-`PJ-376`) for CV/gate. All eight are placed and **all eight are still unwired**;
-`hardware/kicad/README.md` records that which contact is tip/sleeve/switch on
-`PJ-603` is *not established*. Nothing below binds a jack pin, and that
-pre-existing open item is unchanged.
+`PJ-376`) for CV/gate.
+
+**Updated 2026-09-06.** The `PJ-603` pinout is now established and **J7–J10 are
+wired**: `2 = sleeve, 4 = tip, 3 = normalling switch onto the tip, 5 = ring`, taken
+from the Legion/Haoyu drawing behind LCSC C41409498. The drawing's SCHEMATIC box is
+what settles it — the mono variant `PJ-603-3` keeps 2/3/4 and drops 5, so **5 is the
+ring** — and the footprint corroborates it, pads 3 and 4 sharing y = +2.50 as the
+switch pair with 5 on the opposite side, exactly the drawing's PCB layout.
+
+| | | |
+|---|---|---|
+| **J7 / J8** | AUDIO IN L / R | tip → `EXT_IN_L`/`_R`, sleeve + ring → GND, **normal (3) → GND** so an unpatched input is shorted rather than floating |
+| **J9 / J10** | AUDIO OUT L / R | tip → `BBD_OUT_L`/`_R`, sleeve + ring → GND, **normal (3) left OPEN** — grounding it would short the output stage whenever nothing is plugged in |
+
+**J2–J5 are still unwired**, and `PJ-376`'s pinout is still unverified.
 
 | manual | this board |
 |---|---|
-| **XS3 AUDIO IN** | **not a jack.** The BBD is an insert *after* the LPG, so its input is the LPG's output. The netmap calls it `BBD_IN_L`/`BBD_IN_R` and leaves it as the block boundary. J7/J8 feed `AUDIO_IN_L/R` into the Daisy and never touch this block. |
-| **XS5 DRY/WET OUT** | the module's analog output. `BBD_OUT_L`/`BBD_OUT_R` → the two 1/4" output jacks of J7–J10. Which two, and which pin is tip, is the existing open item. |
+| **XS3 AUDIO IN** | **not a jack.** The BBD is an insert *after* the LPG, so its input is the LPG's output. The netmap calls it `BBD_IN_L`/`BBD_IN_R` and leaves it as the block boundary. J7/J8 feed the Daisy's `AUDIO_IN_L/R` **through SW2** and never touch this block. |
+| **XS5 DRY/WET OUT** | **RESOLVED 2026-09-06.** `BBD_OUT_L`/`BBD_OUT_R` → **J9/J10 pin 4 (tip)**. The same node also feeds `SW2`'s resample leg, so what you resample is exactly what the output jack sends. |
 | **XS4 WET OUT** | **no jack, and no slot for one.** `R132`/`R232` and `BBD_WETOUT_L/R` are transcribed and left terminating on nothing. Bring them out as pads/a 2-pin header for bring-up, or depopulate `R132`/`R232` and drop the nets. Do not add a panel jack without a panel-budget decision. |
 | **XS1 TIME CV** | **resolved** — Daisy `CV_OUT_2` (U1 pin C1). See above. |
-| **XS2 INHIBIT CV** | **OPEN.** J2–J5 are spoken for (CV out, gate out, CV in, gate in). `BBD_INHCV_L`/`_R` terminate on nothing in the netmap. |
+| **XS2 INHIBIT CV** | **RESOLVED 2026-09-06.** Not a jack — **Daisy `GATE_OUT_2` (U1 pin B6)**, one gate to both channels, straight onto `R117.1`/`R217.1`. The `BBD_INHCV_L/_R` net names are gone; the gate *is* the inhibit CV. Stutter is now sequencer-driven rather than patch-cable-driven, which suits an instrument with a looper in it. |
 
-**Recommendation for INHIBIT CV: drive it from a Daisy gate output.** `B5`
-(`GATE_OUT_1`) and `B6` (`GATE_OUT_2`) are native 0–5V, exactly what a CD4046
-INH pin wants, and both are free of any competing use in
-[`pin-allocation.md`](pin-allocation.md). Either one gate to both channels
-(rhythmic stutter applied to the pair, which is what you want musically) or one
-each for independent L/R stutter. `R117`/`R217` and the clamps stay as drawn —
-belt and braces for a source that already cannot leave 0–5V, and free. This
-makes the stutter a sequencer-driven effect rather than a patch-cable one, which
-suits an instrument with a looper in it.
+**Done 2026-09-06: `GATE_OUT_2` drives INHIBIT on both channels.** `B6` is native
+0–5V, exactly what a CD4046 INH pin wants. `R117`/`R217` and the clamps stay as
+drawn — belt and braces for a source that already cannot leave 0–5V, and free.
+One gate to the pair rather than one each: the stutter is meant to hit both
+channels together.
 
-Note that `GATE_OUT_1`/`GATE_OUT_2` are also nominally destined for J2–J5. If
-INHIBIT takes one, that jack allocation needs revisiting. **Not decided here.**
+**This cost a divider that should not have existed.** `GATE_OUT_2` was feeding
+`R28`/`R29`, a 5V→3.3V divider onto the MSP430's TEST pin from
+[ADR 0005](decisions/0005-bsl-over-daisy-uart.md)'s 2026-08-06 update.
+[`pin-allocation.md`](pin-allocation.md) superseded that on 2026-08-09 — BSL is
+invoked in software over the existing UART, and *"that freed B5 and B6 to be real
+0-5V gate outputs"* — but the netmap was built against the older text. `R28`/`R29`
+are deleted. Left standing, every stutter gate would have toggled the touch chip's
+TEST pin.
+
+**Still open, same drift:** `R26`/`R27` are the matching divider from
+`GATE_OUT_1` to `MSP_RST` and are still there, so `GATE_OUT_1` is not a usable
+gate output. `MSP_TEST` now lands only on `J12.9` and nothing drives it from this
+board.
+
+**Jack allocation still needs revisiting.** `GATE_OUT_2` is no longer available
+for J2–J5, so the four 3.5mm jacks can no longer be CV out / gate out / CV in /
+gate in as listed.
 
 ### 3. TIME RANGE — CLOSED 2026-09-02
 
@@ -725,6 +747,21 @@ high-impedance node — **15nF C0G in 0805**, because X7R's voltage coefficient 
 piezoelectric response both land straight in the audio there. `C_13` and `C_20`
 are the 1µF signal-path caps the drawing marks "Film", and `C_10` / `C42` are
 simply too large for 0603 at a sane voltage rating.
+
+**Two deliberate substitutions, found in the 2026-09-03 audit and recorded here
+so nobody "corrects" them back:**
+
+`C_19` is labelled **"15nF, Film"** on the drawing, not just "15nF" — an earlier
+version of this file missed that and listed only the 1µF pair as film. C0G is
+the closest ceramic to film (no piezoelectric response, no voltage coefficient),
+so 0805 C0G is a defensible substitution on a high-impedance hold node, but it
+IS a substitution and the drawing asked for film.
+
+`C_10` (3.3µF/16V at VGG) and `C42` (the 78L05's output cap, manual `C18`) are
+drawn as **polarized electrolytics**. Both are `Device:C` here with ceramic
+footprints, which is electrically better in these positions — but the symbol is
+non-polarized, so it will not warn anyone who later fits an electrolytic which
+way round it goes.
 
 ## Verification status — VERIFIED 2026-09-02
 

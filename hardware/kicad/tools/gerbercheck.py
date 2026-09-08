@@ -56,8 +56,21 @@ def flashes(path):
 def main():
     out = tempfile.mkdtemp(prefix="gerbercheck-")
     try:
+        # Derive the copper layers FROM THE BOARD rather than hardcoding them.
+        # This was "F.Cu,B.Cu,Edge.Cuts" while the board was 2-layer, and it kept
+        # passing after the board became 4-layer -- it would have plotted gerbers
+        # with the ground plane and the inner signal layer simply absent, and
+        # nothing else here would have noticed.
+        src = open(PCB).read()
+        m = re.search(r'\n  \(layers\n(.*?)\n  \)\n', src, re.S)
+        copper = re.findall(r'\(\d+ "((?:F|B|In\d+)\.Cu)"', m.group(1)) if m else []
+        if not copper:
+            print("could not read the copper layers from the board")
+            return 2
+        want = ",".join(copper + ["Edge.Cuts"])
+        print(f"plotting {len(copper)} copper layers: {','.join(copper)}")
         r = subprocess.run([CLI, "pcb", "export", "gerbers", "--output", out + "/",
-                            "--layers", "F.Cu,B.Cu,Edge.Cuts", PCB],
+                            "--layers", want, PCB],
                            capture_output=True, text=True)
         if r.returncode:
             print(r.stderr.strip() or r.stdout.strip())

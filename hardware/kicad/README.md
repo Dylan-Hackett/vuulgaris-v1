@@ -130,10 +130,39 @@ not from disk.** An Eeschema window left open while these tools run will silentl
 overwrite them on its next save, and F8 from a stale window reports "no changes"
 for edits that are sitting on disk. **Close Eeschema and Pcbnew between hand-offs.**
 
+## kpins.json is generated, untracked, and easy to generate WRONG
+
+`tools/kpins.json` is the pin-geometry cache `mksch.py` reads. It is not in git.
+Rebuild it with the exact argument list in `ksym.py`'s docstring -- **project
+libraries last, and never `lib/*.kicad_sym`**.
+
+**Why the list is explicit rather than a glob:** `lib/daisy_patch_sm.kicad_sym`
+was never in `sym-lib-table` but held a second, different
+`ES_DAISY_PATCH_SM_REV1` -- A6 at x -5.08 instead of -1.27, A10 at -7.62 instead
+of -6.35. Including it made mksch.py draw the power stubs in the wrong place;
+`U1.A6` and `U1.A10` silently stopped connecting on a schematic that looked
+correct, and netcheck caught it as `unconnected-(U1-+5V-PadA6)`. **That file is
+deleted as of 2026-09-07** (committed in 398a1f2, referenced by nothing), but
+any duplicate symbol name will do the same thing, so keep the argument list
+explicit.
+
+Running `ksym.py` with no arguments writes an empty cache and mksch.py dies on a
+KeyError.
+
 ## Still open (unchanged by the migration)
 
 - **The LPG.** Bergman's circuit is still not in the repo — the critical path.
-- **Jack pinout.** J2-J6 placed but unwired; tip/sleeve/switch unverified.
+- **Jack pinout.** `PJ-603` (J7-J10) **RESOLVED 2026-09-06** from the Legion/Haoyu
+  drawing behind LCSC C41409498: **2 = sleeve, 4 = tip, 3 = normalling switch onto
+  the tip, 5 = ring.** The drawing's SCHEMATIC box settles it -- the mono variant
+  `PJ-603-3` keeps 2/3/4 and drops 5, so 5 is the ring -- and the footprint agrees,
+  its pads 3 and 4 sharing y = +2.50 as the switch pair with 5 opposite.
+  **`PJ-376` (J2-J5) RESOLVED the same day** from LCSC C22355746's drawing:
+  **1 = sleeve, 2 = ring, 3 = tip, and no switch contact** -- its CIRCUIT DIAGRAM
+  shows three independent contacts, where `PJ-603` has a fourth riding on the tip.
+  The plug drawing numbers the segments 1/2/3 sleeve-to-tip and the PCB layout puts
+  pin 1 nearest the barrel; the footprint agrees, pad 1 at x -3.50 on the bushing
+  side. **All eight jacks are now wired.**
 - **470uF bulk cap** at the OLED rail, not yet placed. `design-state` §5.5 calls it
   non-negotiable.
 - **Jack panel positions** and **main PCB mounting holes** are unspecified anywhere.

@@ -14,8 +14,19 @@ and added five jacks. Safe to lay out against.
   Daisy never sees them. **Deliberate: no DAC.**
 - **The MSP430 link is UART on A2/A3**, point-to-point across the cable.
   **NOT on the I2C bus.** See "why the touch link is UART" below.
-- **Five jacks:** CV in (C9 / CV_8), CV out (C1), gate in / clock (B10),
-  gate out x2 (B5, B6).
+- **Four jacks** (J2-J5), **corrected 2026-09-06** -- the list below used to name five
+  functions for four connectors, and two of its sources have since gone internal:
+
+  | jack | source | note |
+  |---|---|---|
+  | J2 CV OUT | `LPG_ENV` via `R503` 1k | **shares the LPG envelope.** Not an independent DAC -- both CV outs are spoken for |
+  | J3 GATE OUT | `GATE_OUT_1` (B5) via `R504` 1k | |
+  | J4 CV IN | `CV_8` (C9) | conditioned on-module |
+  | J5 GATE IN / clock | `GATE_IN_1` (B10) | |
+
+  `CV_OUT_2` (C1) is `TIME_CV` and `GATE_OUT_2` (B6) is the BBD inhibit, so neither
+  reaches the panel. `CV_1`-`CV_7`, `GATE_IN_2` and `A9` are still free if a fifth jack
+  is ever wanted.
 - **Main encoder on U4 (GPB0-2), not the Daisy.** A9 is free (shift was dropped).
 - **A8 reserved**, see below. **1-bit SD.** No panel USB.
 
@@ -327,6 +338,15 @@ invoked by application software, by calling the Z-area at 0x1000. So the Daisy s
 "enter BSL" command over the existing UART and reflashes over the same two wires.
 **That freed B5 and B6 to be real 0-5V gate outputs.** The SBW pads stay on the board as the
 recovery path for a touch chip too broken to receive the command.
+
+**Confirmed 2026-09-06 for the blank-chip case too, which this paragraph did not cover.**
+Software invocation needs firmware already on the chip to make the call, so it says nothing
+about the first flash of a part fresh off the reel. SLAU550 Rev AB §3.3.3 closes that: the
+FR26xx boot code does **blank device detection** and jumps straight into the BSL when the
+reset vector reads 0xFFFF, which *"eliminates the need for two additional wires (TEST, RST)"*.
+A blank FR2675 answers over the UART unaided. `R26`-`R29` are deleted and `GATE_OUT_2` now
+drives the BBD inhibit. Watch the **ten-second BSL time-out** instead —
+[ADR 0005](decisions/0005-bsl-over-daisy-uart.md).
 
 **And CV amount moving to analog freed D8 and D9.** MOSI returned to its native D9, which in
 turn freed **A9** for the shift button.

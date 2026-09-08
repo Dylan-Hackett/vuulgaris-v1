@@ -21,6 +21,32 @@ outputs, so they fit there, and this design leaves the gate pins idle. That is w
 decision affordable when the pin budget tightened. See
 [ADR 0009](0009-io-plan-12-adc.md).
 
+> ### SUPERSEDED 2026-09-06 — there is no hardware cost. Zero wires, zero resistors.
+>
+> **SLAU550 Rev AB §3.3.3 / SLAU610D §3.3.3, verbatim:** *"The boot code on the **FR26xx**,
+> FR25xx, FR24xx, and FR23xx MCUs supports blank device detection to avoid the BSL entry
+> sequence. This saves time and also **eliminates the need for two additional wires (TEST,
+> RST)** for the BSL invocation sequence... The device jumps directly to the BSL and bypasses
+> the entry sequence only when the reset vector has a value of 0xFFFF."*
+>
+> The FR2675 is an FR26xx part and a chip off the reel has a 0xFFFF reset vector by
+> definition, so **it lands in the BSL by itself and answers over the UART.** The hardware
+> entry sequence is not needed for the first flash, and software invocation
+> ([pin-allocation.md](../pin-allocation.md)) covers every flash after it.
+>
+> `R26`-`R29` and both dividers are **deleted**. `GATE_OUT_1`/`GATE_OUT_2` are real gate
+> outputs again; `GATE_OUT_2` now drives the BBD inhibit. This also closes
+> [Q13](../notes/open-questions.md) ("do the gate outputs drive BSL cleanly through a
+> divider?") by deletion — there is no divider.
+>
+> **The one thing to design around: §3.4, the BSL time-out.** *"If no communication has been
+> established within ten seconds, the device enters LPM4 mode. To invoke the BSL again, the
+> device power must be cycled, or a reset or NMI must be received."* On a blank chip the Daisy
+> has **ten seconds from MSP430 power-up** to say something. Miss it and the recovery is a
+> power cycle, because nothing on the main board drives RST any more. That is acceptable for a
+> one-time factory step; if it ever needs to be automatic, put RST on **A9** (native 3.3V, no
+> divider) rather than back on a gate output.
+
 **Gate outputs are 0-5V** and the **MSP430 I/O absolute max is DVCC+0.3V = 3.6V**, so each
 line needs a divider (two resistors, four total). **Bench-verify the edges before writing BSL
 code:** entry depends on two clean rising edges on TEST, and mushy edges from the divider

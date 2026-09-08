@@ -877,6 +877,105 @@
     )
   )
 
+  (symbol "AMS1117-5.0"
+    (in_bom yes)
+    (on_board yes)
+    (property
+      "Reference"
+      "U"
+      (id 0)
+      (at 0 7.62 0)
+      (effects (font (size 1.27 1.27) ) )
+    )
+    (property
+      "Value"
+      "AMS1117-5.0"
+      (id 1)
+      (at 0 -7.62 0)
+      (effects (font (size 1.27 1.27) ) )
+    )
+    (property
+      "Footprint"
+      "vuulgaris:SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR"
+      (id 2)
+      (at 0 -10.16 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "Datasheet"
+      "https://lcsc.com/product-detail/Low-Dropout-Regulators-LDO_AMS_AMS1117-5-0_AMS1117-5-0_C6187.html"
+      (id 3)
+      (at 0 -12.70 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "Manufacturer"
+      "Advanced Monolithic Systems"
+      (id 4)
+      (at 0 -15.24 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "MPN"
+      "AMS1117-5.0"
+      (id 5)
+      (at 0 -17.78 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "LCSC Part"
+      "C6187"
+      (id 6)
+      (at 0 -20.32 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "ki_keywords"
+      "Linear Voltage Regulators (LDO)"
+      (id 8)
+      (at 0 -22.86 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (symbol "AMS1117-5.0_0_1"
+      (rectangle
+        (start -8.89 5.08)
+        (end 8.89 -5.08)
+        (stroke (width 0) (type default))
+        (fill (type background))
+      )
+      (circle
+        (center -7.62 3.81)
+        (radius 0.38)
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (pin unspecified line
+        (at -11.43 2.54 0)
+        (length 2.54)
+        (name "GND" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at -11.43 -0.00 0)
+        (length 2.54)
+        (name "VOUT" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at -11.43 -2.54 0)
+        (length 2.54)
+        (name "VIN" (effects (font (size 1.27 1.27))))
+        (number "3" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at 11.43 -0.00 180)
+        (length 2.54)
+        (name "VOUT" (effects (font (size 1.27 1.27))))
+        (number "4" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+
   (symbol "CL05B104KO5NNNC"
     (in_bom yes)
     (on_board yes)
@@ -4700,6 +4799,13 @@
     (property "Reference" "U" (id 0) (at -12.7 21.59 0) (effects (font (size 1.27 1.27))))
     (property "Value" "TL074_FLAT" (id 1) (at -12.7 -21.59 0) (effects (font (size 1.27 1.27))))
     (property "Footprint" "vuulgaris:SOIC-14_3.9x8.7mm_P1.27mm" (id 2) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+    (property
+      "LCSC Part"
+      "C12594"
+      (id 9)
+      (at 0 -25.4 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
     (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property "ki_description" "Quad JFET op-amp, flat single-unit symbol. Pin-compatible with OPA1644 if you want the noise down." (id 4) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (symbol "TL074_FLAT_0_1"
@@ -4726,6 +4832,13 @@
     (property "Reference" "RV" (id 0) (at 0 5.08 0) (effects (font (size 1.27 1.27))))
     (property "Value" "TRIMPOT_3T" (id 1) (at 0 -5.08 0) (effects (font (size 1.27 1.27))))
     (property "Footprint" "vuulgaris:Potentiometer_Bourns_3266W_Vertical" (id 2) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+    (property
+      "LCSC Part"
+      "C780230"
+      (id 9)
+      (at 0 -25.4 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
     (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (symbol "TRIMPOT_3T_0_1"
       (rectangle (start -2.54 3.81) (end 2.54 -3.81) (stroke (width 0.254) (type default)) (fill (type background)))
@@ -5527,6 +5640,13 @@
     (property "Reference" "U" (id 0) (at 0 13.16 0) (effects (font (size 1.27 1.27) ) ))
     (property "Value" "TL072" (id 1) (at 0 -5.54 0) (effects (font (size 1.27 1.27) ) ))
     (property "Footprint" "vuulgaris:SOIC-8_L4.9-W3.9-P1.27-LS6.1-BL" (id 2) (at 0 -8.54 0) (effects (font (size 1.27 1.27) ) hide))
+    (property
+      "LCSC Part"
+      "C67473"
+      (id 9)
+      (at 0 -25.4 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
     (property "Datasheet" "https://www.ti.com/lit/ds/symlink/tl072.pdf" (id 3) (at 0 -11.54 0) (effects (font (size 1.27 1.27) ) hide))
     (symbol "TL072_FLAT_0_1"
       (rectangle (start -12.7 10.16) (end 12.7 -2.54)
@@ -5631,6 +5751,412 @@
         (length 2.54)
         (name "B_NO" (effects (font (size 1.27 1.27))))
         (number "6" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+
+  (symbol "HDR-IDC-2.54-2X5P"
+    (in_bom yes)
+    (on_board yes)
+    (property
+      "Reference"
+      "P"
+      (id 0)
+      (at 0 10.16 0)
+      (effects (font (size 1.27 1.27) ) )
+    )
+    (property
+      "Value"
+      "HDR-IDC-2.54-2X5P"
+      (id 1)
+      (at 0 -10.16 0)
+      (effects (font (size 1.27 1.27) ) )
+    )
+    (property
+      "Footprint"
+      "vuulgaris:IDC-TH_10P-P2.54_C5665"
+      (id 2)
+      (at 0 -12.70 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "Datasheet"
+      "https://lcsc.com/product-detail/Header-Connectors_2-54mm-2-5P-Straight-IDC-Box_C5665.html"
+      (id 3)
+      (at 0 -15.24 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "Manufacturer"
+      "BOOMELE(博穆精密)"
+      (id 4)
+      (at 0 -17.78 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "MPN"
+      "2.54-2*5P简牛"
+      (id 5)
+      (at 0 -20.32 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "LCSC Part"
+      "C5665"
+      (id 6)
+      (at 0 -22.86 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "ki_keywords"
+      "IDC Connectors"
+      (id 8)
+      (at 0 -25.40 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "ki_description"
+      "2.54mm 2*5P"
+      (id 9)
+      (at 0 -27.94 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (symbol "HDR-IDC-2.54-2X5P_0_1"
+      (rectangle
+        (start -5.08 7.62)
+        (end 5.08 -7.62)
+        (stroke (width 0) (type default))
+        (fill (type background))
+      )
+      (pin unspecified line
+        (at -7.62 5.08 0)
+        (length 2.54)
+        (name "1" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at 7.62 5.08 180)
+        (length 2.54)
+        (name "2" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at -7.62 2.54 0)
+        (length 2.54)
+        (name "3" (effects (font (size 1.27 1.27))))
+        (number "3" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at 7.62 2.54 180)
+        (length 2.54)
+        (name "4" (effects (font (size 1.27 1.27))))
+        (number "4" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at -7.62 -0.00 0)
+        (length 2.54)
+        (name "5" (effects (font (size 1.27 1.27))))
+        (number "5" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at 7.62 -0.00 180)
+        (length 2.54)
+        (name "6" (effects (font (size 1.27 1.27))))
+        (number "6" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at -7.62 -2.54 0)
+        (length 2.54)
+        (name "7" (effects (font (size 1.27 1.27))))
+        (number "7" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at 7.62 -2.54 180)
+        (length 2.54)
+        (name "8" (effects (font (size 1.27 1.27))))
+        (number "8" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at -7.62 -5.08 0)
+        (length 2.54)
+        (name "9" (effects (font (size 1.27 1.27))))
+        (number "9" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at 7.62 -5.08 180)
+        (length 2.54)
+        (name "10" (effects (font (size 1.27 1.27))))
+        (number "10" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+
+  (symbol "VTL5C3"
+    (in_bom yes)
+    (on_board yes)
+    (property "Reference" "U" (id 0) (at 0 7.62 0) (effects (font (size 1.27 1.27) ) ))
+    (property "Value" "VTL5C3" (id 1) (at 0 -7.62 0) (effects (font (size 1.27 1.27) ) ))
+    (property "Footprint" "vuulgaris:VACTROL-TH_VTL5C3" (id 2) (at 0 -10.16 0) (effects (font (size 1.27 1.27) ) hide))
+    (property "Datasheet" "https://www.qsl.net/wa1ion/vactrol/vactrol.pdf" (id 3) (at 0 -12.7 0) (effects (font (size 1.27 1.27) ) hide))
+    (property "MPN" "VTL5C3" (id 4) (at 0 -15.24 0) (effects (font (size 1.27 1.27) ) hide))
+    (symbol "VTL5C3_0_1"
+      (rectangle (start -10.16 5.08) (end 10.16 -5.08)
+        (stroke (width 0.254) (type default)) (fill (type background)))
+    )
+    (symbol "VTL5C3_1_1"
+      (pin input line
+        (at -12.70 2.54 0)
+        (length 2.54)
+        (name "A" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin input line
+        (at -12.70 -2.54 0)
+        (length 2.54)
+        (name "K" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line
+        (at 12.70 2.54 180)
+        (length 2.54)
+        (name "CELL1" (effects (font (size 1.27 1.27))))
+        (number "3" (effects (font (size 1.27 1.27))))
+      )
+      (pin passive line
+        (at 12.70 -2.54 180)
+        (length 2.54)
+        (name "CELL2" (effects (font (size 1.27 1.27))))
+        (number "4" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+
+  (symbol "BZT52C3V9_C2891408"
+    (in_bom yes)
+    (on_board yes)
+    (property
+      "Reference"
+      "D"
+      (id 0)
+      (at 0 5.08 0)
+      (effects (font (size 1.27 1.27) ) )
+    )
+    (property
+      "Value"
+      "BZT52C3V9_C2891408"
+      (id 1)
+      (at 0 -5.08 0)
+      (effects (font (size 1.27 1.27) ) )
+    )
+    (property
+      "Footprint"
+      "vuulgaris:SOD-123_L2.7-W1.6-LS3.7-RD-1"
+      (id 2)
+      (at 0 -7.62 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "Datasheet"
+      "https://www.lcsc.com/datasheet/C2891408.pdf"
+      (id 3)
+      (at 0 -10.16 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "Manufacturer"
+      "MSKSEMI(美森科)"
+      (id 4)
+      (at 0 -12.70 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "MPN"
+      "BZT52C3V9"
+      (id 5)
+      (at 0 -15.24 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "LCSC Part"
+      "C2891408"
+      (id 6)
+      (at 0 -17.78 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (symbol "BZT52C3V9_C2891408_0_1"
+      (polyline
+        (pts
+          (xy 1.27 1.78) (xy -1.27 -0.00) (xy 1.27 -1.78) (xy 1.27 1.78)
+        )
+        (stroke (width 0) (type default))
+        (fill (type background))
+      )
+      (polyline
+        (pts
+          (xy -1.27 -0.00) (xy -2.54 -0.00)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 2.54 -0.00) (xy 1.27 -0.00)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy -2.03 2.03) (xy -1.27 1.52) (xy -1.27 -1.52) (xy -0.51 -2.03)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (pin unspecified line
+        (at -5.08 -0.00 0)
+        (length 2.54)
+        (name "C" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at 5.08 -0.00 180)
+        (length 2.54)
+        (name "A" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+    )
+  )
+
+  (symbol "TC-1212-7.3-160G"
+    (in_bom yes)
+    (on_board yes)
+    (property
+      "Reference"
+      "SW"
+      (id 0)
+      (at 0 6.35 0)
+      (effects (font (size 1.27 1.27) ) )
+    )
+    (property
+      "Value"
+      "TC-1212-7.3-160G"
+      (id 1)
+      (at 0 -8.89 0)
+      (effects (font (size 1.27 1.27) ) )
+    )
+    (property
+      "Footprint"
+      "vuulgaris:KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5"
+      (id 2)
+      (at 0 -11.43 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "Datasheet"
+      "https://www.lcsc.com/datasheet/C2845239.pdf"
+      (id 3)
+      (at 0 -13.97 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "Manufacturer"
+      "HCTL(华灿天禄)"
+      (id 4)
+      (at 0 -16.51 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "MPN"
+      "TC-1212-7.3-160G"
+      (id 5)
+      (at 0 -19.05 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "LCSC Part"
+      "C2845239"
+      (id 6)
+      (at 0 -21.59 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (property
+      "ki_keywords"
+      "Tactile Switches"
+      (id 8)
+      (at 0 -24.13 0)
+      (effects (font (size 1.27 1.27) ) hide)
+    )
+    (symbol "TC-1212-7.3-160G_0_1"
+      (circle
+        (center 0.00 -2.03)
+        (radius 0.25)
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (circle
+        (center 0.00 -0.51)
+        (radius 0.25)
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0.76 -0.76) (xy 0.25 -2.29)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0.00 -3.81) (xy 0.00 -2.29) (xy 0.00 -2.29)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy 0.00 1.27) (xy 0.00 -0.25)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy -5.08 -3.81) (xy 5.08 -3.81)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (polyline
+        (pts
+          (xy -5.08 1.27) (xy 5.08 1.27)
+        )
+        (stroke (width 0) (type default))
+        (fill (type none))
+      )
+      (pin unspecified line
+        (at 5.08 -3.81 180)
+        (length 2.54)
+        (name "4" (effects (font (size 1.27 1.27))))
+        (number "4" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at -5.08 -3.81 0)
+        (length 2.54)
+        (name "3" (effects (font (size 1.27 1.27))))
+        (number "3" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at 5.08 1.27 180)
+        (length 2.54)
+        (name "2" (effects (font (size 1.27 1.27))))
+        (number "2" (effects (font (size 1.27 1.27))))
+      )
+      (pin unspecified line
+        (at -5.08 1.27 0)
+        (length 2.54)
+        (name "1" (effects (font (size 1.27 1.27))))
+        (number "1" (effects (font (size 1.27 1.27))))
       )
     )
   )
