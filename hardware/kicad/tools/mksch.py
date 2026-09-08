@@ -133,6 +133,12 @@ SYM = {
     # as spare wires; nothing on this board drives them.
     "J12": "HDR-IDC-2.54-2X5P",
 
+    # Power test points, through-hole so a probe can hook them or a wire loop can
+    # be soldered in. TP5 is GND and sits with the others on purpose: a rail
+    # measured against a ground 100mm away tells you about the ground.
+    "TP1": "TestPoint", "TP2": "TestPoint", "TP3": "TestPoint",
+    "TP4": "TestPoint", "TP5": "TestPoint",
+
     # ---- stereo BBD delay, SSI2100. See docs/bbd-ssi2100.md.
 
     "C32": "RVT1E470M0505_C2977553", "C33": "RVT1E470M0505_C2977553",  # 47uF raw
@@ -166,6 +172,8 @@ POS = {
     "U3":  (340,  95), "U4":  (340, 235),
     "C26": (430,  95), "C27": (430, 235),
     "R20": (500,  60), "R21": (570,  60),
+    "TP1": (860, 60), "TP2": (920, 60), "TP3": (980, 60),
+    "TP4": (1040, 60), "TP5": (1100, 60),
     "DS1": (660, 110), "J1":  (660, 230),
     # --- left column: UI ------------------------------------------------
     "ENC0": (70, 310),
@@ -219,6 +227,9 @@ FPMAP = {
     "DS1": "LCD-TH_HS242L01W4S01", "J1": "TF-SMD_TF-PUSH",
     "ENC0": "SW-TH_ALPS_EC11L1525G01",
     "U5": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR", "U6": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
+    "TP1": "TestPoint_TH_D1.0mm", "TP2": "TestPoint_TH_D1.0mm",
+    "TP3": "TestPoint_TH_D1.0mm", "TP4": "TestPoint_TH_D1.0mm",
+    "TP5": "TestPoint_TH_D1.0mm",
     "U8": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
     "R20": "R0402", "R21": "R0402",
     "SW1": "SW-TH_DW3_DPDT_2MD1T1B1M2QES",
