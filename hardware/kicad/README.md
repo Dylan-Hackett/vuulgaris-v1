@@ -130,6 +130,28 @@ not from disk.** An Eeschema window left open while these tools run will silentl
 overwrite them on its next save, and F8 from a stale window reports "no changes"
 for edits that are sitting on disk. **Close Eeschema and Pcbnew between hand-offs.**
 
+## place.py checks the board is actually THERE, and that the chip is not
+
+Two placement mistakes got past the checks in one day, both the same shape: the
+search enforced **pad**-to-pad clearance and nothing else.
+
+**1. The board has a hole in it.** The faceplate-header cutout is 24 x 12mm at
+board (210, 97.5)-(234, 109.5). "Bodies/pads inside the outline" only bounds the
+board RECTANGLE, so two test points placed in the slot passed every check and were
+caught by eye. `place.py` now reads interior `Edge.Cuts` loops and reports
+`clear of all N board cutout(s)`.
+
+**2. A pad can sit under a chip without touching a pad.** `V3205SD` is a DIP-14
+land pattern with the middle three pins omitted on each side, so there is a wide
+pad-free gap down the centre of a package that is physically still there. Two test
+points landed in that gap: 2mm from any pad, and underneath the plastic. The
+`body overlaps, SAME face` list already caught it -- the placement search did not,
+because it only looked at pads. Searches now check **body separation as well as pad
+clearance**.
+
+The general lesson, twice over: *pads are not the part, and the outline is not the
+board.*
+
 ## The courtyards in this library are FAKE -- do not trust a courtyard DRC
 
 Every `easyeda2kicad` footprint here has its courtyard drawn as the **plastic body

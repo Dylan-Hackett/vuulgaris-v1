@@ -167,7 +167,7 @@ FREE_SEED = {
     "C401": (114.606, 96.819), "C402": (127.875, 96.0),   # U401
     "C403": (137.606, 109.819), "C404": (150.275, 109.0),   # U402
     "C111": (91.778, 43.52), "C109": (80.855, 73.984),   # U101 V3205, U104 4046
-    "C211": (87.218, 79.096), "C209": (80.855, 113.984),   # U201 V3205, U204 4046
+    "C211": (87.266, 78.467), "C209": (80.855, 113.984),   # U201 V3205, U204 4046
     # Series protection on the two output jacks, beside J3/J2 on the top edge.
     # Below the encoder block: the top strip is full -- ENC columns at x 18.15,
     # 40.15, 62.15, 84.15 and the jacks' bodies run 12mm inward between them.
@@ -201,8 +201,8 @@ FREE_SEED = {
     "TP9": (189.5, 104.0),    # BBD_SIGIN_R
     "TP10": (197.5, 104.0),  # LPG_LED_L
     "TP11": (205.5, 104.0),  # LPG_LED_R
-    "TP12": (84.047, 59.458),   # BBD_CLK_L
-    "TP13": (84.298, 99.483),  # BBD_CLK_R
+    "TP12": (76.326, 60.433),   # BBD_CLK_L
+    "TP13": (77.516, 106.925),  # BBD_CLK_R
     "TP14": (213.5, 104.0),   # TIME_CV
     "TP15": (221.5, 104.0),  # LPG_ENV
     # U8's decoupling. Shifted right and down 2026-09-07 when U8 went from SOT-89
@@ -552,6 +552,60 @@ if padedge:
         print(f"   {ref:5} by {o} mm")
 else:
     print("pads inside the outline: all")
+
+# --- the board has HOLES in it, and "inside the outline" does not mean "on copper"
+# The faceplate-header cutout is a 24 x 12mm slot in the middle of the board. The
+# outline check above only bounds the board RECTANGLE, so a part placed in the
+# slot passes it -- which is how two test points ended up hanging over the hole on
+# 2026-09-08, found by eye and not by this file.
+#
+# Cutouts are read from Edge.Cuts rather than hardcoded: any edge geometry that
+# does not touch the outer boundary is an interior loop.
+_edge = []
+for _m in re.finditer(r'\(gr_line \(start ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\)'
+                      r'.{0,160}?\(layer "Edge\.Cuts"\)', src, re.S):
+    _edge.append(tuple(map(float, _m.groups())))
+for _m in re.finditer(r'\(gr_arc \(start ([-\d.]+) ([-\d.]+)\) \(mid ([-\d.]+) ([-\d.]+)\)'
+                      r' \(end ([-\d.]+) ([-\d.]+)\).{0,160}?\(layer "Edge\.Cuts"\)', src, re.S):
+    _g = list(map(float, _m.groups()))
+    _edge.append((_g[0], _g[1], _g[4], _g[5]))
+    _edge.append((_g[2], _g[3], _g[2], _g[3]))
+_cuts = []
+if _edge:
+    _xs = [v for e in _edge for v in (e[0], e[2])]
+    _ys = [v for e in _edge for v in (e[1], e[3])]
+    _ox0, _oy0, _ox1, _oy1 = min(_xs), min(_ys), max(_xs), max(_ys)
+    def _onedge(x, y, t=0.05):
+        return (abs(x-_ox0) < t or abs(x-_ox1) < t or abs(y-_oy0) < t or abs(y-_oy1) < t)
+    _pts = [(e[i], e[i+1]) for e in _edge for i in (0, 2)
+            if not _onedge(e[i], e[i+1])]
+    while _pts:                          # cluster interior points into loops
+        _grp = [_pts.pop()]
+        _grew = True
+        while _grew:
+            _grew = False
+            for _q in list(_pts):
+                if any(math.hypot(_q[0]-r[0], _q[1]-r[1]) < 30.0 for r in _grp):
+                    _grp.append(_q); _pts.remove(_q); _grew = True
+        _gx = [q[0] for q in _grp]; _gy = [q[1] for q in _grp]
+        _cuts.append((min(_gx), min(_gy), max(_gx), max(_gy)))
+CUT_CLEAR = 0.30
+_incut = []
+for _ref in sorted(set(box) | set(padbox)):
+    for _cx0, _cy0, _cx1, _cy1 in _cuts:
+        _c = (_cx0 - CUT_CLEAR, _cy0 - CUT_CLEAR, _cx1 + CUT_CLEAR, _cy1 + CUT_CLEAR)
+        _hit = ov(box[_ref], _c) if _ref in box else None
+        _pad = any(ov(tuple(r[:4]), _c) for r in padbox.get(_ref, []))
+        if _hit or _pad:
+            _incut.append((_ref, "PAD" if _pad else "body",
+                           round(_cx0-ORG[0], 1), round(_cy0-ORG[1], 1)))
+if _cuts:
+    if _incut:
+        print(f"\nIN A BOARD CUTOUT ({len(_incut)}) -- there is no board there:")
+        for _r, _w, _x, _y in _incut:
+            print(f"   {_r:6} ({_w}) in the cutout at board ({_x}, {_y})")
+    else:
+        print(f"clear of all {len(_cuts)} board cutout(s)")
 
 hard, soft = [], []
 refs = sorted(box)
