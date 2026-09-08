@@ -665,10 +665,19 @@ doing either way.
 
 ### Consequence 3: six UI buttons replace four Cherry MX — DONE 2026-09-06
 
-PCB top to faceplate top is 10 + 1.6 = **11.6mm**, plus 2-3mm for a cap to snap
-onto, so the stem wants to be ~14mm. From the 12x12 tactile family (4.3 / 5.6 /
-7.5 / 8.6 / 9.5 / 12 / 16mm): **use the 16mm height.** The 12mm variant clears by
-only 0.4mm, not enough to retain a cap.
+PCB top to faceplate top is 10 + 1.6 = **11.6mm**, so the switch has to be taller
+than that before it is a button at all.
+
+**Corrected 2026-09-08.** This paragraph used to end "use the 16mm height", from a
+family list of 4.3 / 5.6 / 7.5 / 8.6 / 9.5 / 12 / 16mm. That list was wrong and so
+was the conclusion — see §11. There is no 16mm TC-1212 at LCSC (it stops at
+12.0H), and 12.0mm stands 0.4mm proud, which is not a button.
+
+**Settled: `TS1103S-12X12X14DIP`, LCSC C54573007.** 14.0mm → **2.4mm proud**, with
+a ∅6.2 round plunger through a 6.6mm panel hole. **No cap** — the plunger is the
+button face, and the cap only ever existed to bridge a gap a 7.3mm switch could
+not reach. Same 12×12 body and the same 4 × ∅1.2 at 12.5 × 5.0 pattern, so the
+footprint and placement did not move.
 
 **`SW4`-`SW9`, 12x12 through-hole tactile, 2 wide x 3 tall.** Six MX will not fit
 the panel area; six tactiles do, because the panel hole only has to clear the

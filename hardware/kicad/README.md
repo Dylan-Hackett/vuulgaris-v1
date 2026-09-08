@@ -187,4 +187,11 @@ KeyError.
   Nothing to do with the OLED rail, and `design-state` §5.5 no longer exists.
   Current input bulk is `C29`, 22uF/50V. The OLED rail has `C24` 10uF in, `C20`
   10uF + `C21` 100nF out, which is normal for an AMS1117 feeding a 40mA panel.
-- **Jack panel positions** and **main PCB mounting holes** are unspecified anywhere.
+- ~~**main PCB mounting holes**~~ — **there are none, by decision.** `design-state`
+  "Panel mounting" (2026-09-05): the board has no standoffs of its own and hangs off
+  the panel hardware. Load path is enclosure -> faceplate -> nuts -> bushings -> part
+  bodies -> **solder joints** -> main PCB.
+- **Jack panel positions.** J2-J5 and J7-J10 have board positions in
+  `free-placement.json` and the counterbore geometry is in `design-state` §11, but
+  nothing states where they land on the **enclosure wall**, which is a different part
+  from the faceplate. See the over-constraint note below.
