@@ -52,12 +52,22 @@ def _read_panel(path):
     for line in open(path):
         if line.startswith("#") or not line.strip():
             continue
-        m = re.match(r'(\w+)\s+.*?([-\d.]+)\s+([-\d.]+)\s*(?:#|\S.*)?$', line.rstrip())
+        # X and Y must be DECIMALS. The old pattern allowed bare integers with a
+        # non-greedy middle, so a description ending in a digit -- "UI button 1"
+        # -- parsed as x=1, y=<the real x>, silently, and every button would
+        # have been snapped to a garbage coordinate. The previous descriptions
+        # only survived because their trailing digit was followed by "(".
+        m = re.match(r'(\w+)\s+.*?(-?\d+\.\d+)\s+(-?\d+\.\d+)\s*(?:#|\S.*)?$',
+                     line.rstrip())
         if not m:
             continue
         ref, x, y = m.group(1), float(m.group(2)), float(m.group(3))
         if ref == "REF":
             continue
+        if not (0.0 <= x <= 400.0 and 0.0 <= y <= 200.0):
+            raise SystemExit(f"panel file: {ref} parsed as ({x}, {y}), outside the "
+                             f"panel. The description column probably confused the "
+                             f"coordinate match.")
         out[ref] = (x, y)
     # DS1's origin is the 9-pin HEADER; the panel file gives the module TOP-LEFT,
     # header on that left edge, vertically centred on the 43mm body.
@@ -127,6 +137,28 @@ FREE_SEED = {
     # under the OLED, which is on standoffs on the front.
     "J7": (170.50, 24.55), "J8": (188.50, 24.55),
     "J9": (213.00, 24.55), "J10": (231.00, 24.55),
+    # 5xx: the SOURCE interconnect. SW2 sits at (186.6, 30.6) with the audio
+    # jacks directly above it, so the DC blocking caps go in that gap -- the ext
+    # pair beside their own jack, the resample pair below on the BBD side -- and
+    # the two common pulldowns to the right, on the way to U1.
+    # The clear band is y 38..46, x 165..193: SW1/SW2 stop at y 35.19, DS1 starts
+    # at x 195.55, and the jacks' bodies stop at y 25. An earlier seed put C501
+    # on SW1's through-hole pads and R501/R502 inside the OLED.
+    "C501": (172.0, 39.0), "C503": (172.0, 43.0),   # L: ext, resample
+    "R501": (178.0, 39.0), "R502": (178.0, 43.0),   # common pulldowns
+    "C502": (190.0, 39.0), "C504": (190.0, 43.0),   # R: ext, resample
+    # Series protection on the two output jacks, beside J3/J2 on the top edge.
+    # Below the encoder block: the top strip is full -- ENC columns at x 18.15,
+    # 40.15, 62.15, 84.15 and the jacks' bodies run 12mm inward between them.
+    "R503": (29.15, 45.0), "R504": (51.15, 45.0),
+    "R505": (208.0, 48.0),                   # font-chip CS pullup, clear of DS1
+    # SD pull-ups. There is very little room here -- DS1 runs to x 267.55 and U1
+    # starts at y 47.27, so the only pocket near J1 is the strip above the Daisy
+    # and right of the OLED.
+    "R506": (272.0, 25.0), "R507": (276.0, 25.0), "R508": (280.0, 25.0),
+    # U8's decoupling. Shifted right and down 2026-09-07 when U8 went from SOT-89
+    # to SOT-223 and grew into C40.
+    "C40": (58.0, 113.5), "C41": (62.0, 113.5), "C42": (66.0, 113.5),
 }
 
 # For a panel-facing part the thing that must line up with the faceplate hole is
@@ -138,8 +170,10 @@ FREE_SEED = {
 #   EC12   silk body centre AND both mounting lugs agree on (0, -3.75)
 #   EC11L  bushing circle  (0, -0.20) r 4.00
 ORIGIN_OFFSET = {
-    "SW4": (0.63, 3.81), "SW5": (0.63, 3.81),   # Cherry MX: body centre is the
-    "SW6": (0.63, 3.81), "SW7": (0.63, 3.81),   # centre post at local (0.63, 3.81)
+    # SW4-SW9 are 12x12 tactiles as of 2026-09-06 and their pads are symmetric
+    # about the origin, so the button centre IS the origin -- no offset. The old
+    # (0.63, 3.81) was the Cherry MX centre post and would now push every button
+    # off its hole by that much.
     # All six pots are RK09L1240A12 dual-gang now, so they share one offset.
     "RV1": (0.0, -4.83), "RV5": (0.0, -4.83), "RV6": (0.0, -4.83),                        # dual-gang, deeper body
     "RV2": (0.0, -4.83), "RV3": (0.0, -4.83), "RV4": (0.0, -4.83),
@@ -399,13 +433,19 @@ for ref, block, _, _ in fp_blocks(src):
         ly = ly * mir
         return ax + lx * ca + ly * sa, ay - lx * sa + ly * ca
     pts, ppts, prects = [], [], []
-    for p in re.finditer(r'\(pad "[^"]*" \w+ \w+ \(at ([-\d.]+) ([-\d.]+)[^)]*\) \(size ([\d.]+) ([\d.]+)\)', block):
-        px, py, sw, sh = map(float, p.groups())
+    # The pad TYPE is captured, not skipped. Without it every pad counted as
+    # through-going, so an 0805 on B.Cu "clashed" with a SOIC on F.Cu and the
+    # hard-collision list filled with ten pairs that cannot touch -- which is
+    # exactly how a real through-hole collision would get lost.
+    for p in re.finditer(r'\(pad "[^"]*" (\w+) \w+ \(at ([-\d.]+) ([-\d.]+)[^)]*\) \(size ([\d.]+) ([\d.]+)\)', block):
+        ptype = p.group(1)
+        px, py, sw, sh = map(float, p.groups()[1:])
         corners = [place(cx_, cy_) for cx_ in (px - sw / 2, px + sw / 2)
                                    for cy_ in (py - sh / 2, py + sh / 2)]
         ppts += corners
         xs_, ys_ = [c[0] for c in corners], [c[1] for c in corners]
-        prects.append((min(xs_), min(ys_), max(xs_), max(ys_)))
+        prects.append((min(xs_), min(ys_), max(xs_), max(ys_),
+                       ptype.endswith("thru_hole")))
     pts += ppts
     for l in re.finditer(r'\(fp_line \(start ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\)', block):
         g = list(map(float, l.groups()))
@@ -449,7 +489,7 @@ else:
 
 padedge = []
 for ref, rects in padbox.items():
-    for (x0, y0, x1, y1) in rects:
+    for (x0, y0, x1, y1, _th) in rects:
         x0, y0, x1, y1 = x0 - ORG[0], y0 - ORG[1], x1 - ORG[0], y1 - ORG[1]
         over = max(0 - x0, 0 - y0, x1 - W, y1 - H)
         if over > 0.005:
@@ -468,12 +508,17 @@ for i, a in enumerate(refs):
     for b in refs[i + 1:]:
         if a in padbox and b in padbox:
             worst = None
-            for ra in padbox[a]:
-                for rb in padbox[b]:
-                    h = ov(ra, rb)
+            for *ra, tha in padbox[a]:
+                for *rb, thb in padbox[b]:
+                    # A pad pair collides through the board only if at least one
+                    # of them actually goes through it. Two SMD pads on opposite
+                    # faces are separated by 1.6mm of FR4.
+                    if not (tha or thb) and side.get(a) != side.get(b):
+                        continue
+                    h = ov(tuple(ra), tuple(rb))
                     if h and (worst is None or h[0] * h[1] > worst[0] * worst[1]):
                         worst = h
-            if worst:                               # holes clash through the board
+            if worst:                               # copper clashes
                 hard.append((a, b, round(worst[0], 2), round(worst[1], 2)))
                 continue
         if side.get(a) == side.get(b):

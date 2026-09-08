@@ -110,11 +110,19 @@ CFG = {
     "pad_x_shift_mm":     20.0,
     "n_buttons":             4,
     "button_r_mm":         3.5,
-    # Cherry MX keycaps in a 2x2 cluster. The four buttons are general UI keys,
-    # not per-channel, so a cluster reads better than a column. Shift is gone.
+    # Six UI buttons, 12x12 through-hole tactile, 2 wide x 3 tall. Was four
+    # Cherry MX until 2026-09-06: six MX at 18mm caps on 19.05 pitch will not fit
+    # the same panel area. The tactile's pads splay to 14.7mm, so the COLUMNS
+    # keep the 19.05 pitch and only the ROWS tighten, to 12.7mm. Net effect on
+    # the cluster envelope is 0.2mm, so ENC0 above it does not move.
     "mx_buttons":         True,
-    "mx_cap_mm":          18.0,
-    "mx_pitch_mm":        19.05,
+    "mx_cap_mm":          12.0,      # snap-on cap; sits ON the panel
+    "mx_pitch_mm":        15.50,     # column pitch; floor is ~15.0, the TH pads collide below that
+    "mx_row_pitch_mm":    12.7,
+    "mx_rows":               3,
+    # The panel hole clears the 4mm STEM only -- the cap goes on from the front
+    # and can be wider than its hole. That is what makes 12.7mm rows possible.
+    "mx_hole_r_mm":        2.25,
 
     # Shift button, directly below the encoder in the right margin. Wired to
     # A9 (PB15) on the Daisy, not to the MSP430. Tactile switch on the MAIN
@@ -309,14 +317,16 @@ def derive(c):
         g["ENC_CX"] = g["SHIFT_CX"] = g["BTN_CX"] = col
         if c.get("mx_buttons"):
             P, CAP, er = c["mx_pitch_mm"], c["mx_cap_mm"], c["encoder_r_mm"]
+            RP, NR = c["mx_row_pitch_mm"], c["mx_rows"]
             pad_mid = (g["PAD_TOPS"][0] + g["PAD_TOPS"][3] + PW) / 2.0
             gap = 6.0
-            top = pad_mid - (2 * er + gap + (P + CAP)) / 2.0
+            block = (NR - 1) * RP + CAP
+            top = pad_mid - (2 * er + gap + block) / 2.0
             g["ENC_CY"] = top + er
             g["SHIFT_CY"] = None
             g["MX_CX"] = [col - P / 2.0, col + P / 2.0]
             first = top + 2 * er + gap + CAP / 2.0
-            g["MX_CY"] = [first, first + P]
+            g["MX_CY"] = [first + i * RP for i in range(NR)]
             g["BTN_CY"] = []
         else:
             g["ENC_CY"] = 72.0
@@ -571,14 +581,17 @@ def render(c, g):
           f'<circle cx="{f(g["SHIFT_CX"])}" cy="{f(g["SHIFT_CY"])}" '
           f'r="{f(c["shift_r_mm"])}"/></g>')
 
-    # MX keycaps, 2x2 cluster
+    # UI buttons, 2 wide x 3 tall. Two things are drawn per button: the CAP
+    # outline, which sits on the panel surface, and the actual HOLE, which only
+    # has to pass the stem.
     if c.get("controls_left") and c.get("mx_buttons"):
-        cap = c["mx_cap_mm"]
-        A(f'<g id="mx-buttons" fill="none" stroke="{INK}" stroke-width="0.3">')
+        cap, hr = c["mx_cap_mm"], c["mx_hole_r_mm"]
+        A(f'<g id="ui-buttons" fill="none" stroke="{INK}" stroke-width="0.3">')
         for cy in g["MX_CY"]:
             for cx in g["MX_CX"]:
                 A(f'<rect x="{f(cx-cap/2)}" y="{f(cy-cap/2)}" width="{f(cap)}" '
-                  f'height="{f(cap)}" rx="1.6"/>')
+                  f'height="{f(cap)}" rx="1.2"/>')
+                A(f'<circle cx="{f(cx)}" cy="{f(cy)}" r="{f(hr)}"/>')
         A('</g>')
 
     # the four channel buttons, in the left control column
@@ -785,6 +798,16 @@ def check(c, g):
             _bx = (g["MX_CX"][-1] + c["mx_cap_mm"]/2.0) if c.get("mx_buttons") \
                   else (g["BTN_CX"] + c["button_r_mm"])
             row("buttons clear the pads", f"{g['PAD_X0']-_bx:.2f}mm", _bx < g["PAD_X0"])
+            if c.get("mx_buttons"):
+                # KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5 puts its through-hole pads
+                # at x = +/-6.25, 2.2mm of copper on a 1.5mm drill -- OUTSIDE the
+                # 12mm courtyard. Two columns side by side short below 14.7mm
+                # pitch and lose fab clearance before that, so the column pitch
+                # is limited by the PCB, not by the caps.
+                _pgap = c["mx_pitch_mm"] - 2 * 6.25 - 2.2
+                row("button columns clear each other's pads",
+                    f"{_pgap:.2f}mm copper at {c['mx_pitch_mm']:.2f}mm pitch",
+                    _pgap >= 0.5)
         else:
             row("encoder centred in the cavity margin",
                 f"{g['ENC_CX']-er-g['PAD_X1']:.2f} / {_rlim-(g['ENC_CX']+er):.2f}mm",
@@ -987,11 +1010,13 @@ def placement(c, g):
     if c.get("shift_button"):
         rows.append(("SW3", "tactile, SHIFT", g["SHIFT_CX"], g["SHIFT_CY"], "-> Daisy A9"))
     if c.get("mx_buttons"):
+        # GPA4-7 were the original four; BTN5/BTN6 went onto U4's spare GPA0/GPA1.
+        GPIO = ["GPA4", "GPA5", "GPA6", "GPA7", "GPA0", "GPA1"]
         n = 0
         for cy in g["MX_CY"]:
             for cx in g["MX_CX"]:
-                rows.append((f"SW{4+n}", f"Cherry MX key {n+1} (general UI)", cx, cy,
-                             f"-> MCP23017 U4 GPA{4+n}"))
+                rows.append((f"SW{4+n}", f"12x12 tactile, UI button {n+1}", cx, cy,
+                             f"-> MCP23017 U4 {GPIO[n]}"))
                 n += 1
     else:
         for k, cy in enumerate(g["BTN_CY"]):

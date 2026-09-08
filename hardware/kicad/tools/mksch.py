@@ -13,7 +13,7 @@ angle+180.
 """
 import json, re, math, uuid, sys, os
 
-SCRATCH = "/private/tmp/claude-501/-Users-dylanhackett-V1/4d61871d-02f0-409c-8779-744109130e35/scratchpad"
+SCRATCH = os.path.dirname(os.path.abspath(__file__))   # kpins.json lives beside the tools
 KI = "/Users/dylanhackett/V1/hardware/kicad"
 LIBS = [f"{KI}/lib/vuulgaris.kicad_sym", f"{KI}/lib/daisy_es.kicad_sym"] + [
     "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/Switch.kicad_sym",
@@ -88,8 +88,12 @@ SYM = {
     # them onto each other the moment either switch is wired.  SW_DPDT_FLAT is
     # the same part with all six pins at distinct points -- same footprint.
     "SW1": "SW_DPDT_FLAT", "SW2": "SW_DPDT_FLAT",
-    "SW4": "CPG151101S03", "SW5": "CPG151101S03",
-    "SW6": "CPG151101S03", "SW7": "CPG151101S03",
+    # Six UI buttons, 12x12 through-hole tactile, 2 wide x 3 tall. Replaced four
+    # Cherry MX 2026-09-06: MX caps are 18mm on 19.05 pitch and six will not fit
+    # the same panel area. The tactile's pads splay to 14.7mm so the columns keep
+    # the 19.05 pitch and only the ROWS tighten, to 12.7mm.
+    "SW4": "TC-1212-7.3-160G", "SW5": "TC-1212-7.3-160G", "SW6": "TC-1212-7.3-160G",
+    "SW7": "TC-1212-7.3-160G", "SW8": "TC-1212-7.3-160G", "SW9": "TC-1212-7.3-160G",
     "C20": "CL21A106KAYNNNE", "C21": "CL05B104KO5NNNC",
     "C22": "CL21A106KAYNNNE", "C23": "CL05B104KO5NNNC",
     "C24": "CL21A106KAYNNNE", "C25": "CL21A106KAYNNNE",
@@ -106,6 +110,21 @@ SYM = {
     "C30": "CC0805KKX7R9BB105",        # 1uF
     "C31": "CC0603JRX7R8BB104",        # 100nF
     "U7":  "DKM10E-12",
+
+    # ---- board-to-board to the faceplate.  THT here (both faces of this board
+    # are hidden); the faceplate side is SMD so no solder shows on the front
+    # face where the capacitive pads live.
+    #
+    # R26-R29 were two 5V->3.3V dividers carrying GATE_OUT_1/2 to the MSP430's
+    # RST and TEST pins, for the HARDWARE BSL entry sequence in ADR 0005.  All
+    # four are GONE as of 2026-09-06.  SLAU550 Rev AB section 3.3.3: the FR26xx
+    # boot code does blank device detection and jumps straight into the BSL when
+    # the reset vector reads 0xFFFF, which "eliminates the need for two
+    # additional wires (TEST, RST)".  A chip fresh off the reel answers over the
+    # UART on its own, so the entry sequence -- and both gate outputs with it --
+    # was never needed.  J12 pins 7 and 9 still carry RST/TEST to the faceplate
+    # as spare wires; nothing on this board drives them.
+    "J12": "HDR-IDC-2.54-2X5P",
 
     # ---- stereo BBD delay, SSI2100. See docs/bbd-ssi2100.md.
 
@@ -153,7 +172,8 @@ POS = {
     # the LPG SOURCE switch shorted onto the dry audio bus in both channels.
     # Sheet coordinates only -- POS is not read by place.py or mkpcb.py.
     "SW1": (530, 430), "SW2": (530, 490),
-    "SW4": (70, 430), "SW5": (150, 430), "SW6": (70, 490), "SW7": (150, 490),
+    "SW4": (70, 430), "SW5": (150, 430), "SW6": (70, 490),
+    "SW7": (150, 490), "SW8": (230, 430), "SW9": (230, 490),
     # --- right: the two 3V3 rails, kept apart from each other ------------
     "FB1": (600, 330), "U5": (690, 330), "C24": (600, 400), "C20": (690, 400), "C21": (770, 400),
     "FB2": (600, 480), "U6": (690, 480), "C25": (600, 550), "C22": (690, 550), "C23": (770, 550),
@@ -178,6 +198,9 @@ POS.update({
     # -12V rail, below it
     "C33": (620, 880), "C35": (685, 880), "L2": (755, 880),
     "C37": (830, 880), "C39": (895, 880), "R25": (965, 880), "D2": (1035, 880),
+    # faceplate interface, its own band between the power stage and the BBD
+    "J12": (150, 950),
+    "R26": (300, 930), "R27": (300, 990), "R28": (390, 930), "R29": (390, 990),
 })
 
 
@@ -189,6 +212,7 @@ FPMAP = {
     "DS1": "LCD-TH_HS242L01W4S01", "J1": "TF-SMD_TF-PUSH",
     "ENC0": "SW-TH_ALPS_EC11L1525G01",
     "U5": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR", "U6": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
+    "U8": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
     "R20": "R0402", "R21": "R0402",
     "SW1": "SW-TH_DW3_DPDT_2MD1T1B1M2QES",
     "SW2": "SW-TH_DW3_DPDT_2MD1T1B1M2QES",
@@ -198,8 +222,9 @@ FPMAP = {
     "RV4": "RES-ADJ-TH_RK09L1240A12",
     "RV5": "RES-ADJ-TH_RK09L1240A12",
     "RV6": "RES-ADJ-TH_RK09L1240A12",
-    "SW4": "KEY-TH_CPG1511F01S0X", "SW5": "KEY-TH_CPG1511F01S0X",
-    "SW6": "KEY-TH_CPG1511F01S0X", "SW7": "KEY-TH_CPG1511F01S0X",
+    "SW4": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5", "SW5": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5",
+    "SW6": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5", "SW7": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5",
+    "SW8": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5", "SW9": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5",
     "C20": "C0805", "C22": "C0805", "C24": "C0805", "C25": "C0805",
     "C21": "C0402", "C23": "C0402", "C26": "C0402", "C27": "C0402",
     "FB1": "R0805", "FB2": "R0805",
@@ -227,6 +252,8 @@ FPMAP.update({
     "L1": "L0603", "L2": "L0603",
     "D1": "LED0402-R-RD", "D2": "LED0402-R-RD",
     "U7": "PWRM-TH_DKMW30F-12",
+    "J12": "IDC-TH_10P-P2.54_C5665",
+    "R26": "R0603", "R27": "R0603", "R28": "R0603", "R29": "R0603",
 })
 
 VALUE = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
@@ -234,6 +261,47 @@ VALUE = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "values.json")) else {}
 
 NET = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "netmap.json")))
+
+# ---------------------------------------------------------------- stereo LPG
+# Eddy Bergman's Buchla 292 lowpass gate, two channels. See docs/lpg-bergman.md.
+# Deviations from the drawing, all deliberate: no CV1 path, no DEEP switch, and
+# R12/R16 NOT FITTED because only BOTH and VCF modes are wanted -- the VCA
+# contact is never made, so those two resistors have nothing to do.
+LPG_SYM = {}
+for _b, _S in ((300, "L"), (400, "R")):
+    LPG_SYM[f"U{_b+1}"] = "TL074_FLAT"          # A in-buf, B LED drive, C out-buf, D resonance
+    LPG_SYM[f"VT{_b+1}"] = "VTL5C3"
+    LPG_SYM[f"VT{_b+2}"] = "VTL5C3"
+    LPG_SYM[f"RT{_b+1}"] = "TRIMPOT_3T"          # Tp1 20K, LED drive depth.
+    # Tp2 500K is NOT fitted: it only does anything with the DEEP switch closed,
+    # and DEEP is not fitted either.
+    LPG_SYM[f"D{_b+1}"]  = "BZT52C3V9_C2891408"  # 3V9 clamp on the LED node
+    LPG_SYM[f"U{_b+2}"] = "TL074_FLAT"           # Bergman U2, CV chain, one per channel
+LPG_FP = {"TL074_FLAT": "SOIC-14_3.9x8.7mm_P1.27mm",
+          "VTL5C3":     "VACTROL-TH_VTL5C3",
+          "TRIMPOT_3T": "Potentiometer_Bourns_3266W_Vertical",
+          "BZT52C3V9_C2891408": "SOD-123_L2.7-W1.6-LS3.7-RD-1"}
+
+for _ref, _sym in LPG_SYM.items():
+    if _ref in NET:
+        SYM[_ref] = _sym
+        FPMAP[_ref] = LPG_FP[_sym]
+
+_LPG_BANDS = [([r for r in sorted(NET) if r not in SYM and re.match(r"^[RC]3\d\d$", r)], 3000),
+              ([r for r in sorted(NET) if r not in SYM and re.match(r"^[RC]4\d\d$", r)], 3300),
+              ([r for r in sorted(NET) if r not in SYM and re.match(r"^[RC]9\d$", r)], 3600),
+              # 5xx: the I/O interconnect -- jacks -> SW2 SOURCE -> Daisy audio
+              # in. Not part of the LPG; it just wants the same generic R/C
+              # symbols and a band of its own to sit in.
+              ([r for r in sorted(NET) if r not in SYM and re.match(r"^[RC]5\d\d$", r)], 3750)]
+for _refs, _y0 in _LPG_BANDS:
+    for _i, _r in enumerate(_refs):
+        SYM[_r] = "R" if _r[0] == "R" else "C"
+        FPMAP[_r] = "R0603" if _r[0] == "R" else "C0603"
+        POS[_r] = (120 + (_i % 10) * 130, _y0 + (_i // 10) * 90)
+for _i, _r in enumerate(sorted(LPG_SYM)):
+    if _r in NET:
+        POS[_r] = (120 + (_i % 6) * 200, 3900 + (_i // 6) * 120)
 
 # ---------------------------------------------------------------- stereo BBD
 # Moritz Klein's mki x es.edu BBD, two channels, TWO CD4046 clocks (one per
@@ -253,14 +321,19 @@ BBD_SYM = {
     "U106": "TL072_FLAT",  "U206": "TL072_FLAT",     # S&H buffer + output amp
     "U104": "CD4046BNSR", "U204": "CD4046BNSR",   # one clock EACH, not shared
     "Q1":   "MMBFJ113",   "Q2":   "MMBFJ113",     # J113 equivalent, S&H switch
-    "U8":   "78L05_C181132",                      # +5V for both channels
+    # +5V for both channels.  Was a 78L05 in SOT-89 until 2026-09-07: 12V->5V is
+    # a 7V drop, and that package is 500mW at ~250 C/W, so the margin depended
+    # entirely on the BBD's supply current -- which Panasonic never specified for
+    # the MN3205.  SOT-223 removes the guess.  Same part family and footprint as
+    # U5/U6, and 1A instead of 100mA.
+    "U8":   "AMS1117-5.0",
 }
 BBD_FP = {
     "V3205SD":       "DIP-8_SPECIAL_V3205SD",
     "TL072_FLAT":    "SOIC-8_L4.9-W3.9-P1.27-LS6.1-BL",
     "CD4046BNSR":    "SO-16_L10.3-W5.3-P1.27-LS7.8-BL",
     "MMBFJ113":      "SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR",
-    "78L05_C181132": "SOT-89-3_L4.5-W2.5-P1.50-LS4.2-BR",
+    "AMS1117-5.0":   "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
     "1N4148WT4":     "SOD-123_L2.8-W1.8-LS3.7-RD",
     "SW_DPDT_FLAT":  "SW-TH_DW3_DPDT_2MD1T1B1M2QES",
 }

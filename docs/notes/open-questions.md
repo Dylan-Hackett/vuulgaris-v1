@@ -4,7 +4,7 @@ Every `[unverified]` flag and unresolved conflict from `../design-state.md`, ord
 it blocks. **Nothing open here should drive a decision until it is closed.**
 
 **Resolved: Q2, Q3, Q4, Q5, Q6, Q8, Q9, Q11, Q12, Q14.** Kept below with their answers, because
-the reasoning is usually the useful part. **Still open: Q1, Q7, Q10, Q13, Q15, Q17, Q18.**
+the reasoning is usually the useful part. **Still open: Q1, Q7, Q10, Q15, Q17, Q18.**
 
 ---
 
@@ -482,8 +482,18 @@ board no longer wires.
 
 ## Q13. Do the gate outputs drive BSL cleanly through a divider?
 
-**Blocks:** the BSL-over-Daisy plan, which is now on B5/B6.
-**Status: OPEN.** Prototype bench check.
+**Blocks:** nothing.
+**Status: CLOSED 2026-09-06, by deletion — there is no divider.**
+
+SLAU550 Rev AB §3.3.3: the FR26xx boot code does **blank device detection** and jumps
+straight into the BSL when the reset vector reads 0xFFFF, which *"eliminates the need for two
+additional wires (TEST, RST)"*. A chip off the reel answers over the UART on its own, so the
+hardware entry sequence is never used, and `R26`-`R29` are deleted. `B5`/`B6` are gate
+outputs. The original reasoning is kept below because the failure mode it describes is still
+the one to expect if BSL ever misbehaves.
+
+**Replaced by a different watch item:** SLAU550 §3.4, the BSL **ten-second time-out** into
+LPM4. See [ADR 0005](../decisions/0005-bsl-over-daisy-uart.md).
 
 Gate outputs are **0-5V** (Patch SM datasheet Table 3) and the **MSP430 I/O absolute max is
 DVCC+0.3V = 3.6V**. RST and TEST each need a **5V to 3.3V divider**, two resistors per line.

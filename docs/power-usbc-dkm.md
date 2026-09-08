@@ -137,6 +137,46 @@ the Daisy at U1.A5 and U1.A1 — so the stage drops straight in.
    diagnostic there is.
 2. **U7 pin 6 (`R.C.`) is left open**, as it was on the working board.
 
+### U8: 78L05 (SOT-89) -> AMS1117-5.0 (SOT-223), 2026-09-07
+
+**The 78L05 had no defensible thermal margin, because the load current is not a
+knowable number.** U8 drops **12V to 5V** for the BBD's digital side -- two
+V3205SD and two CD4046. In SOT-89 the part is **500mW at roughly 250 C/W**:
+
+| load | dissipation | rise | T_j at 40C inside the box |
+|---|---|---|---|
+| 35mA (estimate) | 245mW | 61C | **101C** — 24C of margin |
+| 50mA | 350mW | 87C | **127C** — over the 125C limit |
+| 100mA (its own rating) | 700mW | — | **exceeds P_D outright** |
+
+The problem is not the estimate, it is that **the estimate cannot be checked.**
+Panasonic never published an I_DD for the MN3205 -- the datasheet's electrical
+table has delay, insertion loss, THD, S/N and no supply current at all. The only
+hard number is **C_CP = 2800pF per clock pin**, which by itself puts
+`4 x 2800pF x 5V x 100kHz` = **5.6mA** of clock-drive current on this rail before
+the BBDs' own consumption. So the answer sat between "fine" and "destroyed" with
+no way to close it on paper.
+
+**AMS1117-5.0 in SOT-223 removes the question rather than answering it.** Same
+part family and the same footprint as `U5`/`U6`, LCSC **C6187** against C6186.
+SOT-223 runs about **100-160 C/W** with its pad, and the part is good for **1A**
+instead of 100mA:
+
+| load | dissipation (incl. ~6mA quiescent x 12V) | rise | T_j at 40C |
+|---|---|---|---|
+| 35mA | 317mW | 32-51C | 72-91C |
+| 70mA (double the estimate) | 562mW | 56-90C | 96-130C |
+
+At the estimate it is comfortable, and at **twice** the estimate it is still
+alive where the 78L05 was already destroyed. That is the property worth buying.
+
+`C42` goes **3.3uF -> 10uF** with it: the AMS1117 needs a real output capacitor
+for loop stability, and 10uF ceramic is what `U5`/`U6` already use.
+
+**Still open:** the actual rail current is unmeasured. Put a meter on `P5V_BBD`
+at bring-up. The point of the swap is that the number stopped being load-bearing,
+not that it stopped mattering.
+
 ### Open, and not yet checked
 
 - **U7 is 25.4mm square and about 10mm tall**, mounted on the back. That is a

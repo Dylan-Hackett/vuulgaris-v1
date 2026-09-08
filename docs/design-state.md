@@ -279,6 +279,41 @@ Bergman's design uses **two vactrols for one channel** (one VCA path, one filter
 - The source switch needs enough poles for **two stereo pairs**. DPDT is sufficient for two stereo sources → one stereo destination: pole A carries L (throws resample-L / ext-L), pole B carries R.
 - **Break-before-make (non-shorting)** is correct here. A shorting switch would briefly tie two low-impedance outputs together. Add a 100k–1M resistor to ground on the switch common so the node doesn't float during the open moment, plus DC blocking caps on both sources.
 - Standard 6-pin DPDT: **middle pin of each row is the common** (pins 2 and 5; throws 1/3 and 4/6). Lever direction is inverted relative to the pin it selects — flipping up connects to the bottom throws. **Silkscreen labels after bench-confirming, not before.** Verify pinout with a multimeter on the actual part; PCB-mount slide switches can differ.
+
+#### SOURCE (SW2) — wired 2026-09-06
+
+`AUDIO_IN_L/R` used to be the Daisy's only dead pins on the audio side. The path now exists:
+
+```
+J7 tip ──── EXT_IN_L ──── C501 ──── SRC_EXT_L ───→ SW2.1 (A_NC)
+                                                     SW2.2 (A_COM) ── AUDIO_IN_L ──→ U1.B4
+BBD_OUT_L ─────────────── C503 ──── SRC_RSMP_L ──→ SW2.3 (A_NO)        │
+     └────────────────────────────→ J9 tip                            R501 1M
+                                                                       └─ GND
+```
+
+R channel identical on `SW2.4/5/6` with `J8`, `C502`, `C504`, `R502`, `J10`.
+
+Three things this section already called for, all present:
+
+- **DC blocking on both sources.** `C501`–`C504`, 1uF. Without them, flipping SOURCE
+  steps the common by whatever the two sources' DC offsets differ by, and that is
+  a thump straight into the codec.
+- **A resistor to ground on the common.** `R501`/`R502`, 1M. The switch is
+  break-before-make, so the common is genuinely open for a moment; this holds it at 0V
+  instead of letting it float. In parallel with the module's own input impedance it is
+  far too big to shift the level.
+- **Break-before-make.** Still needs confirming on the actual DW3 part with a meter —
+  it is assumed, not measured.
+
+**Nothing else is in the path, deliberately.** Patch SM is Eurorack level in *and* out
+(see "Signal levels" above) and `BBD_OUT` is Eurorack level, so both legs are already
+matched. No dividers, no buffers.
+
+**The resample tap is `BBD_OUT`, the same node as the output jack** — what you resample
+is exactly what the module sends out, including the 470R series resistor. The tap adds a
+1uF into 1M beside a jack load; negligible.
+
 - Mode switch (VCF/VCA/both) needs both channels ganged. That's 4P3T, or DP3T if switching can be reduced to two poles per channel. **4P3T panel-mount toggles are uncommon — check availability before committing panel layout.** Rotary may be the answer.
 
 ### Serge VCFQ — why it was dropped (for the record)
@@ -549,6 +584,109 @@ Two alternatives were considered and rejected. **Closing the 1.0mm board-to-wall
 Still unverified: the split between threaded bushing and shoulder is not in either footprint — the silk outline's far end is the whole barrel. If PJ-603's thread is shorter than the 2mm currently protruding, the nut will not bite. Check both datasheets before ordering.
 
 ---
+
+### Panel mounting: one datum family, the rest located but unclamped
+
+**Decided 2026-09-05.** The main PCB has no standoffs of its own — it hangs off
+the panel hardware. The faceplate goes on the bushings of the parts that pass
+through it and is held by their nuts, so the load path is enclosure -> faceplate
+-> nuts -> bushings -> part bodies -> **solder joints** -> main PCB.
+
+**The jacks are not part of this.** `PJ-376` and `PJ-603` are right-angle, barrel
+parallel to the board, exiting the **top edge through the enclosure wall** — see
+`hardware/kicad/README.md` and the counterbore TODO in §11. Their mounting is a
+separate problem with its own open question (whether a nut fits in the
+board-to-wall gap at all, above).
+
+What actually passes through the faceplate:
+
+| family | qty | load it takes |
+|---|---|---|
+| `EC12E2430803` encoder | 8 | rotation **and** push — the most abused parts on the panel |
+| `RK09L1240A12` pot, dual-gang | 6 | rotation |
+| `EC11L1525G01` encoder + push | 1 | rotation and push |
+| DPDT toggle | 2 | flick |
+| UI buttons | 4 (going to 6) | push only |
+| OLED | 1 | none |
+
+These do not share a shoulder height. The panel physically rests on whichever
+shoulders are **tallest**, and every nut done up on a shorter part then tries to
+close a gap that exists: the faceplate bows, or the tall parts get levered
+against their joints, or the short bushing has no thread through the panel for
+the nut to catch.
+
+**So: nut one family only. The rest locate the panel and stop it sliding, and
+carry no load.** Normal in DIY builds.
+
+**The datum should be the EC12 encoders.** They are both the most numerous (8)
+and the most mechanically abused — an encoder takes torque *and* an axial shove,
+and an unclamped part transfers all of that into its solder joints. The pots take
+torque only, the toggles and buttons almost nothing, and the OLED nothing at all.
+Being most numerous is a tiebreak, not the reason.
+
+### Panel part heights — RESOLVED from the ALPS drawings, 2026-09-06
+
+Body height means PCB seating plane to **mounting surface** (the shoulder the
+panel rests on).
+
+| part | body | bushing | thread | cross-check |
+|---|---|---|---|---|
+| `RK09L1240A12` pot | **10mm** | 7mm (`LB`) | M9 x 0.75 | 10 + `L1` 20 = 30 vs 30.2mm measured off the 3D model |
+| `EC12E2430803` encoder | **5.5mm** | 7mm | M9 x 0.75 | "With bushing" style, confirms the §11 rejection of `C470602` |
+| `EC11L1525G01` | not read | — | — | 13.1mm square body, 11mm size — will not exceed the pot |
+
+**The pots are the datum, not the encoders.** They stand 4.5mm proud of the
+EC12s, so the faceplate underside sits **10mm** above the main PCB and 11.6mm to
+its outer face.
+
+### Consequence 1: the encoder nuts cannot bite
+
+EC12 shoulder at 5.5mm + 7mm bushing = tip at **12.5mm**. The faceplate occupies
+10 to 11.6mm, so the bushing clears the panel by **0.9mm** — nowhere near enough
+thread for an M9 nut.
+
+This is consistent with the datum decision (nut one family, locate the rest) and
+it does **not** re-open the §11 side-load worry: the bushing still passes through
+the panel hole, so lateral support is intact. Only axial clamping is lost. But it
+should be explicit that **no encoder will ever be nutted on this build.**
+
+### Consequence 2: the display sits 7.4mm behind the panel — socket it
+
+DS1 is 4.2mm tall, so with a 10mm gap the display face is **7.4mm behind the
+faceplate's outer surface**. For a 55.01 x 27.49mm active area that is a deep
+well: at a 45 degree viewing angle it shadows about 7.4mm, roughly a quarter of
+the display height.
+
+**This reverses the earlier "do not socket the OLED" note.** That was written
+assuming a 5.5mm gap, where a header would have crushed it. At 10mm there is
+5.8mm of clearance, and putting the module on a ~2.5mm header *reduces* the
+recess to 4.9mm and makes it serviceable. Chamfering the window edges is worth
+doing either way.
+
+### Consequence 3: six UI buttons replace four Cherry MX — DONE 2026-09-06
+
+PCB top to faceplate top is 10 + 1.6 = **11.6mm**, plus 2-3mm for a cap to snap
+onto, so the stem wants to be ~14mm. From the 12x12 tactile family (4.3 / 5.6 /
+7.5 / 8.6 / 9.5 / 12 / 16mm): **use the 16mm height.** The 12mm variant clears by
+only 0.4mm, not enough to retain a cap.
+
+**`SW4`-`SW9`, 12x12 through-hole tactile, 2 wide x 3 tall.** Six MX will not fit
+the panel area; six tactiles do, because the panel hole only has to clear the
+**4mm stem** — the cap snaps on from the front and sits on the panel surface, so
+it can be wider than its own hole.
+
+| | |
+|---|---|
+| Columns | 19.05mm, **unchanged from MX** — the pads splay to 14.7mm even on the THT part, so 3-across is impossible |
+| Rows | 12.7mm, tightened from 19.05 |
+| Cluster | 33.8 x 37.4mm vs the MX cluster's 37 x 37 |
+| ENC0 | **does not move** — 12mm caps on tighter rows put the top edge within 0.2mm of where 18mm MX caps were |
+| GPIO | `BTN5`/`BTN6` onto U4's spare GPA0/GPA1; 7 pins still free |
+| Land pattern | `KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5`, 14.70 x 12.00mm, **identical at every height in the family** |
+
+Symbol and footprint are `C2845239` (HCTL TC-1212), which is the 7.3mm height —
+**the ordering code must be swapped for the 16mm variant.** Nothing else changes:
+not the footprint, not the netlist, not the panel hole, not the placement.
 
 ## 12. Immediate next steps
 
