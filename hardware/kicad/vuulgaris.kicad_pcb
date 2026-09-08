@@ -2591,7 +2591,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp 24912414-cbb3-4585-95f6-919d29309103)
-    (at 251.9 131.0)
+    (at 238.731 135.802)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -3662,7 +3662,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp 467ccb96-ec0c-4917-a407-710a8037d44f)
-    (at 251.9 159.0)
+    (at 249.775 159.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -5207,7 +5207,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp 6d336338-7589-4825-baf8-2683473fe06b)
-    (at 228.9 122.0)
+    (at 226.775 122.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -5935,7 +5935,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp 842163bb-e1bd-4b44-8718-b7e8b2e64e2e)
-    (at 228.9 142.0)
+    (at 215.731 146.802)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -6927,7 +6927,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp a5fc45ca-3f90-4919-9b83-a9cffe299b60)
-    (at 228.9 118.0)
+    (at 215.731 122.802)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -8228,7 +8228,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp c971bc76-df07-4b1b-a48b-482b21538794)
-    (at 228.9 146.0)
+    (at 226.775 146.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -10054,7 +10054,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp fefa151c-fc90-4155-9361-358cb0d2f36d)
-    (at 251.9 135.0)
+    (at 249.775 135.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -10116,7 +10116,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp ff16ab64-9feb-44d2-9c08-5d5355d0d07f)
-    (at 251.9 155.0)
+    (at 238.731 159.802)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -11139,7 +11139,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 14593516-10e3-4f91-be71-607c8602935e)
-    (at 173.678 98.0)
+    (at 164.724 95.222)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -11317,7 +11317,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 1722fc17-ddb0-4e84-8c9e-ef8d7d7c8deb)
-    (at 173.678 134.0)
+    (at 161.644 144.768)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -13476,7 +13476,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 679c00ab-0a6c-4429-a2f5-449f1a12522c)
-    (at 218.648 96.47)
+    (at 206.614 107.238)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -13592,7 +13592,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 69a4aed3-8cb7-4799-a873-2aad3ccc5c5e)
-    (at 193.173 113.0)
+    (at 180.862 122.603)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -13771,7 +13771,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 6c3b1af1-9f3b-4059-b8b1-9b07962b1593)
-    (at 173.678 138.0)
+    (at 164.724 135.222)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -13949,7 +13949,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 772fbd62-1cca-462b-bdcb-c8a455f386e4)
-    (at 218.576 138.0)
+    (at 209.622 135.222)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -14893,7 +14893,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 9833ec98-2191-4f5e-a76d-34f6421fbb32)
-    (at 193.173 153.0)
+    (at 180.862 162.603)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15093,7 +15093,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 99e2719b-278e-4079-b5aa-879a6f9d94d6)
-    (at 233.026 96.47)
+    (at 225.292 107.238)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15397,7 +15397,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp b2d3d800-9704-42bc-89d4-c1a3945efdd6)
-    (at 173.678 94.0)
+    (at 161.644 104.768)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15459,7 +15459,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp b6ddc125-36b0-48bc-85db-888542785207)
-    (at 192.97 108.47)
+    (at 190.705 94.3)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15592,7 +15592,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp bb080818-48fe-4321-b2ce-51eadb5121f0)
-    (at 232.954 134.0)
+    (at 225.22 144.768)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -16928,7 +16928,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp d38a1de2-9849-4e11-b2c3-79a8eb34ce8b)
-    (at 218.648 100.47)
+    (at 209.694 97.692)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -17132,7 +17132,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp d66e964c-8b00-4e4a-b458-530a6ee254a5)
-    (at 232.954 138.0)
+    (at 228.3 135.222)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -17694,7 +17694,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp e2273cbd-90ff-4580-b9c7-aa7fb0312e8b)
-    (at 233.026 100.47)
+    (at 228.372 97.692)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -18349,7 +18349,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp f9289ae7-f92e-4ad0-935b-3ed61b70f713)
-    (at 192.898 146.0)
+    (at 190.776 131.405)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -18411,7 +18411,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp fa85b802-5326-43bd-94a2-6b68706bf1df)
-    (at 218.576 134.0)
+    (at 206.542 144.768)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
