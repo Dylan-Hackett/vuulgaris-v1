@@ -180,6 +180,11 @@ KeyError.
   The plug drawing numbers the segments 1/2/3 sleeve-to-tip and the PCB layout puts
   pin 1 nearest the barrel; the footprint agrees, pad 1 at x -3.50 on the bushing
   side. **All eight jacks are now wired.**
-- **470uF bulk cap** at the OLED rail, not yet placed. `design-state` §5.5 calls it
-  non-negotiable.
+- ~~**470uF bulk cap** at the OLED rail~~ — **STRUCK 2026-09-08, it was never a
+  requirement.** Traced to commit 600efda: the 470uF was `25YXJ470M10X12.5`
+  (C88740), the **input bulk cap for the rejected barrel-jack power scheme**
+  (12V barrel + B1212S, decided 2026-08-20 and replaced by USB-C + DKM10E-12).
+  Nothing to do with the OLED rail, and `design-state` §5.5 no longer exists.
+  Current input bulk is `C29`, 22uF/50V. The OLED rail has `C24` 10uF in, `C20`
+  10uF + `C21` 100nF out, which is normal for an AMS1117 feeding a 40mA panel.
 - **Jack panel positions** and **main PCB mounting holes** are unspecified anywhere.
