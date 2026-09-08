@@ -10584,7 +10584,7 @@
 
   (footprint "vuulgaris:C0805" (layer "B.Cu")
     (tstamp 07b4d14b-15cd-40b8-ac5f-cb12f1f950d6)
-    (at 192.898 102)
+    (at 192.97 104.47)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -11263,7 +11263,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 16345547-7b08-4b1f-b491-da3d767660e6)
-    (at 199.898 94)
+    (at 199.97 96.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -11450,7 +11450,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 1ba0fb39-6201-4663-8b4f-5e26005a2deb)
-    (at 239.954 98)
+    (at 240.026 100.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -11809,7 +11809,7 @@
 
   (footprint "vuulgaris:C0805" (layer "B.Cu")
     (tstamp 2a0ed9bd-d53a-4241-8474-ad9cbdece21e)
-    (at 239.954 94)
+    (at 240.026 96.47)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -11872,7 +11872,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 2a98a7af-3b96-4524-9a55-8c54626df9ce)
-    (at 192.898 98)
+    (at 192.97 100.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -12357,7 +12357,7 @@
 
   (footprint "vuulgaris:SOIC-8_L4.9-W3.9-P1.27-LS6.1-BL" (layer "B.Cu")
     (tstamp 377775a8-030a-4fec-b13e-ec5593620961)
-    (at 226.765 100)
+    (at 226.837 102.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/f421f21d-0503-4a0b-9ef0-5352ae064ee4")
@@ -12615,7 +12615,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 3c772cc4-9d74-44d7-ad3a-ae2806d9f14f)
-    (at 239.954 102)
+    (at 240.026 104.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -13134,7 +13134,7 @@
 
   (footprint "vuulgaris:SOD-123_L2.8-W1.8-LS3.7-RD" (layer "B.Cu")
     (tstamp 562129fd-a67d-4300-8a36-63352471b66c)
-    (at 214.276 106)
+    (at 214.348 108.47)
     (descr "1N4148W T4")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -13476,7 +13476,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 679c00ab-0a6c-4429-a2f5-449f1a12522c)
-    (at 218.576 94)
+    (at 218.648 96.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -14011,13 +14011,13 @@
 
   (footprint "vuulgaris:SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR" (layer "B.Cu")
     (tstamp 77458fc0-6460-48b8-a184-88ee15f86fbf)
-    (at 214.276 94)
+    (at 214.348 96.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_keywords" "MOSFETs")
     (path "/1206e563-143f-4479-b5e3-b2e2249e8f82")
     (attr smd)
-    (fp_text reference "Q1" (at 0.047 -2.875) (layer "B.SilkS")
+    (fp_text reference "Q1" (at -2.031 -1.28) (layer "B.SilkS")
         (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 5c4a8dfa-7577-46bb-abef-db5572668331)
     )
@@ -14360,7 +14360,7 @@
 
   (footprint "vuulgaris:C0805" (layer "B.Cu")
     (tstamp 871b5dba-77fa-47b2-919b-4782a32139a5)
-    (at 214.276 98)
+    (at 214.348 100.47)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -14545,7 +14545,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 93c2c9aa-a124-452b-a977-12e43d829abd)
-    (at 218.576 106)
+    (at 218.648 108.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -14955,7 +14955,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 99b55dde-8bf5-43dd-999f-9bbea1d950fe)
-    (at 214.276 102)
+    (at 214.348 104.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -15009,7 +15009,7 @@
 
   (footprint "vuulgaris:SOIC-8_L4.9-W3.9-P1.27-LS6.1-BL" (layer "B.Cu")
     (tstamp 99d792dd-5f33-4acd-bd82-4ad758850126)
-    (at 208.087 100)
+    (at 208.159 102.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (path "/f909e146-689b-48b3-b005-10fdef4e8791")
@@ -15093,7 +15093,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 99e2719b-278e-4079-b5aa-879a6f9d94d6)
-    (at 232.954 94)
+    (at 233.026 96.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15155,7 +15155,7 @@
 
   (footprint "vuulgaris:C0805" (layer "B.Cu")
     (tstamp a3ab9046-3aa7-429c-bba2-c2acdc2b9569)
-    (at 199.898 98)
+    (at 199.97 100.47)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -15218,7 +15218,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp a51aa239-0d91-4a89-a80d-39bfbaf64c29)
-    (at 199.898 102)
+    (at 199.97 104.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -15459,7 +15459,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp b6ddc125-36b0-48bc-85db-888542785207)
-    (at 192.898 106)
+    (at 192.97 108.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -16928,7 +16928,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp d38a1de2-9849-4e11-b2c3-79a8eb34ce8b)
-    (at 218.576 98)
+    (at 218.648 100.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -17694,7 +17694,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp e2273cbd-90ff-4580-b9c7-aa7fb0312e8b)
-    (at 232.954 98)
+    (at 233.026 100.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -18241,7 +18241,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp f42e1c5c-74fd-4e79-95a1-58c1b56dc9cd)
-    (at 218.576 102)
+    (at 218.648 104.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -18295,7 +18295,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp f921395c-79cb-4e7b-a9ed-ba3fa02f1884)
-    (at 192.898 94)
+    (at 192.97 96.47)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
