@@ -130,6 +130,29 @@ not from disk.** An Eeschema window left open while these tools run will silentl
 overwrite them on its next save, and F8 from a stale window reports "no changes"
 for edits that are sitting on disk. **Close Eeschema and Pcbnew between hand-offs.**
 
+## Crowding: overlap is not the only failure
+
+`place.py` reports the **tightest pad-to-pad clearance on the board** and lists
+everything under 1.0mm. Being on the same net earns a part nothing here — the
+connection is made by copper, not by proximity, and a 0603 sitting 0.3mm off a
+SOIC pin passes every overlap check while still being impossible to rework.
+
+JLC's assembly floor is ~0.2mm, but that is a *fabrication* limit, not a working
+clearance, so the check warns at **1.0mm** and only fails under **0.45mm**.
+
+Current tightest, all understood:
+
+| gap | pair | why |
+|---|---|---|
+| 0.80mm | SW4/5, SW6/7, SW8/9 | the button column pitch. 14.7mm shorts outright, 15.5mm leaves 0.8mm — a deliberate floor, and they are through-hole so hand-solderable |
+| 0.82mm | DS1 x J1 | pre-existing, OLED header against the SD socket |
+| 0.95mm | TP8/10/11/12 | test points, placed to 0.4mm search clearance |
+
+The 24 bypass caps used to sit at **0.64mm** — I put them there chasing short
+decoupling paths and it was too tight to get an iron in. Re-placed against a
+**1.0mm pad-to-pad floor**; the cost was almost nothing, 2.1-3.1mm from the power
+pin became 2.4-3.2mm.
+
 ## Test points
 
 Fifteen, all `TestPoint_TH_D1.0mm` (1.0mm drill / 2.0mm pad -- a probe hooks it or
