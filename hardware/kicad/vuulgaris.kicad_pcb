@@ -1438,7 +1438,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp 12a7ed3f-56e3-4861-a6d4-c54d0553e7b0)
-    (at 158.92 138.39)
+    (at 157.993 137.944)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -2591,7 +2591,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp 24912414-cbb3-4585-95f6-919d29309103)
-    (at 238.634 135.828)
+    (at 237.606 135.819)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -3131,7 +3131,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp 35a4ca7d-e5c4-4793-a93f-bacc7324a80c)
-    (at 177.52 154.98)
+    (at 184.298 149.483)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -3693,7 +3693,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp 467ccb96-ec0c-4917-a407-710a8037d44f)
-    (at 249.275 159.0 -90)
+    (at 250.275 159.0 -90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -3755,7 +3755,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp 470bec15-de22-48ad-9555-8329471fe0ca)
-    (at 158.72 96.84)
+    (at 159.355 93.389)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -5037,7 +5037,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp 61bff93d-aeb6-4916-ad09-6b59aa1d613d)
-    (at 233.15 144.21)
+    (at 240.076 145.495)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -5174,7 +5174,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp 63dc3b0d-0709-4f58-95b3-a6bf9436187d)
-    (at 222.5 138.39)
+    (at 232.075 142.83)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -5393,7 +5393,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp 6d336338-7589-4825-baf8-2683473fe06b)
-    (at 226.875 122.0)
+    (at 227.875 122.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -5633,7 +5633,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp 7b1ff113-4465-4a07-b1f1-8a406501754d)
-    (at 250.97 130.87)
+    (at 244.782 142.14)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -5718,7 +5718,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp 7b72940c-be6b-4a18-90e1-c5b1e24538d9)
-    (at 233.15 120.21)
+    (at 239.8 119.46)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -6245,7 +6245,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp 842163bb-e1bd-4b44-8718-b7e8b2e64e2e)
-    (at 215.634 146.828)
+    (at 214.606 146.819)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -7237,7 +7237,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp a5fc45ca-3f90-4919-9b83-a9cffe299b60)
-    (at 215.634 122.828)
+    (at 214.606 122.819)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -8376,7 +8376,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp bf646530-2bf5-4e2e-bc7b-53187f2657d2)
-    (at 222.57 100.86)
+    (at 221.641 100.414)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -8569,7 +8569,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp c971bc76-df07-4b1b-a48b-482b21538794)
-    (at 226.875 146.0)
+    (at 227.875 146.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -8803,7 +8803,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp d3f3ac8b-0fdb-42ea-b0e5-d6578db1b54f)
-    (at 163.04 110.56)
+    (at 162.996 109.523)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -9358,7 +9358,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "F.Cu")
     (tstamp d9800d76-8c2f-47a0-9db2-a90878cd07ef)
-    (at 177.52 111.62)
+    (at 184.047 109.458)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -10488,7 +10488,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp fefa151c-fc90-4155-9361-358cb0d2f36d)
-    (at 249.875 135.0)
+    (at 250.875 135.0)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -10550,7 +10550,7 @@
 
   (footprint "vuulgaris:C0603" (layer "F.Cu")
     (tstamp ff16ab64-9feb-44d2-9c08-5d5355d0d07f)
-    (at 238.634 159.828)
+    (at 237.606 159.819)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -11573,7 +11573,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 14593516-10e3-4f91-be71-607c8602935e)
-    (at 164.253 94.828)
+    (at 164.157 93.813)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -11751,7 +11751,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 1722fc17-ddb0-4e84-8c9e-ef8d7d7c8deb)
-    (at 158.884 142.857)
+    (at 157.886 142.922)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -13910,7 +13910,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 679c00ab-0a6c-4429-a2f5-449f1a12522c)
-    (at 203.854 105.327)
+    (at 206.249 108.77)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -14026,7 +14026,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 69a4aed3-8cb7-4799-a873-2aad3ccc5c5e)
-    (at 180.746 122.973)
+    (at 180.855 123.984)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -14205,7 +14205,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 6c3b1af1-9f3b-4059-b8b1-9b07962b1593)
-    (at 164.253 134.828)
+    (at 164.157 133.813)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -14383,7 +14383,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 772fbd62-1cca-462b-bdcb-c8a455f386e4)
-    (at 209.151 134.828)
+    (at 209.055 133.813)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15327,7 +15327,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 9833ec98-2191-4f5e-a76d-34f6421fbb32)
-    (at 180.746 162.973)
+    (at 180.855 163.984)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15527,7 +15527,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 99e2719b-278e-4079-b5aa-879a6f9d94d6)
-    (at 222.532 105.327)
+    (at 225.859 108.647)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15831,7 +15831,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp b2d3d800-9704-42bc-89d4-c1a3945efdd6)
-    (at 158.884 102.857)
+    (at 157.886 102.922)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -15893,7 +15893,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp b6ddc125-36b0-48bc-85db-888542785207)
-    (at 190.855 94.3)
+    (at 191.778 93.52)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -16026,7 +16026,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp bb080818-48fe-4321-b2ce-51eadb5121f0)
-    (at 222.46 142.857)
+    (at 225.787 146.177)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -17362,7 +17362,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp d38a1de2-9849-4e11-b2c3-79a8eb34ce8b)
-    (at 209.223 97.298)
+    (at 209.127 96.283)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -17566,7 +17566,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp d66e964c-8b00-4e4a-b458-530a6ee254a5)
-    (at 231.065 137.29)
+    (at 232.065 137.29)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -18128,7 +18128,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp e2273cbd-90ff-4580-b9c7-aa7fb0312e8b)
-    (at 231.137 99.76)
+    (at 232.137 99.76)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -18783,7 +18783,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp f9289ae7-f92e-4ad0-935b-3ed61b70f713)
-    (at 191.04 131.795)
+    (at 187.218 129.096)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -18845,7 +18845,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp fa85b802-5326-43bd-94a2-6b68706bf1df)
-    (at 203.782 142.857)
+    (at 207.109 146.177)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")

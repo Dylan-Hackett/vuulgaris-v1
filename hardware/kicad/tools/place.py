@@ -153,20 +153,21 @@ FREE_SEED = {
     # what a 100nF is for. Now 2.1-3.1mm. Each sits beside the pad it feeds, on
     # the same face as its chip, so there is no via in the path. Positions are
     # a nearest-free-spot search around the power pad, not hand-placed, with a
-    # 1.0mm pad-to-pad floor so a chip can still be reworked --
+    # 2.0mm pad-to-pad floor so a hot-air nozzle or an iron tip actually fits
+    # beside the chip -- 1.0mm was still too tight to work in --
     # "bypass caps hug their chip" below is what keeps them honest.
-    "C105": (122.532, 55.327), "C106": (131.137, 49.76),   # U102
-    "C107": (58.884, 52.857), "C108": (64.253, 44.828),   # U103
-    "C121": (103.854, 55.327), "C122": (109.223, 47.298),   # U106
-    "C205": (122.46, 92.857), "C206": (131.065, 87.29),   # U202
-    "C207": (58.884, 92.857), "C208": (64.253, 84.828),   # U203
-    "C221": (103.782, 92.857), "C222": (109.151, 84.828),   # U206
-    "C301": (115.634, 72.828), "C302": (126.875, 72.0),   # U301
-    "C303": (138.634, 85.828), "C304": (149.875, 85.0),   # U302
-    "C401": (115.634, 96.828), "C402": (126.875, 96.0),   # U401
-    "C403": (138.634, 109.828), "C404": (149.275, 109.0),   # U402
-    "C111": (90.855, 44.3), "C109": (80.746, 72.973),   # U101 V3205, U104 4046
-    "C211": (91.04, 81.795), "C209": (80.746, 112.973),   # U201 V3205, U204 4046
+    "C105": (125.859, 58.647), "C106": (132.137, 49.76),   # U102
+    "C107": (57.886, 52.922), "C108": (64.157, 43.813),   # U103
+    "C121": (106.249, 58.77), "C122": (109.127, 46.283),   # U106
+    "C205": (125.787, 96.177), "C206": (132.065, 87.29),   # U202
+    "C207": (57.886, 92.922), "C208": (64.157, 83.813),   # U203
+    "C221": (107.109, 96.177), "C222": (109.055, 83.813),   # U206
+    "C301": (114.606, 72.819), "C302": (127.875, 72.0),   # U301
+    "C303": (137.606, 85.819), "C304": (150.875, 85.0),   # U302
+    "C401": (114.606, 96.819), "C402": (127.875, 96.0),   # U401
+    "C403": (137.606, 109.819), "C404": (150.275, 109.0),   # U402
+    "C111": (91.778, 43.52), "C109": (80.855, 73.984),   # U101 V3205, U104 4046
+    "C211": (87.218, 79.096), "C209": (80.855, 113.984),   # U201 V3205, U204 4046
     # Series protection on the two output jacks, beside J3/J2 on the top edge.
     # Below the encoder block: the top strip is full -- ENC columns at x 18.15,
     # 40.15, 62.15, 84.15 and the jacks' bodies run 12mm inward between them.
@@ -185,17 +186,19 @@ FREE_SEED = {
     "TP1": (4.0, 4.0), "TP2": (8.5, 4.0), "TP3": (13.0, 4.0),
     "TP4": (17.5, 4.0), "TP5": (22.0, 4.0),
     # Signal test points sit next to the node they probe, not in a row --
-    # findability is the whole point. Nearest-free-spot search, 2.6-7.4mm.
-    "TP6": (122.57, 50.86),   # BBD_DRY_L
-    "TP7": (122.5, 88.39),    # BBD_DRY_R
-    "TP8": (58.72, 46.84),    # BBD_SIGIN_L
-    "TP9": (58.92, 88.39),    # BBD_SIGIN_R
-    "TP10": (133.15, 70.21),  # LPG_LED_L
-    "TP11": (133.15, 94.21),  # LPG_LED_R
-    "TP12": (77.52, 61.62),   # BBD_CLK_L
-    "TP13": (77.52, 104.98),  # BBD_CLK_R
-    "TP14": (63.04, 60.56),   # TIME_CV
-    "TP15": (149.87, 81.71),  # LPG_ENV
+    # findability is the whole point. Nearest-free-spot search against the same
+    # 2.0mm pad-to-pad floor the bypass caps use, so a probe pad never becomes
+    # the thing blocking a chip from being reworked.
+    "TP6": (121.641, 50.414),   # BBD_DRY_L
+    "TP7": (132.075, 92.83),    # BBD_DRY_R
+    "TP8": (59.355, 43.389),    # BBD_SIGIN_L
+    "TP9": (57.993, 87.944),    # BBD_SIGIN_R
+    "TP10": (139.8, 69.46),  # LPG_LED_L
+    "TP11": (140.076, 95.495),  # LPG_LED_R
+    "TP12": (84.047, 59.458),   # BBD_CLK_L
+    "TP13": (84.298, 99.483),  # BBD_CLK_R
+    "TP14": (62.996, 59.523),   # TIME_CV
+    "TP15": (144.782, 92.14),  # LPG_ENV
     # U8's decoupling. Shifted right and down 2026-09-07 when U8 went from SOT-89
     # to SOT-223 and grew into C40.
     "C40": (58.0, 113.5), "C41": (62.0, 113.5), "C42": (66.0, 113.5),
@@ -612,6 +615,31 @@ if _crowd:
         print(f"   {_g:5.2f}mm  {_a:6} x {_b:6}")
 else:
     print(f"pad-to-pad clearance: everything is at least {CROWD_WARN}mm apart")
+
+# Chips get their own line. A 0603 crowding another 0603 is untidy; a 0603
+# crowding a SOIC is a part you cannot rework, because the iron has to reach the
+# chip's pins with the neighbour still on the board.
+CHIP_MIN = 1.50
+_chip = []
+for _c in sorted(padbox):
+    if not re.match(r"^U\d+$", _c):
+        continue
+    for _o in padbox:
+        if _o == _c or re.match(r"^U\d+$", _o):
+            continue
+        _same = side.get(_c) == side.get(_o)
+        _g = min((_pgap(tuple(_x[:4]), tuple(_y[:4]))
+                  for _x in padbox[_c] for _y in padbox[_o]
+                  if _same or _x[4] or _y[4]), default=None)
+        if _g is not None and 0 <= _g < CHIP_MIN:
+            _chip.append((round(_g, 2), _c, _o))
+_chip.sort()
+if _chip:
+    print(f"TOO CLOSE TO A CHIP ({len(_chip)} pairs under {CHIP_MIN}mm):")
+    for _g, _c, _o in _chip[:12]:
+        print(f"   {_g:5.2f}mm  {_c:6} x {_o:6}")
+else:
+    print(f"nothing within {CHIP_MIN}mm of a chip pad")
 
 # --- bypass caps have to be NEXT TO the pin they decouple -------------------
 # A 100nF 10mm from its power pin is decoration: the trace inductance in series

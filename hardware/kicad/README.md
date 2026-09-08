@@ -130,6 +130,25 @@ not from disk.** An Eeschema window left open while these tools run will silentl
 overwrite them on its next save, and F8 from a stale window reports "no changes"
 for edits that are sitting on disk. **Close Eeschema and Pcbnew between hand-offs.**
 
+## The courtyards in this library are FAKE -- do not trust a courtyard DRC
+
+Every `easyeda2kicad` footprint here has its courtyard drawn as the **plastic body
+outline**, which is *smaller than its own pads*:
+
+| footprint | courtyard | pads actually reach |
+|---|---|---|
+| `C0603` | +/-0.80 x +/-0.40 | **+/-1.10 x +/-0.45** |
+| `SOIC-8_L4.9-W3.9-P1.27-LS6.1-BL` | +/-2.50 x +/-2.00 | **+/-3.05** |
+
+IPC says a courtyard is pads + body + margin. These are body-only. A courtyard
+overlap check -- **including KiCad's own DRC** -- therefore passes a board whose
+parts physically collide, and this board reports **0 courtyard overlaps** while
+having had parts 0.64mm apart. That is why nothing ever complained.
+
+**So clearance here is checked pad-to-pad in `place.py`, not by courtyard.** If you
+ever run KiCad's DRC, its courtyard result means nothing until the library is
+fixed.
+
 ## Crowding: overlap is not the only failure
 
 `place.py` reports the **tightest pad-to-pad clearance on the board** and lists
