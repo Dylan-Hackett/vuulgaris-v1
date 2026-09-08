@@ -370,47 +370,65 @@
   "B": "ENC0_B",
   "C": "GND",
   "D": "ENC0_PUSH",
-  "E": "GND"
+  "E": "GND",
+  "6": "GND",
+  "7": "GND"
  },
  "ENC1": {
   "A": "ENC1_A",
   "B": "ENC1_B",
-  "C": "GND"
+  "C": "GND",
+  "D": "GND",
+  "E": "GND"
  },
  "ENC2": {
   "A": "ENC2_A",
   "B": "ENC2_B",
-  "C": "GND"
+  "C": "GND",
+  "D": "GND",
+  "E": "GND"
  },
  "ENC3": {
   "A": "ENC3_A",
   "B": "ENC3_B",
-  "C": "GND"
+  "C": "GND",
+  "D": "GND",
+  "E": "GND"
  },
  "ENC4": {
   "A": "ENC4_A",
   "B": "ENC4_B",
-  "C": "GND"
+  "C": "GND",
+  "D": "GND",
+  "E": "GND"
  },
  "ENC5": {
   "A": "ENC5_A",
   "B": "ENC5_B",
-  "C": "GND"
+  "C": "GND",
+  "D": "GND",
+  "E": "GND"
  },
  "ENC6": {
   "A": "ENC6_A",
   "B": "ENC6_B",
-  "C": "GND"
+  "C": "GND",
+  "D": "GND",
+  "E": "GND"
  },
  "ENC7": {
   "A": "ENC7_A",
   "B": "ENC7_B",
-  "C": "GND"
+  "C": "GND",
+  "D": "GND",
+  "E": "GND"
  },
  "ENC8": {
   "A": "ENC8_A",
   "B": "ENC8_B",
-  "C": "GND"
+  "C": "GND",
+  "D": "GND",
+  "E": "GND"
  },
  "F1": {
   "1": "VBUS",
@@ -960,7 +978,9 @@
   "3": "GND",
   "4": "POS12V",
   "5": "LPG_OFS_R",
-  "6": "GND"
+  "6": "GND",
+  "7": "GND",
+  "8": "GND"
  },
  "RV2": {
   "1": "LPG_RES_L",
@@ -968,7 +988,9 @@
   "3": "LPG_RESL_L",
   "4": "LPG_RES_R",
   "5": "LPG_RESW_R",
-  "6": "LPG_RESL_R"
+  "6": "LPG_RESL_R",
+  "7": "GND",
+  "8": "GND"
  },
  "RV3": {
   "1": "LPG_ENV",
@@ -976,7 +998,9 @@
   "3": "LPG_ENVN_L",
   "4": "LPG_ENV",
   "5": "LPG_CVW_R",
-  "6": "LPG_ENVN_R"
+  "6": "LPG_ENVN_R",
+  "7": "GND",
+  "8": "GND"
  },
  "RV4": {
   "1": "BBD_TIMEHI_L",
@@ -984,7 +1008,9 @@
   "3": "BBD_TIMELO_L",
   "4": "BBD_TIMEHI_R",
   "5": "BBD_TIMEW_R",
-  "6": "BBD_TIMELO_R"
+  "6": "BBD_TIMELO_R",
+  "7": "GND",
+  "8": "GND"
  },
  "RV5": {
   "1": "GND",
@@ -992,7 +1018,9 @@
   "3": "BBD_WETAC_L",
   "4": "GND",
   "5": "BBD_FB_R",
-  "6": "BBD_WETAC_R"
+  "6": "BBD_WETAC_R",
+  "7": "GND",
+  "8": "GND"
  },
  "RV6": {
   "1": "BBD_DRY_L",
@@ -1000,7 +1028,9 @@
   "3": "BBD_WETAC_L",
   "4": "BBD_DRY_R",
   "5": "BBD_MIXW_R",
-  "6": "BBD_WETAC_R"
+  "6": "BBD_WETAC_R",
+  "7": "GND",
+  "8": "GND"
  },
  "SW1": {
   "1": "LPG_RES_L",

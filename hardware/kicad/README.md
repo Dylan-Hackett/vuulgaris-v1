@@ -130,6 +130,23 @@ not from disk.** An Eeschema window left open while these tools run will silentl
 overwrite them on its next save, and F8 from a stale window reports "no changes"
 for edits that are sitting on disk. **Close Eeschema and Pcbnew between hand-offs.**
 
+## Chassis lugs are grounded, deliberately
+
+All 30 mounting tabs go to GND: `ENC0` pins 6/7, `ENC1`-`ENC8` pins D/E, `RV1`-`RV6`
+pins 7/8. In each footprint these are the large slotted ovals set apart from the
+signal pads, not signal pins -- note that on the EC11 (`ENC0`) it is **6 and 7**
+that are the lugs, because **D and E there are the push switch**.
+
+They are grounded rather than left open because this instrument reads
+capacitance. A floating metal shell directly behind the touch panel is an
+antenna. The solder joints also take the mechanical load off the signal pins.
+
+**Consequence to watch at assembly:** the shells are bonded to the bushings, which
+the nuts clamp to the faceplate. If the faceplate ever gets a ground pour near
+those holes, main-board GND and faceplate GND are joined through the panel
+hardware in parallel with J12's ground wires. That is usually fine and often
+desirable, but it is a second path and worth knowing about before chasing a hum.
+
 ## kpins.json is generated, untracked, and easy to generate WRONG
 
 `tools/kpins.json` is the pin-geometry cache `mksch.py` reads. It is not in git.
