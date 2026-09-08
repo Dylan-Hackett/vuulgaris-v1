@@ -186,19 +186,25 @@ FREE_SEED = {
     "TP1": (4.0, 4.0), "TP2": (8.5, 4.0), "TP3": (13.0, 4.0),
     "TP4": (17.5, 4.0), "TP5": (22.0, 4.0),
     # Signal test points sit next to the node they probe, not in a row --
-    # findability is the whole point. Nearest-free-spot search against the same
-    # 2.0mm pad-to-pad floor the bypass caps use, so a probe pad never becomes
-    # the thing blocking a chip from being reworked.
-    "TP6": (121.641, 50.414),   # BBD_DRY_L
-    "TP7": (132.075, 92.83),    # BBD_DRY_R
-    "TP8": (59.355, 43.389),    # BBD_SIGIN_L
-    "TP9": (57.993, 87.944),    # BBD_SIGIN_R
-    "TP10": (139.8, 69.46),  # LPG_LED_L
-    "TP11": (140.076, 95.495),  # LPG_LED_R
+    # Tidied into one row along the bottom 2026-09-08 -- scattered singletons
+    # wedged into gaps between parts were a mess to find and to look at. The
+    # LABEL is what makes a test point findable, not proximity, so a labelled row
+    # loses nothing.
+    #
+    # TP12/TP13 are the exception and stay beside their own 4046. They carry the
+    # BBD CLOCK, and running a 100kHz square wave 100mm across the board to a
+    # probe pad is a noise injector sitting next to the audio, not a debugging
+    # aid. Everything else in the row is a driven, slow node that does not care.
+    "TP6": (165.5, 104.0),   # BBD_DRY_L
+    "TP7": (181.5, 104.0),    # BBD_DRY_R
+    "TP8": (173.5, 104.0),    # BBD_SIGIN_L
+    "TP9": (189.5, 104.0),    # BBD_SIGIN_R
+    "TP10": (197.5, 104.0),  # LPG_LED_L
+    "TP11": (205.5, 104.0),  # LPG_LED_R
     "TP12": (84.047, 59.458),   # BBD_CLK_L
     "TP13": (84.298, 99.483),  # BBD_CLK_R
-    "TP14": (62.996, 59.523),   # TIME_CV
-    "TP15": (144.782, 92.14),  # LPG_ENV
+    "TP14": (213.5, 104.0),   # TIME_CV
+    "TP15": (221.5, 104.0),  # LPG_ENV
     # U8's decoupling. Shifted right and down 2026-09-07 when U8 went from SOT-89
     # to SOT-223 and grew into C40.
     "C40": (58.0, 113.5), "C41": (62.0, 113.5), "C42": (66.0, 113.5),

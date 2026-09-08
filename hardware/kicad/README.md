@@ -188,10 +188,19 @@ tells you nothing at a bench, `SIGIN L` does.
 | TP12/TP13 | `BBD_CLK_L/R` | CLK L/R | the two 4046 clocks. Their mistracking **is** the stereo width, and this separates a dead VCO from a dead BBD |
 | TP14/TP15 | `TIME_CV`, `LPG_ENV` | TIME CV / LPG ENV | the two DAC outputs. Splits any fault into firmware or analog in one probe |
 
-**Known wart:** every test point sits on `F.Cu`, so its label prints on the FRONT
-silk -- but TP6-TP9 and TP12-TP14 serve circuits on `B.Cu`. The pads are
-through-hole so they probe fine from either side; you just read the label from the
-front while probing the back. Flip them to `B.Cu` if that ever grates.
+**TP6-TP15 are on `B.Cu` and their labels print on `B.SilkS`** -- the front is under
+the faceplate, so the back is where you actually probe. TP1-TP5 stay on the front:
+they sit in an empty corner and are fine there.
+
+**Eight of them sit in one row at y=104, 8mm pitch** (`DRY L`, `SIGIN L`, `DRY R`,
+`SIGIN R`, `LED L`, `LED R`, `TIME CV`, `LPG ENV`). Scattered singletons wedged
+into gaps were hard to find and worse to look at, and the **label** is what makes a
+test point findable, not proximity -- so a labelled row costs nothing.
+
+**TP12/TP13 (`CLK L`/`CLK R`) deliberately stay beside their own 4046.** They carry
+the BBD clock, and dragging a 100kHz square wave 100mm across the board to a probe
+pad is a noise injector sitting next to the audio, not a debugging aid. Everything
+in the row is a driven, slow node that does not care about the stub.
 
 ## Power test points
 
