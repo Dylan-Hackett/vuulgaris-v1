@@ -147,6 +147,25 @@ FREE_SEED = {
     "C501": (172.0, 39.0), "C503": (172.0, 43.0),   # L: ext, resample
     "R501": (178.0, 39.0), "R502": (178.0, 43.0),   # common pulldowns
     "C502": (190.0, 39.0), "C504": (190.0, 43.0),   # R: ext, resample
+    # --- bypass caps, hugging their own chip -------------------------------
+    # Moved 2026-09-08. They were 6.5-12.1mm from the power pin they decouple
+    # (mean 9.3), which is far enough that the trace inductance undoes most of
+    # what a 100nF is for. Now 2.1-3.1mm. Each sits beside the pad it feeds, on
+    # the same face as its chip, so there is no via in the path. Positions are
+    # a nearest-free-spot search around the power pad, not hand-placed --
+    # "bypass caps hug their chip" below is what keeps them honest.
+    "C105": (125.292, 57.238), "C106": (128.372, 47.692),   # U102
+    "C107": (61.644, 54.768), "C108": (64.724, 45.222),   # U103
+    "C121": (106.614, 57.238), "C122": (109.694, 47.692),   # U106
+    "C205": (125.22, 94.768), "C206": (128.3, 85.222),   # U202
+    "C207": (61.644, 94.768), "C208": (64.724, 85.222),   # U203
+    "C221": (106.542, 94.768), "C222": (109.622, 85.222),   # U206
+    "C301": (115.731, 72.802), "C302": (126.775, 72.0),   # U301
+    "C303": (138.731, 85.802), "C304": (149.775, 85.0),   # U302
+    "C401": (115.731, 96.802), "C402": (126.775, 96.0),   # U401
+    "C403": (138.731, 109.802), "C404": (149.775, 109.0),   # U402
+    "C111": (90.705, 44.3), "C109": (80.862, 72.603),   # U101 V3205, U104 4046
+    "C211": (90.776, 81.405), "C209": (80.862, 112.603),   # U201 V3205, U204 4046
     # Series protection on the two output jacks, beside J3/J2 on the top edge.
     # Below the encoder block: the top strip is full -- ENC columns at x 18.15,
     # 40.15, 62.15, 84.15 and the jacks' bodies run 12mm inward between them.
@@ -405,6 +424,7 @@ print(f"   {checked} non-circular pads checked, {bad_ang} wrong"
 # mounted on. Bodies only conflict with parts on the SAME face -- the 1/4" jacks
 # sit on the back, under an OLED that stands off the front, and that is fine.
 box, padbox, side = {}, {}, {}
+padpos = {}          # ref -> {pad number: (x, y)}, for the bypass-distance check
 for ref, block, _, _ in fp_blocks(src):
     a = re.search(r'\(at ([-\d.]+) ([-\d.]+)( [-\d.]+)?\)', block)
     if not (ref and a):
@@ -446,6 +466,7 @@ for ref, block, _, _ in fp_blocks(src):
         xs_, ys_ = [c[0] for c in corners], [c[1] for c in corners]
         prects.append((min(xs_), min(ys_), max(xs_), max(ys_),
                        ptype.endswith("thru_hole")))
+        padpos.setdefault(ref, {})[p.group(0).split('"')[1]] = place(px, py)
     pts += ppts
     for l in re.finditer(r'\(fp_line \(start ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\)', block):
         g = list(map(float, l.groups()))
@@ -525,6 +546,46 @@ for i, a in enumerate(refs):
             sft = ov(box[a], box[b])
             if sft:
                 soft.append((a, b, round(sft[0], 2), round(sft[1], 2), side.get(a)))
+# --- bypass caps have to be NEXT TO the pin they decouple -------------------
+# A 100nF 10mm from its power pin is decoration: the trace inductance in series
+# with it undoes most of what it is for. Nothing noticed this until it was
+# measured by hand on 2026-09-08, when the mean was 9.3mm and the worst 12.1mm.
+# (chip, power pin, cap) -- the cap must also be on the SAME FACE, or the path
+# picks up a via and the point is lost again.
+BYPASS = [("U102", "8", "C105"), ("U102", "4", "C106"),
+          ("U103", "8", "C107"), ("U103", "4", "C108"),
+          ("U106", "8", "C121"), ("U106", "4", "C122"),
+          ("U202", "8", "C205"), ("U202", "4", "C206"),
+          ("U203", "8", "C207"), ("U203", "4", "C208"),
+          ("U206", "8", "C221"), ("U206", "4", "C222"),
+          ("U301", "4", "C301"), ("U301", "11", "C302"),
+          ("U302", "4", "C303"), ("U302", "11", "C304"),
+          ("U401", "4", "C401"), ("U401", "11", "C402"),
+          ("U402", "4", "C403"), ("U402", "11", "C404"),
+          ("U101", "5", "C111"), ("U104", "16", "C109"),
+          ("U201", "5", "C211"), ("U204", "16", "C209")]
+BYPASS_MAX_MM = 5.0
+
+_byp = []
+for _chip, _pin, _cap in BYPASS:
+    if _chip not in padpos or _pin not in padpos[_chip] or _cap not in box:
+        _byp.append(f"   {_cap:6} -> {_chip}.{_pin}  MISSING from the board")
+        continue
+    _px, _py = padpos[_chip][_pin]
+    _cx, _cy = (box[_cap][0] + box[_cap][2]) / 2.0, (box[_cap][1] + box[_cap][3]) / 2.0
+    _d = math.hypot(_cx - _px, _cy - _py)
+    if side.get(_cap) != side.get(_chip):
+        _byp.append(f"   {_cap:6} -> {_chip}.{_pin}  {_d:5.1f}mm but on {side.get(_cap)}, "
+                    f"chip is on {side.get(_chip)} -- via in the path")
+    elif _d > BYPASS_MAX_MM:
+        _byp.append(f"   {_cap:6} -> {_chip}.{_pin}  {_d:5.1f}mm  (max {BYPASS_MAX_MM})")
+if _byp:
+    print(f"\nBYPASS CAPS TOO FAR FROM THEIR CHIP ({len(_byp)}):")
+    for _l in _byp:
+        print(_l)
+else:
+    print(f"bypass caps hug their chip: all {len(BYPASS)} within {BYPASS_MAX_MM}mm, same face")
+
 if hard:
     print(f"\nPAD OVERLAPS ({len(hard)}) -- holes clash regardless of mounting face:")
     for a, b, dx, dy in hard:
