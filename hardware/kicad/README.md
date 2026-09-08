@@ -130,6 +130,27 @@ not from disk.** An Eeschema window left open while these tools run will silentl
 overwrite them on its next save, and F8 from a stale window reports "no changes"
 for edits that are sitting on disk. **Close Eeschema and Pcbnew between hand-offs.**
 
+## Test points
+
+Fifteen, all `TestPoint_TH_D1.0mm` (1.0mm drill / 2.0mm pad -- a probe hooks it or
+a wire loop solders in). The silk carries the **value, not the reference**: `TP8`
+tells you nothing at a bench, `SIGIN L` does.
+
+### Signal (TP6-TP15) -- beside the node they probe, not in a row
+
+| ref | net | silk | why it exists |
+|---|---|---|---|
+| TP6/TP7 | `BBD_DRY_L/R` | DRY L/R | the mki manual's **TP1**. `R104` is 0R and its value is a bring-up decision -- these let you choose it with a scope instead of by ear |
+| TP8/TP9 | `BBD_SIGIN_L/R` | SIGIN L/R | the manual's **TP3**. Watch for clipping onset while setting the above |
+| TP10/TP11 | `LPG_LED_L/R` | LED L/R | `RT301`/`RT401` are trimmed **by hand** -- you cannot set a trimmer you cannot measure |
+| TP12/TP13 | `BBD_CLK_L/R` | CLK L/R | the two 4046 clocks. Their mistracking **is** the stereo width, and this separates a dead VCO from a dead BBD |
+| TP14/TP15 | `TIME_CV`, `LPG_ENV` | TIME CV / LPG ENV | the two DAC outputs. Splits any fault into firmware or analog in one probe |
+
+**Known wart:** every test point sits on `F.Cu`, so its label prints on the FRONT
+silk -- but TP6-TP9 and TP12-TP14 serve circuits on `B.Cu`. The pads are
+through-hole so they probe fine from either side; you just read the label from the
+front while probing the back. Flip them to `B.Cu` if that ever grates.
+
 ## Power test points
 
 `TP1`-`TP5` in the top-left corner, 4.5mm pitch, footprint `TestPoint_TH_D1.0mm`

@@ -204,5 +204,15 @@
  "TP2": "-12V",
  "TP3": "+5V",
  "TP4": "+5V BBD",
- "TP5": "GND"
+ "TP5": "GND",
+ "TP6": "DRY L",
+ "TP7": "DRY R",
+ "TP8": "SIGIN L",
+ "TP9": "SIGIN R",
+ "TP10": "LED L",
+ "TP11": "LED R",
+ "TP12": "CLK L",
+ "TP13": "CLK R",
+ "TP14": "TIME CV",
+ "TP15": "LPG ENV"
 }
