@@ -178,6 +178,24 @@ FREE_SEED = {
     # under the faceplate, so a top-adjust part there is only reachable with the
     # panel off. Vactrols age, so re-trimming is a real event, not a one-off.
     "RT301": (120.445, 65.493), "RT401": (120.418, 100.938),
+    # --- headphone monitor out, added 2026-09-08 ---------------------------
+    # J6 goes on the top wall immediately right of J10, tucked under the OLED
+    # on B.Cu exactly as J9/J10 already are. The driver and its parts follow it
+    # onto B.Cu; the whole block sits in the gap between the 1/4" jacks and the
+    # power-input cluster. RT501/RT502 are on the back for the same reason the
+    # LPG trimmers are: they are set by hand and the front is under the panel.
+    "J6": (240.5, 5.0),
+    "U9": (243.964, 15.0),
+    "RT501": (237.672, 15.828),
+    "RT502": (239.014, 22.383),
+    "C505": (247.106, 7.651),
+    "C506": (243.725, 21.402),
+    "R509": (249.41, 17.54),
+    "R510": (247.423, 4.451),
+    "R511": (251.325, 6.75),
+    "R512": (242.768, 27.321),
+    "C507": (238.232, 27.321),
+    "C508": (233.69, 26.365),
     # SD pull-ups. There is very little room here -- DS1 runs to x 267.55 and U1
     # starts at y 47.27, so the only pocket near J1 is the strip above the Daisy
     # and right of the OLED.
