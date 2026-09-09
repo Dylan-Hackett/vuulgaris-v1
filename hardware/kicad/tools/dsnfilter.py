@@ -15,9 +15,11 @@ with no net, so Freerouting treats it as a plain obstacle to keep clear of and
 never tries to wire it. Ground then comes from the In2.Cu plane plus stitching
 vias placed by hand, which is the point.
 
-In2.Cu.  It is the ground plane, typed `power` in the board. If it stays in the
-DSN's layer list the router will happily put signal traces on it and turn the
-plane into swiss cheese -- the return path under every sensitive trace, gone.
+Layers: nothing, by default.  Checked against a real export 2026-09-09 -- KiCad
+writes In2.Cu as `(layer GND (type power))` and the zone as `(plane /GND ...)`.
+Freerouting does not route signals on a power layer, so the plane is already
+safe, and removing that layer would orphan the polygon that names it.  Pass a
+third argument only if you have a reason to.
 
 Parsing is balanced-paren, not regex. A nested (pins ...) list inside (net ...)
 is exactly the shape that makes a naive "cut to the next keyword" split eat the
@@ -44,7 +46,7 @@ def drop_nets(dsn, names):
     dropped = []
     for name in names:
         while True:
-            m = re.search(r'\(\s*net\s+"?%s"?[\s)]' % re.escape(name), dsn)
+            m = re.search(r'\(\s*net\s+"?%s"?[\s)\n]' % re.escape(name), dsn)
             if not m:
                 break
             end = find_block(dsn, m.start())
@@ -71,7 +73,7 @@ def scrub_classes(dsn, names):
         en = find_block(dsn, st)
         blk = dsn[st:en]
         for name in names:
-            new = re.sub(r'\s"%s"(?=[\s)])' % re.escape(name), '', blk)
+            new = re.sub(r'\s"?%s"?(?=[\s)\n])' % re.escape(name), '', blk)
             if new != blk:
                 hits += 1
                 blk = new
@@ -84,7 +86,7 @@ def drop_layers(dsn, names):
     dropped = []
     for name in names:
         while True:
-            m = re.search(r'\(\s*layer\s+"?%s"?[\s)]' % re.escape(name), dsn)
+            m = re.search(r'\(\s*layer\s+"?%s"?[\s)\n]' % re.escape(name), dsn)
             if not m:
                 break
             end = find_block(dsn, m.start())
@@ -97,20 +99,26 @@ def main():
         sys.exit(__doc__)
     src = sys.argv[1]
     nets = sys.argv[2].split(",") if len(sys.argv) > 2 else ["/GND", "GND"]
-    layers = sys.argv[3].split(",") if len(sys.argv) > 3 else ["In2.Cu"]
+    layers = sys.argv[3].split(",") if len(sys.argv) > 3 and sys.argv[3] else []
     dsn = open(src).read()
     before = len(re.findall(r'\(\s*net\s+"', dsn))
     dsn, dn = drop_nets(dsn, nets)
     dsn, ch = scrub_classes(dsn, nets)
     dsn, dl = drop_layers(dsn, layers)
     after = len(re.findall(r'\(\s*net\s+"', dsn))
+    planes = [n for n in nets if re.search(r'\(\s*plane\s+"?%s"?[\s)]' % re.escape(n), dsn)]
     out = os.path.splitext(src)[0] + "-noGND.dsn"
     open(out, "w").write(dsn)
     print(f"in  : {src}")
     print(f"out : {out}")
     print(f"nets   {before} -> {after}   dropped: {dn or 'none (check the name!)'}")
     print(f"class references scrubbed: {ch}")
-    print(f"layers dropped: {dl or 'none (check the name!)'}")
+    print(f"layers dropped: {dl or 'none'}")
+    if planes:
+        print(f"\nNOTE: {', '.join(planes)} still owns a (plane ...) in this DSN.")
+        print("      The zone is exported, so Freerouting keeps the pour and just")
+        print("      never wires the net. Do NOT also drop the plane's layer -- the")
+        print("      polygon references it by name.")
     if not dn:
         print("\nNOTHING WAS DROPPED. Open the .dsn and look at how the net is")
         print("actually spelled -- KiCad writes the leading slash, so it is")
