@@ -337,6 +337,35 @@ level and must not be gained.
   a module pin, and a source peaking at +18dBu is 17.4Vpp against a +/-4.75V input.
   Against 100k the 1k costs under 0.1dB.
 
+## The audio coupling caps are 0805, and they were never going to be film
+
+Fourteen caps carried the value **"1uF film" in an 0603 footprint**. That is not a
+part anyone can ship. SMD film tops out around **0.1uF** (PPS, Panasonic ECHU) in
+1210; 1uF film means a leaded box cap about 7x7mm on a 5mm pitch -- through-hole,
+hand-soldered, on a board whose hand-solder list was deliberately cut down to four
+genuinely unsourceable parts. Whatever got assembled was always going to be a
+Class II MLCC, and the value string was describing a wish.
+
+`C113 C120 C213 C220 C306 C406 C501 C502 C503 C504 C505 C506 C511 C512`
+-> **1uF X7R 50V, C0805.**
+
+**Why 0805 and 50V rather than just renaming them.** Class II voltage-coefficient
+distortion scales with the field across the dielectric. A 1uF 50V part in 0805 has
+more and thicker layers than a 1uF 16V part in 0603, so on a **+/-4.75V Eurorack
+signal** -- nearly a third of a 16V part's rating -- it distorts substantially
+less for the same job. Same money, same reel, same pick-and-place.
+
+**1uF C0G would be genuinely linear and is not an option**: it does not exist below
+2220, runs a few dollars each, and fourteen of them would cost more than the rest
+of the passives put together and swallow the board.
+
+Eleven of the fourteen took the bigger footprint where they stood. `C505` turns 90
+degrees to clear J6's body, `C511` moves 3.4mm, `C512` 0.25mm.
+
+> **This one needs the checkbox.** A footprint swap on an already-placed part is
+> opt-in: tick **"Replace footprints with those specified in the schematic"** in
+> the F8 dialog or nothing happens, silently, with the dialog reporting success.
+
 ## Output levels: three different jobs, three different levels
 
 Everything inside the instrument runs at **Eurorack level, 9.5Vpp (+/-4.75V)** --
