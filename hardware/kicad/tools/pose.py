@@ -34,14 +34,39 @@ CHECK = "--check" in sys.argv
 FRONT = ["F.Cu", "F.SilkS", "F.CrtYd", "F.Fab", "F.Adhes", "F.Paste", "F.Mask"]
 
 def blocks(text):
-    idx = [m.start() for m in re.finditer(r'\n\s*\(footprint ', text)] + [len(text)]
-    for a, b in zip(idx, idx[1:]):
-        blk = text[a:b]
-        m = re.search(r'\(fp_text reference "([^"]+)"', blk)
-        yield (m.group(1) if m else None), a, b, blk
+    """Yield (ref, start, end, block) with the block ended at its BALANCED
+    closing paren.
+
+    It used to end each block where the next footprint began, with len(text) as
+    the final sentinel -- which made the LAST footprint's "block" run to end of
+    file and swallow everything after it: Edge.Cuts, the zone, the lot. The
+    mirror transform then negated Y on the board outline, and the faceplate
+    connector cutout came apart. The gr_arc corners survived only because the
+    regex wanted (start ...) (end ...) adjacent and an arc carries a (mid ...)
+    between them, which is the sort of luck that hides a bug rather than
+    revealing it. place.py's fp_blocks had this right all along."""
+    pos = 0
+    while True:
+        m = re.compile(r'\(footprint "').search(text, pos)
+        if not m:
+            return
+        start = m.start()
+        d, j = 0, start
+        while j < len(text):
+            if text[j] == '(':
+                d += 1
+            elif text[j] == ')':
+                d -= 1
+                if d == 0:
+                    break
+            j += 1
+        blk = text[start:j + 1]
+        pos = j + 1
+        r = re.search(r'\(fp_text reference "([^"]+)"', blk)
+        yield (r.group(1) if r else None), start, j + 1, blk
 
 def layer_of(blk):
-    m = re.match(r'\n?\s*\(footprint "[^"]*" \(layer "([^"]+)"', blk)
+    m = re.match(r'\(footprint "[^"]*" \(layer "([^"]+)"', blk)
     return m.group(1) if m else "F.Cu"
 
 def rot_of(blk):

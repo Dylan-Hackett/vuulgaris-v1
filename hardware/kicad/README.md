@@ -201,6 +201,26 @@ it is named.
 > Do not "flip" a footprint by editing layer strings. Use `pose.py`, which mirrors
 > geometry, swaps the layer names, and mirrors the text justification together.
 
+### The bug that pass shipped, and how it showed up
+
+Splitting a board file into footprints by "start of one to start of the next,
+with end-of-file as the last boundary" makes the **last footprint's block swallow
+everything after it** -- `Edge.Cuts`, the zone, all of it. The mirror transform
+then negated Y on the board outline, and the faceplate connector cutout came
+apart.
+
+The four `gr_arc` corners survived, because the negation regex wanted
+`(start ...) (end ...)` adjacent and an arc carries a `(mid ...)` between them.
+So the cutout lost its four straight edges and kept its four rounded corners --
+which is the sort of luck that hides a bug instead of revealing it. It took
+someone looking at the board to notice.
+
+`place.py`'s `fp_blocks` had always done this correctly, walking to the balanced
+closing paren. `pose.py` rolled its own and got it wrong. **Every tool that slices
+this file now ends a block at its balanced paren**, and the same bug was silently
+dropping `pose.py`'s writes on three parts, which is why C505 and C511 kept
+reverting to a rotation nobody asked for.
+
 ## place.py checks the board is actually THERE, and that the chip is not
 
 Two placement mistakes got past the checks in one day, both the same shape: the
