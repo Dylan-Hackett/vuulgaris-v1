@@ -252,6 +252,53 @@ the DW3 switches x2, and the Daisy module.
 > specified in the schematic"** or nothing happens -- silently, with the dialog
 > reporting success.
 
+## Input level: the 1/4" jacks are a LINE input, and were wired at unity
+
+`J7`/`J8` fed `U1.B3/B4` through nothing but a coupling cap. The Patch SM's full
+scale is Eurorack 9.5Vpp = 3.36Vrms, so a normal source lands well short:
+
+| source | nominal | at unity |
+|---|---|---|
+| receiver / RCA line out | 0.32Vrms | **-20.5dBFS** |
+| phone or laptop headphone out, full | ~1.0Vrms | **-10.5dBFS** |
+| pro +4dBu | 1.23Vrms | -8.7dBFS |
+
+**Software gain does not fix this.** Digital gain lifts the converter's own noise
+floor with the signal; 20dB below full scale is 20dB of ADC dynamic range already
+gone. Only analogue gain ahead of the ADC gets it back.
+
+Worth being explicit about why this is a line input and not a Eurorack one: **audio
+I/O is PJ-603 (1/4"), CV is PJ-376 (3.5mm).** Nothing Eurorack arrives at J7/J8
+without an adapter, so there was never a reason to calibrate them for 9.5Vpp.
+
+### U10, and where it sits
+
+```
+J7 tip --R517 1k-- C511 1uF --+-- U10A +        gain = 1 + RT503/R521
+                            R519 100k                = 1x to 10.1x  (0 to +20dB)
+                              GND
+                   U10A - --+-- R521 2k2 -- GND
+                            +-- RT503 20k rheostat -- U10A out
+                   U10A out -- C501 1uF -- SW2.1
+```
+
+**Before SW2, on the EXT branch only** -- the resample path is already at Eurorack
+level and must not be gained.
+
+- `U10` is a second **OPA1688**, the same part and footprint as U9. No new library work.
+- `RT503`/`RT504` are the same **3224W** 12-turn as every other trim here, on `B.Cu`.
+  Wiper tied to one end, as `RT301` is: a wiper fault then gives maximum resistance
+  rather than an open feedback loop.
+- At minimum the trimmer is 0R and the stage is a unity follower, so a hot source
+  is still safe.
+- `C501` already blocks DC into SW2, so U10's offset never reaches the Patch SM and
+  the feedback leg needs no cap of its own.
+- `R519` 100k sets the input impedance -- a proper bridging load -- and gives 1.6Hz
+  with `C511`.
+- `R517`/`R518` 1k are series protection. There was none: `C501` went straight onto
+  a module pin, and a source peaking at +18dBu is 17.4Vpp against a +/-4.75V input.
+  Against 100k the 1k costs under 0.1dB.
+
 ## Output levels: three different jobs, three different levels
 
 Everything inside the instrument runs at **Eurorack level, 9.5Vpp (+/-4.75V)** --
@@ -304,6 +351,14 @@ Into a 600R vintage input you lose 6.3dB, which is the one case worth knowing ab
 `RT501`/`RT502` are the same **3224W** 12-turn cermet as the LPG trimmers, on
 `B.Cu` for the same reason. Max attenuation is 20k/120k = 1/6, giving **0.56Vrms**
 at the buffer output.
+
+> **U9's own bypass caps were 15mm away, and nothing was checking.** `C507`/`C508`
+> were never in `place.py`'s `BYPASS` table, so the headphone driver shipped with
+> decoupling that was decoration -- the trace inductance in series with a 100nF at
+> that distance undoes most of what it is for. Adding U9 and U10 to the table
+> caught it immediately; `RT502` had to move 7.5mm off pin 8 to free the pocket.
+> **Every chip with a bypass cap belongs in that table**, or the check is only
+> auditing the parts that were already right.
 
 `R511`/`R512` are **4R7, not 22R.** They sit OUTSIDE the feedback loop -- U9's
 feedback comes off `HP_BUF_L`, before them -- so they set output impedance directly:

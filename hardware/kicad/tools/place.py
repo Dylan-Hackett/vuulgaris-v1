@@ -187,24 +187,40 @@ FREE_SEED = {
     "J6": (240.5, 5.0),
     "U9": (243.964, 15.0),
     "RT501": (237.672, 15.828),
-    "RT502": (239.014, 22.383),
+    "RT502": (237.554, 6.320),   # pushed 7.5mm off U9.8 so C507 gets the pocket
     "C505": (247.106, 7.651),
     "C506": (243.725, 21.402),
     "R509": (249.41, 17.54),
     "R510": (247.423, 4.451),
     "R511": (251.325, 6.75),
     "R512": (242.768, 27.321),
-    "C507": (238.232, 27.321),
-    "C508": (233.69, 26.365),
+    "C507": (239.754, 11.520),   # U9 V+ bypass, 2.44mm to pin 8 -- was 15.5mm
+    "C508": (248.314, 17.630),   # U9 V- bypass, 2.45mm to pin 4 -- was 15.0mm
     # Line-output attenuators. The 1/4" jacks used to sit straight on BBD_OUT at
     # Eurorack level (9.5Vpp, +12.7dBu); these drop them to +3.8dBu full scale.
     # They sit DOWNSTREAM of the C503/C505 taps, so the internal resample loop
     # and the headphone feed keep the Eurorack level they were designed around.
     # Tucked in beside their own jacks on the back, with the rest of the 5xx block.
-    "R513": (210.500, 15.050),   # J9 series, 1k3
-    "R514": (210.500, 18.050),   # J9 shunt,  1k
-    "R515": (225.500, 15.050),   # J10 series
-    "R516": (225.500, 18.050),   # J10 shunt
+    # EXT input preamp, under its own jacks on the back. U10 lands first and the
+    # rest hangs off it: C509/C510 are pinned to the rail pins they decouple, the
+    # signal parts to the U10 pin they serve.
+    "U10": (178.000, 38.500),   # EXT preamp, placed first; the cluster hangs off it
+    "C509": (180.630, 42.860),   # U10 V+ bypass, 2.45mm to pin 8
+    "C510": (172.270, 36.550),   # U10 V- bypass, 3.05mm to pin 4
+    "C511": (172.320, 39.870),   # L input DC block
+    "C512": (180.680, 34.100),   # R input DC block
+    "R519": (173.820, 33.370),   # L input bias, 100k = the input impedance
+    "R520": (183.680, 36.600),   # R input bias
+    "R521": (175.320, 43.130),   # L gain-set leg, 2k2
+    "R522": (183.680, 40.370),   # R gain-set leg
+    "RT503": (168.820, 39.130),   # L gain trim, 1x-10.1x
+    "RT504": (187.180, 37.870),   # R gain trim
+    "R517": (167.700, 28.500),   # series protection off J7
+    "R518": (186.700, 28.500),   # ... and J8
+    "R513": (210.500, 26.000),   # J9 series, 1k3
+    "R514": (207.000, 26.000),   # J9 shunt, 1k
+    "R515": (225.500, 26.000),   # J10 series
+    "R516": (222.000, 26.000),   # J10 shunt
     # SD pull-ups. There is very little room here -- DS1 runs to x 267.55 and U1
     # starts at y 47.27, so the only pocket near J1 is the strip above the Daisy
     # and right of the OLED.
@@ -750,7 +766,11 @@ BYPASS = [("U102", "8", "C105"), ("U102", "4", "C106"),
           ("U401", "4", "C401"), ("U401", "11", "C402"),
           ("U402", "4", "C403"), ("U402", "11", "C404"),
           ("U101", "5", "C111"), ("U104", "16", "C109"),
-          ("U201", "5", "C211"), ("U204", "16", "C209")]
+          ("U201", "5", "C211"), ("U204", "16", "C209"),
+          # U9/U10 were never in this table -- the headphone driver and the EXT
+          # preamp both got bypass caps that nothing was checking.
+          ("U9", "8", "C507"), ("U9", "4", "C508"),
+          ("U10", "8", "C509"), ("U10", "4", "C510")]
 BYPASS_MAX_MM = 5.0
 
 _byp = []

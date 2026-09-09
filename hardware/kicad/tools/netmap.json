@@ -284,11 +284,11 @@
   "2": "GND"
  },
  "C501": {
-  "1": "EXT_IN_L",
+  "1": "EXT_AMP_OUT_L",
   "2": "SRC_EXT_L"
  },
  "C502": {
-  "1": "EXT_IN_R",
+  "1": "EXT_AMP_OUT_R",
   "2": "SRC_EXT_R"
  },
  "C503": {
@@ -314,6 +314,22 @@
  "C508": {
   "1": "NEG12V",
   "2": "GND"
+ },
+ "C509": {
+  "1": "POS12V",
+  "2": "GND"
+ },
+ "C510": {
+  "1": "NEG12V",
+  "2": "GND"
+ },
+ "C511": {
+  "1": "EXT_PROT_L",
+  "2": "EXT_AMP_IN_L"
+ },
+ "C512": {
+  "1": "EXT_PROT_R",
+  "2": "EXT_AMP_IN_R"
  },
  "D1": {
   "1": "LED_POS",
@@ -1015,6 +1031,30 @@
   "1": "LINE_OUT_R",
   "2": "GND"
  },
+ "R517": {
+  "1": "EXT_IN_L",
+  "2": "EXT_PROT_L"
+ },
+ "R518": {
+  "1": "EXT_IN_R",
+  "2": "EXT_PROT_R"
+ },
+ "R519": {
+  "1": "EXT_AMP_IN_L",
+  "2": "GND"
+ },
+ "R520": {
+  "1": "EXT_AMP_IN_R",
+  "2": "GND"
+ },
+ "R521": {
+  "1": "EXT_FB_L",
+  "2": "GND"
+ },
+ "R522": {
+  "1": "EXT_FB_R",
+  "2": "GND"
+ },
  "RT301": {
   "1": "LPG_SUM_L",
   "2": "LPG_T1_L",
@@ -1034,6 +1074,16 @@
   "1": "HP_DIV_R",
   "2": "HP_W_R",
   "3": "GND"
+ },
+ "RT503": {
+  "1": "EXT_AMP_OUT_L",
+  "2": "EXT_FB_L",
+  "3": "EXT_FB_L"
+ },
+ "RT504": {
+  "1": "EXT_AMP_OUT_R",
+  "2": "EXT_FB_R",
+  "3": "EXT_FB_R"
  },
  "RV1": {
   "1": "POS12V",
@@ -1219,6 +1269,16 @@
   "D10": "OLED_SCK",
   "A9": "OLED_RES",
   "A7": "GND"
+ },
+ "U10": {
+  "1": "EXT_AMP_OUT_L",
+  "2": "EXT_FB_L",
+  "3": "EXT_AMP_IN_L",
+  "4": "NEG12V",
+  "5": "EXT_AMP_IN_R",
+  "6": "EXT_FB_R",
+  "7": "EXT_AMP_OUT_R",
+  "8": "POS12V"
  },
  "U101": {
   "1": "GND",
