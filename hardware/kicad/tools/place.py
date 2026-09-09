@@ -187,15 +187,15 @@ FREE_SEED = {
     "J6": (240.5, 5.0),
     "U9": (243.964, 15.0),
     "RT501": (237.672, 15.828),
-    "RT502": (237.554, 6.320),   # pushed 7.5mm off U9.8 so C507 gets the pocket
+    "RT502": (237.554, 23.680),   # pushed 7.5mm off U9.8 so C507 gets the pocket
     "C505": (247.106, 7.651),
     "C506": (243.725, 21.402),
     "R509": (249.41, 17.54),
     "R510": (247.423, 4.451),
     "R511": (251.325, 6.75),
     "R512": (242.768, 27.321),
-    "C507": (239.754, 11.520),   # U9 V+ bypass, 2.44mm to pin 8 -- was 15.5mm
-    "C508": (248.314, 17.630),   # U9 V- bypass, 2.45mm to pin 4 -- was 15.0mm
+    "C507": (239.154, 19.530),   # U9 V+ bypass, 3.44mm to pin 8 -- was 15.5mm
+    "C508": (248.214, 12.170),   # U9 V- bypass, 2.35mm to pin 4 -- was 15.0mm
     # Line-output attenuators. The 1/4" jacks used to sit straight on BBD_OUT at
     # Eurorack level (9.5Vpp, +12.7dBu); these drop them to +3.8dBu full scale.
     # They sit DOWNSTREAM of the C503/C505 taps, so the internal resample loop
@@ -525,7 +525,19 @@ for ref, block, _, _ in fp_blocks(src):
     # happened to end on, so every box in this check was mirrored together or
     # not at all. It invented a 3.18mm RV3/RV4-vs-U1 collision and, worse, would
     # hide a real one just as silently. Third mirror bug in this file.
-    mir = -1.0 if side[ref] != "F.Cu" else 1.0
+    # NO mirror. Proven 2026-09-09 with kicad-cli: a pad at footprint-local
+    # (0,+3) plots to the SAME absolute place whether its footprint is on F.Cu or
+    # B.Cu -- KiCad renders stored coordinates as-is and applies no implicit
+    # mirror for the back. The flip therefore has to be BAKED INTO the stored
+    # coordinates, and this line was applying a second one on top of it.
+    #
+    # The old comment claimed Gerber verification against J7 and J11. J7 is a
+    # correctly-mirrored part and J11 is on the front, so that check compared a
+    # double mirror against a single one and read the agreement as confirmation.
+    # Note the pad-ANGLE check in this same file already assumed baked-in
+    # mirroring (rel = -lib when onback) -- the two halves of place.py disagreed
+    # with each other for months.
+    mir = 1.0
     ca, sa = math.cos(math.radians(ang)), math.sin(math.radians(ang))
     def place(lx, ly):
         ly = ly * mir
@@ -748,6 +760,42 @@ if _chip:
         print(f"   {_g:5.2f}mm  {_c:6} x {_o:6}")
 else:
     print(f"nothing within {CHIP_MIN}mm of a chip pad")
+
+# --- a B.Cu footprint must be MIRRORED, not merely relabelled ---------------
+# KiCad applies no implicit mirror (proven with kicad-cli: a pad at local (0,+3)
+# plots to the same absolute place on either layer), so a part on the back has to
+# carry mirrored coordinates in the file. A "flip" that only rewrites the layer
+# names leaves the FRONT land pattern on the BACK: pin 1 lands where pin 8 should
+# be, and the chip is soldered mirror-image. Thirteen parts were in that state on
+# 2026-09-09 -- Q1/Q2 and the whole BBD block, U101-U106 and U201-U206 -- and
+# nothing in this file noticed, because the position maths was applying its own
+# mirror on top and the two errors cancelled in the checks.
+_mir = []
+for _ref, _block, _, _ in fp_blocks(src):
+    if not _ref or side.get(_ref) == "F.Cu":
+        continue
+    _fpm = re.match(r'\(footprint "([^"]+)"', _block)
+    _lp = lib_pads(_fpm.group(1).split(":")[-1]) if _fpm else None
+    if _lp is None:
+        continue
+    _ly = {round(_y, 3): _n for (_x, _y), _n in
+           ((k, v) for k, v in _lp.items())}
+    _asym = [(_x, _y) for (_x, _y) in _lp if abs(_y) > 0.001]
+    if not _asym:
+        continue                       # symmetric: the mirror is a no-op
+    _hit = _miss = 0
+    for _m in re.finditer(r'\(pad "[^"]*" \w+ \w+ \(at ([-\d.]+) ([-\d.]+)', _block):
+        _bx, _by = round(float(_m.group(1)), 3), round(float(_m.group(2)), 3)
+        if (_bx, -_by) in _lp: _hit += 1
+        elif (_bx, _by) in _lp: _miss += 1
+    if _miss and not _hit:
+        _mir.append(_ref)
+if _mir:
+    print(f"\nNOT MIRRORED, front land pattern on the back ({len(_mir)}):")
+    print("   " + ", ".join(sorted(_mir)))
+    print("   these would be soldered mirror-image -- pin 1 in the wrong corner")
+else:
+    print("every B.Cu footprint is mirrored, not just relabelled")
 
 # --- bypass caps have to be NEXT TO the pin they decouple -------------------
 # A 100nF 10mm from its power pin is decoration: the trace inductance in series
