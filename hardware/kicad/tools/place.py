@@ -207,7 +207,7 @@ FREE_SEED = {
     "U10": (178.000, 38.500),   # EXT preamp, placed first; the cluster hangs off it
     "C509": (180.630, 42.860),   # U10 V+ bypass, 2.45mm to pin 8
     "C510": (172.270, 36.550),   # U10 V- bypass, 3.05mm to pin 4
-    "C511": (171.320, 43.120),   # L input DC block, moved 3.4mm for the 0805 body
+    "C511": (171.500, 44.000),   # L input DC block, 2.06mm off U10 at 0805
     "C512": (180.430, 34.100),   # R input DC block
     "R519": (173.820, 33.370),   # L input bias, 100k = the input impedance
     "R520": (183.680, 36.600),   # R input bias
@@ -649,6 +649,41 @@ if _edge:
                     _grp.append(_q); _pts.remove(_q); _grew = True
         _gx = [q[0] for q in _grp]; _gy = [q[1] for q in _grp]
         _cuts.append((min(_gx), min(_gy), max(_gx), max(_gy)))
+# The outline itself is checked before anything is measured against it. A board
+# whose Edge.Cuts does not enclose its own parts is not a board, and every other
+# check in this file quietly becomes meaningless -- "pads inside the outline"
+# passes trivially when the outline is somewhere else entirely.
+#
+# This exists because a mirror transform negated Y on all eight Edge.Cuts
+# gr_lines and left the four gr_arcs alone, so the connector cutout kept its
+# rounded corners and lost its straight edges. Nothing here noticed; Dylan did,
+# by looking at the board. It then came BACK, because Pcbnew was still holding
+# the pre-fix board in memory and wrote its snapshot over the repaired file on
+# the next save.
+_ex = [v for e in _edge for v in (e[0], e[2])]
+_ey = [v for e in _edge for v in (e[1], e[3])]
+if _ex:
+    _bad = []
+    if min(_ey) < 0 or min(_ex) < 0:
+        _bad.append(f"negative coordinates (x from {min(_ex)}, y from {min(_ey)})")
+    _px = [v for r in box.values() for v in (r[0], r[2])]
+    _py = [v for r in box.values() for v in (r[1], r[3])]
+    if _px:
+        _out = sum(1 for _r, _b in box.items()
+                   if _b[0] < min(_ex) - 1 or _b[2] > max(_ex) + 1
+                   or _b[1] < min(_ey) - 1 or _b[3] > max(_ey) + 1)
+        if _out > len(box) // 2:
+            _bad.append(f"{_out} of {len(box)} footprints fall outside it")
+    if _bad:
+        print("\nBOARD OUTLINE IS WRONG:")
+        for _l in _bad:
+            print(f"   {_l}")
+        print(f"   Edge.Cuts spans x {min(_ex)}..{max(_ex)}  y {min(_ey)}..{max(_ey)}")
+        print("   every check below this line is measured against it -- fix it first")
+    else:
+        print(f"board outline: x {min(_ex)}..{max(_ex)}  y {min(_ey)}..{max(_ey)}, "
+              f"{len(_cuts)} interior cutout(s)")
+
 CUT_CLEAR = 0.30
 _incut = []
 for _ref in sorted(set(box) | set(padbox)):
