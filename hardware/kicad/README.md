@@ -487,6 +487,46 @@ cheap headphone amp puts there. The input highpass is C505 1uF into the full 120
 **1.33Hz**, and it does not move with the trimmer, because the wiper position does
 not change the end-to-end resistance.
 
+## Net classes and trace widths
+
+Set 2026-09-09, from IPC-2221 against the real stackup: **1oz outer (35um),
+0.5oz inner (15.2um)**, 10C rise. `I = 0.048 * dT^0.44 * A^0.725`, A in mil^2.
+
+| width (1oz outer) | carries at 10C rise |
+|---|---|
+| 0.25mm | 0.88 A |
+| 0.50mm | 1.45 A |
+| 0.60mm | 1.65 A |
+| 1.50mm | 3.21 A |
+
+| class | nets | track | clearance | via |
+|---|---|---|---|---|
+| `Power_5V_IN` | `VBUS`, `VBUS_F` | **1.5mm** | 0.30mm | 1.0/0.5 |
+| `Rails_12V` | `POS12V`, `NEG12V`, and both `_RAW` | **0.6mm** | 0.25mm | 0.8/0.4 |
+| `Power_5V` | `P5V`, `P5V_OLED`, `P5V_MSP`, `P5V_BBD` | 0.5mm | 0.20mm | 0.8/0.4 |
+| `Power_3V3` | `P3V3_DAISY`, `P3V3_MSP430`, `P3V3_OLED` | 0.5mm | 0.20mm | 0.8/0.4 |
+| `GND` | `GND` | 0.5mm | 0.20mm | 0.8/0.4 |
+| `Default` | everything else, audio included | 0.25mm | 0.20mm | 0.8/0.4 |
+
+**`VBUS` is the only rail ampacity actually constrains.** It feeds the DKM10E-12
+through a 2.0A PTC, and IPC wants **0.78mm** for that. 1.5mm carries 3.21A at 10C
+and is still only about 20C at the PTC's **4.0A trip** -- a fault condition, not a
+duty cycle.
+
+**The 12V rails are wide for impedance, not for heat.** The DKM is 10W across both,
+so roughly 420mA each, and IPC wants **0.09mm**. That is a hair, and a hair is a
+bad idea on a rail feeding eleven op-amps: 0.6mm is about 4x the requirement and
+is chosen so the rail is stiff and reworkable.
+
+> **Keep power on F.Cu / B.Cu.** The inner layers are 0.5oz, and IPC-2221 uses a
+> halved constant for internal traces. Carrying `VBUS`'s 2A on In1.Cu would need
+> **4.7mm**; even the 12V rails would want 0.54mm rather than 0.09mm. In2.Cu is
+> the ground plane and In1.Cu is for signals.
+
+Net-to-class assignment lives in `vuulgaris.kicad_pro` under
+`net_settings.netclass_patterns`, keyed on the board's net names, which carry a
+leading `/` (`/POS12V`, not `POS12V`).
+
 ## Test points
 
 Fifteen, all `TestPoint_TH_D1.0mm` (1.0mm drill / 2.0mm pad -- a probe hooks it or
