@@ -99,7 +99,7 @@ FREE_SEED = {
     # U1 is on the BACK now, same face as this, so it needs clearance in front
     # of the mouth, not merely no overlap: 15.3mm to the board edge, 12.2mm back
     # to the Daisy.
-    "J1": (100.0, 75.0),                   # rot 0 now: mouth at y 65.3 (ejects UP), contacts at 80.3
+    "J1": (100.0, 75.0),   # rot -90, set by hand 2026-09-09 -- card ejects toward the edge
     "FB1": (196, 53), "U5": (207, 53), "C24": (196, 59),
     "C20": (217, 53), "C21": (223, 59),    # OLED rail, at the OLED
     # MSP430 rail: moved again to clear the MX cluster. Still far from the OLED
