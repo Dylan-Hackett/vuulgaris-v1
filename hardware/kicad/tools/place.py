@@ -173,6 +173,11 @@ FREE_SEED = {
     # 40.15, 62.15, 84.15 and the jacks' bodies run 12mm inward between them.
     "R503": (29.15, 45.0), "R504": (51.15, 45.0),
     "R505": (208.0, 48.0),                   # font-chip CS pullup, clear of DS1
+    # The two LPG trimmers live on B.Cu, not with the rest of the LPG on F.Cu.
+    # They set vactrol LED drive depth and have to be adjusted by hand; F.Cu is
+    # under the faceplate, so a top-adjust part there is only reachable with the
+    # panel off. Vactrols age, so re-trimming is a real event, not a one-off.
+    "RT301": (120.445, 65.493), "RT401": (120.418, 100.938),
     # SD pull-ups. There is very little room here -- DS1 runs to x 267.55 and U1
     # starts at y 47.27, so the only pocket near J1 is the strip above the Daisy
     # and right of the OLED.

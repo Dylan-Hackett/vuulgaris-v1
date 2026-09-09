@@ -194,6 +194,31 @@ decoupling paths and it was too tight to get an iron in. Re-placed against a
 **1.0mm pad-to-pad floor**; the cost was almost nothing, 2.1-3.1mm from the power
 pin became 2.4-3.2mm.
 
+## The LPG trimmers are SMD and live on the BACK
+
+`RT301`/`RT401` are **3224W-1-203E**, LCSC **C55071** -- the SMD sibling of the
+Bourns 3266W they replaced: same 4mm square multiturn cermet, **12 turns**,
+top-adjust. Footprint pulled with `easyeda2kicad`, same as every other part here.
+
+**Multiturn is not optional.** These set the vactrol LED drive depth, which is
+adjusted by ear against a scope at bring-up. The 3x3mm single-turn parts on LCSC
+are cheaper and better stocked, but they put the whole 20k into 270 degrees.
+
+**They sit on `B.Cu` while the rest of the LPG is on `F.Cu`.** The front is under
+the faceplate, so a top-adjust trimmer there is only reachable with the panel off.
+Vactrols age -- and these are the Xvive reissue with known batch spread -- so
+re-trimming is a real event, not a one-off.
+
+Swapping this also took two parts off the hand-solder list. What is left there is
+genuinely unsourceable rather than merely inconvenient: `V3205SD` x2, `VTL5C3` x4,
+the DW3 switches x2, and the Daisy module.
+
+> **Changing a footprint needs more than F8.** "Update PCB from Schematic" only
+> syncs nets and adds/removes parts by default; a footprint swap on an
+> already-placed component is opt-in. Tick **"Replace footprints with those
+> specified in the schematic"** or nothing happens -- silently, with the dialog
+> reporting success.
+
 ## Test points
 
 Fifteen, all `TestPoint_TH_D1.0mm` (1.0mm drill / 2.0mm pad -- a probe hooks it or

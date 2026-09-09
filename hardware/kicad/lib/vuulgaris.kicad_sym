@@ -4831,10 +4831,10 @@
   (symbol "TRIMPOT_3T" (in_bom yes) (on_board yes)
     (property "Reference" "RV" (id 0) (at 0 5.08 0) (effects (font (size 1.27 1.27))))
     (property "Value" "TRIMPOT_3T" (id 1) (at 0 -5.08 0) (effects (font (size 1.27 1.27))))
-    (property "Footprint" "vuulgaris:Potentiometer_Bourns_3266W_Vertical" (id 2) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
+    (property "Footprint" "vuulgaris:RES-ADJ-SMD_3224W" (id 2) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))
     (property
       "LCSC Part"
-      "C780230"
+      "C55071"
       (id 9)
       (at 0 -25.4 0)
       (effects (font (size 1.27 1.27) ) hide)
