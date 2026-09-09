@@ -529,23 +529,35 @@ leading `/` (`/POS12V`, not `POS12V`).
 
 ## Autorouting, with GND left alone
 
-KiCad 7 has no autorouter and `kicad-cli` cannot export DSN, so the only route is
-**Freerouting**, driven through Pcbnew's GUI. It needs a JRE, which is not
-installed on this machine.
+KiCad 7 has no autorouter and `kicad-cli` cannot export DSN, so routing goes out
+to **Freerouting** and comes back as a Specctra session.
+
+**Installed 2026-09-09:** `~/tools/freerouting/freerouting-2.4.1.jar`, 64,076,787
+bytes, sha256 `251101c3eeac22d7e7dfcf6796603279e5d1000283eb82d8f093780f7afc6aa9`,
+from the project's own GitHub release v2.4.1 (2026-09-03). Its manifest is built
+by GitHub Actions with Adoptium 25 and its classes are major 69, so it wants
+**JRE 25 or newer**; this machine has openjdk 26.0.2.1.
+
+Only the export and import steps need the GUI. **The routing itself is headless**,
+which means it can run unattended and be repeated:
 
 ```
-brew install --cask temurin          # JRE
-# Freerouting release jar from github.com/freerouting/freerouting/releases
+# 1. Pcbnew:  File > Export > Specctra DSN   ->  vuulgaris.dsn
+python3 tools/dsnfilter.py vuulgaris.dsn
+
+# 2. route -- no GUI, no clicking
+java -Djava.awt.headless=true -jar ~/tools/freerouting/freerouting-2.4.1.jar \
+     -de vuulgaris-noGND.dsn \
+     -do vuulgaris.ses \
+     -mp 100
+
+# 3. Pcbnew:  File > Import > Specctra Session
+# 4. fill the In2.Cu GND zone, then place stitching vias by hand
 ```
 
-Then:
-
-1. Pcbnew: **File > Export > Specctra DSN** -> `vuulgaris.dsn`
-2. `python3 tools/dsnfilter.py vuulgaris.dsn`
-3. `java -jar freerouting.jar -de vuulgaris-noGND.dsn`
-4. Freerouting: route, then **File > Export Specctra Session** -> `.ses`
-5. Pcbnew: **File > Import > Specctra Session**
-6. Fill the `In2.Cu` GND zone, then place stitching vias by hand
+`-mp` is the pass count, `-mt` the thread pool (defaults to one fewer than the
+logical processors). Because it is scriptable, a bad result costs one command,
+not an afternoon -- change the rules or the filter and run it again.
 
 ### What dsnfilter.py takes out, and why
 
