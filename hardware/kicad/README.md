@@ -527,6 +527,62 @@ Net-to-class assignment lives in `vuulgaris.kicad_pro` under
 `net_settings.netclass_patterns`, keyed on the board's net names, which carry a
 leading `/` (`/POS12V`, not `POS12V`).
 
+## Autorouting, with GND left alone
+
+KiCad 7 has no autorouter and `kicad-cli` cannot export DSN, so the only route is
+**Freerouting**, driven through Pcbnew's GUI. It needs a JRE, which is not
+installed on this machine.
+
+```
+brew install --cask temurin          # JRE
+# Freerouting release jar from github.com/freerouting/freerouting/releases
+```
+
+Then:
+
+1. Pcbnew: **File > Export > Specctra DSN** -> `vuulgaris.dsn`
+2. `python3 tools/dsnfilter.py vuulgaris.dsn`
+3. `java -jar freerouting.jar -de vuulgaris-noGND.dsn`
+4. Freerouting: route, then **File > Export Specctra Session** -> `.ses`
+5. Pcbnew: **File > Import > Specctra Session**
+6. Fill the `In2.Cu` GND zone, then place stitching vias by hand
+
+### What dsnfilter.py takes out, and why
+
+**`/GND`.** Its `(net ...)` block goes, and its name is scrubbed out of every
+`(class ...)` member list -- a KiCad DSN names each net twice, and deleting only
+the block leaves the class quoting a net that no longer exists. Ground pads then
+carry no net, so Freerouting treats them as plain obstacles to keep clear of and
+never wires them. Ground comes from the plane plus hand-placed stitching vias.
+
+**`In2.Cu`.** It is the ground plane, typed `power` in the board. Leave it in the
+DSN's layer list and the router will put signal traces on it and turn the plane
+into swiss cheese -- the return path under every sensitive trace, gone. Routing
+stays on `F.Cu`, `In1.Cu`, `B.Cu`.
+
+Parsing is balanced-paren, not regex, because a nested `(pins ...)` inside
+`(net ...)` is exactly the shape that makes a naive split eat the rest of the
+file. Verified against a fixture with nested pin lists and two classes.
+
+### Do not autoroute this board wholesale
+
+It is a bucket-brigade delay with vactrol gates, a capacitive touch interface and
+a switching supply, all on one card. An autorouter optimises for completion, not
+for keeping the CD4046 clock away from `BBD_SIGIN`, and it has no idea that
+`AUDIO_OUT_L` and `BBD_CLK_L` should never run parallel.
+
+Hand-route first, in this order, then **lock** those tracks before exporting DSN:
+
+| | why |
+|---|---|
+| `VBUS`/`VBUS_F`, then +/-12V | 1.5mm and 0.6mm, and they set where everything else can go |
+| BBD clock -- `BBD_CLK_L/R`, `BBD_CLKN_L/R`, the CD4046 nets | the loudest aggressor on the board; keep it short and away from audio |
+| audio -- `AUDIO_*`, `BBD_*` signal, `LPG_*`, `HP_*`, `EXT_*` | short, direct, never parallel to the clock |
+| `P5V` from U1.A6 | star out to FB1 and FB2, not daisy-chained |
+
+Then let Freerouting have the digital remainder: I2C, SPI to the OLED, the SD
+lines, the encoder matrix. Those tolerate meandering; the analog does not.
+
 ## Test points
 
 Fifteen, all `TestPoint_TH_D1.0mm` (1.0mm drill / 2.0mm pad -- a probe hooks it or
