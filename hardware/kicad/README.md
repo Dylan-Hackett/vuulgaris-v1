@@ -125,6 +125,12 @@ stage, and it already caught U5 landing on ENC6.
 
 ## Editing protocol
 
+> **This has now cost real work four times.** Pcbnew's in-memory snapshot has
+> overwritten placement twice, the whole headphone block once, and -- worst --
+> silently restored a **damaged board outline** after it had been repaired on
+> disk. Close it.
+
+
 KiCad holds the design in memory and both **F8 and Save read from that snapshot,
 not from disk.** An Eeschema window left open while these tools run will silently
 overwrite them on its next save, and F8 from a stale window reports "no changes"
@@ -216,7 +222,15 @@ which is the sort of luck that hides a bug instead of revealing it. It took
 someone looking at the board to notice.
 
 `place.py`'s `fp_blocks` had always done this correctly, walking to the balanced
-closing paren. `pose.py` rolled its own and got it wrong. **Every tool that slices
+closing paren. `pose.py` rolled its own and got it wrong.
+
+**And then it came back.** The outline was repaired on disk and committed, but
+Pcbnew still held the pre-fix board in memory; the next save wrote its snapshot
+straight over the repair. What that looks like from the outside is an outline
+that "needs to be moved" -- the parts sit at y 50-167 and the outline at y -50 to
+-167, so it is drawn nowhere near the board. `place.py` now checks the outline
+**before** it measures anything against it, because "pads inside the outline"
+passes trivially when the outline is somewhere else entirely. **Every tool that slices
 this file now ends a block at its balanced paren**, and the same bug was silently
 dropping `pose.py`'s writes on three parts, which is why C505 and C511 kept
 reverting to a rotation nobody asked for.
