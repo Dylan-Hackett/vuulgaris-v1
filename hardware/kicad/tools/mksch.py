@@ -315,7 +315,13 @@ for _b, _S in ((300, "L"), (400, "R")):
     LPG_SYM[f"U{_b+2}"] = "TL074_FLAT"           # Bergman U2, CV chain, one per channel
 LPG_FP = {"TL074_FLAT": "SOIC-14_3.9x8.7mm_P1.27mm",
           "VTL5C3":     "VACTROL-TH_VTL5C3",
-          "TRIMPOT_3T": "Potentiometer_Bourns_3266W_Vertical",
+          # 3224W-1-203E (LCSC C55071): the SMD sibling of the 3266W, same 4mm
+          # square multiturn cermet, 12 turns. Swapped 2026-09-08 so JLC can
+          # place it -- the through-hole 3266W had no LCSC number at all, which
+          # made it one of the parts that had to be hand-fitted. Multiturn is
+          # not negotiable here: this sets the vactrol LED drive depth by ear
+          # against a scope, and a single-turn part puts 20k into 270 degrees.
+          "TRIMPOT_3T": "RES-ADJ-SMD_3224W",
           "BZT52C3V9_C2891408": "SOD-123_L2.7-W1.6-LS3.7-RD-1"}
 
 for _ref, _sym in LPG_SYM.items():
