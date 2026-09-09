@@ -214,5 +214,15 @@
  "TP12": "CLK L",
  "TP13": "CLK R",
  "TP14": "TIME CV",
- "TP15": "LPG ENV"
+ "TP15": "LPG ENV",
+ "C505": "1uF film",
+ "C506": "1uF film",
+ "R509": "100k",
+ "R510": "100k",
+ "RT501": "20k trim",
+ "RT502": "20k trim",
+ "R511": "22R",
+ "R512": "22R",
+ "C507": "100nF",
+ "C508": "100nF"
 }

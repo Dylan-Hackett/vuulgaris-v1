@@ -136,6 +136,12 @@ SYM = {
     # Power test points, through-hole so a probe can hook them or a wire loop can
     # be soldered in. TP5 is GND and sits with the others on purpose: a rail
     # measured against a ground 100mm away tells you about the ground.
+    # Headphone monitor driver. OPA1688 (C206212): +/-18V, 75mA out, and TI
+    # characterise its 0.00005% THD+N INTO 32 ohms -- it is a headphone part.
+    # OPA1688_FLAT, not the LCSC symbol, which is multi-unit and would stub OUTA
+    # onto OUTB in this generator. RT501/RT502 set max level and are set once.
+    "U9": "OPA1688_FLAT",
+    "RT501": "TRIMPOT_3T", "RT502": "TRIMPOT_3T",
     "TP1": "TestPoint", "TP2": "TestPoint", "TP3": "TestPoint",
     "TP4": "TestPoint", "TP5": "TestPoint",
     # Signal test points. TP6-TP9 are the mki manual's TP1/TP3 equivalents, asked
@@ -170,6 +176,10 @@ for i in range(1, 9):
 # plug axis is perpendicular to the board -- it cannot exit an edge at all.
 for j in range(2, 6):
     SYM[f"J{j}"] = "PJ-376"
+# J6 is the HEADPHONE jack, added 2026-09-08. Same PJ-376 as the CV jacks because
+# it is already a stereo TRS -- 1 sleeve, 2 ring, 3 tip -- so tip/ring carry L/R.
+# Reuses a part, a footprint and a pinout that are already established.
+SYM["J6"] = "PJ-376"
 # J7-J10: 1/4" audio, L/R in and L/R out. PJ-603 is a horizontal jack -- the
 # barrel runs parallel to the board and exits the top edge. Four contacts
 # (2,3,4,5); which is tip/sleeve/switch is NOT yet established, see netmap.
@@ -184,6 +194,7 @@ POS = {
     "R20": (500,  60), "R21": (570,  60),
     "TP1": (860, 60), "TP2": (920, 60), "TP3": (980, 60),
     "TP4": (1040, 60), "TP5": (1100, 60),
+    "U9": (860, 300), "RT501": (960, 300), "RT502": (1060, 300), "J6": (1160, 300),
     "TP6": (860, 130), "TP7": (920, 130), "TP8": (980, 130), "TP9": (1040, 130),
     "TP10": (1100, 130), "TP11": (860, 200), "TP12": (920, 200),
     "TP13": (980, 200), "TP14": (1040, 200), "TP15": (1100, 200),
@@ -240,6 +251,8 @@ FPMAP = {
     "DS1": "LCD-TH_HS242L01W4S01", "J1": "TF-SMD_TF-PUSH",
     "ENC0": "SW-TH_ALPS_EC11L1525G01",
     "U5": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR", "U6": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
+    "U9": "SOP-8_L4.9-W3.9-P1.27-LS6.0-BL",
+    "RT501": "RES-ADJ-SMD_3224W", "RT502": "RES-ADJ-SMD_3224W",
     "TP6": "TestPoint_TH_D1.0mm", "TP7": "TestPoint_TH_D1.0mm",
     "TP8": "TestPoint_TH_D1.0mm", "TP9": "TestPoint_TH_D1.0mm",
     "TP10": "TestPoint_TH_D1.0mm", "TP11": "TestPoint_TH_D1.0mm",
@@ -271,6 +284,7 @@ for _i in range(1, 9):
     FPMAP[f"ENC{_i}"] = "SW-TH_EC12EXXXX"
 for _j in range(2, 6):
     FPMAP[f"J{_j}"] = "AUDIO-TH_PJ-376"
+FPMAP["J6"] = "AUDIO-TH_PJ-376"          # headphone jack, same part as the CV jacks
 for _j in range(7, 11):
     FPMAP[f"J{_j}"] = "AUDIO-TH_PJ-603"
 FPMAP.update({
