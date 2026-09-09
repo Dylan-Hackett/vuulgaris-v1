@@ -196,6 +196,15 @@ FREE_SEED = {
     "R512": (242.768, 27.321),
     "C507": (238.232, 27.321),
     "C508": (233.69, 26.365),
+    # Line-output attenuators. The 1/4" jacks used to sit straight on BBD_OUT at
+    # Eurorack level (9.5Vpp, +12.7dBu); these drop them to +3.8dBu full scale.
+    # They sit DOWNSTREAM of the C503/C505 taps, so the internal resample loop
+    # and the headphone feed keep the Eurorack level they were designed around.
+    # Tucked in beside their own jacks on the back, with the rest of the 5xx block.
+    "R513": (210.500, 15.050),   # J9 series, 1k3
+    "R514": (210.500, 18.050),   # J9 shunt,  1k
+    "R515": (225.500, 15.050),   # J10 series
+    "R516": (225.500, 18.050),   # J10 shunt
     # SD pull-ups. There is very little room here -- DS1 runs to x 267.55 and U1
     # starts at y 47.27, so the only pocket near J1 is the strip above the Daisy
     # and right of the OLED.

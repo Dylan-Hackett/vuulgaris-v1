@@ -130,6 +130,39 @@ not from disk.** An Eeschema window left open while these tools run will silentl
 overwrite them on its next save, and F8 from a stale window reports "no changes"
 for edits that are sitting on disk. **Close Eeschema and Pcbnew between hand-offs.**
 
+### pose.py -- F8 does not remember which SIDE a part is on
+
+`place.py` owns X/Y. It does **not** own layer or rotation, because those live only
+in the board file. So every F8 that re-imports a footprint drops it back on `F.Cu`
+at 0 degrees, and the work of flipping a block to the back is gone. **This has
+happened three times:** the bypass caps, then the entire headphone block, twice.
+
+`pose.py` is the other half. It snapshots layer+rotation for all 295 parts (160 of
+which are not `F.Cu`/0) and puts them back:
+
+```
+python3 tools/pose.py --save     snapshot what the board currently is
+python3 tools/pose.py --check    report what drifted, write nothing
+python3 tools/pose.py            put it back
+```
+
+**Order after an F8:** `place.py` -> `pose.py` -> `place.py --check`.
+
+A pad's angle in the file is **absolute** -- the footprint rotation is already
+folded in -- so turning a footprint means rewriting every pad angle. `pose.py`
+recovers the relative angle from the board's own current pose rather than from the
+library, because the library lookup is keyed on pad coordinates that do not always
+match, and a miss there invents a rotation out of nothing. That is what put 270 on
+J9's oval pads, which carry none. Verified by clobbering all 160 posed parts to
+`F.Cu`/0 and restoring: byte-identical except for the silkscreen note below.
+
+> **Back-side silkscreen text is currently unmirrored on ~160 parts.** Flipping a
+> footprint in Pcbnew adds `(justify mirror)` to its text; whatever put these on
+> `B.Cu` did not. 324 `fp_text` entries disagree with their own layer, so back-side
+> reference designators will plot **reversed**. Cosmetic, not electrical, and not
+> fixed here -- `pose.py` restores poses, it does not quietly rewrite silkscreen.
+> Worth a pass before fab output.
+
 ## place.py checks the board is actually THERE, and that the chip is not
 
 Two placement mistakes got past the checks in one day, both the same shape: the
@@ -218,6 +251,85 @@ the DW3 switches x2, and the Daisy module.
 > already-placed component is opt-in. Tick **"Replace footprints with those
 > specified in the schematic"** or nothing happens -- silently, with the dialog
 > reporting success.
+
+## Output levels: three different jobs, three different levels
+
+Everything inside the instrument runs at **Eurorack level, 9.5Vpp (+/-4.75V)** --
+verified from the Patch SM datasheet v1.0.5, which benchmarks SNR against exactly
+that reference sine. Bergman's LPG expects the same, so `AUDIO_OUT -> LPG ->
+AUDIO_IN` is level-matched end to end. See `docs/design-state.md` section 6.
+
+`BBD_OUT_L/R` is that node. **Three things hang off it, and only one of them wants
+Eurorack level:**
+
+```
+U103 --470R(R131)-- BBD_OUT_L --+-- C503 1u ---- SW2 -- AUDIO_IN_L    9.5Vpp, internal
+                                |
+                                +-- C505 1u -- R509 100k -+- RT501 20k -- GND
+                                |                    wiper |
+                                |                          U9 (unity) --4R7-- J6 tip
+                                |
+                                +-- R513 1k3 --+-- J9 tip   (1/4" line out)
+                                              R514 1k
+                                               GND
+```
+
+**The attenuators sit DOWNSTREAM of the C503 and C505 taps.** That is the whole
+trick, and it is the reason nothing internal had to change: the resample loop and
+the headphone feed still see the Eurorack level they were designed around, while
+the jack sees whatever the divider gives it.
+
+### 1/4" line out (J9/J10) -- +3.9dBu full scale
+
+`R131` 470R is already in series, so the divider is **(470 + 1300) : 1000**.
+
+| | |
+|---|---|
+| ratio | 1000/2770 = 0.361, **-8.85dB** |
+| full scale | 3.359Vrms -> **1.213Vrms = +3.9dBu** |
+| output impedance | 1770 \|\| 1000 = **639R** |
+| load on U103 | 2770R -- a TL072 is rated to 2k, so this is inside spec |
+
+It was **+12.7dBu** before, straight off the buffer. That survives a pro interface
+(+18 to +24dBu max) but clips consumer -10dBV gear and anything with an instrument
+input. +3.9dBu is safe everywhere and still hot enough to ignore the noise floor:
+639R of thermal noise is 3.2nV/sqrt(Hz), about **-125dBu** over 20kHz.
+
+Passive is the right answer here -- U103 already buffers the node, so a divider
+costs two 0603s and no active parts. Into a 10k line input you lose another 0.5dB.
+Into a 600R vintage input you lose 6.3dB, which is the one case worth knowing about.
+
+### Headphones (J6) -- set once, on the back
+
+`RT501`/`RT502` are the same **3224W** 12-turn cermet as the LPG trimmers, on
+`B.Cu` for the same reason. Max attenuation is 20k/120k = 1/6, giving **0.56Vrms**
+at the buffer output.
+
+`R511`/`R512` are **4R7, not 22R.** They sit OUTSIDE the feedback loop -- U9's
+feedback comes off `HP_BUF_L`, before them -- so they set output impedance directly:
+
+| load | with 22R | with 4R7 |
+|---|---|---|
+| 32R | 0.332Vrms, 3.4mW | **0.488Vrms, 7.4mW** |
+| 250R | 0.550Vrms, 1.21mW | 0.550Vrms, 1.21mW |
+| 600R | 0.556Vrms, 0.51mW | 0.556Vrms, 0.51mW |
+
+22R cost 4.6dB into 32R cans, but the real problem was **damping factor 1.5.**
+The rule of thumb is Zout <= 1/8 of the load; dynamic headphones have a bass
+impedance resonance peaking at 2-4x nominal, so 22R bumps the low end by a
+different amount for every pair you plug in. 4R7 is 1/6.8 of 32R -- close enough
+to the rule, and flat.
+
+The OPA1688 does not need the isolation: it is a purpose-built headphone driver,
+internally short-circuit protected, +/-75mA, unity-gain stable. At 0.488Vrms into
+32R it sources 22mA peak. TI's own headphone circuits use 10R or nothing.
+
+**No output coupling cap, deliberately.** `RT501`'s bottom end grounds the divider,
+so the wiper sits at 0V DC and U9 contributes only its own offset (+/-0.5mV typ).
+A few mV across 32R is 0.1mA -- inaudible, and better than the electrolytic every
+cheap headphone amp puts there. The input highpass is C505 1uF into the full 120k:
+**1.33Hz**, and it does not move with the trimmer, because the wiper position does
+not change the end-to-end resistance.
 
 ## Test points
 
