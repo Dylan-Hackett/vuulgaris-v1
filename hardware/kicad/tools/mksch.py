@@ -142,6 +142,13 @@ SYM = {
     # onto OUTB in this generator. RT501/RT502 set max level and are set once.
     "U9": "OPA1688_FLAT",
     "RT501": "TRIMPOT_3T", "RT502": "TRIMPOT_3T",
+    # EXT input preamp. The 1/4" jacks are a LINE input -- audio I/O is PJ-603,
+    # CV is PJ-376 -- but they fed U1.B3/B4 at unity, and the Patch SM's full
+    # scale is Eurorack 9.5Vpp. A receiver or phone lands 10-20dB down, and
+    # software gain cannot recover that: it lifts the converter's noise floor
+    # with the signal. RT503/RT504 set 1x to 10.1x once, on the back.
+    "U10": "OPA1688_FLAT",
+    "RT503": "TRIMPOT_3T", "RT504": "TRIMPOT_3T",
     "TP1": "TestPoint", "TP2": "TestPoint", "TP3": "TestPoint",
     "TP4": "TestPoint", "TP5": "TestPoint",
     # Signal test points. TP6-TP9 are the mki manual's TP1/TP3 equivalents, asked
@@ -195,6 +202,7 @@ POS = {
     "TP1": (860, 60), "TP2": (920, 60), "TP3": (980, 60),
     "TP4": (1040, 60), "TP5": (1100, 60),
     "U9": (860, 300), "RT501": (960, 300), "RT502": (1060, 300), "J6": (1160, 300),
+    "U10": (860, 370), "RT503": (960, 370), "RT504": (1060, 370),
     "TP6": (860, 130), "TP7": (920, 130), "TP8": (980, 130), "TP9": (1040, 130),
     "TP10": (1100, 130), "TP11": (860, 200), "TP12": (920, 200),
     "TP13": (980, 200), "TP14": (1040, 200), "TP15": (1100, 200),
@@ -253,6 +261,8 @@ FPMAP = {
     "U5": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR", "U6": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
     "U9": "SOP-8_L4.9-W3.9-P1.27-LS6.0-BL",
     "RT501": "RES-ADJ-SMD_3224W", "RT502": "RES-ADJ-SMD_3224W",
+    "U10": "SOP-8_L4.9-W3.9-P1.27-LS6.0-BL",
+    "RT503": "RES-ADJ-SMD_3224W", "RT504": "RES-ADJ-SMD_3224W",
     "TP6": "TestPoint_TH_D1.0mm", "TP7": "TestPoint_TH_D1.0mm",
     "TP8": "TestPoint_TH_D1.0mm", "TP9": "TestPoint_TH_D1.0mm",
     "TP10": "TestPoint_TH_D1.0mm", "TP11": "TestPoint_TH_D1.0mm",
