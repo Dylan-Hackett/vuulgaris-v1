@@ -156,12 +156,50 @@ match, and a miss there invents a rotation out of nothing. That is what put 270 
 J9's oval pads, which carry none. Verified by clobbering all 160 posed parts to
 `F.Cu`/0 and restoring: byte-identical except for the silkscreen note below.
 
-> **Back-side silkscreen text is currently unmirrored on ~160 parts.** Flipping a
-> footprint in Pcbnew adds `(justify mirror)` to its text; whatever put these on
-> `B.Cu` did not. 324 `fp_text` entries disagree with their own layer, so back-side
-> reference designators will plot **reversed**. Cosmetic, not electrical, and not
-> fixed here -- `pose.py` restores poses, it does not quietly rewrite silkscreen.
-> Worth a pass before fab output.
+> **That silkscreen note was the tip of a real bug.** Back-side text missing
+> `(justify mirror)` turned out to correlate perfectly with footprints that had
+> been moved to `B.Cu` by rewriting layer names and nothing else. See below.
+
+## A B.Cu footprint has to be MIRRORED, not just relabelled
+
+**KiCad applies no implicit mirror.** Proven 2026-09-09 with `kicad-cli pcb export
+svg`: a pad at footprint-local `(0, +3)` plots to the *same absolute place* whether
+its footprint sits on `F.Cu` or `B.Cu`. Front and back render identically.
+
+So the flip has to be **baked into the stored coordinates**. A part on the back
+carries negated local Y; a part whose coordinates still match the library is not
+flipped, it is the **front land pattern printed on the back layer** -- pin 1 where
+pin 8 belongs, chip soldered mirror-image.
+
+**Thirteen parts were in that state**, and they were not minor ones:
+
+`Q1`, `Q2`, `U101`, `U102`, `U103`, `U104`, `U106`, `U201`, `U202`, `U203`,
+`U204`, `U206` -- both V3205SD bucket brigades, both CD4046 clocks, five of the
+six TL072s, and both transistors. Effectively the whole analogue block. That board
+would not have worked.
+
+### Why nothing caught it
+
+`place.py` was computing every back-side part's geometry with an extra mirror of
+its own (`mir = -1.0 if side != F.Cu`), so a half-flipped part came out looking
+right: two errors that cancelled inside the checks. The old comment on that line
+claimed Gerber verification against J7 and J11 -- but **J7 is correctly mirrored
+and J11 is on the front**, so the check compared a double mirror against a single
+one and read the agreement as proof.
+
+The tell was sitting in the same file the whole time. `place.py`'s pad-**angle**
+check already assumed baked-in mirroring (`rel = -lib_angle` when on the back).
+The position maths and the angle maths had contradicted each other for months.
+
+### The guard
+
+`place.py` now fails loudly on any `B.Cu` footprint whose asymmetric pads still
+match the library. Symmetric parts (every 0603) are skipped, because for them a
+Y-mirror is a no-op. Verified by deliberately half-flipping `U102` and confirming
+it is named.
+
+> Do not "flip" a footprint by editing layer strings. Use `pose.py`, which mirrors
+> geometry, swaps the layer names, and mirrors the text justification together.
 
 ## place.py checks the board is actually THERE, and that the chip is not
 
