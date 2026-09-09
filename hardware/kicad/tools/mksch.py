@@ -428,6 +428,26 @@ for _ref in NET:
                    "C0603" if _sym == "C" else
                    "R0603" if _sym == "R" else BBD_FP[_sym])
 
+# --- the audio coupling caps are 0805, and they are NOT film -----------------
+# These fourteen carried the value "1uF film" in an 0603 footprint, which is not
+# a part anyone can ship: SMD film tops out around 0.1uF (PPS, Panasonic ECHU) in
+# 1210, and 1uF film means a leaded box cap about 7x7mm on a 5mm pitch -- through
+# hole, hand-soldered, on a board whose hand-solder list was deliberately cut to
+# four unsourceable parts. What JLC would actually fit is a Class II MLCC.
+#
+# So they are specified as what they are, and sized so it matters less. Class II
+# voltage-coefficient distortion scales with the field across the dielectric, so
+# a 1uF 50V part in 0805 -- more and thicker layers -- distorts far less than a
+# 1uF 16V part in 0603 being asked to swing a third of its rating on a +/-4.75V
+# Eurorack signal. 1uF C0G would be honest-to-goodness linear, but it does not
+# exist below 2220 and costs a few dollars each.
+AUDIO_COUPLING = {"C113", "C120", "C213", "C220", "C306", "C406",
+                  "C501", "C502", "C503", "C504", "C505", "C506",
+                  "C511", "C512"}
+for _ref in AUDIO_COUPLING:
+    if _ref in FPMAP:
+        FPMAP[_ref] = "C0805"
+
 # Sheet layout.  Generous spacing on purpose: every pin here gets a 10.16mm
 # stub, and two stubs that happen to land on the same point are one net with
 # nothing to show for it -- the SW1/RV3 failure above, in a new place.  netcheck

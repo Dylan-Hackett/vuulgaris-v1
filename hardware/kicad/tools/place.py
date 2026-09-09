@@ -188,7 +188,7 @@ FREE_SEED = {
     "U9": (243.964, 15.0),
     "RT501": (237.672, 15.828),
     "RT502": (237.554, 23.680),   # pushed 7.5mm off U9.8 so C507 gets the pocket
-    "C505": (247.106, 7.651),
+    "C505": (251.326, 7.446),   # turned 90 so the 0805 body clears J6
     "C506": (243.725, 21.402),
     "R509": (249.41, 17.54),
     "R510": (247.423, 4.451),
@@ -207,8 +207,8 @@ FREE_SEED = {
     "U10": (178.000, 38.500),   # EXT preamp, placed first; the cluster hangs off it
     "C509": (180.630, 42.860),   # U10 V+ bypass, 2.45mm to pin 8
     "C510": (172.270, 36.550),   # U10 V- bypass, 3.05mm to pin 4
-    "C511": (172.320, 39.870),   # L input DC block
-    "C512": (180.680, 34.100),   # R input DC block
+    "C511": (171.320, 43.120),   # L input DC block, moved 3.4mm for the 0805 body
+    "C512": (180.430, 34.100),   # R input DC block
     "R519": (173.820, 33.370),   # L input bias, 100k = the input impedance
     "R520": (183.680, 36.600),   # R input bias
     "R521": (175.320, 43.130),   # L gain-set leg, 2k2

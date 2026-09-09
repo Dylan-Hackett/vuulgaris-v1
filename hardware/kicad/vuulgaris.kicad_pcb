@@ -1287,7 +1287,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp 0cad40a1-c4e7-4af4-ae7f-d8e012c56442)
-    (at 280.68 84.1)
+    (at 280.43 84.1)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -10663,7 +10663,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp ee131b66-31fb-4fc7-ac38-31c087cea6f2)
-    (at 272.32 89.87 90)
+    (at 271.32 93.12)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -10712,9 +10712,9 @@
       (stroke (width 0.05) (type solid)) (layer "B.CrtYd") (tstamp f8e96738-ad21-4216-84a0-f8b2cf4ad797))
     (fp_line (start 0.8 -0.4) (end -0.8 -0.4)
       (stroke (width 0.05) (type solid)) (layer "B.CrtYd") (tstamp 5f0ff5c4-611e-441e-ac1b-bf593de415a8))
-    (pad "1" smd rect (at -0.7 0 90) (size 0.8 0.9) (layers "B.Cu" "B.Paste" "B.Mask")
+    (pad "1" smd rect (at -0.7 0) (size 0.8 0.9) (layers "B.Cu" "B.Paste" "B.Mask")
       (net 265 "/EXT_PROT_L") (pintype "passive") (tstamp ba484321-22dc-4d72-93ad-41e6e62cd89c))
-    (pad "2" smd rect (at 0.7 0 90) (size 0.8 0.9) (layers "B.Cu" "B.Paste" "B.Mask")
+    (pad "2" smd rect (at 0.7 0) (size 0.8 0.9) (layers "B.Cu" "B.Paste" "B.Mask")
       (net 264 "/EXT_AMP_IN_L") (pintype "passive") (tstamp 488dd40d-b824-49f7-8f4e-f733c46e3aad))
     (model "lib/vuulgaris.3dshapes/C0603_L1.6-W0.8-H0.8.wrl"
       (offset (xyz 0 0 0))
@@ -17119,7 +17119,7 @@
 
   (footprint "vuulgaris:C0603" (layer "B.Cu")
     (tstamp a8aecbf9-4030-4ac2-a831-d7163814e583)
-    (at 351.326 57.446)
+    (at 351.326 57.446 90)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Unpolarized capacitor")
@@ -17168,9 +17168,9 @@
       (stroke (width 0.05) (type solid)) (layer "B.CrtYd") (tstamp 37f38ff6-ca85-4285-af16-8c19c0f7b453))
     (fp_line (start 0.8 0.4) (end 0.8 -0.4)
       (stroke (width 0.05) (type solid)) (layer "B.CrtYd") (tstamp 53049231-f3a3-4b44-a4e4-e10d54cb9797))
-    (pad "1" smd rect (at -0.7 0) (size 0.8 0.9) (layers "B.Cu" "B.Paste" "B.Mask")
+    (pad "1" smd rect (at -0.7 0 90) (size 0.8 0.9) (layers "B.Cu" "B.Paste" "B.Mask")
       (net 183 "/BBD_OUT_L") (pintype "passive") (tstamp 20f4479d-48e8-41c0-b16b-0dbbe2a5c148))
-    (pad "2" smd rect (at 0.7 0) (size 0.8 0.9) (layers "B.Cu" "B.Paste" "B.Mask")
+    (pad "2" smd rect (at 0.7 0 90) (size 0.8 0.9) (layers "B.Cu" "B.Paste" "B.Mask")
       (net 252 "/HP_IN_L") (pintype "passive") (tstamp ab51f984-499c-4a04-889a-39dadc1828b8))
     (model "lib/vuulgaris.3dshapes/C0603_L1.6-W0.8-H0.8.wrl"
       (offset (xyz 0 0 0))
