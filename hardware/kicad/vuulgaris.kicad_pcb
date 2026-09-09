@@ -16674,7 +16674,7 @@
 
   (footprint "vuulgaris:C0805" (layer "B.Cu")
     (tstamp a8aecbf9-4030-4ac2-a831-d7163814e583)
-    (at 351.326 57.446 90)
+    (at 351.82 59.495 90)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
@@ -16799,7 +16799,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp b0ffb0e9-c230-4115-9569-a555dafa9457)
-    (at 351.643 54.246)
+    (at 352.395 54.095)
     (property "Sheetfile" "vuulgaris.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
