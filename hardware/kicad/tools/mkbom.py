@@ -59,7 +59,18 @@ CURATED = {
     "3V9 zener":             "C213113",    # BZT52C3V9 SOD-123, 3.7-4.1V
 }
 # Placed but deliberately not populated, or with no LCSC source at all.
+# The four values with no LCSC entry anywhere -- generic R/C symbols, so nothing
+# was ever chosen. Each is an Extended part rather than Basic; JLC charges a
+# small per-part fee for those, which is the right trade here because all four
+# are in signal paths where the dielectric or the value actually matters.
 NOTE = {
+    "4R7":           "EXTENDED: 4.7ohm 0603 1% -- Basic has nothing under 10ohm but 0R. "
+                     "Sets U9's output impedance; 0R would work but loses cable isolation",
+    "2nF C0G":       "EXTENDED: 2.2nF C0G 0603 50V. 2nF is not E12; with R4 470k that moves "
+                     "the CV time constant 940us -> 1.03ms, inaudible",
+    "4.7nF C0G":     "EXTENDED: 4.7nF C0G 0603 50V. Sets the VCF corner -- do not accept X7R",
+    "15nF C0G 0805": "EXTENDED: 15nF C0G 0805 50V. This is the BBD sample-and-hold cap; "
+                     "X7R dielectric absorption would cause droop between samples",
     "V3205SD":               "no LCSC source -- hand solder",
     "VTL5C3":                "no LCSC source -- hand solder, Xvive reissue",
     "SW_DPDT_FLAT":          "no LCSC source -- hand solder",
