@@ -14056,7 +14056,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "B.Cu")
     (tstamp 61bff93d-aeb6-4916-ad09-6b59aa1d613d)
-    (at 233.242 157.079)
+    (at 233.35 157.053)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -14195,7 +14195,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "B.Cu")
     (tstamp 63dc3b0d-0709-4f58-95b3-a6bf9436187d)
-    (at 154.459 135.989)
+    (at 152.28 134.347)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -15277,7 +15277,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "B.Cu")
     (tstamp 7b1ff113-4465-4a07-b1f1-8a406501754d)
-    (at 251.359 140.989)
+    (at 251.324 140.992)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -15308,7 +15308,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "B.Cu")
     (tstamp 7b72940c-be6b-4a18-90e1-c5b1e24538d9)
-    (at 230.987 123.974)
+    (at 231.095 123.948)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -17294,7 +17294,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "B.Cu")
     (tstamp bf646530-2bf5-4e2e-bc7b-53187f2657d2)
-    (at 154.459 95.989)
+    (at 152.28 94.347)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
@@ -18902,7 +18902,7 @@
 
   (footprint "vuulgaris:TestPoint_TH_D1.0mm" (layer "B.Cu")
     (tstamp d3f3ac8b-0fdb-42ea-b0e5-d6578db1b54f)
-    (at 163.719 111.011)
+    (at 163.201 111.003)
     (descr "Through-hole test point, 1.0mm drill / 2.0mm pad. Takes a probe tip or a soldered wire loop.")
     (tags "test point through hole")
     (property "Sheetfile" "vuulgaris.kicad_sch")
