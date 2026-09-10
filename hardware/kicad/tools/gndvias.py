@@ -99,6 +99,20 @@ def board_geometry(text):
                 continue
             num, ptype = p.group(1), p.group(2)
             px, py, sw, sh = map(float, p.groups()[2:6])
+            # A CUSTOM pad's (size ...) is only its anchor. J11's four merged
+            # USB-C pads declare 0.005x0.005 -- five microns -- while the real
+            # copper is a 0.6x1.3mm gr_poly primitive. Reading (size) alone made
+            # them invisible, and a ground stub got routed 0.0148mm from VBUS.
+            prim = [(float(a), float(b)) for a, b in
+                    re.findall(r'\(xy (-?[\d.]+) (-?[\d.]+)\)', pblk)]
+            if prim:
+                pw = re.search(r'\(width ([\d.]+)\)', pblk)
+                pw = float(pw.group(1)) if pw else 0.0
+                xs_ = [q[0] for q in prim]; ys_ = [q[1] for q in prim]
+                sw = max(sw, (max(xs_) - min(xs_)) + pw)
+                sh = max(sh, (max(ys_) - min(ys_)) + pw)
+                px += (max(xs_) + min(xs_)) / 2.0
+                py += (max(ys_) + min(ys_)) / 2.0
             netm = re.search(r'\(net (\d+) "([^"]*)"\)', pblk)
             net = (int(netm.group(1)), netm.group(2)) if netm else None
             cs = [place(cx, cy) for cx in (px - sw/2, px + sw/2)
