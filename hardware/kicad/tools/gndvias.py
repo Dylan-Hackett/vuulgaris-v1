@@ -26,7 +26,8 @@ alone, so it is safe to re-run after hand edits.
 import re, sys, json, math, uuid
 
 KI  = "/Users/dylanhackett/V1/hardware/kicad"
-PCB = f"{KI}/vuulgaris.kicad_pcb"
+PCB = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--pcb=")),
+           f"{KI}/vuulgaris.kicad_pcb")
 PRO = f"{KI}/vuulgaris.kicad_pro"
 PLANE_LAYER = "In2.Cu"
 # How far a stub may reach. 0.80mm is the tight fit against a 0603 pad; past
@@ -123,6 +124,23 @@ def board_geometry(text):
 def gap_rect(A, B):
     return math.hypot(max(A[0]-B[2], B[0]-A[2], 0.0), max(A[1]-B[3], B[1]-A[3], 0.0))
 
+def seg_seg(a, b):
+    """Minimum distance between two segments; negative when they cross."""
+    def d_pt(px, py, s):
+        x1, y1, x2, y2 = s[0], s[1], s[2], s[3]
+        dx, dy = x2 - x1, y2 - y1
+        L2 = dx*dx + dy*dy
+        t = 0.0 if L2 == 0 else max(0.0, min(1.0, ((px-x1)*dx + (py-y1)*dy)/L2))
+        return math.hypot(px - (x1 + t*dx), py - (y1 + t*dy))
+    den = (a[2]-a[0])*(b[3]-b[1]) - (a[3]-a[1])*(b[2]-b[0])
+    if abs(den) > 1e-12:
+        t = ((b[0]-a[0])*(b[3]-b[1]) - (b[1]-a[1])*(b[2]-b[0])) / den
+        u = ((b[0]-a[0])*(a[3]-a[1]) - (b[1]-a[1])*(a[2]-a[0])) / den
+        if 0 <= t <= 1 and 0 <= u <= 1:
+            return -1.0
+    return min(d_pt(a[0], a[1], b), d_pt(a[2], a[3], b),
+               d_pt(b[0], b[1], a), d_pt(b[2], b[3], a))
+
 def seg_dist(px, py, s):
     x1, y1, x2, y2 = s[0], s[1], s[2], s[3]
     dx, dy = x2-x1, y2-y1
@@ -164,6 +182,18 @@ def main():
                     # BBD_CLK_L track.
                     for s in segs:
                         if seg_dist(x, y, s) < R:
+                            ok = False; break
+                if ok:
+                    # And the STUB. Where the via lands says nothing about the
+                    # path taken to get there: the first version drove 15 of 139
+                    # stubs straight through foreign traces, one 1.375mm inside a
+                    # NEG12V track. The stub is single-layer, so only its own
+                    # side matters.
+                    stub = (cx, cy, x, y, TRACK_W)
+                    for s in segs:
+                        if s[5] != side:
+                            continue
+                        if seg_seg(stub, s) - (TRACK_W + s[4])/2.0 < CLEAR:
                             ok = False; break
                 if ok:
                     spot = (x, y, d); break
