@@ -29,6 +29,10 @@ KI  = "/Users/dylanhackett/V1/hardware/kicad"
 PCB = f"{KI}/vuulgaris.kicad_pcb"
 PRO = f"{KI}/vuulgaris.kicad_pro"
 PLANE_LAYER = "In2.Cu"
+# How far a stub may reach. 0.80mm is the tight fit against a 0603 pad; past
+# about 2mm the stub inductance starts undoing the point of a local drop, so
+# anything long is reported rather than hidden.
+REACH_MM = float(next((a.split("=")[1] for a in sys.argv if a.startswith("--reach=")), 3.0))
 CHECK = "--check" in sys.argv
 
 def netclass_gnd():
@@ -100,8 +104,15 @@ def board_geometry(text):
             pads.append((rect, side, th))
             if net and net[1] == "/GND" and not th:
                 gnd_smd.append((ref, num, place(px, py), rect, side, net[0]))
-    vias = [(float(m.group(1)), float(m.group(2)), float(m.group(3)))
-            for m in re.finditer(r'\(via \(at ([-\d.]+) ([-\d.]+)\) \(size ([\d.]+)\)', text)]
+    # Net is captured, not just position. The idempotence check below asks "does
+    # this pad already have a drop to the plane", and a via belonging to some
+    # other net sitting 1mm away answers that question wrongly -- it connects
+    # nothing. Counting those marked 27 of 140 ground pads as already done.
+    vias = []
+    for m in re.finditer(r'\(via \(at ([-\d.]+) ([-\d.]+)\) \(size ([\d.]+)\)'
+                         r'(?:[^\n]*?\(net (\d+)\))?', text):
+        vias.append((float(m.group(1)), float(m.group(2)), float(m.group(3)),
+                     int(m.group(4)) if m.group(4) else -1))
     segs = []
     for m in re.finditer(r'\(segment \(start ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\)'
                          r' \(width ([\d.]+)\) \(layer "([^"]+)"\)', text):
@@ -127,11 +138,11 @@ def main():
     print(f"{len(gnd_smd)} SMD ground pads; board already has {len(vias)} vias, {len(segs)} segments")
     placed, failed, skipped, newvias = [], [], 0, []
     for ref, num, (cx, cy), rect, side, netno in gnd_smd:
-        if any(math.hypot(cx-v[0], cy-v[1]) < 1.8 for v in vias):
+        if any(v[3] == netno and math.hypot(cx-v[0], cy-v[1]) < 1.8 for v in vias):
             skipped += 1
             continue
         spot = None
-        for d in [x/20.0 for x in range(16, 41)]:
+        for d in [x/20.0 for x in range(16, int(REACH_MM*20) + 1)]:
             for adeg in range(0, 360, 15):
                 x = cx + d*math.cos(math.radians(adeg))
                 y = cy + d*math.sin(math.radians(adeg))
@@ -146,15 +157,20 @@ def main():
                         if math.hypot(x-v[0], y-v[1]) < (VIA_D+v[2])/2.0 + CLEAR:
                             ok = False; break
                 if ok:
+                    # A via is a through-hole: it passes F.Cu to B.Cu and so has
+                    # to clear tracks on EVERY copper layer, not just the pad's
+                    # own and the plane. Filtering by layer here let 134 of 140
+                    # vias land on foreign traces, one of them 0.525mm INSIDE a
+                    # BBD_CLK_L track.
                     for s in segs:
-                        if s[5] in (side, PLANE_LAYER) and seg_dist(x, y, s) < R:
+                        if seg_dist(x, y, s) < R:
                             ok = False; break
                 if ok:
                     spot = (x, y, d); break
             if spot: break
         if spot:
             placed.append((ref, num, cx, cy, spot[0], spot[1], spot[2], side, netno))
-            newvias.append((spot[0], spot[1], VIA_D))
+            newvias.append((spot[0], spot[1], VIA_D, netno))
         else:
             failed.append((ref, num, cx, cy, side))
     print(f"\n  vias to add            : {len(placed)}")
@@ -165,6 +181,12 @@ def main():
     if placed:
         d = [p[6] for p in placed]
         print(f"  stub length: min {min(d):.2f}  mean {sum(d)/len(d):.2f}  max {max(d):.2f} mm")
+        longs = [(p[0], p[1], p[6]) for p in placed if p[6] > 2.0]
+        if longs:
+            print(f"  stubs over 2.0mm ({len(longs)}) -- local drop is compromised, consider"
+                  f" ripping up a neighbour:")
+            for ref, num, dd in sorted(longs, key=lambda z: -z[2]):
+                print(f"     {ref}.{num}  {dd:.2f}mm")
     if CHECK:
         print("\nMODE: --check, nothing written"); return
     if not placed:
