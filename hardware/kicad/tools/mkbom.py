@@ -44,6 +44,14 @@ CURATED = {
     "AMS1117-3.3":           "C6186",
     "1N4148W":               "C81598",
     "0402WGF2201TCE":        "C25879",
+    # --- swapped away from parts JLC was short on, 2026-09-10 ---
+    # was C9900013479, no JLC stock. GZ2012D601TF is Basic, 162k in stock, same
+    # 600R at 100MHz in 0805. 500mA rated against ~50mA and ~20mA actual loads,
+    # 300mohm DCR so 15mV of drop.
+    "BEAD0805S601A20T":      "C1017",
+    # was C389113 with 14 in stock against 20 needed. C57112 is Basic with 935k.
+    # C28 is VBUS decoupling, so the original NP0 buys nothing over X7R here.
+    "CC0603JRNPO9BN103":     "C57112",
     "PJ-376":                "C22355746",  # SOFNG 3.5mm right-angle TH, 571 stock
     "CUTOFF":                "C380211",    # ALPS RK09L1240A12 dual 10k, all six pots
     "RESONANCE":             "C380211",
@@ -76,6 +84,29 @@ NOTE = {
     "SW_DPDT_FLAT":          "no LCSC source -- hand solder",
     "ES_DAISY_PATCH_SM_REV1":"module, socketed or hand soldered",
 }
+
+def decode_mlcc(mpn):
+    """(farads, package, dielectric) from a YAGEO CC / Samsung CL part number.
+
+    The power stage came in from EasyEDA with MPNs as values, so C31 reads
+    "CC0603JRX7R8BB104" rather than "100nF". Those lines then missed the Basic
+    matcher and kept whatever Extended part the old project happened to use --
+    which is how five 100nF caps ended up on a part with 1 in JLC stock while
+    the other thirty sat on a Basic part with millions."""
+    m = re.match(r"CC(\d{4})[A-Z]+(X7R|NPO|C0G|X5R|Y5V)\w*?(\d{3})$", mpn)
+    if m:
+        pkg, diel, code = m.group(1), m.group(2), m.group(3)
+    else:
+        m = re.match(r"CL(\d\d)([ABC])(\d{3})[A-Z]", mpn)
+        if not m:
+            return None
+        pkg = {"05": "0402", "10": "0603", "21": "0805", "31": "1206"}.get(m.group(1))
+        diel = {"A": "X5R", "B": "X7R", "C": "C0G"}[m.group(2)]
+        code = m.group(3)
+    if not pkg:
+        return None
+    val = float(code[:2]) * (10 ** int(code[2])) * 1e-12
+    return val, pkg, ("C0G" if diel == "NPO" else diel)
 
 def ohms(s):
     s = s.split("(")[0].strip()
@@ -183,8 +214,35 @@ def main():
     rows, how = [], collections.Counter()
     for (val, fp), refs in sorted(groups.items()):
         code, why = "", ""
+        # CURATED first, always. These are explicit, verified decisions -- a part
+        # checked on its LCSC or JLCPCB page, or chosen to get off something JLC
+        # was short on. It has to outrank a table in docs/, which records what
+        # some earlier version of the design happened to use.
+        if val in CURATED:
+            code, why = CURATED[val], "curated"
+        # Commodity R and C get the Basic match first. Anything else keeps the
+        # specific part someone chose.
+        pk0 = re.match(r"[RC](\d{4})", fp)
+        if not code and pk0:
+            pk0 = pk0.group(1)
+            if fp.startswith("R0"):
+                o = ohms(val)
+                if o is not None and (pk0, f"{o:g}") in basic["R"]:
+                    code, why = basic["R"][(pk0, f"{o:g}")][0], "basic"
+            else:
+                f_ = farads(val)
+                d_ = ["C0G"] if ("C0G" in val or "NP0" in val) else ["X7R", "X5R"]
+                dec = decode_mlcc(val)
+                if f_ is None and dec:
+                    f_, pk0, d_ = dec[0], dec[1], [dec[2]] + ["X7R", "X5R"]
+                if f_ is not None:
+                    for d in d_:
+                        k = (pk0, f"{f_:g}", d)
+                        if k in basic["C"]:
+                            code, why = basic["C"][k][0], "basic"
+                            break
         codes = {byref[r] for r in refs if r in byref}
-        if len(codes) == 1:
+        if not code and len(codes) == 1:
             code, why = codes.pop(), "designator"
         if not code and val in bysym:
             code, why = bysym[val], "symbol lib"
@@ -216,6 +274,26 @@ def main():
         rows.append({"Comment": val, "Designator": ",".join(sorted(refs, key=natkey)),
                      "Footprint": fp, "LCSC Part #": code, "Qty": len(refs),
                      "Note": NOTE.get(val, "")})
+    # Merge lines that resolved to the same LCSC part. The power stage arrived
+    # from EasyEDA with MPNs as values, so five 100nF caps read
+    # "CC0603JRX7R8BB104" and thirty read "100nF" -- same part, two lines, and
+    # JLC prices the reel twice.
+    merged = {}
+    for r in rows:
+        key = (r["LCSC Part #"], r["Footprint"]) if r["LCSC Part #"] else id(r)
+        if key in merged:
+            m = merged[key]
+            m["Designator"] = ",".join(sorted(
+                m["Designator"].split(",") + r["Designator"].split(","), key=natkey))
+            m["Qty"] += r["Qty"]
+            if r["Comment"] not in m["Comment"]:
+                m["Comment"] = f"{m['Comment']} / {r['Comment']}"
+        else:
+            merged[key] = dict(r)
+    before = len(rows)
+    rows = sorted(merged.values(), key=lambda z: z["Comment"])
+    if before != len(rows):
+        print(f"merged {before - len(rows)} duplicate part lines")
     out = f"{K}/fab/vuulgaris-BOM.csv"
     with open(out, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["Comment", "Designator", "Footprint",
