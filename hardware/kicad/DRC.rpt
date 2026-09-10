@@ -1,5 +1,5 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/kicad/vuulgaris.kicad_pcb **
-** Created on 2026-09-09 21:58:29 **
+** Created on 2026-09-09 22:03:54 **
 
 ** Found 14 DRC violations **
 [annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
@@ -51,35 +51,51 @@
     @(370.8700 mm, 57.2300 mm): Pad B4A9 [/VBUS] of J11 on F.Cu
     @(371.5200 mm, 57.2300 mm): Pad B5 [/CC2] of J11 on F.Cu
 
-** Found 12 unconnected pads **
+** Found 16 unconnected pads **
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(190.1800 mm, 114.9400 mm): Pad 16 [/GND] of U4 on F.Cu
+    @(188.9200 mm, 114.9400 mm): Pad 17 [/GND] of U4 on F.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(370.0700 mm, 57.2300 mm): Pad B1A12 [/GND] of J11 on F.Cu
     @(368.9400 mm, 56.4700 mm): PTH pad 1 [/GND] of J11
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(193.9271 mm, 101.2427 mm): Via [/GND] on F.Cu - B.Cu
-    @(193.9700 mm, 104.4700 mm): Pad 2 [/GND] of C110 on B.Cu
+    @(188.9200 mm, 114.9400 mm): Pad 17 [/GND] of U4 on F.Cu
+    @(188.8750 mm, 113.3000 mm): Track [/GND] on B.Cu, length 1.4000 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(164.8570 mm, 93.8130 mm): Pad 2 [/GND] of C108 on B.Cu
-    @(163.8190 mm, 97.2900 mm): Track [/GND] on B.Cu, length 1.3500 mm
+    @(163.8190 mm, 97.2900 mm): Track [/GND] on B.Cu, length 1.8000 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(207.7000 mm, 142.0000 mm): Pad 2 [/GND] of C409 on F.Cu
     @(207.7500 mm, 146.0000 mm): Track [/GND] on F.Cu, length 1.2500 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(156.7200 mm, 99.9400 mm): Track [/GND] on F.Cu, length 0.8000 mm
-    @(148.7500 mm, 98.0000 mm): Pad 2 [/GND] of R106 on B.Cu
+    @(193.9700 mm, 104.4700 mm): Pad 2 [/GND] of C110 on B.Cu
+    @(193.7200 mm, 100.4700 mm): Pad 2 [/GND] of R120 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(193.9230 mm, 161.0000 mm): Track [/GND] on B.Cu, length 0.8000 mm
+    @(219.3260 mm, 142.0000 mm): Track [/GND] on B.Cu, length 1.2000 mm
+    @(215.2760 mm, 138.0000 mm): Pad 2 [/GND] of C219 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(193.4922 mm, 93.7918 mm): Via [/GND] on F.Cu - B.Cu
+    @(193.7200 mm, 100.4700 mm): Pad 2 [/GND] of R120 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(148.7500 mm, 98.0000 mm): Pad 2 [/GND] of R106 on B.Cu
+    @(156.7200 mm, 98.1900 mm): Via [/GND] on F.Cu - B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(193.9230 mm, 161.0000 mm): Track [/GND] on B.Cu, length 1.0500 mm
     @(188.8750 mm, 153.3000 mm): Pad 8 [/GND] of U204 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(128.0760 mm, 150.1930 mm): PTH pad 3 [/BTN4] of SW7
-    @(129.5578 mm, 146.5948 mm): Track [/BTN4] on In1.Cu, length 16.1418 mm
+    @(128.0760 mm, 145.1130 mm): Track [/BTN4] on In1.Cu, length 2.0956 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(375.6700 mm, 57.2300 mm): Pad A4B9 [/VBUS] of J11 on F.Cu
@@ -90,15 +106,15 @@
     @(364.7950 mm, 63.1200 mm): Track [/VBUS] on B.Cu, length 1.1516 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(362.6681 mm, 61.8970 mm): Via [/CC2] on F.Cu - B.Cu
+    @(359.4701 mm, 65.0950 mm): Track [/CC2] on B.Cu, length 4.5227 mm
     @(371.5200 mm, 57.2300 mm): Pad B5 [/CC2] of J11 on F.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(128.0760 mm, 157.8130 mm): Track [/BTN6] on In1.Cu, length 9.1867 mm
+    @(128.0760 mm, 157.8130 mm): PTH pad 1 [/BTN6] of SW9
     @(128.0760 mm, 162.8930 mm): PTH pad 3 [/BTN6] of SW9
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(161.8860 mm, 146.0000 mm): Track [/BBD_SIGIN_R] on F.Cu, length 10.2420 mm
+    @(172.1280 mm, 146.0000 mm): Track [/BBD_SIGIN_R] on B.Cu, length 2.0000 mm
     @(188.0980 mm, 145.0800 mm): PTH pad 7 [/BBD_SIGIN_R] of U201
 
 ** Found 0 Footprint errors **
