@@ -83,6 +83,37 @@ def natkey(r):
     m = re.match(r"([A-Za-z]+)(\d+)", r)
     return (m.group(1), int(m.group(2))) if m else (r, 0)
 
+def harvest_symbols():
+    """Symbol name -> LCSC, straight out of the symbol library.
+
+    easyeda2kicad writes an "LCSC Part" property on every symbol it pulls, so
+    for anything imported that way the number is already sitting in the file.
+    This is the source that should have been read first -- it is authoritative
+    for the part that was actually chosen, where a value string like
+    "BEAD0805S601A20T" only says what it is called."""
+    out = {}
+    sym = f"{K}/lib/vuulgaris.kicad_sym"
+    if not os.path.exists(sym):
+        return out
+    s = open(sym).read()
+    pos = 0
+    while True:
+        m = re.compile(r'\n  \(symbol "([^"]+)"').search(s, pos)
+        if not m:
+            return out
+        name = m.group(1); st = m.start() + 1; d = 0; j = st
+        while j < len(s):
+            if s[j] == "(": d += 1
+            elif s[j] == ")":
+                d -= 1
+                if d == 0: break
+            j += 1
+        blk = s[st:j + 1]; pos = j + 1
+        props = dict(re.findall(r'\(property\s*\n?\s*"([^"]*)"\s*\n?\s*"([^"]*)"', blk))
+        code = props.get("LCSC Part", "").strip()
+        if re.fullmatch(r"C\d{4,10}", code):
+            out[name] = code
+
 def harvest_docs():
     """Designator -> LCSC, from the tables in docs/.
 
@@ -128,6 +159,7 @@ def main():
             if mp:
                 bympn.setdefault(mp, r["LCSC Part #"].strip())
     byref = harvest_docs()
+    bysym = harvest_symbols()
     root = ET.parse(f"{K}/fab/vuulgaris-bom.xml").getroot()
     groups = collections.defaultdict(list)
     for c in root.find("components"):
@@ -143,6 +175,8 @@ def main():
         codes = {byref[r] for r in refs if r in byref}
         if len(codes) == 1:
             code, why = codes.pop(), "designator"
+        if not code and val in bysym:
+            code, why = bysym[val], "symbol lib"
         if not code and val in bympn:
             code, why = bympn[val], "exact MPN"
         if not code and val in CURATED:
