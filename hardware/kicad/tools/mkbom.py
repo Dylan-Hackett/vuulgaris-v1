@@ -83,6 +83,9 @@ NOTE = {
     "VTL5C3":                "no LCSC source -- hand solder, Xvive reissue",
     "SW_DPDT_FLAT":          "no LCSC source -- hand solder",
     "ES_DAISY_PATCH_SM_REV1":"module, socketed or hand soldered",
+    "HS242L01W4S01":         "BUY FROM LCSC, FIT BY HAND -- C5139768, 27 in stock at $12.22. "
+                             "Not in JLC's assembly library, and it is a display module on its "
+                             "own 68x43mm PCB with a glass panel: do not reflow or wave solder it",
 }
 
 def decode_mlcc(mpn):
