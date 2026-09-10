@@ -25,7 +25,7 @@ Parsing is balanced-paren, not regex. A nested (pins ...) list inside (net ...)
 is exactly the shape that makes a naive "cut to the next keyword" split eat the
 rest of the file.
 """
-import sys, os, re
+import sys, os, re, json
 
 def find_block(text, start):
     """Given the index of a '(', return the index just past its matching ')'."""
@@ -94,6 +94,55 @@ def drop_layers(dsn, names):
             dsn = dsn[:m.start()] + dsn[end:]
     return dsn, dropped
 
+def apply_netclasses(dsn, pro_path):
+    """Rewrite the DSN's (class ...) blocks from the project's net classes.
+
+    Pcbnew exports the DSN from the net settings it holds in memory, not the
+    ones on disk, so a project file edited outside the GUI is ignored -- every
+    net comes out in kicad_default at 0.25mm, including VBUS, which carries 2A.
+    Writing the classes into the DSN instead makes the routing rules depend on
+    the file rather than on what some window happens to remember.
+
+    Specctra values here are microns: width 250 is 0.25mm."""
+    pro = json.load(open(pro_path))
+    ns = pro.get("net_settings", {})
+    classes = {c["name"]: c for c in ns.get("classes", [])}
+    pats = ns.get("netclass_patterns") or []
+    assign = {}
+    for q in pats:
+        assign.setdefault(q["netclass"], []).append(q["pattern"])
+    if not assign:
+        return dsn, []
+
+    m = re.search(r'\(\s*class\s+kicad_default\b', dsn)
+    if not m:
+        return dsn, []
+    st = m.start(); en = find_block(dsn, st)
+    blk = dsn[st:en]
+    via = re.search(r'\(use_via ([^\s)]+)\)', blk)
+    via = via.group(1) if via else None
+
+    moved, extra = [], []
+    for cname, nets in assign.items():
+        c = classes.get(cname)
+        if not c:
+            continue
+        present = [n for n in nets if re.search(r'(?<![\w/])%s(?=[\s)])' % re.escape(n), blk)]
+        if not present:
+            continue
+        for n in present:
+            blk = re.sub(r'\s+%s(?=[\s)])' % re.escape(n), '', blk, count=1)
+            moved.append((n, cname))
+        w = int(round(c["track_width"] * 1000))
+        cl = int(round(c["clearance"] * 1000))
+        body = "    (class %s %s\n" % (cname, " ".join(present))
+        if via:
+            body += "      (circuit\n        (use_via %s)\n      )\n" % via
+        body += "      (rule\n        (width %d)\n        (clearance %d)\n      )\n    )\n" % (w, cl)
+        extra.append(body)
+    dsn = dsn[:st] + blk + "\n" + "".join(extra) + dsn[en:]
+    return dsn, moved
+
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
@@ -105,6 +154,10 @@ def main():
     dsn, dn = drop_nets(dsn, nets)
     dsn, ch = scrub_classes(dsn, nets)
     dsn, dl = drop_layers(dsn, layers)
+    pro = os.path.join(os.path.dirname(os.path.abspath(src)), "vuulgaris.kicad_pro")
+    moved = []
+    if os.path.exists(pro):
+        dsn, moved = apply_netclasses(dsn, pro)
     after = len(re.findall(r'\(\s*net\s+"', dsn))
     planes = [n for n in nets if re.search(r'\(\s*plane\s+"?%s"?[\s)]' % re.escape(n), dsn)]
     out = os.path.splitext(src)[0] + "-noGND.dsn"
@@ -113,6 +166,14 @@ def main():
     print(f"out : {out}")
     print(f"nets   {before} -> {after}   dropped: {dn or 'none (check the name!)'}")
     print(f"class references scrubbed: {ch}")
+    if moved:
+        from collections import Counter
+        cc = Counter(c for _, c in moved)
+        print("net classes written into the DSN:")
+        for k, v in sorted(cc.items()):
+            print(f"   {k:14}{v} nets")
+    else:
+        print("net classes: none applied (no patterns in the .kicad_pro)")
     print(f"layers dropped: {dl or 'none'}")
     if planes:
         print(f"\nNOTE: {', '.join(planes)} still owns a (plane ...) in this DSN.")

@@ -228,12 +228,12 @@
       (place TP9 172128.000000 -146000.000000 back 180.000000 (PN "SIGIN R"))
       (place TP13 176570.000000 -156845.000000 back 180.000000 (PN "CLK R"))
       (place TP8 172128.000000 -106000.000000 back 180.000000 (PN "SIGIN L"))
-      (place TP11 233570.000000 -157114.000000 back 180.000000 (PN "LED R"))
-      (place TP7 154250.000000 -136000.000000 back 180.000000 (PN "DRY R"))
-      (place TP15 251150.000000 -141000.000000 back 180.000000 (PN "LPG ENV"))
-      (place TP10 231315.000000 -124009.000000 back 180.000000 (PN "LED L"))
-      (place TP6 154250.000000 -96000.000000 back 180.000000 (PN "DRY L"))
-      (place TP14 163928.000000 -111000.000000 back 180.000000 (PN "TIME CV"))
+      (place TP11 233350.000000 -157053.000000 back 180.000000 (PN "LED R"))
+      (place TP7 152280.000000 -134347.000000 back 180.000000 (PN "DRY R"))
+      (place TP15 251324.000000 -140992.000000 back 180.000000 (PN "LPG ENV"))
+      (place TP10 231095.000000 -123948.000000 back 180.000000 (PN "LED L"))
+      (place TP6 152280.000000 -94347.000000 back 180.000000 (PN "DRY L"))
+      (place TP14 163201.000000 -111003.000000 back 180.000000 (PN "TIME CV"))
       (place TP12 176045.000000 -109295.000000 back 180.000000 (PN "CLK L"))
     )
     (component vuulgaris:C0402
@@ -3642,11 +3642,9 @@
       /LPG_MID_R /LPG_NC_L /LPG_NC_R /LPG_OFS_L /LPG_OFS_R /LPG_OUT_L /LPG_OUT_R
       /LPG_RESL_L /LPG_RESL_R /LPG_RESW_L /LPG_RESW_R /LPG_RES_L /LPG_RES_R
       /LPG_SUMCV_L /LPG_SUMCV_R /LPG_SUM_L /LPG_SUM_R /LPG_T1_L /LPG_T1_R
-      /LPG_VCFSW_L /LPG_VCFSW_R /MSP430_RXD /MSP430_TXD /MSP_RST /MSP_TEST
-      /NEG12V /NEG12V_RAW /OLED_CS /OLED_DC /OLED_FONTCS /OLED_MOSI /OLED_RES
-      /OLED_SCK /P3V3_DAISY /P3V3_MSP430 /P3V3_OLED /P5V /P5V_BBD /P5V_MSP
-      /P5V_OLED /POS12V /POS12V_RAW /SD_CLK /SD_CMD /SD_D0 /SD_DAT3 /SRC_EXT_L
-      /SRC_EXT_R /SRC_RSMP_L /SRC_RSMP_R /TIME_CV /VBUS /VBUS_F "unconnected-(DS1-FS0-Pad8)"
+      /LPG_VCFSW_L /LPG_VCFSW_R /MSP430_RXD /MSP430_TXD /MSP_RST /MSP_TEST /OLED_CS /OLED_DC /OLED_FONTCS /OLED_MOSI /OLED_RES
+      /OLED_SCK /SD_CLK /SD_CMD /SD_D0 /SD_DAT3 /SRC_EXT_L
+      /SRC_EXT_R /SRC_RSMP_L /SRC_RSMP_R /TIME_CV "unconnected-(DS1-FS0-Pad8)"
       "unconnected-(J1-DAT1-Pad8)" "unconnected-(J1-DAT2-Pad1)" "unconnected-(J1-PadCD)"
       "unconnected-(J10-Pad3)" "unconnected-(J11-DN1-PadA7)" "unconnected-(J11-DN2-PadB7)"
       "unconnected-(J11-DP1-PadA6)" "unconnected-(J11-DP2-PadB6)" "unconnected-(J11-SBU1-PadA8)"
@@ -3674,6 +3672,43 @@
         (clearance 200.1)
       )
     )
+    (class Power_5V_IN /VBUS /VBUS_F
+      (circuit
+        (use_via Via[0-3]_800:400_um)
+      )
+      (rule
+        (width 1500)
+        (clearance 300)
+      )
+    )
+    (class Rails_12V /POS12V /NEG12V /POS12V_RAW /NEG12V_RAW
+      (circuit
+        (use_via Via[0-3]_800:400_um)
+      )
+      (rule
+        (width 600)
+        (clearance 250)
+      )
+    )
+    (class Power_5V /P5V /P5V_OLED /P5V_MSP /P5V_BBD
+      (circuit
+        (use_via Via[0-3]_800:400_um)
+      )
+      (rule
+        (width 500)
+        (clearance 200)
+      )
+    )
+    (class Power_3V3 /P3V3_DAISY /P3V3_MSP430 /P3V3_OLED
+      (circuit
+        (use_via Via[0-3]_800:400_um)
+      )
+      (rule
+        (width 500)
+        (clearance 200)
+      )
+    )
+
   )
   (wiring
   )
