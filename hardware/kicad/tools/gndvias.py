@@ -206,7 +206,18 @@ def main():
                 # each of which then also tripped hole_clearance and
                 # solder_mask_bridge -- 12 DRC errors from one wrong condition.
                 for prect, pside, pth in pads:
-                    if prect == rect: continue
+                    if prect == rect:
+                        # ITS OWN pad. Same net, so DRC permits them to touch and
+                        # says nothing -- but a via whose barrel opens onto an SMD
+                        # pad wicks solder out of the joint during reflow, which is
+                        # why via-in-pad normally has to be plugged. At 0.80mm from
+                        # the centre of an 0603 the via edge lands exactly on the
+                        # pad edge, so every drop was doing this. Keep clear of it
+                        # like any other copper and let the stub bridge the gap.
+                        if gap_rect(box, prect) <= 0:
+                            ok = False
+                            break
+                        continue
                     if gap_rect(box, prect) <= 0:
                         ok = False; break
                     if gap_rect(hole, prect) < HOLE_CLEAR:
