@@ -43,6 +43,10 @@ def netclass_gnd():
     return 0.8, 0.4, 0.2, 0.5
 
 VIA_D, VIA_DRILL, CLEAR, TRACK_W = netclass_gnd()
+# KiCad checks hole-to-copper and hole-to-hole separately from copper-to-copper,
+# with its own board-setup minimum. 0.25mm is what this board is set to.
+HOLE_R = VIA_DRILL / 2.0
+HOLE_CLEAR = 0.25
 
 def fp_blocks(text):
     pos = 0
@@ -180,10 +184,18 @@ def main():
                 x = cx + d*math.cos(math.radians(adeg))
                 y = cy + d*math.sin(math.radians(adeg))
                 box = (x-R, y-R, x+R, y+R)
+                hole = (x-HOLE_R, y-HOLE_R, x+HOLE_R, y+HOLE_R)
                 ok = True
+                # EVERY pad on EVERY layer. The via is a through-hole; filtering
+                # these by the served pad's side is what put four vias exactly on
+                # top of C509/POS12V, U4.7, C410/LPG_RES_R and U10.7 at 0.0000mm,
+                # each of which then also tripped hole_clearance and
+                # solder_mask_bridge -- 12 DRC errors from one wrong condition.
                 for prect, pside, pth in pads:
                     if prect == rect: continue
-                    if (pside == side or pth) and gap_rect(box, prect) <= 0:
+                    if gap_rect(box, prect) <= 0:
+                        ok = False; break
+                    if gap_rect(hole, prect) < HOLE_CLEAR:
                         ok = False; break
                 if ok:
                     for v in vias + newvias:
