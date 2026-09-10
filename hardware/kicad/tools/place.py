@@ -243,16 +243,16 @@ FREE_SEED = {
     # BBD CLOCK, and running a 100kHz square wave 100mm across the board to a
     # probe pad is a noise injector sitting next to the audio, not a debugging
     # aid. Everything else in the row is a driven, slow node that does not care.
-    "TP6": (54.250, 46.000),   # beside R104.1 BBD_DRY_L
-    "TP7": (54.250, 86.000),   # beside R204.1 BBD_DRY_R
-    "TP8": (72.128, 56.000),   # beside R118.2 BBD_SIGIN_L
-    "TP9": (72.128, 96.000),   # beside R218.2 BBD_SIGIN_R
-    "TP10": (131.315, 74.009),   # beside D301.1 LPG_LED_L
-    "TP11": (133.570, 107.114),   # beside D401.1 LPG_LED_R
+    "TP6": (54.459, 45.989),   # beside R104.1, clear of its courtyard
+    "TP7": (54.459, 85.989),   # beside R204.1, clear of its courtyard
+    "TP8": (72.128, 56.000),   # beside R118.2, clear of its courtyard
+    "TP9": (72.128, 96.000),   # beside R218.2, clear of its courtyard
+    "TP10": (130.987, 73.974),   # beside D301.1, clear of its courtyard
+    "TP11": (133.242, 107.079),   # beside D401.1, clear of its courtyard
     "TP12": (76.326, 60.433),   # BBD_CLK_L
     "TP13": (77.516, 106.925),  # BBD_CLK_R
-    "TP14": (63.928, 61.000),   # beside R116.1 TIME_CV
-    "TP15": (151.150, 91.000),   # beside R323.1 LPG_ENV
+    "TP14": (63.719, 61.011),   # beside R116.1, clear of its courtyard
+    "TP15": (151.359, 90.989),   # beside R323.1, clear of its courtyard
     # U8's decoupling. Shifted right and down 2026-09-07 when U8 went from SOT-89
     # to SOT-223 and grew into C40.
     "C40": (58.0, 113.5), "C41": (62.0, 113.5), "C42": (66.0, 113.5),
