@@ -141,6 +141,21 @@ def seg_seg(a, b):
     return min(d_pt(a[0], a[1], b), d_pt(a[2], a[3], b),
                d_pt(b[0], b[1], a), d_pt(b[2], b[3], a))
 
+def seg_rect(seg, r):
+    """Distance from a segment to an axis-aligned rectangle; 0 if it enters it.
+
+    The first version approximated the pad with its circumscribed circle, which
+    for a 1.5x0.5mm SOIC pad is a 0.79mm radius -- so a stub leaving one pin was
+    judged to be colliding with its neighbours and 23 of 140 pads became
+    unplaceable for no real reason."""
+    x0, y0, x1, y1 = r
+    edges = [(x0, y0, x1, y0), (x1, y0, x1, y1),
+             (x1, y1, x0, y1), (x0, y1, x0, y0)]
+    for e in edges:
+        if seg_seg(seg, (e[0], e[1], e[2], e[3])) <= 0.0:
+            return 0.0
+    return min(seg_seg(seg, (e[0], e[1], e[2], e[3])) for e in edges)
+
 def seg_dist(px, py, s):
     x1, y1, x2, y2 = s[0], s[1], s[2], s[3]
     dx, dy = x2-x1, y2-y1
@@ -194,6 +209,24 @@ def main():
                         if s[5] != side:
                             continue
                         if seg_seg(stub, s) - (TRACK_W + s[4])/2.0 < CLEAR:
+                            ok = False; break
+                if ok:
+                    # The stub against foreign VIAS and PADS, not just traces.
+                    # Checking it against traces alone still let a stub pass
+                    # 0.126mm through someone else's via. A via is a through-hole
+                    # so it counts on every layer; pads count on the stub's own
+                    # layer, plus any through-hole pad.
+                    for v in vias:
+                        if v[3] == netno:
+                            continue
+                        if seg_dist(v[0], v[1], (cx, cy, x, y, TRACK_W)) \
+                           - v[2]/2.0 < CLEAR:
+                            ok = False; break
+                if ok:
+                    for prect, pside, pth in pads:
+                        if prect == rect or not (pside == side or pth):
+                            continue
+                        if seg_rect((cx, cy, x, y), prect) - TRACK_W/2.0 < CLEAR:
                             ok = False; break
                 if ok:
                     spot = (x, y, d); break
