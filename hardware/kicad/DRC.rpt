@@ -1,31 +1,7 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/kicad/vuulgaris.kicad_pcb **
-** Created on 2026-09-09 22:47:37 **
+** Created on 2026-09-09 22:51:05 **
 
-** Found 351 DRC violations **
-[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
-    Rule: board setup constraints; Severity: error
-    @(297.5480 mm, 55.0490 mm): PTH pad [<no net>] of DS1
-[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
-    Rule: board setup constraints; Severity: error
-    @(297.5480 mm, 94.0490 mm): PTH pad [<no net>] of DS1
-[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
-    Rule: board setup constraints; Severity: error
-    @(365.5480 mm, 55.0490 mm): PTH pad [<no net>] of DS1
-[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
-    Rule: board setup constraints; Severity: error
-    @(365.5480 mm, 94.0490 mm): PTH pad [<no net>] of DS1
-[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
-    Rule: board setup constraints; Severity: error
-    @(376.1700 mm, 55.9700 mm): PTH pad [<no net>] of J11
-[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
-    Rule: board setup constraints; Severity: error
-    @(370.3700 mm, 55.9700 mm): PTH pad [<no net>] of J11
-[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
-    Rule: board setup constraints; Severity: error
-    @(380.1200 mm, 81.6200 mm): PTH pad [<no net>] of J1
-[annular_width]: Annular width (board setup constraints min annular width 0.1000 mm; actual 0.0000 mm)
-    Rule: board setup constraints; Severity: error
-    @(380.1200 mm, 89.6200 mm): PTH pad [<no net>] of J1
+** Found 337 DRC violations **
 [via_dangling]: Via is not connected or connected on only one layer
     Local override; Severity: warning
     @(362.6681 mm, 61.8970 mm): Via [/CC2] on F.Cu - B.Cu
@@ -173,24 +149,6 @@
     Rule: board setup constraints silk; Severity: warning
     @(100.0000 mm, 50.0000 mm): Line on Edge.Cuts
     @(294.2000 mm, 52.5000 mm): Line on B.Silkscreen
-[padstack]: Padstack is not valid (PTH pad's hole leaves no copper)
-    Local override; Severity: warning
-    @(297.5480 mm, 55.0490 mm): PTH pad [<no net>] of DS1
-[padstack]: Padstack is not valid (PTH pad's hole leaves no copper)
-    Local override; Severity: warning
-    @(297.5480 mm, 94.0490 mm): PTH pad [<no net>] of DS1
-[padstack]: Padstack is not valid (PTH pad's hole leaves no copper)
-    Local override; Severity: warning
-    @(365.5480 mm, 55.0490 mm): PTH pad [<no net>] of DS1
-[padstack]: Padstack is not valid (PTH pad's hole leaves no copper)
-    Local override; Severity: warning
-    @(365.5480 mm, 94.0490 mm): PTH pad [<no net>] of DS1
-[padstack]: Padstack is not valid (PTH pad's hole leaves no copper)
-    Local override; Severity: warning
-    @(380.1200 mm, 81.6200 mm): PTH pad [<no net>] of J1
-[padstack]: Padstack is not valid (PTH pad's hole leaves no copper)
-    Local override; Severity: warning
-    @(380.1200 mm, 89.6200 mm): PTH pad [<no net>] of J1
 [lib_footprint_mismatch]: Footprint 'DAISY_PATCH_SM' does not match copy in library 'vuulgaris'.
     Local override; Severity: warning
     @(363.8450 mm, 131.3050 mm): Footprint U1
