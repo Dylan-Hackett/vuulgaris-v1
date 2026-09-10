@@ -1,7 +1,7 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/kicad/vuulgaris.kicad_pcb **
-** Created on 2026-09-09 22:51:05 **
+** Created on 2026-09-09 22:55:48 **
 
-** Found 337 DRC violations **
+** Found 330 DRC violations **
 [via_dangling]: Via is not connected or connected on only one layer
     Local override; Severity: warning
     @(362.6681 mm, 61.8970 mm): Via [/CC2] on F.Cu - B.Cu
@@ -286,9 +286,6 @@
     @(369.6250 mm, 120.3200 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(153.7450 mm, 109.9950 mm): Reference 'C26'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
     @(153.2450 mm, 114.2450 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
@@ -307,9 +304,6 @@
     @(217.7000 mm, 159.4000 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(290.5500 mm, 93.7650 mm): Reference 'C504'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
     @(289.5500 mm, 98.3950 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
@@ -320,9 +314,6 @@
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(300.4980 mm, 55.2390 mm): Line on F.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(132.8200 mm, 63.7950 mm): Reference 'R503'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(128.4200 mm, 62.9950 mm): Circle on F.Silkscreen
@@ -350,9 +341,6 @@
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(260.1000 mm, 155.4000 mm): Circle on F.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(286.6480 mm, 74.0310 mm): Reference 'SW2'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(286.6480 mm, 80.6310 mm): Circle on F.Silkscreen
@@ -421,16 +409,13 @@
     @(217.7000 mm, 155.4000 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(272.5500 mm, 93.7650 mm): Reference 'C503'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
     @(271.5500 mm, 98.3950 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(206.2000 mm, 118.4000 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(273.6480 mm, 74.0310 mm): Reference 'SW1'
+    @(274.6139 mm, 74.2898 mm): Reference 'SW1'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(273.6480 mm, 80.6310 mm): Circle on F.Silkscreen
@@ -448,22 +433,13 @@
     @(319.6700 mm, 104.0750 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(278.5500 mm, 93.7650 mm): Reference 'R502'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
     @(277.7500 mm, 98.1650 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(226.9450 mm, 122.2950 mm): Circle on F.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(294.5200 mm, 115.6200 mm): Reference 'C35'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
     @(293.7200 mm, 120.0200 mm): Circle on F.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(290.7010 mm, 101.5220 mm): Reference 'L1'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(289.4700 mm, 101.9700 mm): Circle on F.Silkscreen
@@ -508,13 +484,7 @@
     @(154.2000 mm, 133.6000 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(226.7650 mm, 146.7050 mm): Reference 'U202'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
     @(191.8980 mm, 141.3700 mm): Circle on B.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(358.6700 mm, 62.6950 mm): Reference 'R511'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(357.8700 mm, 58.2950 mm): Circle on B.Silkscreen
@@ -523,7 +493,7 @@
     @(168.5780 mm, 93.6000 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(337.6720 mm, 71.2780 mm): Reference 'RT501'
+    @(335.9399 mm, 70.2780 mm): Reference 'RT501'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(335.3120 mm, 64.0780 mm): Line on B.Silkscreen
@@ -580,16 +550,10 @@
     @(285.3700 mm, 90.8840 mm): Line on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(356.1100 mm, 68.9850 mm): Reference 'R509'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
     @(353.9200 mm, 69.2450 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(214.2760 mm, 138.9500 mm): Reference 'Q2'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(269.4700 mm, 78.5950 mm): Reference 'R517'
+    @(268.4700 mm, 78.5950 mm): Reference 'R517'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(265.0700 mm, 79.3950 mm): Circle on B.Silkscreen
@@ -622,9 +586,6 @@
     @(170.8780 mm, 112.6000 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(226.8370 mm, 109.1750 mm): Reference 'U102'
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
     @(199.0980 mm, 141.6000 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
@@ -644,9 +605,6 @@
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(157.2000 mm, 163.1000 mm): Circle on B.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(343.9640 mm, 71.6820 mm): Reference 'U9'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(168.5780 mm, 145.6000 mm): Circle on B.Silkscreen
@@ -677,9 +635,6 @@
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(205.4490 mm, 108.3700 mm): Circle on B.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(339.1540 mm, 73.5300 mm): Reference 'C507'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(338.3540 mm, 69.1300 mm): Circle on B.Silkscreen
@@ -757,7 +712,112 @@
     @(213.5480 mm, 104.0700 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(208.1100 mm, 110.9470 mm): Reference 'U106'
+    @(225.0590 mm, 108.2470 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(198.9700 mm, 99.8400 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(199.1700 mm, 104.0700 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(159.7950 mm, 150.1950 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(351.1900 mm, 60.4950 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(347.8140 mm, 62.9700 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(351.5950 mm, 53.6950 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(157.0860 mm, 102.5220 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(293.5450 mm, 82.8950 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(190.9780 mm, 93.1200 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(224.9870 mm, 145.7770 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(268.5660 mm, 94.5220 mm): Line on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(168.5780 mm, 97.6000 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(272.4200 mm, 92.1150 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(213.2760 mm, 137.3700 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(284.7200 mm, 98.5450 mm): Circle on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(377.5800 mm, 116.0200 mm): Reference 'R21'
+    @(377.8150 mm, 115.3030 mm): Footprint Text 'D' of U1
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(308.0000 mm, 94.0000 mm): Reference 'R505'
+    @(300.4980 mm, 94.0490 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(253.0750 mm, 159.0000 mm): Reference 'C404'
+    @(251.9000 mm, 161.2000 mm): Reference 'R423'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(290.9382 mm, 95.2139 mm): Reference 'C504'
+    @(290.1500 mm, 94.6650 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(290.9382 mm, 95.2139 mm): Reference 'C504'
+    @(290.9500 mm, 94.6650 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(290.9382 mm, 95.2139 mm): Reference 'C504'
+    @(292.3600 mm, 94.5150 mm): Arc on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(291.0245 mm, 102.7294 mm): Reference 'L1'
+    @(291.5400 mm, 102.2200 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(291.0245 mm, 102.7294 mm): Reference 'L1'
+    @(291.6900 mm, 102.0900 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(274.3600 mm, 94.5150 mm): Arc on F.Silkscreen
+    @(272.9382 mm, 95.2139 mm): Reference 'C503'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(272.9382 mm, 95.2139 mm): Reference 'C503'
+    @(272.9500 mm, 94.6650 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(278.8735 mm, 94.9724 mm): Reference 'R502'
+    @(278.1200 mm, 94.4250 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(278.8735 mm, 94.9724 mm): Reference 'R502'
+    @(277.1600 mm, 94.4250 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(272.1500 mm, 94.6650 mm): Line on F.Silkscreen
+    @(272.9382 mm, 95.2139 mm): Reference 'C503'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(278.9800 mm, 94.4250 mm): Line on F.Silkscreen
+    @(278.8735 mm, 94.9724 mm): Reference 'R502'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(279.9400 mm, 94.4250 mm): Line on F.Silkscreen
+    @(278.8735 mm, 94.9724 mm): Reference 'R502'
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(140.1480 mm, 60.3950 mm): Reference 'ENC3'
@@ -808,20 +868,12 @@
     @(184.1480 mm, 80.8510 mm): Arc on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(377.5800 mm, 116.0200 mm): Reference 'R21'
-    @(377.8150 mm, 115.3030 mm): Footprint Text 'D' of U1
+    @(118.1480 mm, 60.3950 mm): Reference 'ENC1'
+    @(118.1480 mm, 64.3950 mm): Arc on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(308.0000 mm, 94.0000 mm): Reference 'R505'
-    @(300.4980 mm, 94.0490 mm): Line on F.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(252.0750 mm, 159.0000 mm): Reference 'C404'
-    @(251.9000 mm, 161.2000 mm): Reference 'R423'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(290.7010 mm, 101.5220 mm): Reference 'L1'
-    @(291.5400 mm, 100.9200 mm): Line on F.Silkscreen
+    @(118.1480 mm, 60.3950 mm): Reference 'ENC1'
+    @(118.1480 mm, 64.4250 mm): Arc on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(118.1480 mm, 76.8510 mm): Reference 'ENC2'
@@ -832,220 +884,20 @@
     @(118.1480 mm, 80.8810 mm): Arc on F.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(118.1480 mm, 60.3950 mm): Reference 'ENC1'
-    @(118.1480 mm, 64.4250 mm): Arc on F.Silkscreen
+    @(213.6290 mm, 136.5352 mm): Reference 'Q2'
+    @(213.8760 mm, 137.1000 mm): Line on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(118.1480 mm, 60.3950 mm): Reference 'ENC1'
-    @(118.1480 mm, 64.3950 mm): Arc on F.Silkscreen
+    @(208.0870 mm, 144.9550 mm): Reference 'U206'
+    @(207.3890 mm, 145.4670 mm): Line on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(278.5500 mm, 93.7650 mm): Reference 'R502'
-    @(277.7500 mm, 94.1650 mm): Circle on F.Silkscreen
+    @(208.0870 mm, 144.9550 mm): Reference 'U206'
+    @(208.1890 mm, 145.7770 mm): Arc on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(277.1600 mm, 94.4250 mm): Line on F.Silkscreen
-    @(278.5500 mm, 93.7650 mm): Reference 'R502'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(278.5500 mm, 93.7650 mm): Reference 'R502'
-    @(277.1600 mm, 93.1050 mm): Line on F.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(278.5500 mm, 93.7650 mm): Reference 'R502'
-    @(279.9400 mm, 93.1050 mm): Line on F.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(279.9400 mm, 94.4250 mm): Line on F.Silkscreen
-    @(278.5500 mm, 93.7650 mm): Reference 'R502'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(214.2760 mm, 138.9500 mm): Reference 'Q2'
-    @(214.2760 mm, 139.8000 mm): Reference 'C219'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(214.2760 mm, 138.9500 mm): Reference 'Q2'
-    @(212.4660 mm, 138.9000 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(208.0870 mm, 146.7050 mm): Reference 'U206'
-    @(208.4990 mm, 146.5770 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(208.0870 mm, 146.7050 mm): Reference 'U206'
-    @(208.1890 mm, 146.5770 mm): Arc on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(208.0870 mm, 146.7050 mm): Reference 'U206'
-    @(207.3890 mm, 146.8870 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(208.0870 mm, 146.7050 mm): Reference 'U206'
-    @(206.8290 mm, 146.8870 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(340.0240 mm, 71.8900 mm): Line on B.Silkscreen
-    @(337.6720 mm, 71.2780 mm): Reference 'RT501'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(356.1100 mm, 68.9850 mm): Reference 'R509'
-    @(355.1500 mm, 68.9850 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(356.1100 mm, 68.9850 mm): Reference 'R509'
-    @(354.2900 mm, 68.9850 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(337.6720 mm, 71.2780 mm): Reference 'RT501'
-    @(337.0940 mm, 71.8600 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(335.1940 mm, 71.9300 mm): Line on B.Silkscreen
-    @(337.6720 mm, 71.2780 mm): Reference 'RT501'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(339.9840 mm, 75.4100 mm): Line on B.Silkscreen
-    @(339.1540 mm, 73.5300 mm): Reference 'C507'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(340.8450 mm, 55.0000 mm): Reference 'J6'
-    @(340.2450 mm, 48.0000 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(358.6700 mm, 62.6950 mm): Reference 'R511'
-    @(359.1350 mm, 63.0800 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(358.6700 mm, 62.6950 mm): Reference 'R511'
-    @(358.1750 mm, 63.0800 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(358.6700 mm, 62.6950 mm): Reference 'R511'
-    @(357.3150 mm, 63.0800 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(357.2800 mm, 58.0350 mm): Line on B.Silkscreen
-    @(355.8200 mm, 59.4950 mm): Reference 'C505'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(357.2800 mm, 59.3550 mm): Line on B.Silkscreen
-    @(355.8200 mm, 59.4950 mm): Reference 'C505'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(357.6450 mm, 60.3450 mm): Reference 'R22'
-    @(355.8200 mm, 59.4950 mm): Reference 'C505'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(351.0700 mm, 57.5350 mm): Line on B.Silkscreen
-    @(352.3950 mm, 58.0950 mm): Reference 'R510'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(351.0700 mm, 57.6850 mm): Arc on B.Silkscreen
-    @(352.3950 mm, 58.0950 mm): Reference 'R510'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(352.3950 mm, 58.0950 mm): Reference 'R510'
-    @(350.9200 mm, 59.0950 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(352.3950 mm, 58.0950 mm): Reference 'R510'
-    @(352.7200 mm, 57.6850 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(352.3950 mm, 58.0950 mm): Reference 'R510'
-    @(352.5700 mm, 57.6850 mm): Arc on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(226.8370 mm, 109.1750 mm): Reference 'U102'
-    @(227.2490 mm, 109.0470 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(226.8370 mm, 109.1750 mm): Reference 'U102'
-    @(226.9390 mm, 109.0470 mm): Arc on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(226.8370 mm, 109.1750 mm): Reference 'U102'
-    @(226.1390 mm, 109.3570 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(226.8370 mm, 109.1750 mm): Reference 'U102'
-    @(225.5790 mm, 109.3570 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(206.2490 mm, 110.5700 mm): Reference 'C121'
-    @(208.1100 mm, 110.9470 mm): Reference 'U106'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(288.2300 mm, 91.3650 mm): Reference 'R520'
-    @(290.2000 mm, 90.8440 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(283.3450 mm, 88.4700 mm): Reference 'C512'
-    @(282.1550 mm, 87.9200 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(283.3450 mm, 88.4700 mm): Reference 'C512'
-    @(282.1550 mm, 87.7700 mm): Arc on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(285.2320 mm, 93.2650 mm): Reference 'U10'
-    @(283.5700 mm, 92.7550 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(276.3000 mm, 97.2350 mm): Line on B.Silkscreen
-    @(275.8060 mm, 96.1770 mm): Reference 'C511'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(275.5500 mm, 95.7150 mm): Circle on B.Silkscreen
-    @(275.8060 mm, 96.1770 mm): Reference 'C511'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(275.8700 mm, 95.9350 mm): Circle on B.Silkscreen
-    @(275.8060 mm, 96.1770 mm): Reference 'C511'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(285.2320 mm, 93.2650 mm): Reference 'U10'
-    @(285.3700 mm, 94.4040 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(276.8200 mm, 91.3150 mm): Reference 'C510'
-    @(277.0300 mm, 90.6850 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(280.0700 mm, 90.6850 mm): Line on B.Silkscreen
-    @(276.8200 mm, 91.3150 mm): Reference 'C510'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(325.5200 mm, 81.9950 mm): Reference 'R515'
-    @(322.0200 mm, 81.9950 mm): Reference 'R516'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(287.2700 mm, 90.8140 mm): Line on B.Silkscreen
-    @(288.2300 mm, 91.3650 mm): Reference 'R520'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(226.7650 mm, 146.7050 mm): Reference 'U202'
-    @(226.0670 mm, 146.8870 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(226.7650 mm, 146.7050 mm): Reference 'U202'
-    @(225.5070 mm, 146.8870 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(227.1770 mm, 146.5770 mm): Line on B.Silkscreen
-    @(226.7650 mm, 146.7050 mm): Reference 'U202'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(226.8670 mm, 146.5770 mm): Arc on B.Silkscreen
-    @(226.7650 mm, 146.7050 mm): Reference 'U202'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(214.2760 mm, 138.9500 mm): Reference 'Q2'
-    @(216.0860 mm, 138.9000 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(233.3500 mm, 154.4530 mm): Value 'LED R' of TP11
-    @(229.8760 mm, 154.8000 mm): Reference 'R226'
+    @(208.0870 mm, 144.9550 mm): Reference 'U206'
+    @(206.8290 mm, 145.4670 mm): Line on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(153.6100 mm, 133.3400 mm): Line on B.Silkscreen
@@ -1056,8 +908,36 @@
     @(152.2800 mm, 134.3470 mm): Circle on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(155.0000 mm, 135.8000 mm): Reference 'R204'
-    @(152.2800 mm, 134.3470 mm): Circle on B.Silkscreen
+    @(163.2010 mm, 111.0030 mm): Circle on B.Silkscreen
+    @(163.2880 mm, 112.3400 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(163.2010 mm, 111.0030 mm): Circle on B.Silkscreen
+    @(164.2480 mm, 112.3400 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(183.7215 mm, 111.7126 mm): Reference 'U101'
+    @(185.0450 mm, 111.5200 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(183.7215 mm, 111.7126 mm): Reference 'U101'
+    @(180.8450 mm, 111.5200 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(169.3780 mm, 103.8000 mm): Reference 'R113'
+    @(172.1280 mm, 103.4000 mm): Value 'SIGIN L' of TP8
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(170.7680 mm, 105.3400 mm): Line on B.Silkscreen
+    @(172.1280 mm, 106.0000 mm): Circle on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(170.7680 mm, 106.6600 mm): Line on B.Silkscreen
+    @(172.1280 mm, 106.0000 mm): Circle on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(169.8080 mm, 105.3400 mm): Line on B.Silkscreen
+    @(172.1280 mm, 106.0000 mm): Circle on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(169.1500 mm, 55.0000 mm): Reference 'J4'
@@ -1068,60 +948,32 @@
     @(147.1500 mm, 55.0000 mm): Reference 'J3'
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
+    @(153.6100 mm, 93.3400 mm): Line on B.Silkscreen
+    @(152.2800 mm, 94.3470 mm): Circle on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(153.6100 mm, 94.6600 mm): Line on B.Silkscreen
+    @(152.2800 mm, 94.3470 mm): Circle on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
     @(124.5500 mm, 48.0000 mm): Line on B.Silkscreen
     @(125.1500 mm, 55.0000 mm): Reference 'J2'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(152.2800 mm, 94.3470 mm): Circle on B.Silkscreen
-    @(155.0000 mm, 95.8000 mm): Reference 'R104'
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(152.2800 mm, 94.3470 mm): Circle on B.Silkscreen
-    @(153.6100 mm, 93.3400 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(152.2800 mm, 94.3470 mm): Circle on B.Silkscreen
-    @(153.6100 mm, 94.6600 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(169.3780 mm, 103.8000 mm): Reference 'R113'
-    @(172.1280 mm, 103.4000 mm): Value 'SIGIN L' of TP8
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(172.1280 mm, 106.0000 mm): Circle on B.Silkscreen
-    @(169.8080 mm, 105.3400 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(172.1280 mm, 106.0000 mm): Circle on B.Silkscreen
-    @(170.7680 mm, 105.3400 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(172.1280 mm, 106.0000 mm): Circle on B.Silkscreen
-    @(170.7680 mm, 106.6600 mm): Line on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(191.1500 mm, 55.0000 mm): Reference 'J5'
     @(190.5500 mm, 48.0000 mm): Line on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(191.7780 mm, 95.3200 mm): Reference 'C111'
-    @(193.4000 mm, 95.8100 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(191.7780 mm, 95.3200 mm): Reference 'C111'
-    @(192.5400 mm, 95.8100 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
-    @(191.7780 mm, 95.3200 mm): Reference 'C111'
-    @(191.5800 mm, 95.8100 mm): Line on B.Silkscreen
-[silk_overlap]: Silkscreen overlap
-    Rule: board setup constraints silk; Severity: warning
     @(187.4880 mm, 130.4000 mm): Line on B.Silkscreen
     @(187.2660 mm, 130.2670 mm): Reference 'C211'
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(187.2660 mm, 130.2670 mm): Reference 'C211'
     @(187.4880 mm, 149.6000 mm): Line on B.Silkscreen
+    @(187.2660 mm, 130.2670 mm): Reference 'C211'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(172.1280 mm, 143.4000 mm): Value 'SIGIN R' of TP9
+    @(169.3780 mm, 143.8000 mm): Reference 'R213'
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(172.1280 mm, 146.0000 mm): Circle on B.Silkscreen
@@ -1136,16 +988,136 @@
     @(170.7680 mm, 146.6600 mm): Line on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(172.1280 mm, 143.4000 mm): Value 'SIGIN R' of TP9
-    @(169.3780 mm, 143.8000 mm): Reference 'R213'
+    @(339.9840 mm, 75.4100 mm): Line on B.Silkscreen
+    @(340.3614 mm, 73.8535 mm): Reference 'C507'
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(163.2880 mm, 112.3400 mm): Line on B.Silkscreen
-    @(163.2010 mm, 111.0030 mm): Circle on B.Silkscreen
+    @(355.2440 mm, 68.4850 mm): Reference 'R509'
+    @(355.1500 mm, 68.9850 mm): Line on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
-    @(164.2480 mm, 112.3400 mm): Line on B.Silkscreen
-    @(163.2010 mm, 111.0030 mm): Circle on B.Silkscreen
+    @(335.9399 mm, 70.2780 mm): Reference 'RT501'
+    @(338.0740 mm, 69.9300 mm): Arc on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(335.9399 mm, 70.2780 mm): Reference 'RT501'
+    @(338.8740 mm, 70.2400 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(335.9399 mm, 70.2780 mm): Reference 'RT501'
+    @(337.7640 mm, 69.1300 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(344.2875 mm, 72.8894 mm): Reference 'U9'
+    @(345.5350 mm, 72.3020 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(358.9288 mm, 63.6609 mm): Reference 'R511'
+    @(359.1350 mm, 63.0800 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(358.9288 mm, 63.6609 mm): Reference 'R511'
+    @(358.1750 mm, 63.0800 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(358.5110 mm, 60.8450 mm): Reference 'R22'
+    @(355.5612 mm, 60.4609 mm): Reference 'C505'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(355.2440 mm, 68.4850 mm): Reference 'R509'
+    @(354.2900 mm, 68.9850 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(340.8450 mm, 55.0000 mm): Reference 'J6'
+    @(340.2450 mm, 48.0000 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(351.7700 mm, 57.0125 mm): Reference 'R510'
+    @(351.0700 mm, 57.5350 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(351.0700 mm, 57.6850 mm): Arc on B.Silkscreen
+    @(351.7700 mm, 57.0125 mm): Reference 'R510'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(325.5200 mm, 81.9950 mm): Reference 'R515'
+    @(322.0200 mm, 81.9950 mm): Reference 'R516'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(290.1600 mm, 94.3640 mm): Line on B.Silkscreen
+    @(290.6116 mm, 92.7400 mm): Reference 'R520'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(277.0300 mm, 95.8450 mm): Line on B.Silkscreen
+    @(276.7719 mm, 96.4358 mm): Reference 'C511'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(285.2320 mm, 93.2650 mm): Reference 'U10'
+    @(285.3700 mm, 94.4040 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(277.0300 mm, 90.6850 mm): Line on B.Silkscreen
+    @(276.7719 mm, 96.4358 mm): Reference 'C511'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(277.0300 mm, 90.6850 mm): Line on B.Silkscreen
+    @(276.8200 mm, 90.3150 mm): Reference 'C510'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(276.8200 mm, 90.3150 mm): Reference 'C510'
+    @(280.0700 mm, 90.6850 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(277.2600 mm, 97.2350 mm): Line on B.Silkscreen
+    @(276.7719 mm, 96.4358 mm): Reference 'C511'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(276.3000 mm, 97.2350 mm): Line on B.Silkscreen
+    @(276.7719 mm, 96.4358 mm): Reference 'C511'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(282.1550 mm, 87.9200 mm): Line on B.Silkscreen
+    @(283.3450 mm, 88.4700 mm): Reference 'C512'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(282.1550 mm, 87.7700 mm): Arc on B.Silkscreen
+    @(283.3450 mm, 88.4700 mm): Reference 'C512'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(285.2320 mm, 93.2650 mm): Reference 'U10'
+    @(283.5700 mm, 92.7550 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(226.8370 mm, 107.4250 mm): Reference 'U102'
+    @(226.9390 mm, 108.2470 mm): Arc on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(211.3450 mm, 112.7450 mm): Reference 'D107'
+    @(207.7218 mm, 112.3959 mm): Reference 'U106'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(226.8370 mm, 107.4250 mm): Reference 'U102'
+    @(226.1390 mm, 107.9370 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(226.8370 mm, 107.4250 mm): Reference 'U102'
+    @(225.5790 mm, 107.9370 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(226.7650 mm, 144.9550 mm): Reference 'U202'
+    @(226.0670 mm, 145.4670 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(226.7650 mm, 144.9550 mm): Reference 'U202'
+    @(226.8670 mm, 145.7770 mm): Arc on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(226.7650 mm, 144.9550 mm): Reference 'U202'
+    @(225.5070 mm, 145.4670 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(233.3500 mm, 154.4530 mm): Value 'LED R' of TP11
+    @(229.8760 mm, 154.8000 mm): Reference 'R226'
 
 ** Found 0 unconnected pads **
 

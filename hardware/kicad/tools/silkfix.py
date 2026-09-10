@@ -46,17 +46,25 @@ def xf(ax, ay, ang):
     ca, sa = math.cos(math.radians(ang)), math.sin(math.radians(ang))
     return lambda lx, ly: (ax + lx * ca + ly * sa, ay - lx * sa + ly * ca)
 
-def textbox(s, cx, cy, sx, sy, th):
-    w = len(s) * sx * 0.75 + th
+def textbox(s, cx, cy, sx, sy, th, ang=0.0):
+    """Conservative extent of a stroke-font string.
+
+    0.75 * size per character was too narrow -- KiCad's glyph cell is about a
+    full size.x wide including inter-character spacing, and at 0.75 the tool
+    declared pairs clear that DRC then flagged. Rotation is honoured because a
+    designator turned 90 degrees is tall, not wide."""
+    w = len(s) * sx + th
     h = sy + th
+    if abs((ang % 180) - 90) < 45:
+        w, h = h, w
     return (cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2)
 
 def gap(A, B):
     return math.hypot(max(A[0]-B[2], B[0]-A[2], 0.0), max(A[1]-B[3], B[1]-A[3], 0.0))
 
 def parse(text):
-    """Pads (mask apertures) and reference texts, in board coordinates."""
-    pads, refs = [], []
+    """Pads, silk graphics, visible value text, and reference texts."""
+    pads, refs, graphics, fixedtext = [], [], [], []
     for st, en, blk in blocks(text):
         a = re.search(r'\(at ([-\d.]+) ([-\d.]+)( [-\d.]+)?\)', blk)
         L = re.match(r'\(footprint "[^"]*" \(layer "([^"]+)"', blk)
@@ -96,6 +104,39 @@ def parse(text):
             xs = [c[0] for c in cs]; ys = [c[1] for c in cs]
             th_ = p.group(1).endswith("thru_hole")
             pads.append(((min(xs), min(ys), max(xs), max(ys)), side, th_))
+        for gm in re.finditer(r'\(fp_(line|circle|arc) \(start ([-\d.]+) ([-\d.]+)\)'
+                              r'(?:.|\n){0,120}?\(layer "([FB])\.SilkS"\)', blk):
+            pass
+        for gm in re.finditer(r'\(fp_line \(start ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\)'
+                              r'(?:.|\n){0,160}?\(layer "([FB])\.SilkS"\)', blk):
+            g = list(map(float, gm.groups()[:4]))
+            P = [place(g[0], g[1]), place(g[2], g[3])]
+            xs_ = [q[0] for q in P]; ys_ = [q[1] for q in P]
+            graphics.append(((min(xs_)-0.08, min(ys_)-0.08, max(xs_)+0.08, max(ys_)+0.08),
+                             gm.group(5) + ".SilkS"))
+        for gm in re.finditer(r'\(fp_circle \(center ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\)'
+                              r'(?:.|\n){0,160}?\(layer "([FB])\.SilkS"\)', blk):
+            g = list(map(float, gm.groups()[:4]))
+            rr = math.hypot(g[2]-g[0], g[3]-g[1])
+            P = [place(g[0]-rr, g[1]-rr), place(g[0]+rr, g[1]+rr),
+                 place(g[0]-rr, g[1]+rr), place(g[0]+rr, g[1]-rr)]
+            xs_ = [q[0] for q in P]; ys_ = [q[1] for q in P]
+            graphics.append(((min(xs_), min(ys_), max(xs_), max(ys_)), gm.group(5) + ".SilkS"))
+        for gm in re.finditer(r'\(fp_arc \(start ([-\d.]+) ([-\d.]+)\) \(mid ([-\d.]+) ([-\d.]+)\)'
+                              r' \(end ([-\d.]+) ([-\d.]+)\)(?:.|\n){0,160}?\(layer "([FB])\.SilkS"\)', blk):
+            g = list(map(float, gm.groups()[:6]))
+            P = [place(g[0], g[1]), place(g[2], g[3]), place(g[4], g[5])]
+            xs_ = [q[0] for q in P]; ys_ = [q[1] for q in P]
+            graphics.append(((min(xs_)-0.08, min(ys_)-0.08, max(xs_)+0.08, max(ys_)+0.08),
+                             gm.group(7) + ".SilkS"))
+        vm = re.search(r'\(fp_text value "([^"]+)" \(at ([-\d.]+) ([-\d.]+)( [-\d.]+)?\)'
+                       r' \(layer "([FB]\.SilkS)"\)(?! hide)\s*\n?\s*\(effects \(font'
+                       r' \(size ([\d.]+) ([\d.]+)\) \(thickness ([\d.]+)\)\)', blk)
+        if vm:
+            vx, vy = place(float(vm.group(2)), float(vm.group(3)))
+            fixedtext.append((textbox(vm.group(1), vx, vy, float(vm.group(6)),
+                                      float(vm.group(7)), float(vm.group(8)),
+                                      float(vm.group(4) or 0)), vm.group(5)))
         tm = re.search(r'\(fp_text reference "([^"]+)" \(at ([-\d.]+) ([-\d.]+)( [-\d.]+)?\)'
                        r' \(layer "([^"]+)"\)\s*\n?\s*\(effects \(font \(size ([\d.]+) ([\d.]+)\)'
                        r' \(thickness ([\d.]+)\)\)', blk)
@@ -103,16 +144,17 @@ def parse(text):
             refs.append(dict(ref=ref, st=st, en=en, blk=blk, side=side, place=place,
                              lx=float(tm.group(2)), ly=float(tm.group(3)),
                              sx=float(tm.group(6)), sy=float(tm.group(7)),
-                             th=float(tm.group(8)), silk=tm.group(5)))
-    return pads, refs
+                             th=float(tm.group(8)), silk=tm.group(5),
+                             tang=float(tm.group(4) or 0)))
+    return pads, refs, graphics, fixedtext
 
 def main():
     text = open(PCB).read()
-    pads, refs = parse(text)
+    pads, refs, graphics, fixedtext = parse(text)
     boxes = {}
     for r in refs:
         cx, cy = r["place"](r["lx"], r["ly"])
-        boxes[r["ref"]] = (textbox(r["ref"], cx, cy, r["sx"], r["sy"], r["th"]), r["silk"])
+        boxes[r["ref"]] = (textbox(r["ref"], cx, cy, r["sx"], r["sy"], r["th"], r["tang"]), r["silk"])
 
     def bad(ref, box, silk, skip_self=True):
         side = "F.Cu" if silk.startswith("F") else "B.Cu"
@@ -126,12 +168,18 @@ def main():
                 continue
             if gap(box, obox) < CLEAR:
                 return True
+        for obox, osilk in fixedtext:
+            if osilk == silk and gap(box, obox) < CLEAR:
+                return True
+        for gbox, gsilk in graphics:
+            if gsilk == silk and gap(box, gbox) < CLEAR:
+                return True
         return False
 
     moved, stuck, fine = [], [], 0
     for r in refs:
         cx, cy = r["place"](r["lx"], r["ly"])
-        box = textbox(r["ref"], cx, cy, r["sx"], r["sy"], r["th"])
+        box = textbox(r["ref"], cx, cy, r["sx"], r["sy"], r["th"], r["tang"])
         if not bad(r["ref"], box, r["silk"]):
             fine += 1
             continue
@@ -140,7 +188,7 @@ def main():
             for adeg in range(0, 360, 15):
                 nx = cx + d * math.cos(math.radians(adeg))
                 ny = cy + d * math.sin(math.radians(adeg))
-                nb = textbox(r["ref"], nx, ny, r["sx"], r["sy"], r["th"])
+                nb = textbox(r["ref"], nx, ny, r["sx"], r["sy"], r["th"], r["tang"])
                 if not bad(r["ref"], nb, r["silk"]):
                     best = (nx, ny, d, nb); break
             if best: break
