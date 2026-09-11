@@ -406,6 +406,51 @@ card can be driven at the same time without arbitration.
   loads over the module's own micro-USB, so nothing is lost today; the door is
   simply shut.
 
+#### Demonstrated in libDaisy, not just non-conflicting on paper
+
+Pin assignments that do not collide are not the same as a combination known to
+work. The evidence is in the vendor library, in the tree at `fw-daisy/libDaisy`:
+
+`src/per/sdmmc.cpp` guards the three extra data pins behind the width check, so
+in 1-bit mode the SD driver never claims PC11:
+
+```c
+GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_8;
+if(sdHandle->Init.BusWide == SDMMC_BUS_WIDE_4B)
+    GPIO_InitStruct.Pin |= GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11;
+```
+
+`src/dev/oled_ssd130x.h` then defaults its soft-SPI transport to **the same pins
+this board uses**:
+
+```c
+pin_config.sclk = Pin(PORTD, 3);   /**< D10 - SPI2 SCK  */
+pin_config.mosi = Pin(PORTC, 3);   /**< D9  - SPI2 MOSI */
+pin_config.dc   = Pin(PORTC, 11);  //D2
+```
+
+`DC` defaulting to D2 — which *is* `SDMMC1_D3` — is the vendor themselves
+assuming a 1-bit card alongside the display. The hardware-SPI transport
+separately defaults `reset` to `Pin(PORTB, 15)`, which is A9. Every borrowed pin
+on this board is a pin libDaisy borrows the same way.
+
+**FIRMWARE FOOTGUN — the library default breaks this board.**
+`SdmmcHandler::Config::Defaults()` sets `width = BusWidth::BITS_4`. Calling
+`Defaults()` and not overriding it will reconfigure PC11 to SDMMC alternate
+function and kill the display's D/C line — a dead OLED with no hardware fault to
+find. Firmware must carry:
+
+```c
+SdmmcHandler::Config sd_cfg;
+sd_cfg.Defaults();
+sd_cfg.width = SdmmcHandler::BusWidth::BITS_1;   // REQUIRED: D2 is OLED_DC
+```
+
+**One gap to close in firmware:** the soft-SPI transport has no CS pin at all —
+only sclk, mosi, dc, reset. This board wires `OLED_CS` to D1, so firmware must
+drive D1 low itself, or use the hardware-SPI transport reconfigured from its
+SPI_1/PORTG defaults onto SPI2.
+
 **The SD wiring is textbook 1-bit SDIO.** `SD_CMD` and `SD_D0` carry 47k pullups
 to `P3V3_DAISY` (`R506`, `R507`); `SD_DAT3` carries a 47k pullup (`R508`) and is
 deliberately **not** routed to the Daisy, which is what holds the card out of SPI
