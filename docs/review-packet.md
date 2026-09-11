@@ -41,9 +41,9 @@ fallback if the question is ever revisited.
 
 | Block | Parts | Design intent | Source schematic | Datasheets |
 |---|---|---|---|---|
-| BBD | V3205SD ×2, CD4046B ×2, TL072 ×6, 1N4148W ×10 | `bbd-mki.md` (814 lines, full net inventory) | `BBD_MANUAL_250228.pdf`, in repo | CD4046B, TL072 ✓ · **V3205SD missing** |
-| LPG | TL084 ×2, TL074 ×2, VTL5C3 ×4, 3V9 zener ×2 | `lpg-bergman.md` | Bergman drawing in `datasheets/` ✓ | TL074, TL084 ✓ · **VTL5C3 missing** |
-| PSU / USB-C | DKM10E-12, AMS1117 ×3, MMBFJ113 ×2, TYPE-C-31-M-12 | `power-usbc-dkm.md` | `reference/V3.0.kicad_sch` ✓ | DKM10 ✓ · **AMS1117, MMBFJ113 missing** |
+| BBD | V3205SD ×2, CD4046B ×2, TL072 ×6, 1N4148W ×10 | `bbd-mki.md` (814 lines, full net inventory) | `BBD_MANUAL_250228.pdf`, in repo | CD4046B, TL072 ✓ · V3205SD pinout from the manual |
+| LPG | TL084 ×2, TL074 ×2, VTL5C3 ×4, 3V9 zener ×2 | `lpg-bergman.md` | Bergman drawing in `datasheets/` ✓ | TL074, TL084, VTL5C3 ✓ |
+| PSU / USB-C | DKM10E-12, AMS1117 ×3, MMBFJ113 ×2, TYPE-C-31-M-12 | `power-usbc-dkm.md` | `reference/V3.0.kicad_sch` ✓ | DKM10, MMBFJ113 ✓ · **AMS1117 missing** |
 | Encoder / button IO | MCP23017 ×2 | `pin-allocation.md` | n/a | MCP23017 ✓ |
 | Headphone / EXT preamp | OPA1688 ×2 | `design-state.md` | n/a | OPA1688 ✓ |
 | Daisy Patch SM | U1 | `design-state.md` | n/a | Patch SM v1.0.5 ✓ + pinout extract |
@@ -68,6 +68,7 @@ manual download.
 | LPG vs Bergman's drawing, **both channels** | **clean** — channels structurally identical; `R12`/`R16` absent by decision, BOTH+VCF only | node-by-node diff, 2026-09-11 |
 | BBD vs the manual's own BOM, **both channels** | **clean** — all 27 R and 22 C accounted for, channels symmetric, the three crossings unshorted | text extracted from `BBD_MANUAL_250228.pdf` |
 | BBD vs the **schematic drawing** | **clean** — every value and node checked; the one mismatch (`R120` 62k vs a drawn 56K) is the manual contradicting its own parts list, worth 0.75% of VGG | page-2 bitmap extracted and read at full res |
+| V3205SD, VTL5C3, MMBFJ113 pinouts | **all three clean** — see items 2-4 below | manual p25, Xvive package drawing, onsemi Rev 5 drawing |
 | Polarity, all 14 polarised parts | **clean** — D103–D106 clamp pairs, zener shunts, D1/D2 bipolar indicator | inspection vs netmap |
 | Board ↔ schematic parity | 942/942, 0 unintended | `netcheck.py`, `boardcheck.py` |
 
@@ -81,11 +82,29 @@ manual download.
    mechanical drawing uses an embedded subset font whose dimension text will not
    extract. Check against the drawing by eye. Through-hole and hand-soldered, so
    a physical part can settle it.
-2. **V3205SD pinout** (U101/U201) — the BBD itself, the core of the instrument.
-   Datasheet not obtainable by script.
-3. **VTL5C3 pinout** (VT301/VT302/VT401/VT402) — 4-pin vactrol, LED pair vs
-   photoresistor pair orientation.
-4. **MMBFJ113 pinout** (Q1/Q2) — SOT-23 JFET, gate/drain/source assignment.
+2. ~~**V3205SD pinout**~~ — **done 2026-09-11.** The manual states it in words on
+   p25: *"5 V at pin 5 and ground at pin 1… VGG at pin 8 via a 4k7/56k divider…
+   clock 1 into pin 6, clock 2 into pin 2, and our scaled and biased input into
+   pin 7"*. All seven match `netmap.json`. The drawing leaves pin 3's stub
+   unconnected, which ours does too — the p25 line about "pins 3 and 4" is the
+   breadboard stage, the module uses one output. The `DIP-8_SPECIAL` footprint
+   is confirmed as a DIP-14 body with the middle three positions omitted per
+   side: pads sit on a 0.300" row pitch at 0.100" spacing with a 0.400" gap.
+3. ~~**VTL5C3 pinout**~~ — **done 2026-09-11**, against the Xvive/PerkinElmer
+   package drawing. Pins **1/2 are the LED** and **3/4 the photocell**, matching
+   the footprint's two-leads-per-end geometry, and the drawing's "cathode
+   identifier" plus the body's own `+ LED −` marking give **1 = anode,
+   2 = cathode**. Our LED chain is forward biased: drive → `VT301`.1→.2 →
+   `VT302`.1→.2 → GND. Note there is no manufacturer pin *numbering* on an axial
+   part — orientation is by the body marking at assembly, so this is a
+   soldering-time risk, not a netlist one.
+4. ~~**MMBFJ113 pinout**~~ — **done 2026-09-11**, against the onsemi datasheet
+   (Rev 5, 2023) package drawing. On both SOT-23 cases the **gate is the lone
+   pin on its side, pin 3**, with D and S as the pair — which is what our symbol
+   says (`1=D, 2=S, 3=G`) and how `Q1`/`Q2` are wired. The datasheet also states
+   **"Source & Drain are Interchangeable"**, so the D/S order across pins 1 and 2
+   is electrically immaterial. A web search had claimed pin 2 was the gate; the
+   drawing disproves it.
 5. **AMS1117** (U5/U6) — U8 is now verified by having been fixed; U5/U6 carry the
    same symbol and pass the semantic check, but confirm against the datasheet.
 6. ~~**The LPG against its source**~~ — **done 2026-09-11.** Diffed node by node
