@@ -177,6 +177,32 @@ for loop stability, and 10uF ceramic is what `U5`/`U6` already use.
 at bring-up. The point of the swap is that the number stopped being load-bearing,
 not that it stopped mattering.
 
+### Checked against the source schematic — 2026-09-10
+
+The source finally arrived: `reference/V3.0.kicad_sch`, "Mini - USB-C power
+supply" rev 3, Nanas Sound OÜ, 2026-01-15. Its netlist was extracted with
+[`schnet.py`](../hardware/kicad/tools/schnet.py) (the file is KiCad 10 format,
+which KiCad 7's CLI refuses, and it carries connectivity as bare wires and
+junctions with almost no labels) and diffed against `netmap.json`.
+
+**U7 matches the reference pin for pin**, and independently matches the Mean Well
+SKM10/DKM10 spec: `1=+Vin 2=-Vin 3=+Vout 4=Common 5=-Vout 6=R.C.`, with R.C.
+left open in both, which the datasheet confirms means ON. The 5.1k CC pulldowns
+and the 2A fuse match too. Our input caps sit *after* the fuse where the
+reference puts them before it; that feeds the converter directly and is the
+better of the two.
+
+One genuine omission:
+
+- **No transient suppressor on VBUS.** The reference carries `D1`, an SMBJ5.0A
+  5V TVS, cathode to +5V and anode to GND, right at the connector. Our `/VBUS`
+  holds only `C28` (10nF), `F1` and the two `J11` VBUS pads. `F1` is an
+  ASMD1812-200 resettable polyfuse — it limits *current* and does nothing about a
+  *voltage* transient, and the DKM10E-12's E-suffix input tops out at 9V. A
+  hot-plug inductive kick or a rough charger above that kills the converter.
+  This is an externally exposed port on a board intended for sale. Adding it
+  costs one SOD/SMB part, a `netmap.json` entry, a placement and a local reroute.
+
 ### Open, and not yet checked
 
 - **U7 is 25.4mm square and about 10mm tall**, mounted on the back. That is a

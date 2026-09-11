@@ -23,14 +23,19 @@ perfectly; both were wrong together.
 
 This document is the index for a second pass over that gap.
 
-## Licensing — read before compiling any source schematic
+## Licensing — decided 2026-09-10, do not reopen
 
 The Bergman LPG drawing carries **"not for commercial use!"** in its own
-bottom-right corner. `lpg-bergman.md` records the distinction: the design is
-free and he invites builds, which is true of DIY, and that is *not* permission
-for a repo that plans JLC assembly and EU sales. **Do not pull his drawing in
-as the reference of record.** If this is ever sold, work from the
-modularsynthesis.com Buchla 292 source Bergman says he redrew from.
+bottom-right corner, and `lpg-bergman.md` records that "he invites builds"
+covers DIY and is not the same permission as a repo planning JLC assembly and
+EU sales.
+
+**Dylan has assessed this and ruled the LPG block his own design**, on the
+grounds that it is adapted to stereo and does not use the full both-mode
+circuit. His drawing is therefore kept in `reference/` as a working source.
+This is a settled call — a reviewer should not re-raise it. The
+modularsynthesis.com Buchla 292 source Bergman redrew from remains the
+fallback if the question is ever revisited.
 
 ## Coverage
 
