@@ -187,6 +187,61 @@ discontinued the line; the Xvive reissue reportedly has a brighter LED and longe
 release. `design-state` §6 also carries an **unverified RoHS/cadmium** question.
 No symbol or footprint in `lib/` yet.
 
+## Checked against the drawing — 2026-09-11, both channels
+
+`datasheets/` now holds Bergman's schematic image. `netmap.json` was diffed
+against it node by node, L and R. **The two channels are structurally identical**
+— every node below has the same membership on both sides, so nothing is a
+one-channel typo.
+
+Matching, and including the three things this drawing is easy to get wrong:
+
+| node | agrees |
+|---|---|
+| input | `C6` → `R9`‖`R10`‖`U1-A` pin 3 |
+| `U1-A` | `R11` 15K feedback |
+| vactrols | LEDs in series off `R6`; LDRs in series in the audio path |
+| LDR mid-node | `C7` 220pF to GND |
+| **`C8` 4.7nF** | mid-node → switch → **`U1-D` output**, not to ground — the resonance injection |
+| LDR2 out | `C9` 1nF and `R13` 4M7 to GND, into `U1-C` pin 10 **(+)** |
+| `U1-C` | `R14` unity buffer, `R15` to output, and it drives `U1-D` pin 12 |
+| `U1-D` | `C10` 22pF, RESONANCE, `R18` |
+| **LED drive** | `Tp1`→`R7` to the LED node, `R17`+`D1` there, and the loop closes **after `R6`** |
+| **offset/CV sum** | `R5` 100K in parallel with the `C5`+`R4` *series* pair |
+| CV chain | `U2-A` inverter, `RV3` attenuverter, `U2-D`→`U2-C` cascade |
+| `U2-B` | unused, pin 5 to GND, pins 6/7 tied — as drawn |
+
+Zero dangling nets anywhere in the block.
+
+Deviations that are deliberate and recorded above: CV1 and `R27` dropped, `Tp2`
+and the DEEP switch not fitted, ±12V rails instead of ±15V.
+
+### One real gap: VCA mode is not implemented
+
+**`R12` and `R16` are on the drawing and on neither channel of this board.**
+
+- `R12` 15K, `U1-A` pin 2 → [S1/S2] → GND. Absent, so `U1-A` is permanently a
+  unity follower. Bergman gets **gain 2** from it with the contact made.
+- `R16` 10K, LDR2 output → [S3/S4] → GND. Absent, so nothing ever pins the
+  response flat.
+
+`SW1` compounds it. It is a DPDT using pins 1/2 and 4/5 only, so each pole is
+ON-OFF rather than ON-ON, and the one thing it switches is `C8`:
+
+| `SW1` | result | Bergman equivalent |
+|---|---|---|
+| closed | `C8` → `U1-D` out | **VCF** — resonant 2-pole |
+| open | `C8` floating | **BOTH** — bare LDR + `C7` |
+
+So the board offers two of Bergman's three modes. The missing one is VCA, and
+BOTH — the mode that survives — is the actual Buchla lowpass-gate character, so
+this degrades gracefully rather than breaking.
+
+This is half-recorded: *Mode switch* above already says a DPDT "cannot do it"
+and proposes `DG419DY-T1-E3`, but nothing said `R12` and `R16` had been dropped
+with it. Restoring VCA needs the quad analog switch **and** four resistors
+(`R312`/`R412`, `R316`/`R416`), not just the switch.
+
 ## Interface this has to present
 
 | net | direction | currently |
