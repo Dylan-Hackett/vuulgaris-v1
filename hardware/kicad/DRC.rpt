@@ -1,10 +1,7 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/kicad/vuulgaris.kicad_pcb **
-** Created on 2026-09-10 16:04:39 **
+** Created on 2026-09-10 18:14:13 **
 
-** Found 276 DRC violations **
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(362.8700 mm, 61.6950 mm): Via [/CC2] on F.Cu - B.Cu
+** Found 275 DRC violations **
 [clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2501 mm)
     Rule: netclass 'Power_5V_IN'; Severity: error
     @(376.4701 mm, 57.2300 mm): Track [/GND] on F.Cu, length 1.3500 mm
