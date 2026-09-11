@@ -30,6 +30,27 @@ fetch "https://www.ti.com/lit/pdf/slaa685"      SLAA685-Code-Protection.pdf
 fetch "https://www.ti.com/lit/pdf/slaa842"      SLAA842-CapTIvate-Selection.pdf
 fetch "https://daisy.nyc3.cdn.digitaloceanspaces.com/products/patch-sm/ES_Patch_SM_datasheet_v1.0.5.pdf" Electrosmith-Patch-SM-v1.0.5.pdf
 
+# ---- analog / power / IO, added 2026-09-10 -------------------------------
+# Every one of these backs a block that netmap.json asserts a pinout for and
+# nothing verifies. U8 was wired to the 78L05's pinout while carrying an
+# AMS1117; that is the failure these exist to catch.
+fetch "https://www.ti.com/lit/gpn/cd4046b"       TI-CD4046B-datasheet.pdf
+fetch "https://www.ti.com/lit/gpn/tl072"         TI-TL072-datasheet.pdf
+fetch "https://www.ti.com/lit/gpn/tl074"         TI-TL074-datasheet.pdf
+fetch "https://www.ti.com/lit/gpn/tl084"         TI-TL084-datasheet.pdf
+fetch "https://www.ti.com/lit/gpn/opa1688"       TI-OPA1688-datasheet.pdf
+fetch "https://ww1.microchip.com/downloads/en/devicedoc/20001952c.pdf" Microchip-MCP23017-datasheet.pdf
+fetch "http://www.meanwelljapan.com/upload/pdf/DKM10/SKM10,DKM10-spec.pdf" MeanWell-SKM10-DKM10-spec.pdf
+
 echo
 echo "TI sometimes serves an interstitial instead of the PDF. If a fetch says NOT A PDF,"
 echo "open the URL in a browser once, then re-run."
+
+# ---- will not fetch: these vendors 403 every scripted request ------------
+# Download by hand into this directory, keeping these filenames:
+#   AMS1117-datasheet.pdf            http://www.advanced-monolithic.com/pdf/ds1117.pdf
+#   CoolAudio-V3205SD-datasheet.pdf  https://coolaudio.com  (BBD, U101/U201 -- the core part)
+#   onsemi-MMBFJ113-datasheet.pdf    https://www.onsemi.com  (Q1/Q2 JFET)
+#   Excelitas-VTL5C3-datasheet.pdf   https://www.excelitas.com  (LPG vactrols)
+echo
+echo "Four datasheets cannot be fetched -- see the comment at the end of this script."
