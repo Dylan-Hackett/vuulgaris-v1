@@ -555,14 +555,48 @@ agrees, on both channels:
 | `U101.2` vs the `C113`→`U106A` line | `BBD_CLKN_L` / `BBD_AC_L` | `BBD_CLKN_R` / `BBD_AC_R` |
 | dry bus vs the 4046 control node | `BBD_DRY_L` / `BBD_VCOCV_L` | `BBD_DRY_R` / `BBD_VCOCV_R` |
 
-### What this does not prove
+### Read off the schematic itself
 
-The part counts reconcile and the channels are symmetric, but **the manual's
-schematic values sit in page images, not in its text layer**, so the
-node-by-node topology below was not re-derived from the PDF — it is still the
-2026-09-07 reading of the drawing. The net inventory in the next section is
-*generated from* `netmap.json` and therefore cannot contradict it; it is a
-convenience, not evidence.
+The schematic is a bitmap on page 2 of the PDF (5518x3452 was a figure; the
+circuit is the 2560x1440 image, extracted and read at full resolution). Values
+and topology checked directly against the drawing, not against this
+transcription:
+
+| on the drawing | ours | |
+|---|---|---|
+| input op-amp, output tied to `−` | `U102.1`=`U102.2`, `U102.3` = input | unity follower ✓ |
+| summing node: 51K from IN GAIN, 47K from −12V, 82K from FEEDBACK, 10K feedback | `R114` 51k, `R113` 47k from `NEG12V`, `R112` 82k, `R118` 10k | ✓ all four |
+| V3205 pin 1 → GND | `U101.1` = `GND` | ✓ |
+| V3205 pin 8 ← 4K7 to 5V | `R119` 4.7k from `P5V_BBD` | ✓ |
+| **V3205 pin 8 ← 56K to GND** | **`R120` 62k** | **see below** |
+| V3205 out: 100K to GND, 1µ, 100K to GND, unity buffer | `R122` 100k, `C113` 1µF, `R124` 100k, `U106A` | ✓ |
+| J113: 100K gate bootstrap, diode anode on gate, 15n hold | `R128` 100k, `D107` anode on `BBD_SH_G_L`, `C119` | ✓ |
+| S&H amp 1 + 100K/22K = 5.55 | `R130` 100k, `R129` 22k | ✓ |
+| 1µ out, DRY/WET 100K, unity buffer | `C120`, `RV6`, `U103B` pins 6/7 tied | ✓ |
+| 4046 pin 16 → 5V, 2M2 on pin 12, 39K on pin 11 | `U104.16`=`P5V_BBD`, `R121` 2.2M on `VCOR2`, `R123` 39k on `VCOR1` | ✓ |
+| trigger: 220p + 6K2 differentiator, 100K/10K off 12V | `C116` 220pF, `R127` 6.2k, `R125` 100k / `R126` 10k = 1.09V | ✓ |
+| 1n / 220p behind the FLANGE/DELAY switch | `C114` 1nF fitted, 220p option not | switch not fitted |
+
+**One discrepancy, and it is the manual's, not ours.** The drawing labels the
+V3205 `VGG` bottom-leg resistor **56K**. The manual's own parts list contains no
+56k at all — it lists **62k ×1**, and nothing else in the circuit uses 62k. The
+two pages of the manual disagree with each other.
+
+We built the parts list, which is what actually ships in the kit. The cost of
+being wrong either way:
+
+```
+56K : VGG = 5V x 56/60.7 = 4.6129 V
+62k : VGG = 5V x 62/66.7 = 4.6477 V     <- ours
+                difference 34.8 mV, 0.75%
+```
+
+On a BBD gate bias with wide tolerance that is immaterial. Left as 62k; noted
+here so the next reader does not "fix" it toward the drawing without knowing the
+drawing contradicts its own BOM.
+
+The net inventory in the next section is *generated from* `netmap.json` and
+therefore cannot contradict it — it is a convenience, not evidence.
 
 ## Bill of materials cross-check
 
