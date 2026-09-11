@@ -8,7 +8,7 @@ Comment,Designator,Footprint,LCSC Part #,Qty,Note
 12x12 tactile,"SW4,SW5,SW6,SW7,SW8,SW9",KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5,C54573007,6,
 150k,"R303,R403",R0603,C22807,2,
 15k,"R311,R411",R0603,C22809,2,
-15nF C0G 0805,"C119,C219",C0805,,2,EXTENDED: 15nF C0G 0805 50V. This is the BBD sample-and-hold cap; X7R dielectric absorption would cause droop between samples
+15nF C0G 0805,"C119,C219",C0805,,2,"NO JLC STOCK -- hand solder or pre-order. Checked 2026-09-11: JLC has no 15nF C0G/NP0 in stock in ANY SMD package. The only in-stock SMD is a 1206 with 2 pieces; the real 0805 parts (TDK C2178246 / C2178272) are 0-stock pre-order. This is the BBD sample-and-hold cap -- X7R dielectric absorption would droop between samples, so the dielectric is not negotiable. Buy C0G elsewhere and hand-fit, or pre-order and accept the lead time."
 1M,"R501,R502",R0603,C22935,2,
 1N4148W,"D103,D104,D105,D106,D107,D203,D204,D205,D206,D207",SOD-123_L2.8-W1.8-LS3.7-RD,C81598,10,
 1k,"R107,R207,R315,R415,R503,R504,R514,R516,R517,R518",R0603,C21190,10,
@@ -21,17 +21,17 @@ Comment,Designator,Footprint,LCSC Part #,Qty,Note
 22k,"R110,R111,R129,R210,R211,R229",R0603,C31850,6,
 22pF C0G,"C310,C410",C0603,C1653,2,
 2k2,"R521,R522",R0603,C4190,2,
-2nF C0G,"C305,C405",C0603,,2,"EXTENDED: 2.2nF C0G 0603 50V. 2nF is not E12; with R4 470k that moves the CV time constant 940us -> 1.03ms, inaudible"
+2nF C0G,"C305,C405",C0603,C296055,2,"EXTENDED: 2.2nF C0G 0603 50V. 2nF is not E12; with R4 470k that moves the CV time constant 940us -> 1.03ms, inaudible"
 33k,"R307,R407",R0603,C4216,2,
 39k,"R123,R223",R0603,C23153,2,
 3V9 zener,"D301,D401",SOD-123_L2.7-W1.6-LS3.7-RD-1,C213113,2,
 4.7k,"R119,R219",R0603,C23162,2,
-4.7nF C0G,"C308,C408",C0603,,2,EXTENDED: 4.7nF C0G 0603 50V. Sets the VCF corner -- do not accept X7R
+4.7nF C0G,"C308,C408",C0603,C576818,2,EXTENDED: 4.7nF C0G 0603 50V. Sets the VCF corner -- do not accept X7R
 470R,"R131,R132,R231,R232,R306,R406",R0603,C23179,6,
 470k,"R304,R404",R0603,C23178,2,
 47k,"R113,R213,R506,R507,R508",R0603,C25819,5,
 4M7,"R313,R413",R0603,C23163,2,
-4R7,"R511,R512",R0603,,2,EXTENDED: 4.7ohm 0603 1% -- Basic has nothing under 10ohm but 0R. Sets U9's output impedance; 0R would work but loses cable isolation
+4R7,"R511,R512",R0603,C23164,2,EXTENDED: 4.7ohm 0603 1% -- Basic has nothing under 10ohm but 0R. Sets U9's output impedance; 0R would work but loses cable isolation
 51k,"R114,R214",R0603,C23196,2,
 6.2k,"R127,R227",R0603,C4260,2,
 62k,"R120,R220",R0603,C23221,2,
@@ -60,7 +60,7 @@ RT0603BRD072K2L,"R24,R25",R0603,C861295,2,
 RT0603BRD075K1L,"R22,R23",R0603,C122969,2,
 RVT1E470M0505_C2977553,"C32,C33",CAP-SMD_BD5.0-L5.3-W5.3-LS6.3-FD,C2977553,2,
 RVT1H220M0605,"C29,C36,C37",CAP-SMD_BD6.3-L6.6-W6.6-FD,C72505,3,
-SMAJ6.0A,D3,SMA_L4.3-W2.6-LS5.2-RD,,1,"PICK IN JLC: 6.0V TVS, SMA/DO-214AC, uni-directional. Standoff 6.0V (must clear USB VBUS 5.25V max), clamping 10.3V (must stay under the DKM10E-12's 12V/100ms surge limit). Do NOT substitute 5.0A -- standoff below VBUS max, leaks. Do NOT substitute 6.5A -- clamps 11.2V."
+SMAJ6.0A,D3,SMA_L4.3-W2.6-LS5.2-RD,C223993,1,
 SW_DPDT_FLAT,"SW1,SW2",SW-TH_DW3_DPDT_2MD1T1B1M2QES,,2,no LCSC source -- hand solder
 TFPUSH,J1,TF-SMD_TF-PUSH,C393941,1,
 TL072_FLAT,"U102,U103,U106,U202,U203,U206",SOIC-8_L4.9-W3.9-P1.27-LS6.1-BL,C67473,6,
