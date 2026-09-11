@@ -71,9 +71,14 @@ USB-C  A4/B9,B4/A9 ── DKM5V ──┬── C105 10nF ── GND
 
 ## Things worth noticing about this design
 
-1. **No reverse-polarity diode and no TVS.** Correct — a USB-C receptacle cannot
-   be reverse-polarised, so the Schottky the barrel design needs is not needed
-   here. That also removes its 0.4V drop.
+1. **No reverse-polarity diode and no TVS.** Half right, and the half that was
+   wrong stood here until 2026-09-10. A USB-C receptacle cannot be
+   reverse-polarised, so the Schottky the barrel design needs is genuinely not
+   needed, and its 0.4V drop goes with it. But that argument says nothing about a
+   TVS, which answers a different question — transients, not polarity — and the
+   two got conflated into one bullet and waved through together. The EasyEDA board
+   this section describes has no TVS; the later `reference/V3.0.kicad_sch` does.
+   One is now fitted as `D3`; see *Checked against the source schematic* below.
 2. **LED indicators double as a minimum load.** `(12 - 2) / 2k2` is about 4.5mA
    permanently on *each* rail. The minimum-load problem that dogged the B1212S
    barrel design is much less of an issue here: the DKM is regulated, and there is
@@ -192,16 +197,31 @@ and the 2A fuse match too. Our input caps sit *after* the fuse where the
 reference puts them before it; that feeds the converter directly and is the
 better of the two.
 
-One genuine omission:
+One genuine omission, since fixed:
 
 - **No transient suppressor on VBUS.** The reference carries `D1`, an SMBJ5.0A
   5V TVS, cathode to +5V and anode to GND, right at the connector. Our `/VBUS`
-  holds only `C28` (10nF), `F1` and the two `J11` VBUS pads. `F1` is an
+  held only `C28` (10nF), `F1` and the two `J11` VBUS pads. `F1` is an
   ASMD1812-200 resettable polyfuse — it limits *current* and does nothing about a
-  *voltage* transient, and the DKM10E-12's E-suffix input tops out at 9V. A
-  hot-plug inductive kick or a rough charger above that kills the converter.
-  This is an externally exposed port on a board intended for sale. Adding it
-  costs one SOD/SMB part, a `netmap.json` entry, a placement and a local reroute.
+  *voltage* transient, and the datasheet gives the DKM10E-12 4.7–9Vdc continuous
+  with 12Vdc tolerated for 100ms only. A hot-plug inductive kick into our 22uF
+  of input bulk rings toward 2x supply, which is already past continuous spec
+  before anything has gone wrong.
+
+  **Added 2026-09-10 as `D3`, an SMAJ6.0A**, cathode to `/VBUS` and anode to a
+  GND via, on the back at (366.5, 66.0) inside the existing at-the-connector
+  cluster beside `C28`.
+
+  6.0A rather than the reference's 5.0A: USB VBUS is spec'd 4.75–5.25V, and a
+  5.0V standoff sits *under* that ceiling where the part leaks (800uA spec).
+  6.0A stands off 6.0V, clear of 5.25V, and clamps at 10.3V — inside the 12V
+  window. 6.5A would clamp at 11.2V, too close to it.
+
+  What this does **not** do is survive sustained overvoltage. Fed 12V through a
+  USB-C-to-barrel adapter the TVS conducts hard and cooks long before a 2A PTC
+  trips, because PTCs take seconds. That needs a real OVP circuit — a load
+  switch with an overvoltage cutoff, or a series FET and comparator. The TVS
+  covers transients and ESD, which is what the reference uses it for.
 
 ### Open, and not yet checked
 

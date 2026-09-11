@@ -86,6 +86,11 @@ PANEL = _read_panel(PANEL_FILE)
 # Starting positions ONLY. Once a part is in free-placement.json the board wins
 # and these are ignored -- see the module docstring.
 FREE_SEED = {
+    # TVS across VBUS, on the back directly under the USB-C input cluster.
+    # Cathode (pad 1) faces the VBUS node; anode goes to a GND via 1.6mm out.
+    # Placed at the connector on purpose -- a suppressor wants the shortest
+    # path to ground it can get, so this does not move to suit the routing.
+    "D3": (266.5, 16.0),   # PCB-relative, = board absolute (366.5, 66.0)
     # Daisy. No longer needs an edge -- MIDI was dropped 2026-08-25 and firmware
     # goes on by opening the box, so the micro-USB does not have to reach a wall.
     # Placed instead where the SIGNALS want it: directly under the four 1/4"

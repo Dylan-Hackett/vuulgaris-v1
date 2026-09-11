@@ -72,6 +72,11 @@ CURATED = {
 # small per-part fee for those, which is the right trade here because all four
 # are in signal paths where the dielectric or the value actually matters.
 NOTE = {
+    "SMAJ6.0A":      "PICK IN JLC: 6.0V TVS, SMA/DO-214AC, uni-directional. "
+                     "Standoff 6.0V (must clear USB VBUS 5.25V max), clamping "
+                     "10.3V (must stay under the DKM10E-12's 12V/100ms surge "
+                     "limit). Do NOT substitute 5.0A -- standoff below VBUS "
+                     "max, leaks. Do NOT substitute 6.5A -- clamps 11.2V.",
     "4R7":           "EXTENDED: 4.7ohm 0603 1% -- Basic has nothing under 10ohm but 0R. "
                      "Sets U9's output impedance; 0R would work but loses cable isolation",
     "2nF C0G":       "EXTENDED: 2.2nF C0G 0603 50V. 2nF is not E12; with R4 470k that moves "
@@ -302,6 +307,17 @@ def main():
         w = csv.DictWriter(f, fieldnames=["Comment", "Designator", "Footprint",
                                           "LCSC Part #", "Qty", "Note"])
         w.writeheader(); w.writerows(rows)
+    # JLC's upload wants exactly these four columns; Qty it derives from the
+    # designators and Note it has nowhere to put. Derived here rather than by
+    # hand, because doing it by hand is how the JLC copy went one line stale the
+    # moment D3 was added.
+    jlc = f"{K}/fab/vuulgaris-BOM-jlc.csv"
+    with open(jlc, "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=["Comment", "Designator", "Footprint",
+                                          "LCSC Part #"], extrasaction="ignore")
+        w.writeheader(); w.writerows(rows)
+    print(f"{len(rows)} lines -> {jlc}")
+
     got = sum(1 for r in rows if r["LCSC Part #"])
     print(f"{len(rows)} lines / {sum(r['Qty'] for r in rows)} parts -> {out}")
     print(f"  sourced   : {got}   {dict(how)}")
