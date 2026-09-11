@@ -373,6 +373,55 @@ drives the BBD inhibit. Watch the **ten-second BSL time-out** instead —
 **And CV amount moving to analog freed D8 and D9.** MOSI returned to its native D9, which in
 turn freed **A9** for the shift button.
 
+### OLED + microSD + Patch SM together — checked 2026-09-11
+
+They coexist because they sit on **different peripherals**, not on a shared bus:
+
+| function | Patch SM pin | STM32 | peripheral |
+|---|---|---|---|
+| `OLED_CS` | D1 | PB4 | SPI2_CS |
+| `OLED_MOSI` | D9 | PC3 | SPI2_MOSI (alt; D9's primary is ADC_11) |
+| `OLED_SCK` | D10 | PD3 | SPI2_SCK |
+| `SD_D0` | D5 | PC8 | SDMMC1_D0 |
+| `SD_CLK` | D6 | PC12 | SDMMC1_CLK |
+| `SD_CMD` | D7 | PD2 | SDMMC1_CMD |
+
+No pin is shared. SPI2 and SDMMC1 are independent blocks, so the display and
+card can be driven at the same time without arbitration.
+
+**Two pins are borrowed as plain GPIO, and one of them has a consequence:**
+
+- **`OLED_DC` on D2, which is `SDMMC1_D3`.** This is what **locks the SD to
+  1-bit mode**, permanently. 4-bit needs D2, D3 and D4 together; D3 and D4 are
+  free but D2 is not, so freeing 4-bit means moving `OLED_DC` — and the only
+  remaining free GPIO in the bank is **D8** (`ADC_12`/PC2). Worth knowing before
+  anyone assumes D3/D4 being free is enough.
+
+  1-bit SDMMC1 at 50MHz is ~6 MB/s against ~25 MB/s for 4-bit. Ample for sample
+  playback; it is a ceiling, not a problem.
+
+- **`OLED_RES` on A9, which is `USB_DP`.** Legal — the datasheet lists A8/A9 as
+  GPIO — but it forecloses ever using the broken-out USB pins as USB. A8
+  (`USB_DM`) is still free and useless on its own. MIDI was dropped and firmware
+  loads over the module's own micro-USB, so nothing is lost today; the door is
+  simply shut.
+
+**The SD wiring is textbook 1-bit SDIO.** `SD_CMD` and `SD_D0` carry 47k pullups
+to `P3V3_DAISY` (`R506`, `R507`); `SD_DAT3` carries a 47k pullup (`R508`) and is
+deliberately **not** routed to the Daisy, which is what holds the card out of SPI
+mode. `SD_CLK` has no pullup, correctly. DAT1/DAT2 are left unconnected.
+
+**The OLED's font ROM is deselected, not forgotten.** `OLED_FONTCS` (DS1.9) is
+pulled high through `R505` 10k, and DS1 pin 8 — the font ROM's MISO — is
+unconnected to match. The Daisy renders its own glyphs.
+
+**Rails:** the OLED runs on its own 3V3 (`U5` AMS1117 fed from the Daisy's 5V
+through ferrite `FB1`), separate from `P3V3_DAISY`. Both originate at the
+module, so `P3V3_OLED` comes up an LDO's worth *after* `P3V3_DAISY` and the
+Daisy can briefly drive display pins into an unpowered rail at boot. Short,
+same-source and normally harmless — but firmware should hold `OLED_RES` low
+until the rail is up rather than relying on that.
+
 ### Input-only and output-only pins
 
 | Function | Pin | Note |
