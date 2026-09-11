@@ -1,0 +1,9 @@
+# Deny by default. On 2026-09-10 a `cp ~/Downloads/*.pdf` into this folder
+# pulled in 181 unrelated documents -- tax forms, an ID, bank statements and
+# third-party case files -- into a repo that gets pushed to GitHub. Nothing was
+# committed, but nothing should have been copyable either.
+#
+# Add a source document deliberately:   git add -f docs/reference/<file>
+*
+!.gitignore
+!README.md
