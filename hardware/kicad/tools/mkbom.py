@@ -94,11 +94,15 @@ CURATED = {
 # small per-part fee for those, which is the right trade here because all four
 # are in signal paths where the dielectric or the value actually matters.
 NOTE = {
-    "4R7":           "EXTENDED: 4.7ohm 0603 1% -- Basic has nothing under 10ohm but 0R. "
-                     "Sets U9's output impedance; 0R would work but loses cable isolation",
-    "2nF C0G":       "EXTENDED: 2.2nF C0G 0603 50V. 2nF is not E12; with R4 470k that moves "
-                     "the CV time constant 940us -> 1.03ms, inaudible",
-    "4.7nF C0G":     "EXTENDED: 4.7nF C0G 0603 50V. Sets the VCF corner -- do not accept X7R",
+    # Stock and placeability below were read off JLC's parts library in a
+    # browser on 2026-09-11, not inferred from LCSC. The two are different
+    # inventories and this project has already been caught by that once.
+    "DKM10E-12":     "NOT PLACEABLE -- PRE-ORDER ONLY. JLC returns 'No Result Found' for "
+                     "C6934792 in the in-stock library: 0 stock, pre-order at $15.10, "
+                     "MOQ 1. This is the power converter for the entire board, so it is "
+                     "the one shortage that stops a build. Source it outside LCSC "
+                     "(Mouser/Digi-Key/Arrow all list it) and hand-fit -- it is a "
+                     "through-hole 1x1in module, trivial to solder.",
     "15nF C0G 0805": "NO JLC STOCK -- hand solder or pre-order. Checked 2026-09-11: JLC has no 15nF C0G/NP0 in stock in ANY SMD package. The only in-stock SMD is a 1206 with 2 pieces; the real 0805 parts (TDK C2178246 / C2178272) are 0-stock pre-order. This is the BBD sample-and-hold cap -- X7R dielectric absorption would droop between samples, so the dielectric is not negotiable. Buy C0G elsewhere and hand-fit, or pre-order and accept the lead time.",
     "V3205SD":               "no LCSC source -- hand solder",
     "VTL5C3":                "no LCSC source -- hand solder, Xvive reissue",
