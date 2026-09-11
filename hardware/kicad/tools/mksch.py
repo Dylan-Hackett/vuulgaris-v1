@@ -117,6 +117,20 @@ SYM = {
     "C30": "CC0805KKX7R9BB105",        # 1uF
     "C31": "CC0603JRX7R8BB104",        # 100nF
     "U7":  "DKM10E-12",
+    # Transient suppressor across VBUS at the connector, added 2026-09-10.
+    # The source schematic (reference/V3.0.kicad_sch) carries an SMBJ5.0A here
+    # and this board had nothing: /VBUS held only C28, F1 and the two J11 VBUS
+    # pads. F1 is a resettable PTC -- it limits CURRENT, and the DKM10E-12 is
+    # 4.7-9Vdc continuous with 12Vdc tolerated for 100ms, so a voltage
+    # transient is exactly what it cannot survive.
+    #
+    # 6.0A, not the reference's 5.0A: USB VBUS is spec'd 4.75-5.25V and a
+    # 5.0V standoff sits UNDER that ceiling, where the part leaks (800uA spec).
+    # 6.0A stands off 6.0V, clear of 5.25V, and clamps at 10.3V -- still inside
+    # the DKM10's 12V/100ms window. 6.5A would clamp at 11.2V, too close.
+    # This stops transients and ESD. It is NOT overvoltage survival: fed 12V
+    # continuously the TVS conducts hard and cooks long before a 2A PTC trips.
+    "D3":  "SMAJ6.0A",
 
     # ---- board-to-board to the faceplate.  THT here (both faces of this board
     # are hidden); the faceplate side is SMD so no solder shows on the front
@@ -236,6 +250,7 @@ for j in range(7, 11):
 POS.update({
     # inlet row
     "J11": (80, 760), "C28": (170, 760), "F1": (240, 760),
+    "D3":  (310, 760),          # TVS, beside C28 at the connector
     "R22": (100, 850), "R23": (170, 850),
     "C29": (310, 760), "C30": (375, 760), "C31": (440, 760),
     "U7":  (530, 800),
@@ -272,6 +287,7 @@ FPMAP = {
     "TP3": "TestPoint_TH_D1.0mm", "TP4": "TestPoint_TH_D1.0mm",
     "TP5": "TestPoint_TH_D1.0mm",
     "U8": "SOT-223-3_L6.5-W3.4-P2.30-LS7.0-BR",
+    "D3": "SMA_L4.3-W2.6-LS5.2-RD",
     "R20": "R0402", "R21": "R0402",
     "SW1": "SW-TH_DW3_DPDT_2MD1T1B1M2QES",
     "SW2": "SW-TH_DW3_DPDT_2MD1T1B1M2QES",
