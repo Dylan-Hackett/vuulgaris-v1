@@ -46,11 +46,17 @@ echo
 echo "TI sometimes serves an interstitial instead of the PDF. If a fetch says NOT A PDF,"
 echo "open the URL in a browser once, then re-run."
 
+# ---- found 2026-09-11, these DO fetch ------------------------------------
+fetch "https://datasheets.b-cdn.net/files/J113.-Fairchild-datasheet-7564731.pdf" onsemi-MMBFJ113-datasheet.pdf
+fetch "https://store.synthrotek.com/assets/images/XVIVE-VTL5C3-VTL5C4-Vactrol-Data-Sheet.pdf" Xvive-VTL5C3-datasheet.pdf
+fetch "https://aionfx.com/app/files/datasheets/panasonic-mn3205.pdf" Panasonic-MN3205-datasheet.pdf
+
 # ---- will not fetch: these vendors 403 every scripted request ------------
 # Download by hand into this directory, keeping these filenames:
 #   AMS1117-datasheet.pdf            http://www.advanced-monolithic.com/pdf/ds1117.pdf
-#   CoolAudio-V3205SD-datasheet.pdf  https://coolaudio.com  (BBD, U101/U201 -- the core part)
-#   onsemi-MMBFJ113-datasheet.pdf    https://www.onsemi.com  (Q1/Q2 JFET)
-#   Excelitas-VTL5C3-datasheet.pdf   https://www.excelitas.com  (LPG vactrols)
+#   CoolAudio-V3205SD-datasheet.pdf  https://coolaudio.com  (BBD, U101/U201)
+#     -- but the pinout is settled: the mki manual states it in words on p25,
+#        and Panasonic-MN3205-datasheet.pdf (fetched above) is the original.
+#        Note the MN3205 scan is CCITT fax-coded with no text layer.
 echo
 echo "Four datasheets cannot be fetched -- see the comment at the end of this script."
