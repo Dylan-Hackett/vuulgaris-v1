@@ -67,6 +67,7 @@ manual download.
 | PSU input stage vs its source | **clean** — DKM pinout, CC pulldowns, fuse all match; one omission (no TVS) since fixed as `D3` | `schnet.py` netlist of `V3.0.kicad_sch` |
 | LPG vs Bergman's drawing, **both channels** | **clean** — channels structurally identical; `R12`/`R16` absent by decision, BOTH+VCF only | node-by-node diff, 2026-09-11 |
 | BBD vs the manual's own BOM, **both channels** | **clean** — all 27 R and 22 C accounted for, channels symmetric, the three crossings unshorted | text extracted from `BBD_MANUAL_250228.pdf` |
+| BBD vs the **schematic drawing** | **clean** — every value and node checked; the one mismatch (`R120` 62k vs a drawn 56K) is the manual contradicting its own parts list, worth 0.75% of VGG | page-2 bitmap extracted and read at full res |
 | Polarity, all 14 polarised parts | **clean** — D103–D106 clamp pairs, zener shunts, D1/D2 bipolar indicator | inspection vs netmap |
 | Board ↔ schematic parity | 942/942, 0 unintended | `netcheck.py`, `boardcheck.py` |
 
