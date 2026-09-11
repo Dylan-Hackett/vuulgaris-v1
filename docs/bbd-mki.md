@@ -505,6 +505,65 @@ Junction **dots** confirmed (not hops) at: the `BBD_CLK` node (three-way —
 `BBD_SH_IN` (`U106.1`, `U106.2`, `Q1` D, `R128`), and `BBD_WETAC` (`C120`,
 `RV5` CW, `RV6` CW, `R132`).
 
+## Checked against the manual PDF — 2026-09-11, both channels
+
+Text extracted straight out of `BBD_MANUAL_250228.pdf` (77 pages; the parts list
+is text, the circuit values live in the figures and do not extract). The BOM
+below is quoted from the PDF itself, not from this transcription, so it is an
+independent check.
+
+**Both channels are structurally identical.** 50 refs each, every `1xx` ref has
+a `2xx` mate, zero value mismatches and zero topology mismatches with `_L`/`_R`
+normalised. Nothing here is a one-channel typo.
+
+**Every one of the manual's 27 resistors and 22 capacitors is accounted for**,
+either fitted or deliberately dropped:
+
+| manual | ours | |
+|---|---|---|
+| 2M2, 82k, 62k, 51k, 47k, 39k, 6k2, 4k7, 1k ×1 each | same | ✓ |
+| 100k ×9, 22k ×3, 10k ×2, 470 ×2 | same | ✓ |
+| **10R ×2** | — | Eurorack power inlet `R8`/`R9`, dropped |
+| — | 0R ×1 | `R104`, the `R4` IN GAIN pot stand-in |
+| **47µF ×2** | — | power inlet `C1`/`C2`, dropped |
+| **100nF ×2** | — | power inlet `C3`/`C4`, dropped |
+| 100nF ×2 | `C40`, `C41` | the regulator's in/out decoupling — **shared**, one 5V reg for both channels |
+| 100nF ×8 | `C105`–`C108`, `C109`, `C111`, `C121`, `C122` | per channel ✓ |
+| 3.3µF ×1 | `C42` 10µF | regulator output bulk, **shared** |
+| 3.3µF ×1 | `C110`/`C210` 10µF | BBD `VGG` bias |
+| 1µF ×2 | `C113`, `C120` | ✓ |
+| 15nF ×1 | `C119`/`C219` 10nF | C0G kept, see the BOM note |
+| 1nF ×1 | `C114` | ✓ |
+| 220pF ×1 | `C116` | clock differentiator |
+| **220pF ×1** | — | the flanger cap behind the SPDT — *"A 220 pF replacement gives us a frequency range of around 4 kHz to 112 kHz… I'll set up both capacitor options behind a simple SPDT switch"* (p36). Switch not fitted, so neither is this |
+
+The two shared entries are why a naive per-channel count comes up short: the
+manual is a mono module with its own regulator, this board runs one for both
+channels.
+
+Also confirmed present: `1N4148` ×5 (`D103`–`D107`), `J113` ×1, `TL072` ×3,
+`V3205SD` ×1, `CD4046BE` ×1. Dropped with the power inlet: `1N5819` ×2.
+
+### The three crossings are not shorted
+
+The junctions below were checked on the drawing; this confirms the netlist
+agrees, on both channels:
+
+| crossing | L | R |
+|---|---|---|
+| `U104.3` vs `U104.14` | `BBD_CLK_L` / `P5V_BBD` | `BBD_CLK_R` / `P5V_BBD` |
+| `U101.2` vs the `C113`→`U106A` line | `BBD_CLKN_L` / `BBD_AC_L` | `BBD_CLKN_R` / `BBD_AC_R` |
+| dry bus vs the 4046 control node | `BBD_DRY_L` / `BBD_VCOCV_L` | `BBD_DRY_R` / `BBD_VCOCV_R` |
+
+### What this does not prove
+
+The part counts reconcile and the channels are symmetric, but **the manual's
+schematic values sit in page images, not in its text layer**, so the
+node-by-node topology below was not re-derived from the PDF — it is still the
+2026-09-07 reading of the drawing. The net inventory in the next section is
+*generated from* `netmap.json` and therefore cannot contradict it; it is a
+convenience, not evidence.
+
 ## Bill of materials cross-check
 
 The manual's own parts list (p3–p4) was used as an independent check on the
