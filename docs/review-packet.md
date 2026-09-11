@@ -84,9 +84,12 @@ manual download.
 4. **MMBFJ113 pinout** (Q1/Q2) — SOT-23 JFET, gate/drain/source assignment.
 5. **AMS1117** (U5/U6) — U8 is now verified by having been fixed; U5/U6 carry the
    same symbol and pass the semantic check, but confirm against the datasheet.
-6. **The LPG against its source** — `lpg-bergman.md` is a transcription, not the
-   drawing. The CV section, the two feedback paths, and the mode switch are the
-   parts the doc itself flags as easy to misread.
+6. ~~**The LPG against its source**~~ — **done 2026-09-11.** Diffed node by node
+   against Bergman's drawing, both channels, which are structurally identical.
+   Everything matches including the three easy misreads (`C8` returning to
+   `U1-D`'s output, the LED loop closing after `R6`, `R5` parallel with the
+   `C5`+`R4` series pair). `R12`/`R16` are absent on both channels **by
+   decision** — this build is BOTH and VCF only, no VCA. Do not re-raise it.
 7. **The PSU against its source** — `power-usbc-dkm.md` is a transcription of an
    EasyEDA project not in this repo. Export it.
 8. **TL084 vs TL074** — U301/U401 are TL084, U302/U402 are TL074. Faithful to

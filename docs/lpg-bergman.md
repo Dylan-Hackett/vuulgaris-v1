@@ -174,11 +174,15 @@ attenuverter's inverter) and **one summing/buffer stage**, so:
 
 ### Mode switch
 
-Mechanically a 3PDT ON-OFF-ON, and `SW1` here is a DPDT which cannot do it. But
-per the switch reading above the circuit needs only **two control signals** and
-**four switched connections** for stereo, so a quad analog switch covers it from
-one plain panel toggle. `DG419DY-T1-E3` is already in `lib/vuulgaris.kicad_sym`
-and commit 6724750 took this route once before.
+Mechanically a 3PDT ON-OFF-ON, and `SW1` here is a DPDT which cannot do it. Per
+the switch reading above the circuit needs only **two control signals** and
+**four switched connections** for stereo, so a quad analog switch would cover it
+from one plain panel toggle — `DG419DY-T1-E3` is in `lib/vuulgaris.kicad_sym`
+and commit 6724750 took that route once.
+
+**Superseded 2026-09-11: VCA was dropped, so this is moot.** Two modes need two
+switched connections, one per channel, and the DPDT does that directly. See
+*VCA mode is deliberately not implemented* above.
 
 ### Vactrols — still open
 
@@ -216,14 +220,16 @@ Zero dangling nets anywhere in the block.
 Deviations that are deliberate and recorded above: CV1 and `R27` dropped, `Tp2`
 and the DEEP switch not fitted, ±12V rails instead of ±15V.
 
-### One real gap: VCA mode is not implemented
+### VCA mode is deliberately not implemented — decided, do not re-raise
 
-**`R12` and `R16` are on the drawing and on neither channel of this board.**
+**This instrument ships BOTH and VCF only.** Confirmed 2026-09-11. `R12` and
+`R16` are on Bergman's drawing and on neither channel here, and that is the
+intended design, not an omission:
 
-- `R12` 15K, `U1-A` pin 2 → [S1/S2] → GND. Absent, so `U1-A` is permanently a
-  unity follower. Bergman gets **gain 2** from it with the contact made.
-- `R16` 10K, LDR2 output → [S3/S4] → GND. Absent, so nothing ever pins the
-  response flat.
+- `R12` 15K, `U1-A` pin 2 → [S1/S2] → GND. Omitted, so `U1-A` is a unity
+  follower. Bergman would get **gain 2** from it in VCA.
+- `R16` 10K, LDR2 output → [S3/S4] → GND. Omitted, so nothing pins the response
+  flat — which is the whole point of VCA mode.
 
 `SW1` compounds it. It is a DPDT using pins 1/2 and 4/5 only, so each pole is
 ON-OFF rather than ON-ON, and the one thing it switches is `C8`:
@@ -233,14 +239,21 @@ ON-OFF rather than ON-ON, and the one thing it switches is `C8`:
 | closed | `C8` → `U1-D` out | **VCF** — resonant 2-pole |
 | open | `C8` floating | **BOTH** — bare LDR + `C7` |
 
-So the board offers two of Bergman's three modes. The missing one is VCA, and
-BOTH — the mode that survives — is the actual Buchla lowpass-gate character, so
-this degrades gracefully rather than breaking.
+That is exactly the wanted behaviour. **BOTH is the actual Buchla lowpass-gate
+character** — series photoresistance dropping level and corner frequency
+together — and VCF is the resonant variant. VCA, the mode that pins the response
+flat and turns the thing into a plain amplifier, is the one worth losing.
 
-This is half-recorded: *Mode switch* above already says a DPDT "cannot do it"
-and proposes `DG419DY-T1-E3`, but nothing said `R12` and `R16` had been dropped
-with it. Restoring VCA needs the quad analog switch **and** four resistors
-(`R312`/`R412`, `R316`/`R416`), not just the switch.
+Dropping it also simplifies the hardware rather than compromising it. The
+three-mode circuit needs four switched connections for stereo, which is why
+*Mode switch* below reached for a `DG419DY-T1-E3` quad analog switch. Two modes
+need **two** connections — one per channel — so a plain DPDT panel toggle is not
+a compromise here, it is the correct part. `SW1` is already wired that way,
+using pins 1/2 and 4/5 so each pole is ON-OFF.
+
+**The DG419 proposal is therefore moot and should not be implemented.** Anyone
+restoring VCA would need the quad analog switch *and* four resistors
+(`R312`/`R412`, `R316`/`R416`), and that is not on the roadmap.
 
 ## Interface this has to present
 
