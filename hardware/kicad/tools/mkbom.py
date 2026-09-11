@@ -65,6 +65,28 @@ CURATED = {
     "1nF C0G":               "C163508",    # CL10C102JB8NNNC, 50V C0G
     "220pF C0G":             "C27675",     # CL10C221JB8NNNC, 50V C0G
     "3V9 zener":             "C213113",    # BZT52C3V9 SOD-123, 3.7-4.1V
+    # TVS across VBUS. Checked in JLC's assembly library 2026-09-11: all 85
+    # SMAJ6.0A entries are Extended, none Basic, so the per-part fee applies
+    # whichever is picked and the choice comes down to stock and pedigree.
+    # Littelfuse, 37k in stock, and one of the few whose JLC listing carries
+    # IEC 61000-4-2 and 61000-4-4 -- the ESD and EFT immunity standards this
+    # part exists to satisfy on a CE-marked product.
+    #
+    # DO NOT swap to C132934 (ST, "SMAJ6.0A-TR"). Same MPN prefix, but it is
+    # the 2.3kW variant and clamps at 13.7V -- ABOVE the DKM10E-12's 12V/100ms
+    # surge limit, so it would pass a transient straight into the converter.
+    # Cheaper equivalents if stock ever fails: C364284 (MDD, 106k),
+    # C353434 (Jingdao, 62k), C726732 (TWGMC, 10k). All 10.3V clamping.
+    "SMAJ6.0A":              "C223993",    # Littelfuse SMAJ6.0A, SMA/DO-214AC
+    # --- resolved in JLC's parts library 2026-09-11, browser not guesswork ---
+    # 4R7 was carried as "EXTENDED: Basic has nothing under 10ohm but 0R".
+    # That was wrong. C23164 is BASIC, 1% , 1.04M in stock, and it has been
+    # costing an Extended loading fee for nothing.
+    "4R7":                   "C23164",     # 0603WAF470KT5E UNI-ROYAL, 4.7ohm 1% 0603, BASIC
+    # Both C0G 0603s are Extended -- no Basic C0G exists at these values -- so
+    # these are picked on stock depth.
+    "2nF C0G":               "C296055",    # 0603N222J500CT Walsin, 2.2nF 50V NP0 5%, 106k
+    "4.7nF C0G":             "C576818",    # CC0603JRNPO9BN472 YAGEO, 4.7nF 50V NP0 5%, 424k
 }
 # Placed but deliberately not populated, or with no LCSC source at all.
 # The four values with no LCSC entry anywhere -- generic R/C symbols, so nothing
@@ -72,18 +94,12 @@ CURATED = {
 # small per-part fee for those, which is the right trade here because all four
 # are in signal paths where the dielectric or the value actually matters.
 NOTE = {
-    "SMAJ6.0A":      "PICK IN JLC: 6.0V TVS, SMA/DO-214AC, uni-directional. "
-                     "Standoff 6.0V (must clear USB VBUS 5.25V max), clamping "
-                     "10.3V (must stay under the DKM10E-12's 12V/100ms surge "
-                     "limit). Do NOT substitute 5.0A -- standoff below VBUS "
-                     "max, leaks. Do NOT substitute 6.5A -- clamps 11.2V.",
     "4R7":           "EXTENDED: 4.7ohm 0603 1% -- Basic has nothing under 10ohm but 0R. "
                      "Sets U9's output impedance; 0R would work but loses cable isolation",
     "2nF C0G":       "EXTENDED: 2.2nF C0G 0603 50V. 2nF is not E12; with R4 470k that moves "
                      "the CV time constant 940us -> 1.03ms, inaudible",
     "4.7nF C0G":     "EXTENDED: 4.7nF C0G 0603 50V. Sets the VCF corner -- do not accept X7R",
-    "15nF C0G 0805": "EXTENDED: 15nF C0G 0805 50V. This is the BBD sample-and-hold cap; "
-                     "X7R dielectric absorption would cause droop between samples",
+    "15nF C0G 0805": "NO JLC STOCK -- hand solder or pre-order. Checked 2026-09-11: JLC has no 15nF C0G/NP0 in stock in ANY SMD package. The only in-stock SMD is a 1206 with 2 pieces; the real 0805 parts (TDK C2178246 / C2178272) are 0-stock pre-order. This is the BBD sample-and-hold cap -- X7R dielectric absorption would droop between samples, so the dielectric is not negotiable. Buy C0G elsewhere and hand-fit, or pre-order and accept the lead time.",
     "V3205SD":               "no LCSC source -- hand solder",
     "VTL5C3":                "no LCSC source -- hand solder, Xvive reissue",
     "SW_DPDT_FLAT":          "no LCSC source -- hand solder",
