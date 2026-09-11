@@ -87,6 +87,19 @@ CURATED = {
     # these are picked on stock depth.
     "2nF C0G":               "C296055",    # 0603N222J500CT Walsin, 2.2nF 50V NP0 5%, 106k
     "4.7nF C0G":             "C576818",    # CC0603JRNPO9BN472 YAGEO, 4.7nF 50V NP0 5%, 424k
+    # BBD sample-and-hold hold cap, C119/C219. Was 15nF, which JLC cannot supply
+    # in ANY SMD package (checked 2026-09-11: 15nF C0G/NP0 is 0-stock pre-order
+    # everywhere, and 18nF/22nF in 0805 do not exist either -- C0G is a low-K
+    # dielectric and 10nF is the practical ceiling for this package).
+    #
+    # The manual asks for "a relatively big capacitor" in C0G, not for 15nF
+    # exactly, and the DIELECTRIC is the real requirement: X7R dielectric
+    # absorption relaxes the held voltage between samples and smears the
+    # reconstruction. 10nF keeps C0G. Acquisition (Ron_J113 x C) gets 1.5x
+    # faster, which helps inside the narrow sample pulse; droop and JFET charge
+    # injection get 1.5x worse, about 9mV at the output after U106B's x5.55 at
+    # typical J113 off-leakage. Fine on a lo-fi BBD delay.
+    "10nF C0G 0805":         "C237168",    # 0805N103J500CT Walsin, 10nF 50V NP0 5%, 149k
 }
 # Placed but deliberately not populated, or with no LCSC source at all.
 # The four values with no LCSC entry anywhere -- generic R/C symbols, so nothing
@@ -103,7 +116,6 @@ NOTE = {
                      "the one shortage that stops a build. Source it outside LCSC "
                      "(Mouser/Digi-Key/Arrow all list it) and hand-fit -- it is a "
                      "through-hole 1x1in module, trivial to solder.",
-    "15nF C0G 0805": "NO JLC STOCK -- hand solder or pre-order. Checked 2026-09-11: JLC has no 15nF C0G/NP0 in stock in ANY SMD package. The only in-stock SMD is a 1206 with 2 pieces; the real 0805 parts (TDK C2178246 / C2178272) are 0-stock pre-order. This is the BBD sample-and-hold cap -- X7R dielectric absorption would droop between samples, so the dielectric is not negotiable. Buy C0G elsewhere and hand-fit, or pre-order and accept the lead time.",
     "V3205SD":               "no LCSC source -- hand solder",
     "VTL5C3":                "no LCSC source -- hand solder, Xvive reissue",
     "SW_DPDT_FLAT":          "no LCSC source -- hand solder",
