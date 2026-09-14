@@ -1,0 +1,88 @@
+{
+  "_about": "JLCPCB Basic-library matches used by mkbom.py. A snapshot of the entries this BOM resolves against, not the full list: keys are package|ohms for R and package|farads|dielectric for C, values are LCSC codes. Verified 2026-09-13 by regenerating fab/vuulgaris-BOM-jlc.csv byte-identical to the committed copy. Add a key here when a new R/C value needs a Basic part.",
+  "R": {
+    "0603|0": [
+      "C21189"
+    ],
+    "0603|470": [
+      "C23179"
+    ],
+    "0603|1000": [
+      "C21190"
+    ],
+    "0603|1200": [
+      "C22765"
+    ],
+    "0603|2200": [
+      "C4190"
+    ],
+    "0603|4700": [
+      "C23162"
+    ],
+    "0603|6200": [
+      "C4260"
+    ],
+    "0603|10000": [
+      "C25804"
+    ],
+    "0603|15000": [
+      "C22809"
+    ],
+    "0603|22000": [
+      "C31850"
+    ],
+    "0603|33000": [
+      "C4216"
+    ],
+    "0603|39000": [
+      "C23153"
+    ],
+    "0603|47000": [
+      "C25819"
+    ],
+    "0603|51000": [
+      "C23196"
+    ],
+    "0603|62000": [
+      "C23221"
+    ],
+    "0603|82000": [
+      "C23254"
+    ],
+    "0603|100000": [
+      "C25803"
+    ],
+    "0603|150000": [
+      "C22807"
+    ],
+    "0603|470000": [
+      "C23178"
+    ],
+    "0603|1e+06": [
+      "C22935"
+    ],
+    "0603|2.2e+06": [
+      "C22938"
+    ],
+    "0603|4.7e+06": [
+      "C23163"
+    ]
+  },
+  "C": {
+    "0402|1e-07|X7R": [
+      "C1525"
+    ],
+    "0603|2.2e-11|C0G": [
+      "C1653"
+    ],
+    "0603|1e-07|X7R": [
+      "C14663"
+    ],
+    "0805|1e-06|X7R": [
+      "C28323"
+    ],
+    "0805|1e-05|X5R": [
+      "C15850"
+    ]
+  }
+}
