@@ -10,7 +10,8 @@ LCSC numbers come from four places, in order of confidence:
      each one verified against the LCSC or JLCPCB product page.
   2. the footprint name, when it embeds the code (IDC-TH_10P-P2.54_C5665).
   3. the value string, when it embeds the code (RVT1E470M0505_C2977553).
-  4. JLCPCB's Basic parts list, matched on value + package + dielectric.
+  4. JLCPCB's Basic parts list, matched on value + package + dielectric --
+     tools/jlc-basic.json, a snapshot of the entries this board uses.
 
 Basic matters: JLC charges a per-part loading fee for every distinct Extended
 part, so a board with 30 Extended passives pays that 30 times over. Everything
@@ -22,7 +23,10 @@ and were otherwise showing up as BOM lines named things like "SIGIN L".
 import xml.etree.ElementTree as ET, csv, re, json, collections, os, sys
 
 K = "/Users/dylanhackett/V1/hardware/kicad"
-BASIC = "/private/tmp/claude-501/-Users-dylanhackett-V1/4de9b9fa-a306-444b-94eb-965c3f912b9d/scratchpad/basic.json"
+# In the repo, not fetched. This used to point at a download in a scratch
+# directory, and when that was wiped the script still ran -- and silently
+# emitted a BOM with 40 lines' LCSC numbers blank. Missing is now fatal.
+BASIC = f"{K}/tools/jlc-basic.json"
 
 # Verified against the LCSC or JLCPCB product page during this project.
 CURATED = {
@@ -228,18 +232,12 @@ def harvest_docs():
     return out
 
 def main():
-    basic = {"R": {}, "C": {}}
-    if os.path.exists(BASIC):
-        b = json.load(open(BASIC))
-        basic["R"] = {tuple(k.split("|")): v for k, v in b["R"].items()}
-        basic["C"] = {tuple(k.split("|")): v for k, v in b["C"].items()}
-    bympn = {}
-    if os.path.exists(BASIC.replace("basic.json", "basic.csv")):
-        for r in csv.DictReader(open(BASIC.replace("basic.json", "basic.csv"),
-                                     encoding="latin-1")):
-            mp = (r["MFR.Part #"] or "").strip()
-            if mp:
-                bympn.setdefault(mp, r["LCSC Part #"].strip())
+    if not os.path.exists(BASIC):
+        sys.exit(f"missing {BASIC} -- without it every commodity R and C comes out unsourced")
+    b = json.load(open(BASIC))
+    basic = {"R": {tuple(k.split("|")): v for k, v in b["R"].items()},
+             "C": {tuple(k.split("|")): v for k, v in b["C"].items()}}
+    bympn = b.get("MPN", {})
     byref = harvest_docs()
     bysym = harvest_symbols()
     root = ET.parse(f"{K}/fab/vuulgaris-bom.xml").getroot()
