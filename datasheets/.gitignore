@@ -1,2 +1,7 @@
 # Real datasheets are fetched, not committed. See fetch-datasheets.sh
 *.pdf
+
+# Review copies, regenerated per REVIEW-INDEX.md. The originals are tracked
+# elsewhere (docs/reference/, hardware/kicad/) and these go stale silently.
+PSU-USBC-reference-V3.0.kicad_sch
+vuulgaris-netlist.net
