@@ -448,6 +448,64 @@ def check(polys, T, netmap, refs):
     return bad
 
 
+def crossings(polys):
+    """Where a horizontal wire crosses a vertical wire of a DIFFERENT net.
+
+    A crossing with no dot only means "not connected" by convention, which is
+    exactly the ambiguity that makes a schematic hard to trust. The horizontal
+    wire hops over the vertical one instead, so a connection is a dot and a
+    crossing is a bridge, and neither can be mistaken for the other.
+    """
+    hor, ver = [], []
+    for net, poly in polys:
+        for a, b in segments(poly):
+            (ax, ay), (bx, by) = a, b
+            if ay == by and ax != bx:
+                hor.append((net, min(ax, bx), max(ax, bx), ay))
+            elif ax == bx and ay != by:
+                ver.append((net, min(ay, by), max(ay, by), ax))
+    out = collections.defaultdict(list)
+    for net, x0, x1, y in hor:
+        for net2, y0, y1, x in ver:
+            if net2 == net:
+                continue
+            if x0 + 6 < x < x1 - 6 and y0 + 6 < y < y1 - 6:
+                out[(x0, x1, y)].append(x)
+    return out
+
+
+def hop_path(a, b, cross):
+    """One segment as an SVG path, with a little bridge at every crossing."""
+    (ax, ay), (bx, by) = a, b
+    key = (min(ax, bx), max(ax, bx), ay) if ay == by else None
+    xs = sorted(cross.get(key, [])) if key else []
+    if not xs:
+        return f"M {ax} {ay} L {bx} {by}"
+    if bx < ax:
+        xs = list(reversed(xs))
+    r, d = 8, (1 if bx > ax else -1)
+    parts = [f"M {ax} {ay}"]
+    for x in xs:
+        parts.append(f"L {x - d*r} {ay}")
+        parts.append(f"A {r} {r} 0 0 1 {x + d*r} {ay}")
+    parts.append(f"L {bx} {by}")
+    return " ".join(parts)
+
+
+def wire_shorts(polys):
+    """A wire ending on another net's wire reads as a T-junction. It is a bug."""
+    bad = []
+    for net, poly in polys:
+        for end in (poly[0], poly[-1]):
+            for net2, poly2 in polys:
+                if net2 == net:
+                    continue
+                for a, b in segments(poly2):
+                    if on_seg(end, a, b, tol=2.0):
+                        bad.append(f"{net} ends at {end}, which sits on {net2}")
+    return sorted(set(bad))
+
+
 def junctions(polys):
     ends = collections.Counter()
     for net, poly in polys:
@@ -506,9 +564,10 @@ def render(title, subtitle, P, polys, glyphs, w, h):
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" '
              f'height="{h}" font-size="16">', STYLE,
              f'<rect class="sheet-bg" x="0" y="0" width="{w}" height="{h}"/>']
+    cross = crossings(polys)
     for net, poly in polys:
-        d = " ".join(("M" if i == 0 else "L") + f" {x} {y}" for i, (x, y) in enumerate(poly))
-        parts.append(f'<path class="wire" d="{d}"/>')
+        for a, b in segments(poly):
+            parts.append(f'<path class="wire" d="{hop_path(a, b, cross)}"/>')
     parts += glyphs
     parts += list(P.values())
     for (x, y) in junctions(polys):
@@ -601,7 +660,7 @@ def main():
     P, T, glyphs = lpg_left(netmap, values)
     refs = [r for r in T if r in netmap]
     polys = resolve(lpg_left_wires(), T, glyphs)
-    bad = check(polys, T, netmap, refs)
+    bad = check(polys, T, netmap, refs) + wire_shorts(polys)
     if bad:
         print(f"drawing does not match netmap.json ({len(bad)}):")
         for b in bad:
