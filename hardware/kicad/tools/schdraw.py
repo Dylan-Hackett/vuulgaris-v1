@@ -257,12 +257,12 @@ def lpg_left(netmap, values):
     put("RV1", pot(170, 220, "RV1", "CUTOFF", wiper_right=True))
     put("R303", resistor(330, 220, "R303", V("R303")))
     opamp_unit("U301", "B", 540, 220, ("7", "6", "5"))
-    put("R308", resistor(470, 440, "R308", V("R308"), vert=True))
-    put("R305", resistor(330, 480, "R305", V("R305")))
-    put("C305", cap(291, 580, "C305", V("C305"), flip_label=True))
-    put("R304", resistor(430, 580, "R304", V("R304"), flip_label=True))
-    put("RT301", trimmer(310, 330, "RT301", V("RT301")))
-    put("R307", resistor(470, 330, "R307", V("R307")))
+    put("R308", resistor(490, 400, "R308", V("R308"), vert=True))
+    put("R305", resistor(330, 520, "R305", V("R305")))
+    put("C305", cap(291, 620, "C305", V("C305"), flip_label=True))
+    put("R304", resistor(430, 620, "R304", V("R304"), flip_label=True))
+    put("RT301", trimmer(280, 330, "RT301", V("RT301")))
+    put("R307", resistor(390, 330, "R307", V("R307")))
     put("R317", resistor(620, 430, "R317", V("R317"), vert=True, flip_label=True))
     put("D301", zener(790, 504, "D301", V("D301"), anode_up=True))
     put("R306", resistor(840, 220, "R306", V("R306")))
@@ -308,15 +308,15 @@ def lpg_left_wires():
         ("GND",         [("RV1", "3"), ("GND", 170, 280)]),
         ("LPG_OFS_L",   [("RV1", "2"), ("R303", "1")]),
         ("LPG_SUM_L",   [("R303", "2"), (430, 220), (430, 247), ("U301", "6")]),
-        ("LPG_SUM_L",   [(430, 220), (430, 400), (200, 400), (200, 580), ("C305", "1")]),
-        ("LPG_SUM_L",   [(200, 480), ("R305", "1")]),
-        ("LPG_SUM_L",   [(430, 270), (240, 270), (240, 330), ("RT301", "1")]),
-        ("LPG_BP_L",    [("U301", "5"), (470, 193), ("R308", "1")]),
-        ("GND",         [("R308", "2"), ("GND", 470, 490)]),
+        ("LPG_SUM_L",   [(430, 220), (430, 400), (200, 400), (200, 620), ("C305", "1")]),
+        ("LPG_SUM_L",   [(200, 520), ("R305", "1")]),
+        ("LPG_SUM_L",   [(430, 270), (230, 270), (230, 330), ("RT301", "1")]),
+        ("LPG_BP_L",    [("U301", "5"), (490, 193), ("R308", "1")]),
+        ("GND",         [("R308", "2"), ("GND", 490, 450)]),
         ("LPG_C5_L",    [("C305", "2"), ("R304", "1")]),
-        ("LPG_CV_L",    [("PORT", 200, 660, "LPG_CV_L  ← CV chain", False),
-                         (600, 660), (600, 580), ("R304", "2")]),
-        ("LPG_CV_L",    [(600, 580), (600, 480), ("R305", "2")]),
+        ("LPG_CV_L",    [("PORT", 200, 700, "LPG_CV_L  ← CV chain", False),
+                         (600, 700), (600, 620), ("R304", "2")]),
+        ("LPG_CV_L",    [(600, 620), (600, 520), ("R305", "2")]),
         ("LPG_T1_L",    [("RT301", "2"), ("R307", "1")]),
         ("LPG_LED_L",   [("R307", "2"), (700, 330), (700, 602), ("VT301", "1")]),
         ("LPG_LED_L",   [(700, 380), ("R317", "1")]),
@@ -448,7 +448,49 @@ def check(polys, T, netmap, refs):
     return bad
 
 
-def crossings(polys):
+def symbol_geometry(P, T, netmap):
+    """Pin leads and body outlines, read back out of the symbols' own SVG."""
+    leads, bodies = [], []
+    for ref, svg in P.items():
+        base = ref.rstrip("ABCD") if ref.startswith("U") else ref
+        for m in re.finditer(r'<line x1="([-\d.]+)" y1="([-\d.]+)" x2="([-\d.]+)" '
+                             r'y2="([-\d.]+)" class="pin"', svg):
+            x1, y1, x2, y2 = (float(v) for v in m.groups())
+            net = None
+            for pin, pt in T.get(base, {}).items():
+                if abs(pt[0]-x1) + abs(pt[1]-y1) < 2 or abs(pt[0]-x2) + abs(pt[1]-y2) < 2:
+                    net = netmap.get(base, {}).get(pin)
+                    break
+            leads.append((net, (round(x1), round(y1)), (round(x2), round(y2))))
+        for m in re.finditer(r'<rect x="([-\d.]+)" y="([-\d.]+)" width="([-\d.]+)" '
+                             r'height="([-\d.]+)" class="(body|fillwhite)"', svg):
+            x, y, w, h = (float(v) for v in m.groups()[:4])
+            bodies.append((ref, x, y, x+w, y+h))
+        for m in re.finditer(r'<polygon points="([^"]+)" class="(fillwhite|fillbody)"', svg):
+            pts = [tuple(float(v) for v in pair.split(",")) for pair in m.group(1).split()]
+            xs, ys = [q[0] for q in pts], [q[1] for q in pts]
+            bodies.append((ref, min(xs), min(ys), max(xs), max(ys)))
+    return leads, bodies
+
+
+def body_hits(polys, bodies, T):
+    """A wire drawn across a component body. Always a layout bug."""
+    bad = []
+    for net, poly in polys:
+        for a, b in segments(poly):
+            for ref, x0, y0, x1, y1 in bodies:
+                if any(on_seg(pt, a, b, tol=0) for pt in T.get(ref, {}).values()):
+                    pass
+                (ax, ay), (bx, by) = a, b
+                inset = 3
+                if ay == by and y0+inset < ay < y1-inset and min(ax, bx) < x1-inset and max(ax, bx) > x0+inset:
+                    bad.append(f"{net} runs across {ref}'s body at y={ay}")
+                if ax == bx and x0+inset < ax < x1-inset and min(ay, by) < y1-inset and max(ay, by) > y0+inset:
+                    bad.append(f"{net} runs across {ref}'s body at x={ax}")
+    return sorted(set(bad))
+
+
+def crossings(polys, leads=()):
     """Where a horizontal wire crosses a vertical wire of a DIFFERENT net.
 
     A crossing with no dot only means "not connected" by convention, which is
@@ -464,6 +506,12 @@ def crossings(polys):
                 hor.append((net, min(ax, bx), max(ax, bx), ay))
             elif ax == bx and ay != by:
                 ver.append((net, min(ay, by), max(ay, by), ax))
+    for net, a, b in leads:               # a symbol's own pin leads count too
+        (ax, ay), (bx, by) = a, b
+        if ay == by and ax != bx:
+            hor.append((net, min(ax, bx), max(ax, bx), ay))
+        elif ax == bx and ay != by:
+            ver.append((net, min(ay, by), max(ay, by), ax))
     out = collections.defaultdict(list)
     for net, x0, x1, y in hor:
         for net2, y0, y1, x in ver:
@@ -507,23 +555,39 @@ def wire_shorts(polys):
 
 
 def junctions(polys):
+    """A dot means three or more wires join, or one wire lands on another.
+
+    It deliberately does not appear where a wire simply ends on a pin, or where
+    two segments turn a corner -- those are connections by construction, and
+    dotting them would make the real branch points harder to pick out.
+    """
     ends = collections.Counter()
-    for net, poly in polys:
-        for p in poly:
-            ends[(net, p)] += 1
-    dots = set()
-    for (net, p), n in ends.items():
-        if n >= 2:
-            dots.add(p)
-    for net, poly in polys:
-        for p in poly[:1] + poly[-1:]:
-            for net2, poly2 in polys:
-                if net2 != net or poly2 is poly:
+    real = [(net, a, b) for net, poly in polys for a, b in segments(poly) if a != b]
+    for net, a, b in real:
+        ends[(net, a)] += 1
+        ends[(net, b)] += 1
+    dots = {p for (net, p), n in ends.items() if n >= 3}
+    for net, a, b in real:
+        for p in (a, b):
+            for net2, c, d in real:
+                if net2 != net or (c, d) == (a, b):
                     continue
-                for a, b in segments(poly2):
-                    if p not in (a, b) and on_seg(p, a, b):
-                        dots.add(p)
+                if p not in (c, d) and on_seg(p, c, d, tol=1.0):
+                    dots.add(p)
     return dots
+
+
+def legend(x, y):
+    return (f'<g><path class="wire" d="M {x} {y} L {x+30} {y} '
+            f'A 8 8 0 0 1 {x+46} {y} L {x+76} {y}"/>'
+            f'<path class="wire" d="M {x+38} {y-26} L {x+38} {y+26}"/>'
+            f'<text x="{x+90}" y="{y+6}" class="note">wires cross, not connected</text>'
+            f'<path class="wire" d="M {x} {y+52} L {x+76} {y+52}"/>'
+            f'<path class="wire" d="M {x+38} {y+52} L {x+38} {y+78}"/>'
+            f'<circle class="dot" cx="{x+38}" cy="{y+52}" r="6"/>'
+            f'<text x="{x+90}" y="{y+58}" class="note">wires joined</text>'
+            f'<text x="{x}" y="{y-44}" class="note">A wire ending on a pin is '
+            f'connected; corners are not dotted.</text></g>')
 
 
 STYLE = """
@@ -560,18 +624,20 @@ STYLE = """
 </style>"""
 
 
-def render(title, subtitle, P, polys, glyphs, w, h):
+def render(title, subtitle, P, polys, glyphs, w, h, leads=()):
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" '
              f'height="{h}" font-size="16">', STYLE,
              f'<rect class="sheet-bg" x="0" y="0" width="{w}" height="{h}"/>']
-    cross = crossings(polys)
+    cross = crossings(polys, leads)
     for net, poly in polys:
         for a, b in segments(poly):
+            if a == b:
+                continue
             parts.append(f'<path class="wire" d="{hop_path(a, b, cross)}"/>')
     parts += glyphs
     parts += list(P.values())
     for (x, y) in junctions(polys):
-        parts.append(f'<circle class="dot" cx="{x}" cy="{y}" r="5"/>')
+        parts.append(f'<circle class="dot" cx="{x}" cy="{y}" r="6"/>')
     # net names on the longer runs, so a wire can be followed without tracing it
     seen = set()
     for net, poly in polys:
@@ -583,6 +649,7 @@ def render(title, subtitle, P, polys, glyphs, w, h):
                              f'text-anchor="middle">{net}</text>')
                 seen.add(net)
                 break
+    parts.append(legend(1700, 1310))
     parts.append(f'<rect class="frame" x="18" y="18" width="{w-36}" height="{h-36}"/>')
     parts.append(f'<text class="title" x="46" y="66">{title}</text>')
     parts.append(f'<text class="subtitle" x="46" y="92">{subtitle}</text>')
@@ -666,9 +733,16 @@ def main():
         for b in bad:
             print("   ", b)
         sys.exit(1)
+    leads, bodies = symbol_geometry(P, T, netmap)
+    hits = body_hits(polys, bodies, T)
+    if hits:
+        print("wires drawn across component bodies:")
+        for h in hits:
+            print("   ", h)
+        sys.exit(1)
     svg = render("LPG — left channel", "audio path and LED drive, drawn from netmap.json · "
                  "compare with Bergman's sheet · CV chain on its own sheet",
-                 P, polys, glyphs, 2060, 1440)
+                 P, polys, glyphs, 2060, 1440, leads)
     out = f"{ROOT}/docs/sch-lpg-left.svg"
     open(out, "w").write(svg)
     page = PAGE.replace("<!--SVG-->", svg).replace("__PARTS__", str(len(refs))) \
