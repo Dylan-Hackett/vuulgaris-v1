@@ -291,9 +291,32 @@ def lpg_left(netmap, values):
     put("C310", cap(1381, 1080, "C310", V("C310")))
     put("RV2", pot(1300, 1180, "RV2", "RESONANCE", wiper_right=True))
     put("R318", resistor(1300, 1310, "R318", V("R318"), vert=True))
+    put("C301", cap(430, 1230, "C301", V("C301"), vert=True))
+    put("C302", cap(620, 1230, "C302", V("C302")))
+
+    # --- CV chain, Bergman's U2: invert, attenuvert, two more inverters ---
+    put("R323", resistor(330, 1600, "R323", V("R323")))
+    opamp_unit("U302", "A", 520, 1600, ("1", "2", "3"))
+    put("R320", resistor(580, 1700, "R320", V("R320"), flip_label=True))
+    put("RV3", pot(900, 1620, "RV3", "FILTER CV AMT", wiper_right=True))
+    put("R328", resistor(1060, 1620, "R328", V("R328")))
+    opamp_unit("U302", "D", 1200, 1620, ("14", "13", "12"))
+    put("R330", resistor(1260, 1740, "R330", V("R330"), flip_label=True))
+    put("R331", resistor(1430, 1647, "R331", V("R331")))
+    opamp_unit("U302", "C", 1560, 1620, ("8", "9", "10"))
+    put("R333", resistor(1660, 1780, "R333", V("R333"), flip_label=True))
+    opamp_unit("U302", "B", 1000, 1950, ("7", "6", "5"))
+    put("U302pwr", power_pins(180, 1900, "U302", "TL074"))
+    T["U302"].update(T.pop("U302pwr"))
+    put("C303", cap(430, 1950, "C303", V("C303"), vert=True))
+    put("C304", cap(620, 1950, "C304", V("C304")))
     put("U301pwr", power_pins(180, 1180, "U301", "TL084"))
+    glyphs.append('<text x="46" y="140" class="ref" style="font-size:20px">'
+                  'AUDIO PATH AND LED DRIVE</text>')
+    glyphs.append('<line x1="46" y1="1400" x2="2014" y2="1400" class="dashbox"/>')
+    glyphs.append('<text x="46" y="1462" class="ref" style="font-size:20px">'
+                  'CV CHAIN &#8212; Bergman U2, one per channel</text>')
     T["U301"].update(T.pop("U301pwr"))
-    P["U301pwr"] = P["U301pwr"]
     return P, T, glyphs
 
 
@@ -314,7 +337,7 @@ def lpg_left_wires():
         ("LPG_BP_L",    [("U301", "5"), (490, 193), ("R308", "1")]),
         ("GND",         [("R308", "2"), ("GND", 490, 450)]),
         ("LPG_C5_L",    [("C305", "2"), ("R304", "1")]),
-        ("LPG_CV_L",    [("PORT", 200, 700, "LPG_CV_L  ← CV chain", False),
+        ("LPG_CV_L",    [(1780, 1620), (1780, 1440), (150, 1440), (150, 700),
                          (600, 700), (600, 620), ("R304", "2")]),
         ("LPG_CV_L",    [(600, 620), (600, 520), ("R305", "2")]),
         ("LPG_T1_L",    [("RT301", "2"), ("R307", "1")]),
@@ -369,6 +392,42 @@ def lpg_left_wires():
         # ---- chip supply ----
         ("POS12V",      [("RAIL", 255, 1156, "+12V", True), ("U301", "4")]),
         ("NEG12V",      [("U301", "11"), ("RAIL", 335, 1300, "-12V", False)]),
+        ("POS12V",      [("RAIL", 430, 1190, "+12V", True), ("C301", "1")]),
+        ("GND",         [("C301", "2"), ("GND", 430, 1270)]),
+        ("NEG12V",      [("C302", "1"), (520, 1230), (520, 1330), ("RAIL", 520, 1330, "-12V", False)]),
+        ("GND",         [("C302", "2"), (700, 1230), (700, 1330), ("GND", 700, 1330)]),
+
+        # ---- CV chain: invert, attenuvert, invert, invert ----
+        ("LPG_ENV",     [("PORT", 200, 1600, "LPG_ENV  ← Daisy CV_OUT_1", False),
+                         ("R323", "1")]),
+        ("LPG_ENV",     [(240, 1600), (240, 1500), (900, 1500), ("RV3", "1")]),
+        ("LPG_CVI_L",   [("R323", "2"), (450, 1600), (450, 1627), ("U302", "2")]),
+        ("LPG_CVI_L",   [("U302", "2"), (496, 1700), ("R320", "1")]),
+        ("LPG_ENVN_L",  [("R320", "2"), (700, 1700), (700, 1600), ("U302", "1")]),
+        ("LPG_ENVN_L",  [(700, 1600), (820, 1600), (820, 1680), ("RV3", "3")]),
+        ("LPG_CVW_L",   [("RV3", "2"), ("R328", "1")]),
+        ("LPG_SUMCV_L", [("R328", "2"), (1140, 1620), (1140, 1647), ("U302", "13")]),
+        ("LPG_SUMCV_L", [("U302", "13"), (1176, 1740), ("R330", "1")]),
+        ("LPG_CVD_L",   [("U302", "14"), (1380, 1620), ("R331", "1")]),
+        ("LPG_CVD_L",   [("R330", "2"), (1380, 1740), (1380, 1647)]),
+        ("LPG_CVC_L",   [("R331", "2"), ("U302", "9")]),
+        ("LPG_CVC_L",   [("U302", "9"), (1536, 1780), ("R333", "1")]),
+        ("LPG_CV_L",    [("R333", "2"), (1780, 1780), (1780, 1620), ("U302", "8")]),
+
+        # ---- U302's ground bus, its unused section, its supply ----
+        ("GND",         [("U302", "3"), (430, 1573), (430, 1820), (1490, 1820)]),
+        ("GND",         [(990, 1820), ("GND", 990, 1820)]),
+        ("GND",         [("U302", "12"), (1120, 1593), (1120, 1820)]),
+        ("GND",         [("U302", "10"), (1490, 1593), (1490, 1820)]),
+        ("GND",         [("U302", "5"), (900, 1923), (900, 2060), ("GND", 900, 2060)]),
+        ("LPG_NC_L",    [("U302", "7"), (1180, 1950), (1180, 2010), (940, 2010),
+                         (940, 1977), ("U302", "6")]),
+        ("POS12V",      [("RAIL", 235, 1876, "+12V", True), ("U302", "4")]),
+        ("NEG12V",      [("U302", "11"), ("RAIL", 315, 2020, "-12V", False)]),
+        ("POS12V",      [("RAIL", 430, 1910, "+12V", True), ("C303", "1")]),
+        ("GND",         [("C303", "2"), ("GND", 430, 1990)]),
+        ("NEG12V",      [("C304", "1"), (520, 1950), (520, 2050), ("RAIL", 520, 2050, "-12V", False)]),
+        ("GND",         [("C304", "2"), (760, 1950), (760, 2050), ("GND", 760, 2050)]),
     ]
 
 
@@ -376,7 +435,8 @@ def lpg_left_wires():
 # throw of the mode switch. Every other pin must be wired or the build fails.
 OFF_SHEET = {("RV1", "4"), ("RV1", "5"), ("RV1", "6"), ("RV1", "7"), ("RV1", "8"),
              ("RV2", "4"), ("RV2", "5"), ("RV2", "6"), ("RV2", "7"), ("RV2", "8"),
-             ("SW1", "4"), ("SW1", "5")}
+             ("SW1", "4"), ("SW1", "5"),
+             ("RV3", "4"), ("RV3", "5"), ("RV3", "6"), ("RV3", "7"), ("RV3", "8")}
 
 
 # ------------------------------------------------------------------ build ---
@@ -710,7 +770,7 @@ def render(title, subtitle, P, polys, glyphs, w, h, leads=()):
                              f'text-anchor="middle">{net}</text>')
                 seen.add(net)
                 break
-    parts.append(legend(1700, 1310))
+    parts.append(legend(1560, 2000))
     parts.append(f'<rect class="frame" x="18" y="18" width="{w-36}" height="{h-36}"/>')
     parts.append(f'<text class="title" x="46" y="66">{title}</text>')
     parts.append(f'<text class="subtitle" x="46" y="92">{subtitle}</text>')
@@ -802,9 +862,9 @@ def main():
         for h in hits:
             print("   ", h)
         sys.exit(1)
-    svg = render("LPG — left channel", "audio path and LED drive, drawn from netmap.json · "
-                 "compare with Bergman's sheet · CV chain on its own sheet",
-                 P, polys, glyphs, 2060, 1440, leads)
+    svg = render("LPG — left channel", "complete: audio path, LED drive and CV chain, drawn "
+                 "from netmap.json and checked against it · compare with Bergman's sheet",
+                 P, polys, glyphs, 2060, 2140, leads)
     out = f"{ROOT}/docs/sch-lpg-left.svg"
     open(out, "w").write(svg)
     page = PAGE.replace("<!--SVG-->", svg).replace("__PARTS__", str(len(refs))) \
