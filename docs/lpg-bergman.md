@@ -109,17 +109,35 @@ compensate for how slow a vactrol is.
 
 ```
 pin 6 ─┬─ Tp2 500K trim ──────────────────────────── pin 7 (out)   [S1 removed]
-       └─ Tp1 20K trim ─ R7 33K ─┬─ LED node
+       └─ Tp1 20K trim ─ R7 33K ─┬─ LED anode node
                                  ├─ R17 100K ─ GND
-                                 └─ D1 3.9V zener ─ GND
-   pin 7 ─ R6 470R ─ LED node ─ the two vactrol LEDs in series
+                                 ├─ D1 3.9V zener, ANODE here, cathode to GND
+                                 └─ VT_a LED anode
+                                      VT_a cathode ─ VT_b anode
+                                        VT_b cathode ─ R6 470R ─ pin 7 (out)
 ```
 
-The main loop closes from the **LED anode node, after `R6`** — so the amp
-regulates the voltage across the LED string rather than its own output, which is
-what makes the drive behave consistently as the LEDs warm. `Tp1` sets that
-depth. `Tp2` adds a second feedback path taken straight from the output,
-changing overall gain.
+**The LED string never touches ground.** Its far end returns to the op-amp
+output through `R6`; ground reaches the string only through `D1` and `R17`.
+
+`U1-B` swings **negative**, because OFFSET sits on the positive rail and feeds
+an inverting stage. So the anode node sits at **−3.9V**, where `D1` is in
+reverse breakdown, and **`D1` is what supplies the LED current** — from ground,
+through the string, into pin 7, which sinks it. `R6` and the output voltage set
+how much. `Tp1` sets the feedback depth from that node; `Tp2` adds a second
+feedback path taken straight from the output, changing overall gain.
+
+> **Corrected 2026-09-16.** Every earlier version of this section, and the
+> schematic built from it, had this backwards: `R6` on the anode side, both LED
+> cathodes to ground, and `D1` reversed. That inverts the drive. With our
+> op-amp swinging negative, the flipped `D1` pins the node at −0.7V and the LEDs
+> never light; and where the real circuit has `D1` *supplying* LED current, the
+> flipped one *shunts* it away above 3.9V. The 2026-09-11 "node by node, both
+> channels, clean" check compared the netlist against this document rather than
+> against Bergman's drawing, so both were wrong together — the same failure as
+> U8. Fixed on the board 2026-09-16: `D301`/`D401` turned around,
+> `VT302.2`/`VT402.2` moved off GND onto `LPG_LEDK_L`/`_R`, and `R306`/`R406`
+> moved to sit between the LED cathodes and the op-amp output.
 
 **Neither `S1` "DEEP" nor `Tp2` is fitted — decided 2026-09-04.** Bergman
 describes DEEP as making the sound "deeper with less high tones… the effect of
@@ -193,6 +211,11 @@ No symbol or footprint in `lib/` yet.
 
 ## Checked against the drawing — 2026-09-11, both channels
 
+> **One row of this table was wrong and shipped into the board: the LED drive.**
+> Caught 2026-09-16 by reading the drawing at full resolution. Everything else
+> below still holds, but treat this table as re-checked only where it has been
+> re-read against the image, not against this document.
+
 `datasheets/` now holds Bergman's schematic image. `netmap.json` was diffed
 against it node by node, L and R. **The two channels are structurally identical**
 — every node below has the same membership on both sides, so nothing is a
@@ -210,7 +233,7 @@ Matching, and including the three things this drawing is easy to get wrong:
 | LDR2 out | `C9` 1nF and `R13` 4M7 to GND, into `U1-C` pin 10 **(+)** |
 | `U1-C` | `R14` unity buffer, `R15` to output, and it drives `U1-D` pin 12 |
 | `U1-D` | `C10` 22pF, RESONANCE, `R18` |
-| **LED drive** | `Tp1`→`R7` to the LED node, `R17`+`D1` there, and the loop closes **after `R6`** |
+| ~~**LED drive**~~ | **WRONG — see the correction in "Two feedback paths". The string's cathode end returns through `R6` to pin 7 and `D1`'s anode is on the node. This row claimed otherwise and the board was built from it. Fixed 2026-09-16.** |
 | **offset/CV sum** | `R5` 100K in parallel with the `C5`+`R4` *series* pair |
 | CV chain | `U2-A` inverter, `RV3` attenuverter, `U2-D`→`U2-C` cascade |
 | `U2-B` | unused, pin 5 to GND, pins 6/7 tied — as drawn |

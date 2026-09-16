@@ -43,16 +43,17 @@ fallback if the question is ever revisited.
 |---|---|---|---|---|
 | BBD | V3205SD ×2, CD4046B ×2, TL072 ×6, 1N4148W ×10 | `bbd-mki.md` (814 lines, full net inventory) | `BBD_MANUAL_250228.pdf`, in repo | CD4046B, TL072 ✓ · V3205SD pinout from the manual |
 | LPG | TL084 ×2, TL074 ×2, VTL5C3 ×4, 3V9 zener ×2 | `lpg-bergman.md` | Bergman drawing in `datasheets/` ✓ | TL074, TL084, VTL5C3 ✓ |
-| PSU / USB-C | DKM10E-12, AMS1117 ×3, MMBFJ113 ×2, TYPE-C-31-M-12 | `power-usbc-dkm.md` | `reference/V3.0.kicad_sch` ✓ | DKM10, MMBFJ113 ✓ · **AMS1117 missing** |
+| PSU / USB-C | DKM10E-12, AMS1117 ×3, MMBFJ113 ×2, TYPE-C-31-M-12 | `power-usbc-dkm.md` | `reference/V3.0.kicad_sch` ✓ | DKM10, MMBFJ113, AMS1117 ✓ |
 | Encoder / button IO | MCP23017 ×2 | `pin-allocation.md` | n/a | MCP23017 ✓ |
 | Headphone / EXT preamp | OPA1688 ×2 | `design-state.md` | n/a | OPA1688 ✓ |
 | Daisy Patch SM | U1 | `design-state.md` | n/a | Patch SM v1.0.5 ✓ + pinout extract |
 | MSP430 touch | MSP430FR2675 | `design-state.md`, ADRs 0002–0005 | n/a | 5 docs ✓ |
 
 PDFs live in `datasheets/` and are **gitignored** — run
-`datasheets/fetch-datasheets.sh` to populate. Fourteen fetch cleanly; four
-vendors 403 every scripted request and are listed at the end of that script for
-manual download.
+`datasheets/fetch-datasheets.sh` to populate. 35 fetch cleanly; only the
+CoolAudio V3205SD sheet 403s, and the MN3205 original covers that pinout.
+`datasheets/REVIEW-INDEX.md` maps every reference designator to its datasheet
+and every block to its source schematic.
 
 ## Already verified
 
@@ -65,23 +66,46 @@ manual download.
 | U3/U4 I2C addresses | **distinct** — 0x20 and 0x21 | A0–A2 strapping |
 | Power/ground pin semantics, all 309 parts | **1 defect found** (U8), since fixed | `boardcheck.py` pin-name vs net |
 | PSU input stage vs its source | **clean** — DKM pinout, CC pulldowns, fuse all match; one omission (no TVS) since fixed as `D3` | `schnet.py` netlist of `V3.0.kicad_sch` |
-| LPG vs Bergman's drawing, **both channels** | **clean** — channels structurally identical; `R12`/`R16` absent by decision, BOTH+VCF only | node-by-node diff, 2026-09-11 |
+| LPG vs Bergman's drawing, **both channels** | **one defect, since fixed** — the LED drive was inverted (see `lpg-bergman.md`). The rest is clean; `R12`/`R16` absent by decision, BOTH+VCF only | node-by-node diff 2026-09-11, drawing re-read at full resolution 2026-09-16 |
+| 3.5mm jacks `J2`–`J6` | **clean** — the datasheet's plug gauge numbers the sections 1 sleeve, 2 ring, 3 tip, matching the contact numbers | SOFNG PJ-376 drawing |
+| DPDT `SW1`/`SW2` | **clean** — commons on 2 and 5, throws 1/3 and 4/6 | Dailywell 2MDP0428 |
+| `AMS1117` `U5`/`U6`/`U8` | **clean** — 1 = GND/ADJ, 2 = VOUT, 3 = VIN, tab = VOUT | Advanced Monolithic ds1117 |
+| `U7` pad **coordinates** | **clean** — the irregular 0.3"/0.2" top row against a 0.4" bottom row is what the drawing specifies, and the pads match, 0.8" between rows | Mean Well mechanical spec p5 |
+| Polarised parts vs package drawings | **clean** — silkscreen "+" lands on pad 1 on every electrolytic, read off a board render | 2026-09-16 |
+| Encoders, trimmers | **clean** — ALPS A/common/B plus switch; Bourns 1 = CCW, 2 = wiper, 3 = CW | ALPS + Bourns drawings |
 | BBD vs the manual's own BOM, **both channels** | **clean** — all 27 R and 22 C accounted for, channels symmetric, the three crossings unshorted | text extracted from `BBD_MANUAL_250228.pdf` |
 | BBD vs the **schematic drawing** | **clean** — every value and node checked; the one mismatch (`R120` 62k vs a drawn 56K) is the manual contradicting its own parts list, worth 0.75% of VGG | page-2 bitmap extracted and read at full res |
 | V3205SD, VTL5C3, MMBFJ113 pinouts | **all three clean** — see items 2-4 below | manual p25, Xvive package drawing, onsemi Rev 5 drawing |
 | Polarity, all 14 polarised parts | **clean** — D103–D106 clamp pairs, zener shunts, D1/D2 bipolar indicator | inspection vs netmap |
 | Board ↔ schematic parity | 942/942, 0 unintended | `netcheck.py`, `boardcheck.py` |
 
+## Open defects — found 2026-09-16, must be fixed before ordering
+
+1. **`SW4`–`SW9`, all six buttons are shorted out.** The TS1103S drawing joins
+   pins 1–2 internally and 3–4 internally, with the contact between those pairs.
+   The footprint's pads 1+2 are the 12.5mm-apart pair and 3+4 the other, which is
+   forced by the hole pattern regardless of anyone's numbering convention. We
+   wired BTN to 1+3 and GND to 2+4, so each terminal carries both nets. Every
+   button reads permanently pressed. **Not yet fixed.**
+2. **`RV1`–`RV6` are the wrong value.** The BOM buys `C380211` =
+   `RK09L1240A12`, which the ALPS datasheet gives as **10kΩ**. The design needs
+   **100kΩ**: `lpg-bergman.md` specifies 100K for OFFSET, RESONANCE and CV
+   Level; the BBD manual specifies 100k for DRY/WET; and the TIME divider's own
+   arithmetic in `bbd-mki.md` (10.17V at full CCW, 36k at centre) only comes out
+   at 100k. At 10k the TIME knob's sweep collapses. **Needs a part that JLC
+   stocks.**
+3. **`J7`–`J10`, the 1/4" jacks — unresolved, needs a meter.** Neither
+   manufacturer drawing labels the contacts. The cross-section implies pad 2 =
+   sleeve, pad 3 = ring, pads 4/5 = tip and its normalling switch, which is how
+   we wired it, but nothing rules out pad 3 being the tip. If it is, a mono plug
+   shorts every output to ground. Beep out one physical jack before ordering.
+
 ## Not verified — what a second pass should cover
 
-1. **U7 pin *coordinates*.** The pinout is confirmed but the footprint is named
-   `PWRM-TH_DKMW30F-12` while the part is a DKM10E-12. Body outline is
-   1.000"×1.000", which matches the datasheet's "1"x1" Package", and pads sit on
-   a 0.800"×0.800" grid — but the per-pin x positions are irregular
-   (−0.4/−0.1/+0.1 on one row, −0.4/0.0/+0.4 on the other) and the datasheet's
-   mechanical drawing uses an embedded subset font whose dimension text will not
-   extract. Check against the drawing by eye. Through-hole and hand-soldered, so
-   a physical part can settle it.
+1. ~~**U7 pin coordinates**~~ — **done 2026-09-16.** The Mean Well drawing
+   (p5, Bottom View) specifies the top row as 7.62mm then 5.08mm — 0.3" then
+   0.2" — against a uniform 10.16mm bottom row, with 20.32mm between rows. The
+   footprint matches all of it. The irregular spacing was the part, not a bug.
 2. ~~**V3205SD pinout**~~ — **done 2026-09-11.** The manual states it in words on
    p25: *"5 V at pin 5 and ground at pin 1… VGG at pin 8 via a 4k7/56k divider…
    clock 1 into pin 6, clock 2 into pin 2, and our scaled and biased input into
@@ -105,8 +129,9 @@ manual download.
    **"Source & Drain are Interchangeable"**, so the D/S order across pins 1 and 2
    is electrically immaterial. A web search had claimed pin 2 was the gate; the
    drawing disproves it.
-5. **AMS1117** (U5/U6) — U8 is now verified by having been fixed; U5/U6 carry the
-   same symbol and pass the semantic check, but confirm against the datasheet.
+5. ~~**AMS1117** (U5/U6)~~ — **done 2026-09-16** against the Advanced Monolithic
+   datasheet: 3-pin fixed version is 1 = Ground/Adjust, 2 = VOUT, 3 = VIN, and
+   "TAB IS OUTPUT". All three regulators match.
 6. ~~**The LPG against its source**~~ — **done 2026-09-11.** Diffed node by node
    against Bergman's drawing, both channels, which are structurally identical.
    Everything matches including the three easy misreads (`C8` returning to
