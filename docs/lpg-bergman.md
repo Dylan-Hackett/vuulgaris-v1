@@ -25,9 +25,9 @@ LED string. A 3-position mode switch reconfigures the same LDR pair as a VCA, a
 ## Audio path, one channel
 
 ```
-AUDIO IN ─ C6 1uF ─┬─ R9 100K ─ GND
-                   ├─ R10 100K ─ GND
-                   └─ U1-A pin 3 (+)
+AUDIO IN ─┬─ R9 100K ─ GND        <- BEFORE the cap, loads the source
+          └─ C6 1uF ─┬─ R10 100K ─ GND    <- AFTER it, biases the input
+                     └─ U1-A pin 3 (+)
     U1-A pin 2 (−) ─┬─ R11 15K ─ pin 1 (out)
                     └─ R12 15K ─ [S1/S2] ─ GND     gain 2 with the contact made,
                                                     1 with it open
@@ -211,10 +211,11 @@ No symbol or footprint in `lib/` yet.
 
 ## Checked against the drawing — 2026-09-11, both channels
 
-> **One row of this table was wrong and shipped into the board: the LED drive.**
-> Caught 2026-09-16 by reading the drawing at full resolution. Everything else
-> below still holds, but treat this table as re-checked only where it has been
-> re-read against the image, not against this document.
+> **Two rows of this table were wrong and shipped into the board: the LED drive
+> and the input stage.** Both were caught by eye, 2026-09-16, by reading the
+> drawing at full resolution. Treat every remaining row as unverified until it
+> has been re-read against the image — this table was written against the
+> document, not the drawing, which is why it agreed with the mistakes.
 
 `datasheets/` now holds Bergman's schematic image. `netmap.json` was diffed
 against it node by node, L and R. **The two channels are structurally identical**
@@ -225,7 +226,7 @@ Matching, and including the three things this drawing is easy to get wrong:
 
 | node | agrees |
 |---|---|
-| input | `C6` → `R9`‖`R10`‖`U1-A` pin 3 |
+| ~~input~~ | **WRONG — `R9` sits BEFORE `C6`, `R10` after it. This row put both after the cap and the board was built that way, giving 50k of bias instead of 100k and nothing loading the source. Fixed 2026-09-16: `R310`/`R410` moved to the pre-cap node, so on our board `R310` = Bergman's `R9` and `R309` = `R10`.** |
 | `U1-A` | `R11` 15K feedback |
 | vactrols | LEDs in series off `R6`; LDRs in series in the audio path |
 | LDR mid-node | `C7` 220pF to GND |
