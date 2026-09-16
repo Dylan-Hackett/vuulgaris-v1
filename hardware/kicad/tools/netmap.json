@@ -384,12 +384,12 @@
   "2": "GND"
  },
  "D301": {
-  "1": "LPG_LED_L",
-  "2": "GND"
+  "1": "GND",
+  "2": "LPG_LED_L"
  },
  "D401": {
-  "1": "LPG_LED_R",
-  "2": "GND"
+  "1": "GND",
+  "2": "LPG_LED_R"
  },
  "DS1": {
   "1": "GND",
@@ -825,7 +825,7 @@
  },
  "R306": {
   "1": "LPG_BOUT_L",
-  "2": "LPG_LED_L"
+  "2": "LPG_LEDK_L"
  },
  "R307": {
   "1": "LPG_T1_L",
@@ -905,7 +905,7 @@
  },
  "R406": {
   "1": "LPG_BOUT_R",
-  "2": "LPG_LED_R"
+  "2": "LPG_LEDK_R"
  },
  "R407": {
   "1": "LPG_T1_R",
@@ -1543,7 +1543,7 @@
  },
  "VT302": {
   "1": "LPG_LEDM_L",
-  "2": "GND",
+  "2": "LPG_LEDK_L",
   "3": "LPG_MID_L",
   "4": "LPG_LDR_L"
  },
@@ -1555,7 +1555,7 @@
  },
  "VT402": {
   "1": "LPG_LEDM_R",
-  "2": "GND",
+  "2": "LPG_LEDK_R",
   "3": "LPG_MID_R",
   "4": "LPG_LDR_R"
  }
