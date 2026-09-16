@@ -353,7 +353,7 @@ def lpg_left_wires():
         ("LPG_CFB_L",   [("U301", "9"), (1456, 900), ("R314", "1")]),
         ("LPG_OUT_L",   [("U301", "8"), (1680, 740), (1720, 740), ("R315", "1")]),
         ("LPG_OUT_L",   [("R314", "2"), (1680, 900), (1680, 740)]),
-        ("LPG_OUT_L",   [(1680, 960), (1456, 960), (1456, 1003), ("U301", "12")]),
+        ("LPG_OUT_L",   [(1680, 900), (1680, 960), (1456, 960), (1456, 1003), ("U301", "12")]),
         ("BBD_IN_L",    [("R315", "2"), ("PORT", 1880, 740, "BBD_IN_L  → delay", True)]),
 
         # ---- resonance ----
@@ -554,6 +554,67 @@ def wire_shorts(polys):
     return sorted(set(bad))
 
 
+def continuity(polys, T, netmap, refs):
+    """Every wire and pin on a net must form ONE connected thing.
+
+    Without this, a wire can start in mid-air next to the net it belongs to and
+    every per-pin check still passes -- which is how U301 pin 12 came to sit on
+    a stub that reached nothing.
+    """
+    bad = []
+    nets = collections.defaultdict(list)
+    for net, poly in polys:
+        for a, b in segments(poly):
+            if a != b:
+                nets[net].append((a, b))
+    pins = collections.defaultdict(list)
+    for ref in refs:
+        for pin, net in netmap[ref].items():
+            if (ref, pin) in OFF_SHEET or ref not in T or pin not in T[ref]:
+                continue
+            pins[net].append(((ref, pin), T[ref][pin]))
+    for net, segs in nets.items():
+        if re.match(r"^(GND|POS12V|NEG12V|P5V|P3V3|VBUS|VDD|VSS)", net):
+            continue
+        parent = {}
+        def find(a):
+            parent.setdefault(a, a)
+            while parent[a] != a:
+                parent[a] = parent[parent[a]]; a = parent[a]
+            return a
+        def uni(a, b):
+            ra, rb = find(a), find(b)
+            if ra != rb:
+                parent[ra] = rb
+        for i, (a, b) in enumerate(segs):
+            uni(("s", i), ("p", a)); uni(("s", i), ("p", b))
+        for i, (a, b) in enumerate(segs):
+            for j, (c, d) in enumerate(segs):
+                if i >= j:
+                    continue
+                for q in (a, b):
+                    if on_seg(q, c, d, tol=1.5):
+                        uni(("s", i), ("s", j))
+                for q in (c, d):
+                    if on_seg(q, a, b, tol=1.5):
+                        uni(("s", i), ("s", j))
+        for (ref, pin), q in pins.get(net, []):
+            for i, (a, b) in enumerate(segs):
+                if on_seg(q, a, b, tol=1.5):
+                    uni(("t", ref, pin), ("s", i))
+        groups = collections.defaultdict(list)
+        for i, (a, b) in enumerate(segs):
+            groups[find(("s", i))].append(f"wire {a}->{b}")
+        for (ref, pin), q in pins.get(net, []):
+            key = ("t", ref, pin)
+            if key in parent:
+                groups[find(key)].append(f"{ref}.{pin}")
+        if len(groups) > 1:
+            pieces = " | ".join(", ".join(sorted(v)[:3]) for v in groups.values())
+            bad.append(f"{net} is drawn in {len(groups)} disconnected pieces: {pieces}")
+    return bad
+
+
 def junctions(polys):
     """A dot means three or more wires join, or one wire lands on another.
 
@@ -727,7 +788,8 @@ def main():
     P, T, glyphs = lpg_left(netmap, values)
     refs = [r for r in T if r in netmap]
     polys = resolve(lpg_left_wires(), T, glyphs)
-    bad = check(polys, T, netmap, refs) + wire_shorts(polys)
+    bad = (check(polys, T, netmap, refs) + wire_shorts(polys)
+           + continuity(polys, T, netmap, refs))
     if bad:
         print(f"drawing does not match netmap.json ({len(bad)}):")
         for b in bad:
