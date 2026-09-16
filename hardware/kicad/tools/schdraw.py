@@ -223,6 +223,66 @@ def port(x, y, name, left=True):
             f'<text x="{tx}" y="{y+5}" class="port-label" text-anchor="{anchor}">{name}</text>'), _t(x, y)
 
 
+def chip(x, y, w, h, ref, part, left, right):
+    """A rectangular IC. left/right are [(pin, name), ...] top to bottom."""
+    box = f'<rect x="{x}" y="{y}" width="{w}" height="{h}" class="fillwhite"/>'
+    lab = (f'<text x="{x+w/2}" y="{y-26}" class="ref" text-anchor="middle">{ref}</text>'
+           f'<text x="{x+w/2}" y="{y-8}" class="val" text-anchor="middle">{part}</text>')
+    g, term = box + lab, {}
+    def side(pins, isleft):
+        nonlocal g
+        step = h / (len(pins) + 1)
+        for i, (pin, name) in enumerate(pins):
+            py = y + step * (i + 1)
+            if isleft:
+                g += f'<line x1="{x-24}" y1="{py}" x2="{x}" y2="{py}" class="pin"/>'
+                g += (f'<text x="{x-28}" y="{py-8}" class="pin-no" text-anchor="end">{pin}</text>'
+                      f'<text x="{x+10}" y="{py+6}" class="note">{name}</text>')
+                term[pin] = _t(x-24, py)
+            else:
+                g += f'<line x1="{x+w}" y1="{py}" x2="{x+w+24}" y2="{py}" class="pin"/>'
+                g += (f'<text x="{x+w+28}" y="{py-8}" class="pin-no">{pin}</text>'
+                      f'<text x="{x+w-10}" y="{py+6}" class="note" text-anchor="end">{name}</text>')
+                term[pin] = _t(x+w+24, py)
+    side(left, True)
+    side(right, False)
+    return g, term
+
+
+def jfet(x, y, ref, part):
+    """N-channel JFET, gate on the left. Terminals 1 = drain, 2 = source, 3 = gate."""
+    ch = (f'<line x1="{x}" y1="{y-34}" x2="{x}" y2="{y+34}" class="body"/>'
+          f'<line x1="{x}" y1="{y-34}" x2="{x}" y2="{y-60}" class="pin"/>'
+          f'<line x1="{x}" y1="{y+34}" x2="{x}" y2="{y+60}" class="pin"/>')
+    gate = (f'<line x1="{x-60}" y1="{y}" x2="{x-14}" y2="{y}" class="pin"/>'
+            f'<polygon points="{x-14},{y-7} {x-14},{y+7} {x-2},{y}" class="fillbody"/>')
+    lab = (f'<text x="{x+16}" y="{y-8}" class="ref">{ref}</text>'
+           f'<text x="{x+16}" y="{y+10}" class="val">{part}</text>'
+           f'<text x="{x-10}" y="{y-40}" class="note" text-anchor="end">D</text>'
+           f'<text x="{x-10}" y="{y+50}" class="note" text-anchor="end">S</text>')
+    return ch + gate + lab, {"1": _t(x, y-60), "2": _t(x, y+60), "3": _t(x-60, y)}
+
+
+def diode(x, y, ref, val, cathode_up=True):
+    """Vertical signal diode. Terminal 1 is the cathode (bar), 2 the anode."""
+    s = 14
+    if cathode_up:
+        tri = f'<polygon points="{x-s},{y+s} {x+s},{y+s} {x},{y-2}" class="fillbody"/>'
+        bar = f'<line x1="{x-s-4}" y1="{y-2}" x2="{x+s+4}" y2="{y-2}" class="body"/>'
+        term = {"1": _t(x, y-44), "2": _t(x, y+44)}
+        wires = (f'<line x1="{x}" y1="{y-44}" x2="{x}" y2="{y-2}" class="pin"/>'
+                 f'<line x1="{x}" y1="{y+s}" x2="{x}" y2="{y+44}" class="pin"/>')
+    else:
+        tri = f'<polygon points="{x-s},{y-s} {x+s},{y-s} {x},{y+2}" class="fillbody"/>'
+        bar = f'<line x1="{x-s-4}" y1="{y+2}" x2="{x+s+4}" y2="{y+2}" class="body"/>'
+        term = {"1": _t(x, y+44), "2": _t(x, y-44)}
+        wires = (f'<line x1="{x}" y1="{y-44}" x2="{x}" y2="{y-s}" class="pin"/>'
+                 f'<line x1="{x}" y1="{y+2}" x2="{x}" y2="{y+44}" class="pin"/>')
+    lab = (f'<text x="{x+24}" y="{y-6}" class="ref">{ref}</text>'
+           f'<text x="{x+24}" y="{y+10}" class="val">{val}</text>')
+    return tri + bar + wires + lab, term
+
+
 def power_pins(x, y, ref, part, pins=("4", "11")):
     """The op-amp's supply pins, drawn once for the whole chip."""
     w, h = 150, 96
@@ -317,6 +377,114 @@ def lpg_left(netmap, values):
     glyphs.append('<text x="46" y="1462" class="ref" style="font-size:20px">'
                   'CV CHAIN &#8212; Bergman U2, one per channel</text>')
     T["U301"].update(T.pop("U301pwr"))
+    return P, T, glyphs
+
+
+def bbd_left(netmap, values):
+    """BBD left channel, laid out like the mki manual: audio across the top,
+    mix below it, the 4046 clock and the sample trigger underneath."""
+    V = lambda r: values.get(r, "")
+    P, T, glyphs = {}, {}, []
+
+    def put(ref, res):
+        svg, terms = res
+        P[ref] = svg
+        T[ref] = terms
+
+    def opamp_unit(ref, unit, x, y, pins, plus_top=True):
+        svg, tt = opamp(x, y, f"{ref}-{unit}", V(ref) or "TL072", plus_top, pins)
+        P[f"{ref}{unit}"] = svg
+        T[ref] = {**T.get(ref, {}), pins[0]: tt["out"], pins[1]: tt["-"], pins[2]: tt["+"]}
+
+    # --- input buffer, summing amp, the BBD itself ----------------------
+    put("R106", resistor(280, 380, "R106", V("R106"), vert=True))
+    put("R107", resistor(400, 300, "R107", V("R107")))
+    opamp_unit("U102", "A", 560, 300, ("1", "2", "3"))
+    put("R104", resistor(860, 300, "R104", "0R  IN GAIN"))
+    put("R114", resistor(1030, 300, "R114", V("R114")))
+    put("R118", resistor(1280, 180, "R118", V("R118")))
+    put("R113", resistor(1240, 470, "R113", V("R113"), vert=True, swap=True))
+    opamp_unit("U103", "A", 1200, 300, ("1", "2", "3"), plus_top=False)
+    put("U101", chip(1560, 240, 200, 300, "U101", "V3205SD",
+                     [("7", "IN"), ("6", "CLK1"), ("2", "CLK2"), ("8", "VGG")],
+                     [("4", "OUT"), ("5", "VDD"), ("1", "VSS")]))
+    put("R119", resistor(1960, 700, "R119", V("R119"), vert=True))
+    put("R120", resistor(1340, 650, "R120", V("R120"), vert=True))
+    put("C110", cap(1260, 650, "C110", V("C110"), vert=True, flip_label=True))
+    put("R122", resistor(1860, 405, "R122", V("R122"), vert=True))
+    put("C113", cap(1960, 315, "C113", V("C113")))
+    put("R124", resistor(2060, 405, "R124", V("R124"), vert=True))
+    opamp_unit("U106", "A", 2140, 315, ("1", "2", "3"))
+
+    # --- sample and hold ------------------------------------------------
+    put("R128", resistor(2440, 420, "R128", V("R128"), vert=True))
+    put("Q1", jfet(2560, 420, "Q1", "J113"))
+    put("C119", cap(2560, 600, "C119", V("C119"), vert=True))
+    put("D107", diode(2500, 760, "D107", V("D107"), cathode_up=False))
+    opamp_unit("U106", "B", 2740, 480, ("7", "6", "5"))
+    put("R129", resistor(2716, 760, "R129", V("R129"), vert=True))
+    put("R130", resistor(2820, 700, "R130", V("R130"), flip_label=True))
+    put("C120", cap(3040, 480, "C120", V("C120")))
+
+    # --- mix, feedback, output -----------------------------------------
+    put("RV5", pot(1300, 1100, "RV5", "FEEDBACK", wiper_right=False))
+    put("R112", resistor(1160, 1100, "R112", V("R112"), swap=True))
+    put("RV6", pot(1600, 1100, "RV6", "WET/DRY", wiper_right=True))
+    opamp_unit("U103", "B", 1760, 1100, ("7", "6", "5"))
+    put("R131", resistor(2060, 1100, "R131", V("R131")))
+    put("R132", resistor(2900, 1300, "R132", V("R132"), vert=True))
+
+    # --- 4046 clock -----------------------------------------------------
+    put("R110", resistor(300, 1600, "R110", V("R110"), vert=True))
+    put("RV4", pot(300, 1760, "RV4", "TIME", wiper_right=True))
+    put("R111", resistor(300, 1900, "R111", V("R111"), vert=True))
+    put("R115", resistor(460, 1760, "R115", V("R115")))
+    put("R116", resistor(460, 1860, "R116", V("R116")))
+    put("D103", diode(700, 1660, "D103", V("D103"), cathode_up=True))
+    put("D105", diode(800, 1860, "D105", V("D105"), cathode_up=True))
+    put("R117", resistor(460, 2060, "R117", V("R117")))
+    put("D104", diode(640, 1980, "D104", V("D104"), cathode_up=True))
+    put("D106", diode(720, 2120, "D106", V("D106"), cathode_up=True))
+    put("C114", cap(760, 1810, "C114", V("C114"), vert=True, flip_label=True))
+    put("R123", resistor(830, 2000, "R123", V("R123"), vert=True))
+    put("R121", resistor(760, 2180, "R121", V("R121"), vert=True))
+    put("U104", chip(900, 1600, 240, 420, "U104", "CD4046B",
+                     [("9", "VCO_IN"), ("5", "INH"), ("6", "C1A"), ("7", "C1B"),
+                      ("11", "R1"), ("12", "R2")],
+                     [("4", "VCO_OUT"), ("3", "COMP_IN"), ("2", "PC1_OUT"),
+                      ("14", "SIG_IN"), ("16", "VDD"), ("8", "VSS")]))
+
+    # --- sample trigger comparator --------------------------------------
+    put("C116", cap(1600, 1560, "C116", V("C116")))
+    put("R127", resistor(1700, 1650, "R127", V("R127"), vert=True))
+    put("R125", resistor(1620, 1760, "R125", V("R125"), vert=True))
+    put("R126", resistor(1620, 1900, "R126", V("R126"), vert=True))
+    opamp_unit("U102", "B", 1800, 1560, ("7", "6", "5"))
+
+    # --- supplies and decoupling ----------------------------------------
+    put("U102pwr", power_pins(300, 2330, "U102", "TL072", ("8", "4")))
+    T["U102"].update(T.pop("U102pwr"))
+    put("U103pwr", power_pins(700, 2330, "U103", "TL072", ("8", "4")))
+    T["U103"].update(T.pop("U103pwr"))
+    put("U106pwr", power_pins(1100, 2330, "U106", "TL072", ("8", "4")))
+    T["U106"].update(T.pop("U106pwr"))
+    for i, (ref, kind) in enumerate([("C105", "+"), ("C107", "+"), ("C121", "+"),
+                                     ("C109", "5"), ("C111", "5")]):
+        put(ref, cap(1560 + i*180, 2400, ref, V(ref), vert=True))
+    for i, ref in enumerate(["C106", "C108", "C122"]):
+        put(ref, cap(2540 + i*220, 2400, ref, V(ref)))
+
+    glyphs.append('<text x="46" y="140" class="ref" style="font-size:20px">'
+                  'AUDIO PATH \u2014 input, BBD, sample and hold</text>')
+    glyphs.append('<line x1="46" y1="960" x2="3154" y2="960" class="dashbox"/>')
+    glyphs.append('<text x="46" y="1010" class="ref" style="font-size:20px">'
+                  'MIX \u2014 feedback, wet/dry, output</text>')
+    glyphs.append('<line x1="46" y1="1440" x2="3154" y2="1440" class="dashbox"/>')
+    glyphs.append('<text x="46" y="1500" class="ref" style="font-size:20px">'
+                  'CLOCK \u2014 CD4046 VCO, TIME control, sample trigger</text>')
+    glyphs.append('<line x1="46" y1="2260" x2="3154" y2="2260" class="dashbox"/>')
+    glyphs.append('<text x="46" y="2310" class="ref" style="font-size:20px">'
+                  'SUPPLIES</text>')
     return P, T, glyphs
 
 
@@ -431,12 +599,164 @@ def lpg_left_wires():
     ]
 
 
+def bbd_left_wires():
+    return [
+        # ---- input buffer -> summing amp -> BBD ----
+        ("BBD_IN_L",    [("PORT", 180, 300, "BBD_IN_L  \u2190 LPG out", False), (280, 300),
+                         ("R107", "1")]),
+        ("BBD_IN_L",    [(280, 300), ("R106", "1")]),
+        ("GND",         [("R106", "2"), ("GND", 280, 430)]),
+        ("BBD_INF_L",   [("R107", "2"), (500, 300), (500, 273), ("U102", "3")]),
+        ("BBD_DRY_L",   [("U102", "1"), (740, 300), ("R104", "1")]),
+        ("BBD_DRY_L",   [(740, 300), (740, 380), (500, 380), (500, 327), ("U102", "2")]),
+        ("BBD_DRY_L",   [(740, 380), (740, 1000), (1600, 1000), ("RV6", "1")]),
+        ("BBD_GAIN_L",  [("R104", "2"), ("R114", "1")]),
+        ("BBD_SUM_L",   [("R114", "2"), (1140, 300), (1140, 273), ("U103", "2")]),
+        ("BBD_SUM_L",   [(1140, 300), (1140, 380), ("R113", "2")]),
+        ("BBD_SUM_L",   [(1140, 273), (1140, 180), ("R118", "1")]),
+        ("NEG12V",      [("R113", "1"), ("RAIL", 1240, 560, "-12V", False)]),
+        ("GND",         [("U103", "3"), (1120, 327), (1120, 430), ("GND", 1120, 430)]),
+        ("BBD_SIGIN_L", [("R118", "2"), (1400, 180), (1400, 300), ("U103", "1")]),
+        ("BBD_SIGIN_L", [(1400, 300), (1440, 300), ("U101", "7")]),
+        ("P5V_BBD",     [("RAIL", 1960, 650, "+5V BBD", True), ("R119", "1")]),
+        ("BBD_VGG_L",   [("R119", "2"), (1960, 800), (1600, 800), (1600, 560),
+                         (1400, 560), (1400, 480), ("U101", "8")]),
+        ("BBD_VGG_L",   [(1400, 560), (1340, 560), ("R120", "1")]),
+        ("BBD_VGG_L",   [(1340, 560), (1260, 560), ("C110", "1")]),
+        ("GND",         [("R120", "2"), ("GND", 1340, 700)]),
+        ("GND",         [("C110", "2"), ("GND", 1260, 686)]),
+        ("P5V_BBD",     [("U101", "5"), (1820, 390), (1820, 200), ("RAIL", 1820, 200, "+5V BBD", True)]),
+        ("GND",         [("U101", "1"), (1900, 465), (1900, 560), ("GND", 1900, 560)]),
+        ("BBD_RAW_L",   [("U101", "4"), (1860, 315), ("C113", "1")]),
+        ("BBD_RAW_L",   [(1860, 315), ("R122", "1")]),
+        ("GND",         [("R122", "2"), ("GND", 1860, 455)]),
+        ("BBD_AC_L",    [("C113", "2"), (2060, 315), (2060, 288), ("U106", "3")]),
+        ("BBD_AC_L",    [(2060, 315), ("R124", "1")]),
+        ("GND",         [("R124", "2"), ("GND", 2060, 455)]),
+
+        # ---- sample and hold ----
+        ("BBD_SH_IN_L", [("U106", "1"), (2284, 215), (2080, 215), (2080, 342), ("U106", "2")]),
+        ("BBD_SH_IN_L", [("U106", "1"), (2560, 315), ("Q1", "1")]),
+        ("BBD_SH_IN_L", [(2440, 315), ("R128", "1")]),
+        ("BBD_SH_G_L",  [("R128", "2"), (2440, 500), (2500, 500), ("Q1", "3")]),
+        ("BBD_SH_G_L",  [(2500, 500), (2500, 716)]),
+        ("BBD_SH_G_L",  [(2500, 716), ("D107", "2")]),
+        ("BBD_SH_HOLD_L", [("Q1", "2"), (2560, 540), ("C119", "1")]),
+        ("BBD_SH_HOLD_L", [(2560, 540), (2660, 540), (2660, 453), ("U106", "5")]),
+        ("GND",         [("C119", "2"), ("GND", 2560, 636)]),
+        ("BBD_SH_FB_L", [("U106", "6"), (2716, 710), ("R129", "1")]),
+        ("BBD_SH_FB_L", [(2716, 700), ("R130", "1")]),
+        ("GND",         [("R129", "2"), ("GND", 2716, 810)]),
+        ("BBD_WET_L",   [("R130", "2"), (2940, 700), (2940, 480), ("U106", "7")]),
+        ("BBD_WET_L",   [(2940, 480), ("C120", "1")]),
+
+        # ---- mix, feedback, output ----
+        ("BBD_WETAC_L", [("C120", "2"), (3120, 480), (3120, 1220), (1300, 1220),
+                         ("RV5", "3")]),
+        ("BBD_WETAC_L", [(1600, 1220), ("RV6", "3")]),
+        ("BBD_WETAC_L", [(2900, 1220), ("R132", "1")]),
+        ("BBD_WETOUT_L", [("R132", "2"), (2900, 1350),
+                          ("PORT", 3000, 1350, "BBD_WETOUT_L  \u2192 resample bus", True)]),
+        ("GND",         [("RV5", "1"), (1240, 1040), (1240, 1320), ("GND", 1240, 1320)]),
+        ("BBD_FB_L",    [("RV5", "2"), ("R112", "1")]),
+        ("BBD_SUM_L",   [("R112", "2"), (1040, 1100), (1040, 380), (1140, 380)]),
+        ("BBD_MIXW_L",  [("RV6", "2"), (1700, 1100), (1700, 1073), ("U103", "5")]),
+        ("BBD_MIX_L",   [("U103", "7"), (1960, 1100), ("R131", "1")]),
+        ("BBD_MIX_L",   [(1960, 1100), (1960, 1180), (1700, 1180), (1700, 1127),
+                         ("U103", "6")]),
+        ("BBD_OUT_L",   [("R131", "2"), ("PORT", 2220, 1100, "BBD_OUT_L  \u2192 J9 tip", True)]),
+
+        # ---- TIME control into the 4046 ----
+        ("POS12V",      [("RAIL", 300, 1550, "+12V", True), ("R110", "1")]),
+        ("BBD_TIMEHI_L", [("R110", "2"), ("RV4", "1")]),
+        ("BBD_TIMELO_L", [("RV4", "3"), ("R111", "1")]),
+        ("GND",         [("R111", "2"), ("GND", 300, 1950)]),
+        ("BBD_TIMEW_L", [("RV4", "2"), ("R115", "1")]),
+        ("BBD_VCOCV_L", [("R115", "2"), (600, 1760), (830, 1760), (830, 1660),
+                         ("U104", "9")]),
+        ("TIME_CV",     [("PORT", 300, 1860, "TIME_CV  \u2190 Daisy CV_OUT_2", False),
+                         ("R116", "1")]),
+        ("BBD_VCOCV_L", [("R116", "2"), (600, 1860), (600, 1760)]),
+        ("BBD_VCOCV_L", [(700, 1760), ("D103", "2")]),
+        ("P5V_BBD",     [("D103", "1"), (700, 1580), ("RAIL", 700, 1580, "+5V BBD", True)]),
+        ("BBD_VCOCV_L", [(800, 1760), ("D105", "1")]),
+        ("GND",         [("D105", "2"), ("GND", 800, 1920)]),
+
+        # ---- inhibit ----
+        ("GATE_OUT_2",  [("PORT", 300, 2060, "GATE_OUT_2  \u2190 Daisy", False), ("R117", "1")]),
+        ("BBD_INH_L",   [("R117", "2"), (560, 2060), (560, 1720), ("U104", "5")]),
+        ("BBD_INH_L",   [(560, 2060), (640, 2060), ("D104", "2")]),
+        ("P5V_BBD",     [("D104", "1"), (640, 1900), ("RAIL", 640, 1900, "+5V BBD", True)]),
+        ("BBD_INH_L",   [(640, 2060), (720, 2060), ("D106", "1")]),
+        ("GND",         [("D106", "2"), ("GND", 720, 2180)]),
+
+        # ---- 4046 timing parts and supply ----
+        ("BBD_C1A_L",   [("U104", "6"), (760, 1780), ("C114", "1")]),
+        ("BBD_C1B_L",   [("U104", "7"), (760, 1840), ("C114", "2")]),
+        ("BBD_VCOR1_L", [("U104", "11"), (830, 1900), ("R123", "1")]),
+        ("GND",         [("R123", "2"), ("GND", 830, 2050)]),
+        ("BBD_VCOR2_L", [("U104", "12"), (760, 1960), (760, 2080), ("R121", "1")]),
+        ("GND",         [("R121", "2"), ("GND", 760, 2230)]),
+        ("P5V_BBD",     [("U104", "14"), (1480, 1840), (1480, 1700),
+                         ("RAIL", 1480, 1700, "+5V BBD", True)]),
+        ("P5V_BBD",     [("U104", "16"), (1480, 1900), (1480, 1840)]),
+        ("GND",         [("U104", "8"), (1240, 1960), (1240, 2060), ("GND", 1240, 2060)]),
+
+        # ---- clock out to the BBD, and the complementary phase ----
+        ("BBD_CLK_L",   [("U104", "4"), (1220, 1660), (1220, 1720), ("U104", "3")]),
+        ("BBD_CLK_L",   [(1220, 1660), (1220, 360), ("U101", "6")]),
+        ("BBD_CLKN_L",  [("U104", "2"), (1360, 1780), (1360, 420), ("U101", "2")]),
+
+        # ---- sample trigger ----
+        ("BBD_CLK_L",   [(1220, 1560), ("C116", "1")]),
+        ("BBD_TRIGIN_L", [("C116", "2"), (1700, 1560), (1700, 1533), ("U102", "5")]),
+        ("BBD_TRIGIN_L", [(1700, 1560), ("R127", "1")]),
+        ("GND",         [("R127", "2"), ("GND", 1700, 1700)]),
+        ("POS12V",      [("RAIL", 1620, 1710, "+12V", True), ("R125", "1")]),
+        ("BBD_TRIGREF_L", [("R125", "2"), (1620, 1830), (1740, 1830), (1740, 1587),
+                           ("U102", "6")]),
+        ("BBD_TRIGREF_L", [(1620, 1830), ("R126", "1")]),
+        ("GND",         [("R126", "2"), ("GND", 1620, 1950)]),
+        ("BBD_TRIG_L",  [("U102", "7"), (2500, 1560), ("D107", "1")]),
+
+        # ---- supplies ----
+        ("POS12V",      [("RAIL", 375, 2306, "+12V", True), ("U102", "8")]),
+        ("NEG12V",      [("U102", "4"), ("RAIL", 455, 2450, "-12V", False)]),
+        ("POS12V",      [("RAIL", 775, 2306, "+12V", True), ("U103", "8")]),
+        ("NEG12V",      [("U103", "4"), ("RAIL", 855, 2450, "-12V", False)]),
+        ("POS12V",      [("RAIL", 1175, 2306, "+12V", True), ("U106", "8")]),
+        ("NEG12V",      [("U106", "4"), ("RAIL", 1255, 2450, "-12V", False)]),
+        ("POS12V",      [("RAIL", 1560, 2352, "+12V", True), ("C105", "1")]),
+        ("GND",         [("C105", "2"), ("GND", 1560, 2448)]),
+        ("POS12V",      [("RAIL", 1740, 2352, "+12V", True), ("C107", "1")]),
+        ("GND",         [("C107", "2"), ("GND", 1740, 2448)]),
+        ("POS12V",      [("RAIL", 1920, 2352, "+12V", True), ("C121", "1")]),
+        ("GND",         [("C121", "2"), ("GND", 1920, 2448)]),
+        ("P5V_BBD",     [("RAIL", 2100, 2352, "+5V BBD", True), ("C109", "1")]),
+        ("GND",         [("C109", "2"), ("GND", 2100, 2448)]),
+        ("P5V_BBD",     [("RAIL", 2280, 2352, "+5V BBD", True), ("C111", "1")]),
+        ("GND",         [("C111", "2"), ("GND", 2280, 2448)]),
+        ("NEG12V",      [("C106", "1"), (2440, 2400), (2440, 2480),
+                         ("RAIL", 2440, 2480, "-12V", False)]),
+        ("GND",         [("C106", "2"), (2620, 2400), (2620, 2480), ("GND", 2620, 2480)]),
+        ("NEG12V",      [("C108", "1"), (2660, 2400), (2660, 2480),
+                         ("RAIL", 2660, 2480, "-12V", False)]),
+        ("GND",         [("C108", "2"), (2840, 2400), (2840, 2480), ("GND", 2840, 2480)]),
+        ("NEG12V",      [("C122", "1"), (2880, 2400), (2880, 2480),
+                         ("RAIL", 2880, 2480, "-12V", False)]),
+        ("GND",         [("C122", "2"), (3060, 2400), (3060, 2480), ("GND", 3060, 2480)]),
+    ]
+
+
 # declared off-sheet: the right channel's gang, panel mounting lugs, the unused
 # throw of the mode switch. Every other pin must be wired or the build fails.
 OFF_SHEET = {("RV1", "4"), ("RV1", "5"), ("RV1", "6"), ("RV1", "7"), ("RV1", "8"),
              ("RV2", "4"), ("RV2", "5"), ("RV2", "6"), ("RV2", "7"), ("RV2", "8"),
              ("SW1", "4"), ("SW1", "5"),
-             ("RV3", "4"), ("RV3", "5"), ("RV3", "6"), ("RV3", "7"), ("RV3", "8")}
+             ("RV3", "4"), ("RV3", "5"), ("RV3", "6"), ("RV3", "7"), ("RV3", "8"),
+             ("RV4", "4"), ("RV4", "5"), ("RV4", "6"), ("RV4", "7"), ("RV4", "8"),
+             ("RV5", "4"), ("RV5", "5"), ("RV5", "6"), ("RV5", "7"), ("RV5", "8"),
+             ("RV6", "4"), ("RV6", "5"), ("RV6", "6"), ("RV6", "7"), ("RV6", "8")}
 
 
 # ------------------------------------------------------------------ build ---
@@ -778,7 +1098,7 @@ def render(title, subtitle, P, polys, glyphs, w, h, leads=()):
     return "\n".join(parts)
 
 
-PAGE = """<title>LPG Left Sheet</title>
+PAGE = """<title>__PAGETITLE__</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
   :root{--ground:#e9e6df;--panel:#fbfaf7;--ink:#1a1a1a;--muted:#6b6b6b;--line:#cfcabf;--copper:#a85a26}
@@ -802,12 +1122,12 @@ PAGE = """<title>LPG Left Sheet</title>
   button:focus-visible{outline:2px solid var(--copper);outline-offset:1px}
   #stage{flex:1;overflow:auto;padding:16px;cursor:grab}
   #stage.drag{cursor:grabbing}
-  #sheet{transform-origin:0 0;width:2060px}
+  #sheet{transform-origin:0 0;width:__W__px}
   #sheet svg{display:block;width:100%;height:auto;
              box-shadow:0 2px 10px rgba(0,0,0,.18);border-radius:3px}
 </style>
 <header>
-  <h1>LPG left channel</h1>
+  <h1>__TITLE__</h1>
   <p class="sub">Drawn from <code>netmap.json</code>. Every wire is checked against the netlist
      at build time, so this is the circuit on the board — not what the notes claim.</p>
   <span class="facts"><b>__PARTS__</b> parts · <b>__WIRES__</b> wires · pins verified</span>
@@ -823,8 +1143,8 @@ PAGE = """<title>LPG Left Sheet</title>
   const stage=document.getElementById("stage"), sheet=document.getElementById("sheet");
   let z=1;
   const apply=()=>{sheet.style.transform="scale("+z+")";
-    sheet.style.height=(1440*z)+"px"; sheet.style.width="2060px";};
-  const fit=()=>{z=Math.min(1,(stage.clientWidth-32)/2060); apply();};
+    sheet.style.height=(__H__*z)+"px"; sheet.style.width="__W__px";};
+  const fit=()=>{z=Math.min(1,(stage.clientWidth-32)/__W__); apply();};
   document.getElementById("in").onclick=()=>{z=Math.min(4,z*1.25); apply();};
   document.getElementById("out").onclick=()=>{z=Math.max(.1,z/1.25); apply();};
   document.getElementById("fit").onclick=fit;
@@ -842,36 +1162,45 @@ PAGE = """<title>LPG Left Sheet</title>
 """
 
 
-def main():
+def build(slug, title, subtitle, builder, wirer, w, h, pagetitle):
     netmap = json.load(open(f"{KI}/tools/netmap.json"))
     values = json.load(open(f"{KI}/tools/values.json"))
-    P, T, glyphs = lpg_left(netmap, values)
+    P, T, glyphs = builder(netmap, values)
     refs = [r for r in T if r in netmap]
-    polys = resolve(lpg_left_wires(), T, glyphs)
+    polys = resolve(wirer(), T, glyphs)
     bad = (check(polys, T, netmap, refs) + wire_shorts(polys)
            + continuity(polys, T, netmap, refs))
     if bad:
-        print(f"drawing does not match netmap.json ({len(bad)}):")
+        print(f"{slug}: drawing does not match netmap.json ({len(bad)}):")
         for b in bad:
             print("   ", b)
         sys.exit(1)
     leads, bodies = symbol_geometry(P, T, netmap)
     hits = body_hits(polys, bodies, T)
     if hits:
-        print("wires drawn across component bodies:")
-        for h in hits:
-            print("   ", h)
+        print(f"{slug}: wires drawn across component bodies:")
+        for h_ in hits:
+            print("   ", h_)
         sys.exit(1)
-    svg = render("LPG — left channel", "complete: audio path, LED drive and CV chain, drawn "
-                 "from netmap.json and checked against it · compare with Bergman's sheet",
-                 P, polys, glyphs, 2060, 2140, leads)
-    out = f"{ROOT}/docs/sch-lpg-left.svg"
-    open(out, "w").write(svg)
-    page = PAGE.replace("<!--SVG-->", svg).replace("__PARTS__", str(len(refs))) \
-               .replace("__WIRES__", str(len(polys)))
-    open(f"{ROOT}/docs/sch-lpg-left.html", "w").write(page)
-    print(f"{len(refs)} parts, {len(polys)} wires, all pins agree with netmap.json")
-    print(f"-> {out}\n-> {ROOT}/docs/sch-lpg-left.html")
+    svg = render(title, subtitle, P, polys, glyphs, w, h, leads)
+    open(f"{ROOT}/docs/{slug}.svg", "w").write(svg)
+    page = (PAGE.replace("<!--SVG-->", svg).replace("__PARTS__", str(len(refs)))
+                .replace("__WIRES__", str(len(polys))).replace("__TITLE__", title)
+                .replace("__W__", str(w)).replace("__H__", str(h))
+                .replace("__PAGETITLE__", pagetitle))
+    open(f"{ROOT}/docs/{slug}.html", "w").write(page)
+    print(f"{slug}: {len(refs)} parts, {len(polys)} wires, all pins agree with netmap.json")
+
+
+def main():
+    build("sch-lpg-left", "LPG \u2014 left channel",
+          "complete: audio path, LED drive and CV chain, drawn from netmap.json "
+          "and checked against it \u00b7 compare with Bergman's sheet",
+          lpg_left, lpg_left_wires, 2060, 2140, "LPG Left Sheet")
+    build("sch-bbd-left", "BBD \u2014 left channel",
+          "complete: audio path, sample and hold, mix and CD4046 clock, drawn from "
+          "netmap.json and checked against it \u00b7 compare with the mki manual",
+          bbd_left, bbd_left_wires, 3200, 2560, "BBD Left Sheet")
 
 
 if __name__ == "__main__":
