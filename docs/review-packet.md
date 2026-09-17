@@ -70,6 +70,7 @@ and every block to its source schematic.
 | 3.5mm jacks `J2`–`J6` | **clean** — the datasheet's plug gauge numbers the sections 1 sleeve, 2 ring, 3 tip, matching the contact numbers | SOFNG PJ-376 drawing |
 | DPDT `SW1`/`SW2` | **clean** — commons on 2 and 5, throws 1/3 and 4/6 | Dailywell 2MDP0428 |
 | `AMS1117` `U5`/`U6`/`U8` | **clean** — 1 = GND/ADJ, 2 = VOUT, 3 = VIN, tab = VOUT | Advanced Monolithic ds1117 |
+| `U101`/`U201` V3205SD **footprint geometry** | **clean** — 2.54mm pitch, 7.62mm row spacing, 15.24mm pin 1 to pin 4, body 19.2 x 6.4mm, middle three DIP-14 positions omitted per side, pin 1 top-left counterclockwise, rect pad plus a silk notch at the pin-1 end | Panasonic MN3205 package drawing, p1 | 
 | `U7` pad **coordinates** | **clean** — the irregular 0.3"/0.2" top row against a 0.4" bottom row is what the drawing specifies, and the pads match, 0.8" between rows | Mean Well mechanical spec p5 |
 | Polarised parts vs package drawings | **clean** — silkscreen "+" lands on pad 1 on every electrolytic, read off a board render | 2026-09-16 |
 | Encoders, trimmers | **clean** — ALPS A/common/B plus switch; Bourns 1 = CCW, 2 = wiper, 3 = CW | ALPS + Bourns drawings |
