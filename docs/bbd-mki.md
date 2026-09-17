@@ -577,23 +577,21 @@ transcription:
 | trigger: 220p + 6K2 differentiator, 100K/10K off 12V | `C116` 220pF, `R127` 6.2k, `R125` 100k / `R126` 10k = 1.09V | ✓ |
 | 1n / 220p behind the FLANGE/DELAY switch | `C114` 1nF fitted, 220p option not | switch not fitted |
 
-**One discrepancy, and it is the manual's, not ours.** The drawing labels the
-V3205 `VGG` bottom-leg resistor **56K**. The manual's own parts list contains no
-56k at all — it lists **62k ×1**, and nothing else in the circuit uses 62k. The
-two pages of the manual disagree with each other.
+**The 56K discrepancy was mine, and it is withdrawn — 2026-09-16.** Earlier
+versions of this section said the drawing labels the V3205 `VGG` bottom-leg
+resistor **56K** against a parts list that says 62k, and concluded the manual
+contradicted itself.
 
-We built the parts list, which is what actually ships in the kit. The cost of
-being wrong either way:
+It does not. The schematic is on **page 61 of the manual and it is vector** — a
+KiCad 5.1.5 export, not a scan — so it can be rendered at any resolution. At 10x
+(11906 x 16838 px) the label reads **`R20 62k`**, unmistakably, right beside
+`R19 4.7k`. The manual agrees with its own parts list and both agree with our
+`R120` 62k.
 
-```
-56K : VGG = 5V x 56/60.7 = 4.6129 V
-62k : VGG = 5V x 62/66.7 = 4.6477 V     <- ours
-                difference 34.8 mV, 0.75%
-```
-
-On a BBD gate bias with wide tolerance that is immaterial. Left as 62k; noted
-here so the next reader does not "fix" it toward the drawing without knowing the
-drawing contradicts its own BOM.
+The mistake came from reading a rasterised copy of the page instead of the
+vector original, which is the same root cause as the LED-drive error in
+`lpg-bergman.md`: a check run against a lossy second-hand copy rather than the
+source.
 
 The net inventory in the next section is *generated from* `netmap.json` and
 therefore cannot contradict it — it is a convenience, not evidence.

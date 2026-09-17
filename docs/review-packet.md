@@ -74,7 +74,7 @@ and every block to its source schematic.
 | Polarised parts vs package drawings | **clean** — silkscreen "+" lands on pad 1 on every electrolytic, read off a board render | 2026-09-16 |
 | Encoders, trimmers | **clean** — ALPS A/common/B plus switch; Bourns 1 = CCW, 2 = wiper, 3 = CW | ALPS + Bourns drawings |
 | BBD vs the manual's own BOM, **both channels** | **clean** — all 27 R and 22 C accounted for, channels symmetric, the three crossings unshorted | text extracted from `BBD_MANUAL_250228.pdf` |
-| BBD vs the **schematic drawing** | **clean** — every value and node checked; the one mismatch (`R120` 62k vs a drawn 56K) is the manual contradicting its own parts list, worth 0.75% of VGG | page-2 bitmap extracted and read at full res |
+| BBD vs the **schematic drawing** | **clean** — every value and node checked. The previously recorded `R120` 62k vs 56K mismatch is **withdrawn**: the manual's schematic is vector (p61, KiCad 5.1.5 export) and reads `R20 62k` at 10x | re-read from the vector source, 2026-09-16 |
 | V3205SD, VTL5C3, MMBFJ113 pinouts | **all three clean** — see items 2-4 below | manual p25, Xvive package drawing, onsemi Rev 5 drawing |
 | Polarity, all 14 polarised parts | **clean** — D103–D106 clamp pairs, zener shunts, D1/D2 bipolar indicator | inspection vs netmap |
 | Board ↔ schematic parity | 942/942, 0 unintended | `netcheck.py`, `boardcheck.py` |
