@@ -1,0 +1,315 @@
+<title>PSU Sheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{--ground:#e9e6df;--panel:#fbfaf7;--ink:#1a1a1a;--muted:#6b6b6b;--line:#cfcabf;--copper:#a85a26}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --ground:#0e1116;--panel:#14181d;--ink:#e8eaed;--muted:#9aa3ad;--line:#2b323b;--copper:#dd8f55}}
+  :root[data-theme="dark"]{--ground:#0e1116;--panel:#14181d;--ink:#e8eaed;--muted:#9aa3ad;
+    --line:#2b323b;--copper:#dd8f55}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+       font-family:"IBM Plex Sans",system-ui,sans-serif;height:100vh;display:flex;flex-direction:column}
+  header{padding-block:10px;padding-inline:16px;border-bottom:1px solid var(--line);
+         background:var(--panel);display:flex;gap:8px 20px;align-items:baseline;flex-wrap:wrap}
+  h1{margin:0;font-size:17px;font-weight:600;letter-spacing:.01em}
+  .sub{color:var(--muted);font-size:13px;flex:1 1 240px}
+  .facts{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted)}
+  .facts b{color:var(--ink);font-weight:600}
+  .bar{display:flex;gap:6px}
+  button{font:inherit;font-size:13px;padding:5px 11px;border:1px solid var(--line);
+         background:var(--panel);color:var(--ink);border-radius:3px;cursor:pointer}
+  button:hover{border-color:var(--copper)}
+  button:focus-visible{outline:2px solid var(--copper);outline-offset:1px}
+  #stage{flex:1;overflow:auto;padding:16px;cursor:grab}
+  #stage.drag{cursor:grabbing}
+  #sheet{transform-origin:0 0;width:3000px}
+  #sheet svg{display:block;width:100%;height:auto;
+             box-shadow:0 2px 10px rgba(0,0,0,.18);border-radius:3px}
+</style>
+<header>
+  <h1>Power — USB-C, DKM10, regulators</h1>
+  <p class="sub">Drawn from <code>netmap.json</code>. Every wire is checked against the netlist
+     at build time, so this is the circuit on the board — not what the notes claim.</p>
+  <span class="facts"><b>42</b> parts · <b>91</b> wires · pins verified</span>
+  <span class="bar">
+    <button id="out" type="button">&minus;</button>
+    <button id="in" type="button">+</button>
+    <button id="fit" type="button">Fit</button>
+    <button id="full" type="button">100%</button>
+  </span>
+</header>
+<div id="stage"><div id="sheet"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3000 1800" width="3000" height="1800" font-size="16">
+
+<style>
+  .sheet-bg{fill:#fbfaf7}
+  .body,.pin,.wire{stroke:#1a1a1a;fill:none;stroke-linecap:square}
+  .body{stroke-width:2.4} .pin{stroke-width:2} .wire{stroke-width:2}
+  .fillbody{fill:#1a1a1a;stroke:#1a1a1a;stroke-width:2}
+  .fillwhite{fill:#fbfaf7;stroke:#1a1a1a;stroke-width:2.4}
+  .dashbox{fill:none;stroke:#1a1a1a;stroke-width:1.6;stroke-dasharray:7 5}
+  .ray{stroke:#1a1a1a;stroke-width:1.6;fill:none}
+  .dot{fill:#1a1a1a}
+  .port{fill:#fff3e3;stroke:#a85a26;stroke-width:2}
+  text{font-family:"IBM Plex Mono","DejaVu Sans Mono",monospace;fill:#1a1a1a}
+  .ref{font-size:17px;font-weight:600}
+  .val{font-size:16px;fill:#8a5a2b}
+  .note{font-size:13px;fill:#6b6b6b}
+  .sign{font-size:20px;font-weight:700}
+  .pin-no{font-size:13px;fill:#6b6b6b}
+  .rail-label{font-size:15px;font-weight:600}
+  .port-label{font-size:15px;font-weight:600;fill:#7a3f16}
+  .net-label{font-size:13px;fill:#3060a0}
+  .title{font-size:30px;font-weight:700}
+  .subtitle{font-size:16px;fill:#5b5b5b}
+  .frame{fill:none;stroke:#1a1a1a;stroke-width:2}
+  @media (prefers-color-scheme: dark){
+    .sheet-bg{fill:#14181d}
+    .body,.pin,.wire,.ray{stroke:#e8eaed} .fillbody{fill:#e8eaed;stroke:#e8eaed}
+    .fillwhite{fill:#14181d;stroke:#e8eaed} .dashbox{stroke:#e8eaed} .dot{fill:#e8eaed}
+    text{fill:#e8eaed} .val{fill:#e0a56a} .note,.pin-no{fill:#9aa3ad}
+    .port{fill:#3a2413;stroke:#dd8f55} .port-label{fill:#e8b184}
+    .subtitle{fill:#9aa3ad} .frame{stroke:#e8eaed} .net-label{fill:#8ab4f8}
+  }
+</style>
+<rect class="sheet-bg" x="0" y="0" width="3000" height="1800"/>
+<path class="wire" d="M 96 260 L 60 260"/>
+<path class="wire" d="M 60 260 L 60 660"/>
+<path class="wire" d="M 96 320 L 60 320"/>
+<path class="wire" d="M 96 380 L 60 380"/>
+<path class="wire" d="M 96 440 L 60 440"/>
+<path class="wire" d="M 96 500 L 60 500"/>
+<path class="wire" d="M 96 560 L 60 560"/>
+<path class="wire" d="M 404 284 L 470 284"/>
+<path class="wire" d="M 470 284 L 800 284"/>
+<path class="wire" d="M 404 368 L 470 368"/>
+<path class="wire" d="M 470 368 L 470 284"/>
+<path class="wire" d="M 404 452 L 450 452"/>
+<path class="wire" d="M 450 452 L 450 590"/>
+<path class="wire" d="M 404 536 L 442 536 A 8 8 0 0 1 458 536 L 560 536"/>
+<path class="wire" d="M 560 536 L 560 590"/>
+<path class="wire" d="M 620 284 L 620 388"/>
+<path class="wire" d="M 720 284 L 720 384"/>
+<path class="wire" d="M 900 284 L 960 284"/>
+<path class="wire" d="M 960 284 L 960 384"/>
+<path class="wire" d="M 1040 284 L 1040 384"/>
+<path class="wire" d="M 1120 284 L 1120 384"/>
+<path class="wire" d="M 1120 284 L 1180 284"/>
+<path class="wire" d="M 1180 284 L 1180 340"/>
+<path class="wire" d="M 1180 340 L 1226 340"/>
+<path class="wire" d="M 1226 480 L 1180 480"/>
+<path class="wire" d="M 1180 480 L 1180 640"/>
+<path class="wire" d="M 1574 368 L 1600 368"/>
+<path class="wire" d="M 1600 368 L 1600 600"/>
+<path class="wire" d="M 1574 284 L 1680 284"/>
+<path class="wire" d="M 1680 284 L 1680 384"/>
+<path class="wire" d="M 1760 284 L 1760 384"/>
+<path class="wire" d="M 1760 284 L 1830 284"/>
+<path class="wire" d="M 1930 284 L 1990 284"/>
+<path class="wire" d="M 1990 284 L 1990 384"/>
+<path class="wire" d="M 2070 284 L 2070 384"/>
+<path class="wire" d="M 2150 284 L 2150 384"/>
+<path class="wire" d="M 2300 284 L 2300 370"/>
+<path class="wire" d="M 2300 470 L 2300 516"/>
+<path class="wire" d="M 2300 604 L 2300 640"/>
+<path class="wire" d="M 2300 284 L 2700 284"/>
+<path class="wire" d="M 2600 284 L 2600 900"/>
+<path class="wire" d="M 2600 900 L 2308 900 A 8 8 0 0 1 2292 900 L 1600 900"/>
+<path class="wire" d="M 1600 900 L 1600 1100"/>
+<path class="wire" d="M 1600 1100 L 1676 1100"/>
+<path class="wire" d="M 1574 452 L 1592 452 A 8 8 0 0 1 1608 452 L 1650 452"/>
+<path class="wire" d="M 1650 452 L 1650 700"/>
+<path class="wire" d="M 1650 700 L 1680 700"/>
+<path class="wire" d="M 1680 700 L 1680 764"/>
+<path class="wire" d="M 1760 700 L 1760 764"/>
+<path class="wire" d="M 1760 700 L 1830 700"/>
+<path class="wire" d="M 1930 700 L 1990 700"/>
+<path class="wire" d="M 1990 700 L 1990 764"/>
+<path class="wire" d="M 2070 700 L 2070 764"/>
+<path class="wire" d="M 2300 700 L 2300 740"/>
+<path class="wire" d="M 2300 840 L 2300 886"/>
+<path class="wire" d="M 2300 974 L 2300 1010"/>
+<path class="wire" d="M 2300 1010 L 2400 1010"/>
+<path class="wire" d="M 2300 700 L 2592 700 A 8 8 0 0 1 2608 700 L 2700 700"/>
+<path class="wire" d="M 1676 1160 L 1640 1160"/>
+<path class="wire" d="M 1640 1160 L 1640 1230"/>
+<path class="wire" d="M 1964 1100 L 2040 1100"/>
+<path class="wire" d="M 2040 1100 L 2120 1100"/>
+<path class="wire" d="M 2120 1100 L 2120 1124"/>
+<path class="wire" d="M 1964 1160 L 2040 1160"/>
+<path class="wire" d="M 2040 1160 L 2040 1100"/>
+<path class="wire" d="M 2200 1100 L 2200 1124"/>
+<path class="wire" d="M 2200 1100 L 2700 1100"/>
+<path class="wire" d="M 200 1100 L 260 1100"/>
+<path class="wire" d="M 260 1100 L 310 1100"/>
+<path class="wire" d="M 260 1100 L 260 1520"/>
+<path class="wire" d="M 260 1520 L 310 1520"/>
+<path class="wire" d="M 410 1100 L 480 1100"/>
+<path class="wire" d="M 480 1100 L 576 1070"/>
+<path class="wire" d="M 480 1100 L 480 1184"/>
+<path class="wire" d="M 576 1130 L 540 1160"/>
+<path class="wire" d="M 540 1160 L 540 1300"/>
+<path class="wire" d="M 864 1070 L 940 1070"/>
+<path class="wire" d="M 940 1070 L 1000 1070"/>
+<path class="wire" d="M 1000 1070 L 1000 1184"/>
+<path class="wire" d="M 864 1130 L 940 1130"/>
+<path class="wire" d="M 940 1130 L 940 1070"/>
+<path class="wire" d="M 1080 1070 L 1080 1184"/>
+<path class="wire" d="M 1080 1070 L 1300 1070"/>
+<path class="wire" d="M 410 1520 L 480 1520"/>
+<path class="wire" d="M 480 1520 L 576 1490"/>
+<path class="wire" d="M 480 1520 L 480 1604"/>
+<path class="wire" d="M 576 1550 L 540 1580"/>
+<path class="wire" d="M 540 1580 L 540 1720"/>
+<path class="wire" d="M 864 1490 L 940 1490"/>
+<path class="wire" d="M 940 1490 L 1000 1490"/>
+<path class="wire" d="M 1000 1490 L 1000 1604"/>
+<path class="wire" d="M 864 1550 L 940 1550"/>
+<path class="wire" d="M 940 1550 L 940 1490"/>
+<path class="wire" d="M 1080 1490 L 1080 1604"/>
+<path class="wire" d="M 1080 1490 L 1300 1490"/>
+<path class="wire" d="M 1400 1300 L 1500 1300"/>
+<path class="wire" d="M 1500 1300 L 1500 1604"/>
+<path class="wire" d="M 1580 1300 L 1580 1604"/>
+<path class="wire" d="M 1580 1300 L 1700 1300"/>
+<path class="wire" d="M 1700 1300 L 1700 1560"/>
+<path class="wire" d="M 1700 1560 L 1750 1560"/>
+<path class="wire" d="M 1700 1560 L 1700 1680"/>
+<path class="wire" d="M 1700 1680 L 1750 1680"/>
+<path class="wire" d="M 1850 1560 L 2100 1560"/>
+<path class="wire" d="M 1850 1680 L 2100 1680"/>
+<text x="46" y="140" class="ref" style="font-size:20px">INPUT AND CONVERTER — check against V3.0.pdf</text>
+<line x1="46" y1="980" x2="2954" y2="980" class="dashbox"/>
+<text x="46" y="1030" class="ref" style="font-size:20px">REGULATORS — the Daisy returns 5V and 3V3 on its own pins</text>
+<line x1="60" y1="660" x2="60" y2="676" class="wire"/><line x1="44" y1="676" x2="76" y2="676" class="body"/><line x1="50" y1="682" x2="70" y2="682" class="body"/><line x1="56" y1="688" x2="64" y2="688" class="body"/>
+<line x1="450" y1="690" x2="450" y2="706" class="wire"/><line x1="434" y1="706" x2="466" y2="706" class="body"/><line x1="440" y1="712" x2="460" y2="712" class="body"/><line x1="446" y1="718" x2="454" y2="718" class="body"/>
+<line x1="560" y1="690" x2="560" y2="706" class="wire"/><line x1="544" y1="706" x2="576" y2="706" class="body"/><line x1="550" y1="712" x2="570" y2="712" class="body"/><line x1="556" y1="718" x2="564" y2="718" class="body"/>
+<line x1="620" y1="464" x2="620" y2="480" class="wire"/><line x1="604" y1="480" x2="636" y2="480" class="body"/><line x1="610" y1="486" x2="630" y2="486" class="body"/><line x1="616" y1="492" x2="624" y2="492" class="body"/>
+<line x1="720" y1="456" x2="720" y2="472" class="wire"/><line x1="704" y1="472" x2="736" y2="472" class="body"/><line x1="710" y1="478" x2="730" y2="478" class="body"/><line x1="716" y1="484" x2="724" y2="484" class="body"/>
+<line x1="960" y1="456" x2="960" y2="472" class="wire"/><line x1="944" y1="472" x2="976" y2="472" class="body"/><line x1="950" y1="478" x2="970" y2="478" class="body"/><line x1="956" y1="484" x2="964" y2="484" class="body"/>
+<line x1="1040" y1="456" x2="1040" y2="472" class="wire"/><line x1="1024" y1="472" x2="1056" y2="472" class="body"/><line x1="1030" y1="478" x2="1050" y2="478" class="body"/><line x1="1036" y1="484" x2="1044" y2="484" class="body"/>
+<line x1="1120" y1="456" x2="1120" y2="472" class="wire"/><line x1="1104" y1="472" x2="1136" y2="472" class="body"/><line x1="1110" y1="478" x2="1130" y2="478" class="body"/><line x1="1116" y1="484" x2="1124" y2="484" class="body"/>
+<line x1="1180" y1="640" x2="1180" y2="656" class="wire"/><line x1="1164" y1="656" x2="1196" y2="656" class="body"/><line x1="1170" y1="662" x2="1190" y2="662" class="body"/><line x1="1176" y1="668" x2="1184" y2="668" class="body"/>
+<line x1="1600" y1="600" x2="1600" y2="616" class="wire"/><line x1="1584" y1="616" x2="1616" y2="616" class="body"/><line x1="1590" y1="622" x2="1610" y2="622" class="body"/><line x1="1596" y1="628" x2="1604" y2="628" class="body"/>
+<line x1="1680" y1="456" x2="1680" y2="472" class="wire"/><line x1="1664" y1="472" x2="1696" y2="472" class="body"/><line x1="1670" y1="478" x2="1690" y2="478" class="body"/><line x1="1676" y1="484" x2="1684" y2="484" class="body"/>
+<line x1="1760" y1="456" x2="1760" y2="472" class="wire"/><line x1="1744" y1="472" x2="1776" y2="472" class="body"/><line x1="1750" y1="478" x2="1770" y2="478" class="body"/><line x1="1756" y1="484" x2="1764" y2="484" class="body"/>
+<line x1="1990" y1="456" x2="1990" y2="472" class="wire"/><line x1="1974" y1="472" x2="2006" y2="472" class="body"/><line x1="1980" y1="478" x2="2000" y2="478" class="body"/><line x1="1986" y1="484" x2="1994" y2="484" class="body"/>
+<line x1="2070" y1="456" x2="2070" y2="472" class="wire"/><line x1="2054" y1="472" x2="2086" y2="472" class="body"/><line x1="2060" y1="478" x2="2080" y2="478" class="body"/><line x1="2066" y1="484" x2="2074" y2="484" class="body"/>
+<line x1="2150" y1="456" x2="2150" y2="472" class="wire"/><line x1="2134" y1="472" x2="2166" y2="472" class="body"/><line x1="2140" y1="478" x2="2160" y2="478" class="body"/><line x1="2146" y1="484" x2="2154" y2="484" class="body"/>
+<line x1="2300" y1="640" x2="2300" y2="656" class="wire"/><line x1="2284" y1="656" x2="2316" y2="656" class="body"/><line x1="2290" y1="662" x2="2310" y2="662" class="body"/><line x1="2296" y1="668" x2="2304" y2="668" class="body"/>
+<polygon points="2700,284 2714,269 2835.0,269 2835.0,299 2714,299" class="port"/><text x="2722" y="289" class="port-label" text-anchor="start">POS12V  → board</text>
+<line x1="1680" y1="836" x2="1680" y2="852" class="wire"/><line x1="1664" y1="852" x2="1696" y2="852" class="body"/><line x1="1670" y1="858" x2="1690" y2="858" class="body"/><line x1="1676" y1="864" x2="1684" y2="864" class="body"/>
+<line x1="1760" y1="836" x2="1760" y2="852" class="wire"/><line x1="1744" y1="852" x2="1776" y2="852" class="body"/><line x1="1750" y1="858" x2="1770" y2="858" class="body"/><line x1="1756" y1="864" x2="1764" y2="864" class="body"/>
+<line x1="1990" y1="836" x2="1990" y2="852" class="wire"/><line x1="1974" y1="852" x2="2006" y2="852" class="body"/><line x1="1980" y1="858" x2="2000" y2="858" class="body"/><line x1="1986" y1="864" x2="1994" y2="864" class="body"/>
+<line x1="2070" y1="836" x2="2070" y2="852" class="wire"/><line x1="2054" y1="852" x2="2086" y2="852" class="body"/><line x1="2060" y1="858" x2="2080" y2="858" class="body"/><line x1="2066" y1="864" x2="2074" y2="864" class="body"/>
+<line x1="2400" y1="1010" x2="2400" y2="1026" class="wire"/><line x1="2384" y1="1026" x2="2416" y2="1026" class="body"/><line x1="2390" y1="1032" x2="2410" y2="1032" class="body"/><line x1="2396" y1="1038" x2="2404" y2="1038" class="body"/>
+<polygon points="2700,700 2714,685 2835.0,685 2835.0,715 2714,715" class="port"/><text x="2722" y="705" class="port-label" text-anchor="start">NEG12V  → board</text>
+<line x1="1640" y1="1230" x2="1640" y2="1246" class="wire"/><line x1="1624" y1="1246" x2="1656" y2="1246" class="body"/><line x1="1630" y1="1252" x2="1650" y2="1252" class="body"/><line x1="1636" y1="1258" x2="1644" y2="1258" class="body"/>
+<line x1="2120" y1="1196" x2="2120" y2="1212" class="wire"/><line x1="2104" y1="1212" x2="2136" y2="1212" class="body"/><line x1="2110" y1="1218" x2="2130" y2="1218" class="body"/><line x1="2116" y1="1224" x2="2124" y2="1224" class="body"/>
+<line x1="2200" y1="1196" x2="2200" y2="1212" class="wire"/><line x1="2184" y1="1212" x2="2216" y2="1212" class="body"/><line x1="2190" y1="1218" x2="2210" y2="1218" class="body"/><line x1="2196" y1="1224" x2="2204" y2="1224" class="body"/>
+<polygon points="2700,1100 2714,1085 2826.8,1085 2826.8,1115 2714,1115" class="port"/><text x="2722" y="1105" class="port-label" text-anchor="start">P5V_BBD  → BBD</text>
+<polygon points="200,1100 186,1085 32.20000000000002,1085 32.20000000000002,1115 186,1115" class="port"/><text x="178" y="1105" class="port-label" text-anchor="end">P5V  ← Daisy pin A6</text>
+<line x1="480" y1="1256" x2="480" y2="1272" class="wire"/><line x1="464" y1="1272" x2="496" y2="1272" class="body"/><line x1="470" y1="1278" x2="490" y2="1278" class="body"/><line x1="476" y1="1284" x2="484" y2="1284" class="body"/>
+<line x1="540" y1="1300" x2="540" y2="1316" class="wire"/><line x1="524" y1="1316" x2="556" y2="1316" class="body"/><line x1="530" y1="1322" x2="550" y2="1322" class="body"/><line x1="536" y1="1328" x2="544" y2="1328" class="body"/>
+<line x1="1000" y1="1256" x2="1000" y2="1272" class="wire"/><line x1="984" y1="1272" x2="1016" y2="1272" class="body"/><line x1="990" y1="1278" x2="1010" y2="1278" class="body"/><line x1="996" y1="1284" x2="1004" y2="1284" class="body"/>
+<line x1="1080" y1="1256" x2="1080" y2="1272" class="wire"/><line x1="1064" y1="1272" x2="1096" y2="1272" class="body"/><line x1="1070" y1="1278" x2="1090" y2="1278" class="body"/><line x1="1076" y1="1284" x2="1084" y2="1284" class="body"/>
+<polygon points="1300,1070 1314,1055 1443.2,1055 1443.2,1085 1314,1085" class="port"/><text x="1322" y="1075" class="port-label" text-anchor="start">P3V3_OLED  → DS1</text>
+<line x1="480" y1="1676" x2="480" y2="1692" class="wire"/><line x1="464" y1="1692" x2="496" y2="1692" class="body"/><line x1="470" y1="1698" x2="490" y2="1698" class="body"/><line x1="476" y1="1704" x2="484" y2="1704" class="body"/>
+<line x1="540" y1="1720" x2="540" y2="1736" class="wire"/><line x1="524" y1="1736" x2="556" y2="1736" class="body"/><line x1="530" y1="1742" x2="550" y2="1742" class="body"/><line x1="536" y1="1748" x2="544" y2="1748" class="body"/>
+<line x1="1000" y1="1676" x2="1000" y2="1692" class="wire"/><line x1="984" y1="1692" x2="1016" y2="1692" class="body"/><line x1="990" y1="1698" x2="1010" y2="1698" class="body"/><line x1="996" y1="1704" x2="1004" y2="1704" class="body"/>
+<line x1="1080" y1="1676" x2="1080" y2="1692" class="wire"/><line x1="1064" y1="1692" x2="1096" y2="1692" class="body"/><line x1="1070" y1="1698" x2="1090" y2="1698" class="body"/><line x1="1076" y1="1704" x2="1084" y2="1704" class="body"/>
+<polygon points="1300,1490 1314,1475 1508.8,1475 1508.8,1505 1314,1505" class="port"/><text x="1322" y="1495" class="port-label" text-anchor="start">P3V3_MSP430  → faceplate</text>
+<polygon points="1400,1300 1386,1285 1166.6,1285 1166.6,1315 1386,1315" class="port"/><text x="1378" y="1305" class="port-label" text-anchor="end">P3V3_DAISY  ← Daisy pin A10</text>
+<line x1="1500" y1="1676" x2="1500" y2="1692" class="wire"/><line x1="1484" y1="1692" x2="1516" y2="1692" class="body"/><line x1="1490" y1="1698" x2="1510" y2="1698" class="body"/><line x1="1496" y1="1704" x2="1504" y2="1704" class="body"/>
+<line x1="1580" y1="1676" x2="1580" y2="1692" class="wire"/><line x1="1564" y1="1692" x2="1596" y2="1692" class="body"/><line x1="1570" y1="1698" x2="1590" y2="1698" class="body"/><line x1="1576" y1="1704" x2="1584" y2="1704" class="body"/>
+<polygon points="2100,1560 2114,1545 2243.2,1545 2243.2,1575 2114,1575" class="port"/><text x="2122" y="1565" class="port-label" text-anchor="start">I2C_SCL  → U3/U4</text>
+<polygon points="2100,1680 2114,1665 2243.2,1665 2243.2,1695 2114,1695" class="port"/><text x="2122" y="1685" class="port-label" text-anchor="start">I2C_SDA  → U3/U4</text>
+<rect x="120" y="200" width="260" height="420" class="fillwhite"/><text x="250.0" y="174" class="ref" text-anchor="middle">J11</text><text x="250.0" y="192" class="val" text-anchor="middle">TYPE-C-31-M-12</text><line x1="96" y1="260.0" x2="120" y2="260.0" class="pin"/><text x="92" y="252.0" class="pin-no" text-anchor="end">A1B12</text><text x="130" y="266.0" class="note">GND</text><line x1="96" y1="320.0" x2="120" y2="320.0" class="pin"/><text x="92" y="312.0" class="pin-no" text-anchor="end">B1A12</text><text x="130" y="326.0" class="note">GND</text><line x1="96" y1="380.0" x2="120" y2="380.0" class="pin"/><text x="92" y="372.0" class="pin-no" text-anchor="end">1</text><text x="130" y="386.0" class="note">SHELL</text><line x1="96" y1="440.0" x2="120" y2="440.0" class="pin"/><text x="92" y="432.0" class="pin-no" text-anchor="end">2</text><text x="130" y="446.0" class="note">SHELL</text><line x1="96" y1="500.0" x2="120" y2="500.0" class="pin"/><text x="92" y="492.0" class="pin-no" text-anchor="end">3</text><text x="130" y="506.0" class="note">SHELL</text><line x1="96" y1="560.0" x2="120" y2="560.0" class="pin"/><text x="92" y="552.0" class="pin-no" text-anchor="end">4</text><text x="130" y="566.0" class="note">SHELL</text><line x1="380" y1="284.0" x2="404" y2="284.0" class="pin"/><text x="408" y="276.0" class="pin-no">A4B9</text><text x="370" y="290.0" class="note" text-anchor="end">VBUS</text><line x1="380" y1="368.0" x2="404" y2="368.0" class="pin"/><text x="408" y="360.0" class="pin-no">B4A9</text><text x="370" y="374.0" class="note" text-anchor="end">VBUS</text><line x1="380" y1="452.0" x2="404" y2="452.0" class="pin"/><text x="408" y="444.0" class="pin-no">A5</text><text x="370" y="458.0" class="note" text-anchor="end">CC1</text><line x1="380" y1="536.0" x2="404" y2="536.0" class="pin"/><text x="408" y="528.0" class="pin-no">B5</text><text x="370" y="542.0" class="note" text-anchor="end">CC2</text>
+<rect x="440.0" y="610.0" width="20" height="60" class="body"/><line x1="450" y1="590.0" x2="450" y2="610.0" class="pin"/><line x1="450" y1="670.0" x2="450" y2="690.0" class="pin"/><text x="466" y="636" class="ref" text-anchor="start">R22</text><text x="466" y="652" class="val" text-anchor="start">5k1</text>
+<rect x="550.0" y="610.0" width="20" height="60" class="body"/><line x1="560" y1="590.0" x2="560" y2="610.0" class="pin"/><line x1="560" y1="670.0" x2="560" y2="690.0" class="pin"/><text x="576" y="636" class="ref" text-anchor="start">R23</text><text x="576" y="652" class="val" text-anchor="start">5k1</text>
+<polygon points="606,434 634,434 620,418" class="fillbody"/><path d="M 602 418 L 638 418 M 602 418 l -6 -7 M 638 418 l 6 7" class="body"/><line x1="620" y1="388" x2="620" y2="418" class="pin"/><line x1="620" y1="434" x2="620" y2="464" class="pin"/><text x="646" y="414" class="ref">D3</text><text x="646" y="430" class="val">SMAJ6.0A</text>
+<line x1="702" y1="416.0" x2="738" y2="416.0" class="body"/><line x1="702" y1="424.0" x2="738" y2="424.0" class="body"/><line x1="720" y1="384.0" x2="720" y2="416.0" class="pin"/><line x1="720" y1="424.0" x2="720" y2="456.0" class="pin"/><text x="744" y="416" class="ref" text-anchor="start">C28</text><text x="744" y="432" class="val" text-anchor="start">10nF</text>
+<rect x="820.0" y="274.0" width="60" height="20" class="body"/><line x1="800.0" y1="284" x2="820.0" y2="284" class="pin"/><line x1="880.0" y1="284" x2="900.0" y2="284" class="pin"/><text x="850" y="254" class="ref" text-anchor="middle">F1</text><text x="850" y="268" class="val" text-anchor="middle">PTC 2A</text>
+<line x1="942" y1="416.0" x2="978" y2="416.0" class="body"/><line x1="942" y1="424.0" x2="978" y2="424.0" class="body"/><line x1="960" y1="384.0" x2="960" y2="416.0" class="pin"/><line x1="960" y1="424.0" x2="960" y2="456.0" class="pin"/><text x="984" y="416" class="ref" text-anchor="start">C29</text><text x="984" y="432" class="val" text-anchor="start">22uF</text>
+<line x1="1022" y1="416.0" x2="1058" y2="416.0" class="body"/><line x1="1022" y1="424.0" x2="1058" y2="424.0" class="body"/><line x1="1040" y1="384.0" x2="1040" y2="416.0" class="pin"/><line x1="1040" y1="424.0" x2="1040" y2="456.0" class="pin"/><text x="1016" y="416" class="ref" text-anchor="end">C30</text><text x="1016" y="432" class="val" text-anchor="end">1uF</text>
+<line x1="1102" y1="416.0" x2="1138" y2="416.0" class="body"/><line x1="1102" y1="424.0" x2="1138" y2="424.0" class="body"/><line x1="1120" y1="384.0" x2="1120" y2="416.0" class="pin"/><line x1="1120" y1="424.0" x2="1120" y2="456.0" class="pin"/><text x="1144" y="416" class="ref" text-anchor="start">C31</text><text x="1144" y="432" class="val" text-anchor="start">100nF</text>
+<rect x="1250" y="200" width="300" height="420" class="fillwhite"/><text x="1400.0" y="174" class="ref" text-anchor="middle">U7</text><text x="1400.0" y="192" class="val" text-anchor="middle">DKM10E-12</text><line x1="1226" y1="340.0" x2="1250" y2="340.0" class="pin"/><text x="1222" y="332.0" class="pin-no" text-anchor="end">1</text><text x="1260" y="346.0" class="note">+Vin</text><line x1="1226" y1="480.0" x2="1250" y2="480.0" class="pin"/><text x="1222" y="472.0" class="pin-no" text-anchor="end">2</text><text x="1260" y="486.0" class="note">-Vin</text><line x1="1550" y1="284.0" x2="1574" y2="284.0" class="pin"/><text x="1578" y="276.0" class="pin-no">3</text><text x="1540" y="290.0" class="note" text-anchor="end">+Vout</text><line x1="1550" y1="368.0" x2="1574" y2="368.0" class="pin"/><text x="1578" y="360.0" class="pin-no">4</text><text x="1540" y="374.0" class="note" text-anchor="end">Common</text><line x1="1550" y1="452.0" x2="1574" y2="452.0" class="pin"/><text x="1578" y="444.0" class="pin-no">5</text><text x="1540" y="458.0" class="note" text-anchor="end">-Vout</text><line x1="1550" y1="536.0" x2="1574" y2="536.0" class="pin"/><text x="1578" y="528.0" class="pin-no">6</text><text x="1540" y="542.0" class="note" text-anchor="end">R.C. open</text>
+<line x1="1662" y1="416.0" x2="1698" y2="416.0" class="body"/><line x1="1662" y1="424.0" x2="1698" y2="424.0" class="body"/><line x1="1680" y1="384.0" x2="1680" y2="416.0" class="pin"/><line x1="1680" y1="424.0" x2="1680" y2="456.0" class="pin"/><text x="1704" y="416" class="ref" text-anchor="start">C32</text><text x="1704" y="432" class="val" text-anchor="start">470uF</text>
+<line x1="1742" y1="416.0" x2="1778" y2="416.0" class="body"/><line x1="1742" y1="424.0" x2="1778" y2="424.0" class="body"/><line x1="1760" y1="384.0" x2="1760" y2="416.0" class="pin"/><line x1="1760" y1="424.0" x2="1760" y2="456.0" class="pin"/><text x="1736" y="416" class="ref" text-anchor="end">C34</text><text x="1736" y="432" class="val" text-anchor="end">100nF</text>
+<rect x="1850.0" y="274.0" width="60" height="20" class="body"/><line x1="1830.0" y1="284" x2="1850.0" y2="284" class="pin"/><line x1="1910.0" y1="284" x2="1930.0" y2="284" class="pin"/><text x="1880" y="254" class="ref" text-anchor="middle">L1</text><text x="1880" y="268" class="val" text-anchor="middle">bead</text>
+<line x1="1972" y1="416.0" x2="2008" y2="416.0" class="body"/><line x1="1972" y1="424.0" x2="2008" y2="424.0" class="body"/><line x1="1990" y1="384.0" x2="1990" y2="416.0" class="pin"/><line x1="1990" y1="424.0" x2="1990" y2="456.0" class="pin"/><text x="2014" y="416" class="ref" text-anchor="start">C36</text><text x="2014" y="432" class="val" text-anchor="start">22uF</text>
+<line x1="2052" y1="416.0" x2="2088" y2="416.0" class="body"/><line x1="2052" y1="424.0" x2="2088" y2="424.0" class="body"/><line x1="2070" y1="384.0" x2="2070" y2="416.0" class="pin"/><line x1="2070" y1="424.0" x2="2070" y2="456.0" class="pin"/><text x="2046" y="416" class="ref" text-anchor="end">C38</text><text x="2046" y="432" class="val" text-anchor="end">100nF</text>
+<line x1="2132" y1="416.0" x2="2168" y2="416.0" class="body"/><line x1="2132" y1="424.0" x2="2168" y2="424.0" class="body"/><line x1="2150" y1="384.0" x2="2150" y2="416.0" class="pin"/><line x1="2150" y1="424.0" x2="2150" y2="456.0" class="pin"/><text x="2174" y="416" class="ref" text-anchor="start">C40</text><text x="2174" y="432" class="val" text-anchor="start">100nF</text>
+<rect x="2290.0" y="390.0" width="20" height="60" class="body"/><line x1="2300" y1="370.0" x2="2300" y2="390.0" class="pin"/><line x1="2300" y1="450.0" x2="2300" y2="470.0" class="pin"/><text x="2316" y="416" class="ref" text-anchor="start">R24</text><text x="2316" y="432" class="val" text-anchor="start">2k2</text>
+<polygon points="2286,546 2314,546 2300,562" class="fillbody"/><line x1="2282" y1="562" x2="2318" y2="562" class="body"/><line x1="2300" y1="516" x2="2300" y2="546" class="pin"/><line x1="2300" y1="562" x2="2300" y2="604" class="pin"/><path d="M 2320 548 l 16 -12 M 2320 562 l 16 -12" class="ray"/><path d="M 2334 534 l 6 4 l -1 -7 z" class="fillbody"/><path d="M 2334 548 l 6 4 l -1 -7 z" class="fillbody"/><text x="2276" y="554" class="ref" text-anchor="end">D1</text><text x="2276" y="570" class="val" text-anchor="end">green</text>
+<line x1="1662" y1="796.0" x2="1698" y2="796.0" class="body"/><line x1="1662" y1="804.0" x2="1698" y2="804.0" class="body"/><line x1="1680" y1="764.0" x2="1680" y2="796.0" class="pin"/><line x1="1680" y1="804.0" x2="1680" y2="836.0" class="pin"/><text x="1704" y="796" class="ref" text-anchor="start">C33</text><text x="1704" y="812" class="val" text-anchor="start">470uF</text>
+<line x1="1742" y1="796.0" x2="1778" y2="796.0" class="body"/><line x1="1742" y1="804.0" x2="1778" y2="804.0" class="body"/><line x1="1760" y1="764.0" x2="1760" y2="796.0" class="pin"/><line x1="1760" y1="804.0" x2="1760" y2="836.0" class="pin"/><text x="1736" y="796" class="ref" text-anchor="end">C35</text><text x="1736" y="812" class="val" text-anchor="end">100nF</text>
+<rect x="1850.0" y="690.0" width="60" height="20" class="body"/><line x1="1830.0" y1="700" x2="1850.0" y2="700" class="pin"/><line x1="1910.0" y1="700" x2="1930.0" y2="700" class="pin"/><text x="1880" y="670" class="ref" text-anchor="middle">L2</text><text x="1880" y="684" class="val" text-anchor="middle">bead</text>
+<line x1="1972" y1="796.0" x2="2008" y2="796.0" class="body"/><line x1="1972" y1="804.0" x2="2008" y2="804.0" class="body"/><line x1="1990" y1="764.0" x2="1990" y2="796.0" class="pin"/><line x1="1990" y1="804.0" x2="1990" y2="836.0" class="pin"/><text x="2014" y="796" class="ref" text-anchor="start">C37</text><text x="2014" y="812" class="val" text-anchor="start">22uF</text>
+<line x1="2052" y1="796.0" x2="2088" y2="796.0" class="body"/><line x1="2052" y1="804.0" x2="2088" y2="804.0" class="body"/><line x1="2070" y1="764.0" x2="2070" y2="796.0" class="pin"/><line x1="2070" y1="804.0" x2="2070" y2="836.0" class="pin"/><text x="2046" y="796" class="ref" text-anchor="end">C39</text><text x="2046" y="812" class="val" text-anchor="end">100nF</text>
+<rect x="2290.0" y="760.0" width="20" height="60" class="body"/><line x1="2300" y1="740.0" x2="2300" y2="760.0" class="pin"/><line x1="2300" y1="820.0" x2="2300" y2="840.0" class="pin"/><text x="2316" y="786" class="ref" text-anchor="start">R25</text><text x="2316" y="802" class="val" text-anchor="start">2k2</text>
+<polygon points="2286,944 2314,944 2300,928" class="fillbody"/><line x1="2282" y1="928" x2="2318" y2="928" class="body"/><line x1="2300" y1="886" x2="2300" y2="928" class="pin"/><line x1="2300" y1="944" x2="2300" y2="974" class="pin"/><path d="M 2320 918 l 16 -12 M 2320 932 l 16 -12" class="ray"/><path d="M 2334 904 l 6 4 l -1 -7 z" class="fillbody"/><path d="M 2334 918 l 6 4 l -1 -7 z" class="fillbody"/><text x="2276" y="924" class="ref" text-anchor="end">D2</text><text x="2276" y="940" class="val" text-anchor="end">red</text>
+<rect x="1700" y="1040" width="240" height="180" class="fillwhite"/><text x="1820.0" y="1014" class="ref" text-anchor="middle">U8</text><text x="1820.0" y="1032" class="val" text-anchor="middle">AMS1117-5.0</text><line x1="1676" y1="1100.0" x2="1700" y2="1100.0" class="pin"/><text x="1672" y="1092.0" class="pin-no" text-anchor="end">3</text><text x="1710" y="1106.0" class="note">VIN</text><line x1="1676" y1="1160.0" x2="1700" y2="1160.0" class="pin"/><text x="1672" y="1152.0" class="pin-no" text-anchor="end">1</text><text x="1710" y="1166.0" class="note">GND</text><line x1="1940" y1="1100.0" x2="1964" y2="1100.0" class="pin"/><text x="1968" y="1092.0" class="pin-no">2</text><text x="1930" y="1106.0" class="note" text-anchor="end">VOUT</text><line x1="1940" y1="1160.0" x2="1964" y2="1160.0" class="pin"/><text x="1968" y="1152.0" class="pin-no">4</text><text x="1930" y="1166.0" class="note" text-anchor="end">VOUT tab</text>
+<line x1="2102" y1="1156.0" x2="2138" y2="1156.0" class="body"/><line x1="2102" y1="1164.0" x2="2138" y2="1164.0" class="body"/><line x1="2120" y1="1124.0" x2="2120" y2="1156.0" class="pin"/><line x1="2120" y1="1164.0" x2="2120" y2="1196.0" class="pin"/><text x="2144" y="1156" class="ref" text-anchor="start">C41</text><text x="2144" y="1172" class="val" text-anchor="start">100nF</text>
+<line x1="2182" y1="1156.0" x2="2218" y2="1156.0" class="body"/><line x1="2182" y1="1164.0" x2="2218" y2="1164.0" class="body"/><line x1="2200" y1="1124.0" x2="2200" y2="1156.0" class="pin"/><line x1="2200" y1="1164.0" x2="2200" y2="1196.0" class="pin"/><text x="2224" y="1156" class="ref" text-anchor="start">C42</text><text x="2224" y="1172" class="val" text-anchor="start">10uF</text>
+<rect x="330.0" y="1090.0" width="60" height="20" class="body"/><line x1="310.0" y1="1100" x2="330.0" y2="1100" class="pin"/><line x1="390.0" y1="1100" x2="410.0" y2="1100" class="pin"/><text x="360" y="1070" class="ref" text-anchor="middle">FB1</text><text x="360" y="1084" class="val" text-anchor="middle">bead</text>
+<line x1="462" y1="1216.0" x2="498" y2="1216.0" class="body"/><line x1="462" y1="1224.0" x2="498" y2="1224.0" class="body"/><line x1="480" y1="1184.0" x2="480" y2="1216.0" class="pin"/><line x1="480" y1="1224.0" x2="480" y2="1256.0" class="pin"/><text x="504" y="1216" class="ref" text-anchor="start">C24</text><text x="504" y="1232" class="val" text-anchor="start">1uF</text>
+<rect x="600" y="1010" width="240" height="180" class="fillwhite"/><text x="720.0" y="984" class="ref" text-anchor="middle">U5</text><text x="720.0" y="1002" class="val" text-anchor="middle">AMS1117-3.3</text><line x1="576" y1="1070.0" x2="600" y2="1070.0" class="pin"/><text x="572" y="1062.0" class="pin-no" text-anchor="end">3</text><text x="610" y="1076.0" class="note">VIN</text><line x1="576" y1="1130.0" x2="600" y2="1130.0" class="pin"/><text x="572" y="1122.0" class="pin-no" text-anchor="end">1</text><text x="610" y="1136.0" class="note">GND</text><line x1="840" y1="1070.0" x2="864" y2="1070.0" class="pin"/><text x="868" y="1062.0" class="pin-no">2</text><text x="830" y="1076.0" class="note" text-anchor="end">VOUT</text><line x1="840" y1="1130.0" x2="864" y2="1130.0" class="pin"/><text x="868" y="1122.0" class="pin-no">4</text><text x="830" y="1136.0" class="note" text-anchor="end">VOUT tab</text>
+<line x1="982" y1="1216.0" x2="1018" y2="1216.0" class="body"/><line x1="982" y1="1224.0" x2="1018" y2="1224.0" class="body"/><line x1="1000" y1="1184.0" x2="1000" y2="1216.0" class="pin"/><line x1="1000" y1="1224.0" x2="1000" y2="1256.0" class="pin"/><text x="1024" y="1216" class="ref" text-anchor="start">C20</text><text x="1024" y="1232" class="val" text-anchor="start">1uF</text>
+<line x1="1062" y1="1216.0" x2="1098" y2="1216.0" class="body"/><line x1="1062" y1="1224.0" x2="1098" y2="1224.0" class="body"/><line x1="1080" y1="1184.0" x2="1080" y2="1216.0" class="pin"/><line x1="1080" y1="1224.0" x2="1080" y2="1256.0" class="pin"/><text x="1104" y="1216" class="ref" text-anchor="start">C21</text><text x="1104" y="1232" class="val" text-anchor="start">100nF</text>
+<rect x="330.0" y="1510.0" width="60" height="20" class="body"/><line x1="310.0" y1="1520" x2="330.0" y2="1520" class="pin"/><line x1="390.0" y1="1520" x2="410.0" y2="1520" class="pin"/><text x="360" y="1490" class="ref" text-anchor="middle">FB2</text><text x="360" y="1504" class="val" text-anchor="middle">bead</text>
+<line x1="462" y1="1636.0" x2="498" y2="1636.0" class="body"/><line x1="462" y1="1644.0" x2="498" y2="1644.0" class="body"/><line x1="480" y1="1604.0" x2="480" y2="1636.0" class="pin"/><line x1="480" y1="1644.0" x2="480" y2="1676.0" class="pin"/><text x="504" y="1636" class="ref" text-anchor="start">C25</text><text x="504" y="1652" class="val" text-anchor="start">1uF</text>
+<rect x="600" y="1430" width="240" height="180" class="fillwhite"/><text x="720.0" y="1404" class="ref" text-anchor="middle">U6</text><text x="720.0" y="1422" class="val" text-anchor="middle">AMS1117-3.3</text><line x1="576" y1="1490.0" x2="600" y2="1490.0" class="pin"/><text x="572" y="1482.0" class="pin-no" text-anchor="end">3</text><text x="610" y="1496.0" class="note">VIN</text><line x1="576" y1="1550.0" x2="600" y2="1550.0" class="pin"/><text x="572" y="1542.0" class="pin-no" text-anchor="end">1</text><text x="610" y="1556.0" class="note">GND</text><line x1="840" y1="1490.0" x2="864" y2="1490.0" class="pin"/><text x="868" y="1482.0" class="pin-no">2</text><text x="830" y="1496.0" class="note" text-anchor="end">VOUT</text><line x1="840" y1="1550.0" x2="864" y2="1550.0" class="pin"/><text x="868" y="1542.0" class="pin-no">4</text><text x="830" y="1556.0" class="note" text-anchor="end">VOUT tab</text>
+<line x1="982" y1="1636.0" x2="1018" y2="1636.0" class="body"/><line x1="982" y1="1644.0" x2="1018" y2="1644.0" class="body"/><line x1="1000" y1="1604.0" x2="1000" y2="1636.0" class="pin"/><line x1="1000" y1="1644.0" x2="1000" y2="1676.0" class="pin"/><text x="1024" y="1636" class="ref" text-anchor="start">C22</text><text x="1024" y="1652" class="val" text-anchor="start">1uF</text>
+<line x1="1062" y1="1636.0" x2="1098" y2="1636.0" class="body"/><line x1="1062" y1="1644.0" x2="1098" y2="1644.0" class="body"/><line x1="1080" y1="1604.0" x2="1080" y2="1636.0" class="pin"/><line x1="1080" y1="1644.0" x2="1080" y2="1676.0" class="pin"/><text x="1104" y="1636" class="ref" text-anchor="start">C23</text><text x="1104" y="1652" class="val" text-anchor="start">100nF</text>
+<line x1="1482" y1="1636.0" x2="1518" y2="1636.0" class="body"/><line x1="1482" y1="1644.0" x2="1518" y2="1644.0" class="body"/><line x1="1500" y1="1604.0" x2="1500" y2="1636.0" class="pin"/><line x1="1500" y1="1644.0" x2="1500" y2="1676.0" class="pin"/><text x="1524" y="1636" class="ref" text-anchor="start">C26</text><text x="1524" y="1652" class="val" text-anchor="start">1uF</text>
+<line x1="1562" y1="1636.0" x2="1598" y2="1636.0" class="body"/><line x1="1562" y1="1644.0" x2="1598" y2="1644.0" class="body"/><line x1="1580" y1="1604.0" x2="1580" y2="1636.0" class="pin"/><line x1="1580" y1="1644.0" x2="1580" y2="1676.0" class="pin"/><text x="1604" y="1636" class="ref" text-anchor="start">C27</text><text x="1604" y="1652" class="val" text-anchor="start">100nF</text>
+<rect x="1770.0" y="1550.0" width="60" height="20" class="body"/><line x1="1750.0" y1="1560" x2="1770.0" y2="1560" class="pin"/><line x1="1830.0" y1="1560" x2="1850.0" y2="1560" class="pin"/><text x="1800" y="1530" class="ref" text-anchor="middle">R20</text><text x="1800" y="1544" class="val" text-anchor="middle">2k2</text>
+<rect x="1770.0" y="1670.0" width="60" height="20" class="body"/><line x1="1750.0" y1="1680" x2="1770.0" y2="1680" class="pin"/><line x1="1830.0" y1="1680" x2="1850.0" y2="1680" class="pin"/><text x="1800" y="1650" class="ref" text-anchor="middle">R21</text><text x="1800" y="1664" class="val" text-anchor="middle">2k2</text>
+<circle class="dot" cx="470" cy="284" r="6"/>
+<circle class="dot" cx="940" cy="1070" r="6"/>
+<circle class="dot" cx="60" cy="320" r="6"/>
+<circle class="dot" cx="60" cy="500" r="6"/>
+<circle class="dot" cx="480" cy="1520" r="6"/>
+<circle class="dot" cx="260" cy="1100" r="6"/>
+<circle class="dot" cx="720" cy="284" r="6"/>
+<circle class="dot" cx="60" cy="380" r="6"/>
+<circle class="dot" cx="60" cy="560" r="6"/>
+<circle class="dot" cx="940" cy="1490" r="6"/>
+<circle class="dot" cx="2600" cy="284" r="6"/>
+<circle class="dot" cx="1700" cy="1560" r="6"/>
+<circle class="dot" cx="60" cy="440" r="6"/>
+<circle class="dot" cx="480" cy="1100" r="6"/>
+<circle class="dot" cx="620" cy="284" r="6"/>
+<circle class="dot" cx="2040" cy="1100" r="6"/>
+<text class="net-label" x="635.0" y="275" text-anchor="middle">VBUS</text>
+<text class="net-label" x="482.0" y="527" text-anchor="middle">CC2</text>
+<text class="net-label" x="2450.0" y="1091" text-anchor="middle">P5V_BBD</text>
+<text class="net-label" x="1190.0" y="1061" text-anchor="middle">P3V3_OLED</text>
+<text class="net-label" x="1190.0" y="1481" text-anchor="middle">P3V3_MSP430</text>
+<text class="net-label" x="1975.0" y="1551" text-anchor="middle">I2C_SCL</text>
+<text class="net-label" x="1975.0" y="1671" text-anchor="middle">I2C_SDA</text>
+<g><path class="wire" d="M 1560 2000 L 1590 2000 A 8 8 0 0 1 1606 2000 L 1636 2000"/><path class="wire" d="M 1598 1974 L 1598 2026"/><text x="1650" y="2006" class="note">wires cross, not connected</text><path class="wire" d="M 1560 2052 L 1636 2052"/><path class="wire" d="M 1598 2052 L 1598 2078"/><circle class="dot" cx="1598" cy="2052" r="6"/><text x="1650" y="2058" class="note">wires joined</text><text x="1560" y="1956" class="note">A wire ending on a pin is connected; corners are not dotted.</text></g>
+<rect class="frame" x="18" y="18" width="2964" height="1764"/>
+<text class="title" x="46" y="66">Power — USB-C, DKM10, regulators</text>
+<text class="subtitle" x="46" y="92">input, converter, rail filters and the three linear regulators, drawn from netmap.json and checked against it · compare with V3.0.pdf</text>
+</svg></div></div>
+<script>
+  const stage=document.getElementById("stage"), sheet=document.getElementById("sheet");
+  let z=1;
+  const apply=()=>{sheet.style.transform="scale("+z+")";
+    sheet.style.height=(1800*z)+"px"; sheet.style.width="3000px";};
+  const fit=()=>{z=Math.min(1,(stage.clientWidth-32)/3000); apply();};
+  document.getElementById("in").onclick=()=>{z=Math.min(4,z*1.25); apply();};
+  document.getElementById("out").onclick=()=>{z=Math.max(.1,z/1.25); apply();};
+  document.getElementById("fit").onclick=fit;
+  document.getElementById("full").onclick=()=>{z=1; apply();};
+  let drag=null;
+  stage.addEventListener("pointerdown",e=>{drag={x:e.clientX,y:e.clientY,
+    l:stage.scrollLeft,t:stage.scrollTop}; stage.classList.add("drag"); stage.setPointerCapture(e.pointerId);});
+  stage.addEventListener("pointermove",e=>{if(!drag)return;
+    stage.scrollLeft=drag.l-(e.clientX-drag.x); stage.scrollTop=drag.t-(e.clientY-drag.y);});
+  const stop=()=>{drag=null; stage.classList.remove("drag");};
+  stage.addEventListener("pointerup",stop); stage.addEventListener("pointercancel",stop);
+  window.addEventListener("resize",()=>{if(z<1)fit();});
+  fit();
+</script>

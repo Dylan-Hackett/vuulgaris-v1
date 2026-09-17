@@ -283,6 +283,28 @@ def diode(x, y, ref, val, cathode_up=True):
     return tri + bar + wires + lab, term
 
 
+def led(x, y, ref, val, anode="1", cathode="2", cathode_up=False):
+    """Indicator LED. Pin names follow the part, so the same glyph serves a
+    symbol numbered anode-first (YLED0402Y) and one numbered cathode-first."""
+    s = 14
+    if cathode_up:
+        tri = f'<polygon points="{x-s},{y+s} {x+s},{y+s} {x},{y-2}" class="fillbody"/>'
+        bar = f'<line x1="{x-s-4}" y1="{y-2}" x2="{x+s+4}" y2="{y-2}" class="body"/>'
+        term = {cathode: _t(x, y-44), anode: _t(x, y+44)}
+    else:
+        tri = f'<polygon points="{x-s},{y-s} {x+s},{y-s} {x},{y+2}" class="fillbody"/>'
+        bar = f'<line x1="{x-s-4}" y1="{y+2}" x2="{x+s+4}" y2="{y+2}" class="body"/>'
+        term = {anode: _t(x, y-44), cathode: _t(x, y+44)}
+    wires = (f'<line x1="{x}" y1="{y-44}" x2="{x}" y2="{y-s if not cathode_up else y-2}" class="pin"/>'
+             f'<line x1="{x}" y1="{y+2 if not cathode_up else y+s}" x2="{x}" y2="{y+44}" class="pin"/>')
+    rays = (f'<path d="M {x+s+6} {y-12} l 16 -12 M {x+s+6} {y+2} l 16 -12" class="ray"/>'
+            f'<path d="M {x+s+20} {y-26} l 6 4 l -1 -7 z" class="fillbody"/>'
+            f'<path d="M {x+s+20} {y-12} l 6 4 l -1 -7 z" class="fillbody"/>')
+    lab = (f'<text x="{x-24}" y="{y-6}" class="ref" text-anchor="end">{ref}</text>'
+           f'<text x="{x-24}" y="{y+10}" class="val" text-anchor="end">{val}</text>')
+    return tri + bar + wires + rays + lab, term
+
+
 def power_pins(x, y, ref, part, pins=("4", "11")):
     """The op-amp's supply pins, drawn once for the whole chip."""
     w, h = 150, 96
@@ -485,6 +507,90 @@ def bbd_left(netmap, values):
     glyphs.append('<line x1="46" y1="2260" x2="3154" y2="2260" class="dashbox"/>')
     glyphs.append('<text x="46" y="2310" class="ref" style="font-size:20px">'
                   'SUPPLIES</text>')
+    return P, T, glyphs
+
+
+def psu(netmap, values):
+    """USB-C in, the DKM10 converter, the rail filters and the three linear
+    regulators. Laid out like the V3.0 reference: input at the left, the
+    converter in the middle, rails to the right, regulators underneath."""
+    V = lambda r: values.get(r, "")
+    P, T, glyphs = {}, {}, []
+
+    def put(ref, res):
+        svg, terms = res
+        P[ref] = svg
+        T[ref] = terms
+
+    # --- USB-C input -----------------------------------------------------
+    put("J11", chip(120, 200, 260, 420, "J11", "TYPE-C-31-M-12",
+                    [("A1B12", "GND"), ("B1A12", "GND"), ("1", "SHELL"), ("2", "SHELL"),
+                     ("3", "SHELL"), ("4", "SHELL")],
+                    [("A4B9", "VBUS"), ("B4A9", "VBUS"), ("A5", "CC1"), ("B5", "CC2")]))
+    put("R22", resistor(450, 640, "R22", V("R22") or "5k1", vert=True))
+    put("R23", resistor(560, 640, "R23", V("R23") or "5k1", vert=True, swap=True))
+    put("D3", zener(620, 420, "D3", V("D3"), anode_up=False))
+    put("C28", cap(720, 420, "C28", V("C28") or "10nF", vert=True))
+    put("F1", resistor(850, 284, "F1", V("F1") or "PTC 2A"))
+
+    # --- converter -------------------------------------------------------
+    put("C29", cap(960, 420, "C29", V("C29") or "22uF", vert=True))
+    put("C30", cap(1040, 420, "C30", V("C30") or "1uF", vert=True, swap=True, flip_label=True))
+    put("C31", cap(1120, 420, "C31", V("C31") or "100nF", vert=True, swap=True))
+    put("U7", chip(1250, 200, 300, 420, "U7", "DKM10E-12",
+                   [("1", "+Vin"), ("2", "-Vin")],
+                   [("3", "+Vout"), ("4", "Common"), ("5", "-Vout"), ("6", "R.C. open")]))
+
+    # --- positive rail ---------------------------------------------------
+    put("C32", cap(1680, 420, "C32", V("C32") or "470uF", vert=True))
+    put("C34", cap(1760, 420, "C34", V("C34") or "100nF", vert=True, swap=True, flip_label=True))
+    put("L1", resistor(1880, 284, "L1", V("L1") or "bead"))
+    put("C36", cap(1990, 420, "C36", V("C36") or "22uF", vert=True))
+    put("C38", cap(2070, 420, "C38", V("C38") or "100nF", vert=True, swap=True, flip_label=True))
+    put("C40", cap(2150, 420, "C40", V("C40"), vert=True))
+    put("R24", resistor(2300, 420, "R24", V("R24") or "2k2", vert=True, swap=True))
+    put("D1", led(2300, 560, "D1", V("D1") or "green"))
+
+    # --- negative rail ---------------------------------------------------
+    put("C33", cap(1680, 800, "C33", V("C33") or "470uF", vert=True, swap=True))
+    put("C35", cap(1760, 800, "C35", V("C35") or "100nF", vert=True, flip_label=True))
+    put("L2", resistor(1880, 700, "L2", V("L2") or "bead"))
+    put("C37", cap(1990, 800, "C37", V("C37") or "22uF", vert=True, swap=True))
+    put("C39", cap(2070, 800, "C39", V("C39") or "100nF", vert=True, flip_label=True))
+    put("R25", resistor(2300, 790, "R25", V("R25") or "2k2", vert=True, swap=True))
+    put("D2", led(2300, 930, "D2", V("D2") or "red", cathode_up=True))
+
+    # --- the BBD's 5V ----------------------------------------------------
+    put("U8", chip(1700, 1040, 240, 180, "U8", "AMS1117-5.0",
+                   [("3", "VIN"), ("1", "GND")], [("2", "VOUT"), ("4", "VOUT tab")]))
+    put("C41", cap(2120, 1160, "C41", V("C41"), vert=True))
+    put("C42", cap(2200, 1160, "C42", V("C42"), vert=True))
+
+    # --- 3V3 rails off the Daisy's 5V ------------------------------------
+    put("FB1", resistor(360, 1100, "FB1", V("FB1") or "bead"))
+    put("C24", cap(480, 1220, "C24", V("C24") or "1uF", vert=True))
+    put("U5", chip(600, 1010, 240, 180, "U5", "AMS1117-3.3",
+                   [("3", "VIN"), ("1", "GND")], [("2", "VOUT"), ("4", "VOUT tab")]))
+    put("C20", cap(1000, 1220, "C20", V("C20") or "1uF", vert=True))
+    put("C21", cap(1080, 1220, "C21", V("C21") or "100nF", vert=True))
+    put("FB2", resistor(360, 1520, "FB2", V("FB2") or "bead"))
+    put("C25", cap(480, 1640, "C25", V("C25") or "1uF", vert=True))
+    put("U6", chip(600, 1430, 240, 180, "U6", "AMS1117-3.3",
+                   [("3", "VIN"), ("1", "GND")], [("2", "VOUT"), ("4", "VOUT tab")]))
+    put("C22", cap(1000, 1640, "C22", V("C22") or "1uF", vert=True))
+    put("C23", cap(1080, 1640, "C23", V("C23") or "100nF", vert=True))
+
+    # --- the Daisy's 3V3 and the I2C pull-ups ----------------------------
+    put("C26", cap(1500, 1640, "C26", V("C26") or "1uF", vert=True))
+    put("C27", cap(1580, 1640, "C27", V("C27") or "100nF", vert=True))
+    put("R20", resistor(1800, 1560, "R20", V("R20") or "2k2", swap=True))
+    put("R21", resistor(1800, 1680, "R21", V("R21") or "2k2", swap=True))
+
+    glyphs.append('<text x="46" y="140" class="ref" style="font-size:20px">'
+                  'INPUT AND CONVERTER \u2014 check against V3.0.pdf</text>')
+    glyphs.append('<line x1="46" y1="980" x2="2954" y2="980" class="dashbox"/>')
+    glyphs.append('<text x="46" y="1030" class="ref" style="font-size:20px">'
+                  'REGULATORS \u2014 the Daisy returns 5V and 3V3 on its own pins</text>')
     return P, T, glyphs
 
 
@@ -745,6 +851,121 @@ def bbd_left_wires():
         ("NEG12V",      [("C122", "1"), (2880, 2400), (2880, 2480),
                          ("RAIL", 2880, 2480, "-12V", False)]),
         ("GND",         [("C122", "2"), (3060, 2400), (3060, 2480), ("GND", 3060, 2480)]),
+    ]
+
+
+def psu_wires():
+    return [
+        # ---- connector shells and shield to ground ----
+        ("GND",   [("J11", "A1B12"), (60, 260), (60, 660), ("GND", 60, 660)]),
+        ("GND",   [("J11", "B1A12"), (60, 320)]),
+        ("GND",   [("J11", "1"), (60, 380)]),
+        ("GND",   [("J11", "2"), (60, 440)]),
+        ("GND",   [("J11", "3"), (60, 500)]),
+        ("GND",   [("J11", "4"), (60, 560)]),
+
+        # ---- VBUS: both pairs, the CC pulldowns, the TVS and its cap ----
+        ("VBUS",  [("J11", "A4B9"), (470, 284), ("F1", "1")]),
+        ("VBUS",  [("J11", "B4A9"), (470, 368), (470, 284)]),
+        ("CC1",   [("J11", "A5"), (450, 452), ("R22", "1")]),
+        ("GND",   [("R22", "2"), ("GND", 450, 690)]),
+        ("CC2",   [("J11", "B5"), (560, 536), ("R23", "2")]),
+        ("GND",   [("R23", "1"), ("GND", 560, 690)]),
+        ("VBUS",  [(620, 284), ("D3", "1")]),
+        ("GND",   [("D3", "2"), ("GND", 620, 464)]),
+        ("VBUS",  [(720, 284), ("C28", "1")]),
+        ("GND",   [("C28", "2"), ("GND", 720, 456)]),
+
+        # ---- filtered VBUS into the converter ----
+        ("VBUS_F", [("F1", "2"), (960, 284), ("C29", "1")]),
+        ("GND",   [("C29", "2"), ("GND", 960, 456)]),
+        ("VBUS_F", [(1040, 284), ("C30", "2")]),
+        ("GND",   [("C30", "1"), ("GND", 1040, 456)]),
+        ("VBUS_F", [(1120, 284), ("C31", "2")]),
+        ("GND",   [("C31", "1"), ("GND", 1120, 456)]),
+        ("VBUS_F", [(1120, 284), (1180, 284), (1180, 340), ("U7", "1")]),
+        ("GND",   [("U7", "2"), (1180, 480), (1180, 640), ("GND", 1180, 640)]),
+        ("GND",   [("U7", "4"), (1600, 368), (1600, 600), ("GND", 1600, 600)]),
+
+        # ---- positive rail ----
+        ("POS12V_RAW", [("U7", "3"), (1680, 284), ("C32", "1")]),
+        ("GND",   [("C32", "2"), ("GND", 1680, 456)]),
+        ("POS12V_RAW", [(1760, 284), ("C34", "2")]),
+        ("GND",   [("C34", "1"), ("GND", 1760, 456)]),
+        ("POS12V_RAW", [(1760, 284), ("L1", "1")]),
+        ("POS12V", [("L1", "2"), (1990, 284), ("C36", "1")]),
+        ("GND",   [("C36", "2"), ("GND", 1990, 456)]),
+        ("POS12V", [(2070, 284), ("C38", "2")]),
+        ("GND",   [("C38", "1"), ("GND", 2070, 456)]),
+        ("POS12V", [(2150, 284), ("C40", "1")]),
+        ("GND",   [("C40", "2"), ("GND", 2150, 456)]),
+        ("POS12V", [(2300, 284), ("R24", "2")]),
+        ("LED_POS", [("R24", "1"), ("D1", "1")]),
+        ("GND",   [("D1", "2"), ("GND", 2300, 640)]),
+        ("POS12V", [(2300, 284), ("PORT", 2700, 284, "POS12V  \u2192 board", True)]),
+        ("POS12V", [(2600, 284), (2600, 900), (1600, 900), (1600, 1100), ("U8", "3")]),
+
+        # ---- negative rail ----
+        ("NEG12V_RAW", [("U7", "5"), (1650, 452), (1650, 700), (1680, 700), ("C33", "2")]),
+        ("GND",   [("C33", "1"), ("GND", 1680, 836)]),
+        ("NEG12V_RAW", [(1760, 700), ("C35", "1")]),
+        ("GND",   [("C35", "2"), ("GND", 1760, 836)]),
+        ("NEG12V_RAW", [(1760, 700), ("L2", "1")]),
+        ("NEG12V", [("L2", "2"), (1990, 700), ("C37", "2")]),
+        ("GND",   [("C37", "1"), ("GND", 1990, 836)]),
+        ("NEG12V", [(2070, 700), ("C39", "1")]),
+        ("GND",   [("C39", "2"), ("GND", 2070, 836)]),
+        ("NEG12V", [(2300, 700), ("R25", "2")]),
+        ("LED_NEG", [("R25", "1"), ("D2", "2")]),
+        ("GND",   [("D2", "1"), (2300, 1010), (2400, 1010), ("GND", 2400, 1010)]),
+        ("NEG12V", [(2300, 700), ("PORT", 2700, 700, "NEG12V  \u2192 board", True)]),
+
+        # ---- the BBD's 5V ----
+        ("GND",   [("U8", "1"), (1640, 1160), (1640, 1230), ("GND", 1640, 1230)]),
+        ("P5V_BBD", [("U8", "2"), (2040, 1100), (2120, 1100), ("C41", "1")]),
+        ("P5V_BBD", [("U8", "4"), (2040, 1160), (2040, 1100)]),
+        ("GND",   [("C41", "2"), ("GND", 2120, 1196)]),
+        ("P5V_BBD", [(2200, 1100), ("C42", "1")]),
+        ("GND",   [("C42", "2"), ("GND", 2200, 1196)]),
+        ("P5V_BBD", [(2200, 1100), ("PORT", 2700, 1100, "P5V_BBD  \u2192 BBD", True)]),
+
+        # ---- OLED 3V3 ----
+        ("P5V",   [("PORT", 200, 1100, "P5V  \u2190 Daisy pin A6", False), (260, 1100),
+                   ("FB1", "1")]),
+        ("P5V",   [(260, 1100), (260, 1520), ("FB2", "1")]),
+        ("P5V_OLED", [("FB1", "2"), (480, 1100), ("U5", "3")]),
+        ("P5V_OLED", [(480, 1100), ("C24", "1")]),
+        ("GND",   [("C24", "2"), ("GND", 480, 1256)]),
+        ("GND",   [("U5", "1"), (540, 1160), (540, 1300), ("GND", 540, 1300)]),
+        ("P3V3_OLED", [("U5", "2"), (940, 1070), (1000, 1070), ("C20", "1")]),
+        ("P3V3_OLED", [("U5", "4"), (940, 1130), (940, 1070)]),
+        ("GND",   [("C20", "2"), ("GND", 1000, 1256)]),
+        ("P3V3_OLED", [(1080, 1070), ("C21", "1")]),
+        ("GND",   [("C21", "2"), ("GND", 1080, 1256)]),
+        ("P3V3_OLED", [(1080, 1070), ("PORT", 1300, 1070, "P3V3_OLED  \u2192 DS1", True)]),
+
+        # ---- MSP430 3V3 ----
+        ("P5V_MSP", [("FB2", "2"), (480, 1520), ("U6", "3")]),
+        ("P5V_MSP", [(480, 1520), ("C25", "1")]),
+        ("GND",   [("C25", "2"), ("GND", 480, 1676)]),
+        ("GND",   [("U6", "1"), (540, 1580), (540, 1720), ("GND", 540, 1720)]),
+        ("P3V3_MSP430", [("U6", "2"), (940, 1490), (1000, 1490), ("C22", "1")]),
+        ("P3V3_MSP430", [("U6", "4"), (940, 1550), (940, 1490)]),
+        ("GND",   [("C22", "2"), ("GND", 1000, 1676)]),
+        ("P3V3_MSP430", [(1080, 1490), ("C23", "1")]),
+        ("GND",   [("C23", "2"), ("GND", 1080, 1676)]),
+        ("P3V3_MSP430", [(1080, 1490), ("PORT", 1300, 1490, "P3V3_MSP430  \u2192 faceplate", True)]),
+
+        # ---- the Daisy's own 3V3, and the I2C pull-ups ----
+        ("P3V3_DAISY", [("PORT", 1400, 1300, "P3V3_DAISY  \u2190 Daisy pin A10", False),
+                        (1500, 1300), ("C26", "1")]),
+        ("GND",   [("C26", "2"), ("GND", 1500, 1676)]),
+        ("P3V3_DAISY", [(1580, 1300), ("C27", "1")]),
+        ("GND",   [("C27", "2"), ("GND", 1580, 1676)]),
+        ("P3V3_DAISY", [(1580, 1300), (1700, 1300), (1700, 1560), ("R20", "2")]),
+        ("P3V3_DAISY", [(1700, 1560), (1700, 1680), ("R21", "2")]),
+        ("I2C_SCL", [("R20", "1"), ("PORT", 2100, 1560, "I2C_SCL  \u2192 U3/U4", True)]),
+        ("I2C_SDA", [("R21", "1"), ("PORT", 2100, 1680, "I2C_SDA  \u2192 U3/U4", True)]),
     ]
 
 
@@ -1197,6 +1418,10 @@ def main():
           "complete: audio path, LED drive and CV chain, drawn from netmap.json "
           "and checked against it \u00b7 compare with Bergman's sheet",
           lpg_left, lpg_left_wires, 2060, 2140, "LPG Left Sheet")
+    build("sch-psu", "Power \u2014 USB-C, DKM10, regulators",
+          "input, converter, rail filters and the three linear regulators, drawn from "
+          "netmap.json and checked against it \u00b7 compare with V3.0.pdf",
+          psu, psu_wires, 3000, 1800, "PSU Sheet")
     build("sch-bbd-left", "BBD \u2014 left channel",
           "complete: audio path, sample and hold, mix and CD4046 clock, drawn from "
           "netmap.json and checked against it \u00b7 compare with the mki manual",
