@@ -864,70 +864,75 @@ def psu_wires():
         ("GND",   [("J11", "3"), (60, 500)]),
         ("GND",   [("J11", "4"), (60, 560)]),
 
-        # ---- VBUS: both pairs, the CC pulldowns, the TVS and its cap ----
-        ("VBUS",  [("J11", "A4B9"), (470, 284), ("F1", "1")]),
+        # ---- VBUS: both pairs, CC pulldowns, TVS, bypass, fuse ----
+        ("VBUS",  [("J11", "A4B9"), (470, 284), (620, 284), (720, 284), ("F1", "1")]),
         ("VBUS",  [("J11", "B4A9"), (470, 368), (470, 284)]),
+        ("VBUS",  [(620, 284), ("D3", "1")]),
+        ("VBUS",  [(720, 284), ("C28", "1")]),
+        ("GND",   [("D3", "2"), ("GND", 620, 464)]),
+        ("GND",   [("C28", "2"), ("GND", 720, 456)]),
         ("CC1",   [("J11", "A5"), (450, 452), ("R22", "1")]),
         ("GND",   [("R22", "2"), ("GND", 450, 690)]),
         ("CC2",   [("J11", "B5"), (560, 536), ("R23", "2")]),
         ("GND",   [("R23", "1"), ("GND", 560, 690)]),
-        ("VBUS",  [(620, 284), ("D3", "1")]),
-        ("GND",   [("D3", "2"), ("GND", 620, 464)]),
-        ("VBUS",  [(720, 284), ("C28", "1")]),
-        ("GND",   [("C28", "2"), ("GND", 720, 456)]),
 
         # ---- filtered VBUS into the converter ----
-        ("VBUS_F", [("F1", "2"), (960, 284), ("C29", "1")]),
-        ("GND",   [("C29", "2"), ("GND", 960, 456)]),
+        ("VBUS_F", [("F1", "2"), (960, 284), (1040, 284), (1120, 284), (1180, 284),
+                    (1180, 340), ("U7", "1")]),
+        ("VBUS_F", [(960, 284), ("C29", "1")]),
         ("VBUS_F", [(1040, 284), ("C30", "2")]),
-        ("GND",   [("C30", "1"), ("GND", 1040, 456)]),
         ("VBUS_F", [(1120, 284), ("C31", "2")]),
+        ("GND",   [("C29", "2"), ("GND", 960, 456)]),
+        ("GND",   [("C30", "1"), ("GND", 1040, 456)]),
         ("GND",   [("C31", "1"), ("GND", 1120, 456)]),
-        ("VBUS_F", [(1120, 284), (1180, 284), (1180, 340), ("U7", "1")]),
         ("GND",   [("U7", "2"), (1180, 480), (1180, 640), ("GND", 1180, 640)]),
         ("GND",   [("U7", "4"), (1600, 368), (1600, 600), ("GND", 1600, 600)]),
 
         # ---- positive rail ----
-        ("POS12V_RAW", [("U7", "3"), (1680, 284), ("C32", "1")]),
-        ("GND",   [("C32", "2"), ("GND", 1680, 456)]),
+        ("POS12V_RAW", [("U7", "3"), (1680, 284), (1760, 284), ("L1", "1")]),
+        ("POS12V_RAW", [(1680, 284), ("C32", "1")]),
         ("POS12V_RAW", [(1760, 284), ("C34", "2")]),
+        ("GND",   [("C32", "2"), ("GND", 1680, 456)]),
         ("GND",   [("C34", "1"), ("GND", 1760, 456)]),
-        ("POS12V_RAW", [(1760, 284), ("L1", "1")]),
-        ("POS12V", [("L1", "2"), (1990, 284), ("C36", "1")]),
-        ("GND",   [("C36", "2"), ("GND", 1990, 456)]),
+        ("POS12V", [("L1", "2"), (1990, 284), (2070, 284), (2150, 284), (2300, 284),
+                    (2600, 284), ("PORT", 2700, 284, "POS12V  \u2192 board", True)]),
+        ("POS12V", [(1990, 284), ("C36", "1")]),
         ("POS12V", [(2070, 284), ("C38", "2")]),
-        ("GND",   [("C38", "1"), ("GND", 2070, 456)]),
         ("POS12V", [(2150, 284), ("C40", "1")]),
-        ("GND",   [("C40", "2"), ("GND", 2150, 456)]),
         ("POS12V", [(2300, 284), ("R24", "2")]),
+        ("POS12V", [(2600, 284), (2600, 900), (1600, 900), (1600, 1100), ("U8", "3")]),
+        ("GND",   [("C36", "2"), ("GND", 1990, 456)]),
+        ("GND",   [("C38", "1"), ("GND", 2070, 456)]),
+        ("GND",   [("C40", "2"), ("GND", 2150, 456)]),
         ("LED_POS", [("R24", "1"), ("D1", "1")]),
         ("GND",   [("D1", "2"), ("GND", 2300, 640)]),
-        ("POS12V", [(2300, 284), ("PORT", 2700, 284, "POS12V  \u2192 board", True)]),
-        ("POS12V", [(2600, 284), (2600, 900), (1600, 900), (1600, 1100), ("U8", "3")]),
 
         # ---- negative rail ----
-        ("NEG12V_RAW", [("U7", "5"), (1650, 452), (1650, 700), (1680, 700), ("C33", "2")]),
-        ("GND",   [("C33", "1"), ("GND", 1680, 836)]),
+        ("NEG12V_RAW", [("U7", "5"), (1650, 452), (1650, 700), (1680, 700), (1760, 700),
+                        ("L2", "1")]),
+        ("NEG12V_RAW", [(1680, 700), ("C33", "2")]),
         ("NEG12V_RAW", [(1760, 700), ("C35", "1")]),
+        ("GND",   [("C33", "1"), ("GND", 1680, 836)]),
         ("GND",   [("C35", "2"), ("GND", 1760, 836)]),
-        ("NEG12V_RAW", [(1760, 700), ("L2", "1")]),
-        ("NEG12V", [("L2", "2"), (1990, 700), ("C37", "2")]),
-        ("GND",   [("C37", "1"), ("GND", 1990, 836)]),
+        ("NEG12V", [("L2", "2"), (1990, 700), (2070, 700), (2300, 700),
+                    ("PORT", 2700, 700, "NEG12V  \u2192 board", True)]),
+        ("NEG12V", [(1990, 700), ("C37", "2")]),
         ("NEG12V", [(2070, 700), ("C39", "1")]),
-        ("GND",   [("C39", "2"), ("GND", 2070, 836)]),
         ("NEG12V", [(2300, 700), ("R25", "2")]),
+        ("GND",   [("C37", "1"), ("GND", 1990, 836)]),
+        ("GND",   [("C39", "2"), ("GND", 2070, 836)]),
         ("LED_NEG", [("R25", "1"), ("D2", "2")]),
         ("GND",   [("D2", "1"), (2300, 1010), (2400, 1010), ("GND", 2400, 1010)]),
-        ("NEG12V", [(2300, 700), ("PORT", 2700, 700, "NEG12V  \u2192 board", True)]),
 
         # ---- the BBD's 5V ----
         ("GND",   [("U8", "1"), (1640, 1160), (1640, 1230), ("GND", 1640, 1230)]),
-        ("P5V_BBD", [("U8", "2"), (2040, 1100), (2120, 1100), ("C41", "1")]),
+        ("P5V_BBD", [("U8", "2"), (2040, 1100), (2120, 1100), (2200, 1100),
+                     ("PORT", 2700, 1100, "P5V_BBD  \u2192 BBD", True)]),
         ("P5V_BBD", [("U8", "4"), (2040, 1160), (2040, 1100)]),
-        ("GND",   [("C41", "2"), ("GND", 2120, 1196)]),
+        ("P5V_BBD", [(2120, 1100), ("C41", "1")]),
         ("P5V_BBD", [(2200, 1100), ("C42", "1")]),
+        ("GND",   [("C41", "2"), ("GND", 2120, 1196)]),
         ("GND",   [("C42", "2"), ("GND", 2200, 1196)]),
-        ("P5V_BBD", [(2200, 1100), ("PORT", 2700, 1100, "P5V_BBD  \u2192 BBD", True)]),
 
         # ---- OLED 3V3 ----
         ("P5V",   [("PORT", 200, 1100, "P5V  \u2190 Daisy pin A6", False), (260, 1100),
@@ -937,33 +942,35 @@ def psu_wires():
         ("P5V_OLED", [(480, 1100), ("C24", "1")]),
         ("GND",   [("C24", "2"), ("GND", 480, 1256)]),
         ("GND",   [("U5", "1"), (540, 1160), (540, 1300), ("GND", 540, 1300)]),
-        ("P3V3_OLED", [("U5", "2"), (940, 1070), (1000, 1070), ("C20", "1")]),
+        ("P3V3_OLED", [("U5", "2"), (940, 1070), (1000, 1070), (1080, 1070),
+                       ("PORT", 1300, 1070, "P3V3_OLED  \u2192 DS1", True)]),
         ("P3V3_OLED", [("U5", "4"), (940, 1130), (940, 1070)]),
-        ("GND",   [("C20", "2"), ("GND", 1000, 1256)]),
+        ("P3V3_OLED", [(1000, 1070), ("C20", "1")]),
         ("P3V3_OLED", [(1080, 1070), ("C21", "1")]),
+        ("GND",   [("C20", "2"), ("GND", 1000, 1256)]),
         ("GND",   [("C21", "2"), ("GND", 1080, 1256)]),
-        ("P3V3_OLED", [(1080, 1070), ("PORT", 1300, 1070, "P3V3_OLED  \u2192 DS1", True)]),
 
         # ---- MSP430 3V3 ----
         ("P5V_MSP", [("FB2", "2"), (480, 1520), ("U6", "3")]),
         ("P5V_MSP", [(480, 1520), ("C25", "1")]),
         ("GND",   [("C25", "2"), ("GND", 480, 1676)]),
         ("GND",   [("U6", "1"), (540, 1580), (540, 1720), ("GND", 540, 1720)]),
-        ("P3V3_MSP430", [("U6", "2"), (940, 1490), (1000, 1490), ("C22", "1")]),
+        ("P3V3_MSP430", [("U6", "2"), (940, 1490), (1000, 1490), (1080, 1490),
+                         ("PORT", 1300, 1490, "P3V3_MSP430  \u2192 faceplate", True)]),
         ("P3V3_MSP430", [("U6", "4"), (940, 1550), (940, 1490)]),
-        ("GND",   [("C22", "2"), ("GND", 1000, 1676)]),
+        ("P3V3_MSP430", [(1000, 1490), ("C22", "1")]),
         ("P3V3_MSP430", [(1080, 1490), ("C23", "1")]),
+        ("GND",   [("C22", "2"), ("GND", 1000, 1676)]),
         ("GND",   [("C23", "2"), ("GND", 1080, 1676)]),
-        ("P3V3_MSP430", [(1080, 1490), ("PORT", 1300, 1490, "P3V3_MSP430  \u2192 faceplate", True)]),
 
         # ---- the Daisy's own 3V3, and the I2C pull-ups ----
         ("P3V3_DAISY", [("PORT", 1400, 1300, "P3V3_DAISY  \u2190 Daisy pin A10", False),
-                        (1500, 1300), ("C26", "1")]),
-        ("GND",   [("C26", "2"), ("GND", 1500, 1676)]),
+                        (1500, 1300), (1580, 1300), (1700, 1300), (1700, 1560), ("R20", "2")]),
+        ("P3V3_DAISY", [(1500, 1300), ("C26", "1")]),
         ("P3V3_DAISY", [(1580, 1300), ("C27", "1")]),
-        ("GND",   [("C27", "2"), ("GND", 1580, 1676)]),
-        ("P3V3_DAISY", [(1580, 1300), (1700, 1300), (1700, 1560), ("R20", "2")]),
         ("P3V3_DAISY", [(1700, 1560), (1700, 1680), ("R21", "2")]),
+        ("GND",   [("C26", "2"), ("GND", 1500, 1676)]),
+        ("GND",   [("C27", "2"), ("GND", 1580, 1676)]),
         ("I2C_SCL", [("R20", "1"), ("PORT", 2100, 1560, "I2C_SCL  \u2192 U3/U4", True)]),
         ("I2C_SDA", [("R21", "1"), ("PORT", 2100, 1680, "I2C_SDA  \u2192 U3/U4", True)]),
     ]
@@ -983,15 +990,23 @@ OFF_SHEET = {("RV1", "4"), ("RV1", "5"), ("RV1", "6"), ("RV1", "7"), ("RV1", "8"
 # ------------------------------------------------------------------ build ---
 
 def resolve(wires, T, glyphs):
-    """waypoints -> polylines, placing ground/rail/port glyphs as it goes."""
-    out = []
+    """waypoints -> polylines, placing ground/rail/port glyphs as it goes.
+
+    Returns the polylines and the points where a ground or rail symbol attaches.
+    Those symbols are connections to a global net, so a net drawn as several
+    symbol-terminated pieces is not broken. Ports are not connectors: a port is
+    one off-sheet link, and a net drawn in two pieces around one is a bug.
+    """
+    out, connectors = [], []
     for net, path in wires:
         pts = []
         for wp in path:
             if wp[0] == "GND":
                 svg, p = gnd(wp[1], wp[2]); glyphs.append(svg); pts.append(p)
+                connectors.append((net, p))
             elif wp[0] == "RAIL":
                 svg, p = rail(wp[1], wp[2], wp[3], wp[4]); glyphs.append(svg); pts.append(p)
+                connectors.append((net, p))
             elif wp[0] == "PORT":
                 svg, p = port(wp[1], wp[2], wp[3], wp[4]); glyphs.append(svg); pts.append(p)
             elif isinstance(wp[0], str):
@@ -1002,7 +1017,7 @@ def resolve(wires, T, glyphs):
             else:
                 pts.append(_t(*wp))
         out.append((net, pts))
-    return out
+    return out, connectors
 
 
 def segments(poly):
@@ -1155,7 +1170,7 @@ def wire_shorts(polys):
     return sorted(set(bad))
 
 
-def continuity(polys, T, netmap, refs):
+def continuity(polys, T, netmap, refs, connectors=()):
     """Every wire and pin on a net must form ONE connected thing.
 
     Without this, a wire can start in mid-air next to the net it belongs to and
@@ -1174,9 +1189,10 @@ def continuity(polys, T, netmap, refs):
             if (ref, pin) in OFF_SHEET or ref not in T or pin not in T[ref]:
                 continue
             pins[net].append(((ref, pin), T[ref][pin]))
+    conn = collections.defaultdict(list)
+    for net, pt in connectors:
+        conn[net].append(pt)
     for net, segs in nets.items():
-        if re.match(r"^(GND|POS12V|NEG12V|P5V|P3V3|VBUS|VDD|VSS)", net):
-            continue
         parent = {}
         def find(a):
             parent.setdefault(a, a)
@@ -1210,6 +1226,14 @@ def continuity(polys, T, netmap, refs):
             key = ("t", ref, pin)
             if key in parent:
                 groups[find(key)].append(f"{ref}.{pin}")
+        if len(groups) > 1 and conn.get(net):
+            # every piece that reaches a ground or rail symbol is one net
+            joined = [k for k, v in groups.items()
+                      if any(any(on_seg(pt, a, b, tol=1.5) for a, b in
+                                 [(s[0], s[1]) for i2, s in enumerate(segs) if f"wire {s[0]}->{s[1]}" in v])
+                             for pt in conn[net])]
+            for k in joined[1:]:
+                groups[joined[0]].extend(groups.pop(k))
         if len(groups) > 1:
             pieces = " | ".join(", ".join(sorted(v)[:3]) for v in groups.values())
             bad.append(f"{net} is drawn in {len(groups)} disconnected pieces: {pieces}")
@@ -1388,9 +1412,9 @@ def build(slug, title, subtitle, builder, wirer, w, h, pagetitle):
     values = json.load(open(f"{KI}/tools/values.json"))
     P, T, glyphs = builder(netmap, values)
     refs = [r for r in T if r in netmap]
-    polys = resolve(wirer(), T, glyphs)
+    polys, connectors = resolve(wirer(), T, glyphs)
     bad = (check(polys, T, netmap, refs) + wire_shorts(polys)
-           + continuity(polys, T, netmap, refs))
+           + continuity(polys, T, netmap, refs, connectors))
     if bad:
         print(f"{slug}: drawing does not match netmap.json ({len(bad)}):")
         for b in bad:
