@@ -502,7 +502,9 @@ def bbd_left(netmap, values):
     glyphs.append('<text x="46" y="1010" class="ref" style="font-size:20px">'
                   'MIX \u2014 feedback, wet/dry, output</text>')
     glyphs.append('<line x1="46" y1="1440" x2="3154" y2="1440" class="dashbox"/>')
-    glyphs.append('<text x="46" y="1500" class="ref" style="font-size:20px">'
+    # 1478, not 1500 like the other band headings: R110's +12V rail label hangs
+    # at y=1510 and the two were printing through each other.
+    glyphs.append('<text x="46" y="1478" class="ref" style="font-size:20px">'
                   'CLOCK \u2014 CD4046 VCO, TIME control, sample trigger</text>')
     glyphs.append('<line x1="46" y1="2260" x2="3154" y2="2260" class="dashbox"/>')
     glyphs.append('<text x="46" y="2310" class="ref" style="font-size:20px">'
@@ -529,34 +531,43 @@ def psu(netmap, values):
                     [("A4B9", "VBUS"), ("B4A9", "VBUS"), ("A5", "CC1"), ("B5", "CC2")]))
     put("R22", resistor(450, 640, "R22", V("R22") or "5k1", vert=True))
     put("R23", resistor(560, 640, "R23", V("R23") or "5k1", vert=True, swap=True))
-    put("D3", zener(620, 420, "D3", V("D3"), anode_up=False))
-    put("C28", cap(720, 420, "C28", V("C28") or "10nF", vert=True))
-    put("F1", resistor(850, 284, "F1", V("F1") or "PTC 2A"))
+    # 520, not 560: "SMAJ6.0A" is the longest value string on this row and at
+    # 100px spacing it ran straight through C28's top plate.
+    put("D3", zener(520, 420, "D3", V("D3"), anode_up=False))
+    put("C28", cap(660, 420, "C28", V("C28") or "10nF", vert=True))
+    put("C43", cap(760, 420, "C43", V("C43") or "100nF", vert=True))
+    put("F1", resistor(870, 284, "F1", V("F1") or "PTC 2A"))
 
     # --- converter -------------------------------------------------------
-    put("C29", cap(960, 420, "C29", V("C29") or "22uF", vert=True))
-    put("C30", cap(1040, 420, "C30", V("C30") or "1uF", vert=True, swap=True, flip_label=True))
+    put("C29", cap(960, 420, "C29", V("C29") or "10uF", vert=True))
+    put("C30", cap(1040, 420, "C30", V("C30") or "1uF", vert=True, swap=True))
     put("C31", cap(1120, 420, "C31", V("C31") or "100nF", vert=True, swap=True))
     put("U7", chip(1250, 200, 300, 420, "U7", "DKM10E-12",
                    [("1", "+Vin"), ("2", "-Vin")],
                    [("3", "+Vout"), ("4", "Common"), ("5", "-Vout"), ("6", "R.C. open")]))
 
     # --- positive rail ---------------------------------------------------
-    put("C32", cap(1680, 420, "C32", V("C32") or "470uF", vert=True))
-    put("C34", cap(1760, 420, "C34", V("C34") or "100nF", vert=True, swap=True, flip_label=True))
+    # 47uF, not 470uF. These read RVT1E470M0505, and the "470" is an EIA
+    # three-digit code -- 47 x 10^0 -- not a value in microfarads. Its sibling
+    # RVT1H220M0605 carries its own descr, "22uF 50V", which settles the
+    # reading; and 470uF at 25V is a 10mm can, not the 5.0mm one this footprint
+    # is. The fallback here said 470uF for a week and was the only record in
+    # the repo that did, which is why these now come from values.json instead.
+    put("C32", cap(1680, 420, "C32", V("C32") or "47uF", vert=True))
+    put("C34", cap(1780, 420, "C34", V("C34") or "100nF", vert=True, swap=True))
     put("L1", resistor(1880, 284, "L1", V("L1") or "bead"))
     put("C36", cap(1990, 420, "C36", V("C36") or "22uF", vert=True))
-    put("C38", cap(2070, 420, "C38", V("C38") or "100nF", vert=True, swap=True, flip_label=True))
-    put("C40", cap(2150, 420, "C40", V("C40"), vert=True))
+    put("C38", cap(2080, 420, "C38", V("C38") or "100nF", vert=True, swap=True))
+    put("C40", cap(2170, 420, "C40", V("C40"), vert=True))
     put("R24", resistor(2300, 420, "R24", V("R24") or "2k2", vert=True, swap=True))
     put("D1", led(2300, 560, "D1", V("D1") or "green"))
 
     # --- negative rail ---------------------------------------------------
-    put("C33", cap(1680, 800, "C33", V("C33") or "470uF", vert=True, swap=True))
-    put("C35", cap(1760, 800, "C35", V("C35") or "100nF", vert=True, flip_label=True))
+    put("C33", cap(1680, 800, "C33", V("C33") or "47uF", vert=True, swap=True))
+    put("C35", cap(1780, 800, "C35", V("C35") or "100nF", vert=True))
     put("L2", resistor(1880, 700, "L2", V("L2") or "bead"))
     put("C37", cap(1990, 800, "C37", V("C37") or "22uF", vert=True, swap=True))
-    put("C39", cap(2070, 800, "C39", V("C39") or "100nF", vert=True, flip_label=True))
+    put("C39", cap(2080, 800, "C39", V("C39") or "100nF", vert=True))
     put("R25", resistor(2300, 790, "R25", V("R25") or "2k2", vert=True, swap=True))
     put("D2", led(2300, 930, "D2", V("D2") or "red", cathode_up=True))
 
@@ -865,12 +876,15 @@ def psu_wires():
         ("GND",   [("J11", "4"), (60, 560)]),
 
         # ---- VBUS: both pairs, CC pulldowns, TVS, bypass, fuse ----
-        ("VBUS",  [("J11", "A4B9"), (470, 284), (620, 284), (720, 284), ("F1", "1")]),
+        ("VBUS",  [("J11", "A4B9"), (470, 284), (520, 284), (660, 284), (760, 284),
+                   ("F1", "1")]),
         ("VBUS",  [("J11", "B4A9"), (470, 368), (470, 284)]),
-        ("VBUS",  [(620, 284), ("D3", "1")]),
-        ("VBUS",  [(720, 284), ("C28", "1")]),
-        ("GND",   [("D3", "2"), ("GND", 620, 464)]),
-        ("GND",   [("C28", "2"), ("GND", 720, 456)]),
+        ("VBUS",  [(520, 284), ("D3", "1")]),
+        ("VBUS",  [(660, 284), ("C28", "1")]),
+        ("VBUS",  [(760, 284), ("C43", "1")]),
+        ("GND",   [("D3", "2"), ("GND", 520, 464)]),
+        ("GND",   [("C28", "2"), ("GND", 660, 456)]),
+        ("GND",   [("C43", "2"), ("GND", 760, 456)]),
         ("CC1",   [("J11", "A5"), (450, 452), ("R22", "1")]),
         ("GND",   [("R22", "2"), ("GND", 450, 690)]),
         ("CC2",   [("J11", "B5"), (560, 536), ("R23", "2")]),
@@ -889,38 +903,38 @@ def psu_wires():
         ("GND",   [("U7", "4"), (1600, 368), (1600, 600), ("GND", 1600, 600)]),
 
         # ---- positive rail ----
-        ("POS12V_RAW", [("U7", "3"), (1680, 284), (1760, 284), ("L1", "1")]),
+        ("POS12V_RAW", [("U7", "3"), (1680, 284), (1780, 284), ("L1", "1")]),
         ("POS12V_RAW", [(1680, 284), ("C32", "1")]),
-        ("POS12V_RAW", [(1760, 284), ("C34", "2")]),
+        ("POS12V_RAW", [(1780, 284), ("C34", "2")]),
         ("GND",   [("C32", "2"), ("GND", 1680, 456)]),
-        ("GND",   [("C34", "1"), ("GND", 1760, 456)]),
-        ("POS12V", [("L1", "2"), (1990, 284), (2070, 284), (2150, 284), (2300, 284),
+        ("GND",   [("C34", "1"), ("GND", 1780, 456)]),
+        ("POS12V", [("L1", "2"), (1990, 284), (2080, 284), (2170, 284), (2300, 284),
                     (2600, 284), ("PORT", 2700, 284, "POS12V  \u2192 board", True)]),
         ("POS12V", [(1990, 284), ("C36", "1")]),
-        ("POS12V", [(2070, 284), ("C38", "2")]),
-        ("POS12V", [(2150, 284), ("C40", "1")]),
+        ("POS12V", [(2080, 284), ("C38", "2")]),
+        ("POS12V", [(2170, 284), ("C40", "1")]),
         ("POS12V", [(2300, 284), ("R24", "2")]),
         ("POS12V", [(2600, 284), (2600, 900), (1600, 900), (1600, 1100), ("U8", "3")]),
         ("GND",   [("C36", "2"), ("GND", 1990, 456)]),
-        ("GND",   [("C38", "1"), ("GND", 2070, 456)]),
+        ("GND",   [("C38", "1"), ("GND", 2080, 456)]),
         ("GND",   [("C40", "2"), ("GND", 2150, 456)]),
         ("LED_POS", [("R24", "1"), ("D1", "1")]),
         ("GND",   [("D1", "2"), ("GND", 2300, 640)]),
 
         # ---- negative rail ----
-        ("NEG12V_RAW", [("U7", "5"), (1650, 452), (1650, 700), (1680, 700), (1760, 700),
+        ("NEG12V_RAW", [("U7", "5"), (1650, 452), (1650, 700), (1680, 700), (1780, 700),
                         ("L2", "1")]),
         ("NEG12V_RAW", [(1680, 700), ("C33", "2")]),
-        ("NEG12V_RAW", [(1760, 700), ("C35", "1")]),
+        ("NEG12V_RAW", [(1780, 700), ("C35", "1")]),
         ("GND",   [("C33", "1"), ("GND", 1680, 836)]),
-        ("GND",   [("C35", "2"), ("GND", 1760, 836)]),
-        ("NEG12V", [("L2", "2"), (1990, 700), (2070, 700), (2300, 700),
+        ("GND",   [("C35", "2"), ("GND", 1780, 836)]),
+        ("NEG12V", [("L2", "2"), (1990, 700), (2080, 700), (2300, 700),
                     ("PORT", 2700, 700, "NEG12V  \u2192 board", True)]),
         ("NEG12V", [(1990, 700), ("C37", "2")]),
-        ("NEG12V", [(2070, 700), ("C39", "1")]),
+        ("NEG12V", [(2080, 700), ("C39", "1")]),
         ("NEG12V", [(2300, 700), ("R25", "2")]),
         ("GND",   [("C37", "1"), ("GND", 1990, 836)]),
-        ("GND",   [("C39", "2"), ("GND", 2070, 836)]),
+        ("GND",   [("C39", "2"), ("GND", 2080, 836)]),
         ("LED_NEG", [("R25", "1"), ("D2", "2")]),
         ("GND",   [("D2", "1"), (2300, 1010), (2400, 1010), ("GND", 2400, 1010)]),
 
@@ -1310,6 +1324,51 @@ STYLE = """
 </style>"""
 
 
+def text_overlaps(svg):
+    """Report label text printed on top of other label text.
+
+    Every other check in this file is about electrical truth. This one is about
+    being able to READ the result, which is the whole point of drawing it: a
+    wire that is right but illegible has not been checked by anyone.
+
+    The five (bulk cap, 100nF) pairs on the power sheet sat 80px apart with the
+    second label flipped back across the first, so "C29 10uF" and "C30 1uF"
+    printed one over the other -- two smudges where the two values should be.
+    It had been that way since the sheet was first drawn and nothing said so.
+
+    The font is monospace, so a run is len * 0.6 * font-size wide. That is an
+    estimate, but it is the same estimate everywhere and the collisions it
+    finds are 15px deep. A part's own ref and value sit on consecutive lines
+    and graze each other by a pixel at the box edges, which is not a collision
+    -- hence the 4px floor on vertical overlap.
+    """
+    size = {c: int(s) for c, s in re.findall(r'\.([\w-]+)\{[^}]*font-size:(\d+)', STYLE)}
+    boxes = []
+    for m in re.finditer(r'<text x="([-\d.]+)" y="([-\d.]+)" class="([\w-]+)"([^>]*)>([^<]*)<',
+                         svg):
+        x, y, cls, rest, txt = (float(m.group(1)), float(m.group(2)),
+                                m.group(3), m.group(4), m.group(5))
+        if not txt.strip():
+            continue
+        inline = re.search(r'font-size:(\d+)', rest)
+        fs = int(inline.group(1)) if inline else size.get(cls, 16)
+        w = len(txt) * fs * 0.60
+        anc = re.search(r'text-anchor="(\w+)"', rest)
+        a = anc.group(1) if anc else "start"
+        x0 = x if a == "start" else (x - w / 2 if a == "middle" else x - w)
+        boxes.append((x0, y - fs * 0.76, x0 + w, y + fs * 0.19, txt))
+    bad = []
+    for i in range(len(boxes)):
+        for j in range(i + 1, len(boxes)):
+            a, b = boxes[i], boxes[j]
+            ox = min(a[2], b[2]) - max(a[0], b[0])
+            oy = min(a[3], b[3]) - max(a[1], b[1])
+            if ox > 1.0 and oy > 4.0:
+                bad.append(f"{a[4]!r} and {b[4]!r} overlap by {ox:.0f}x{oy:.0f}px "
+                           f"near x={max(a[0], b[0]):.0f} y={max(a[1], b[1]):.0f}")
+    return bad
+
+
 def render(title, subtitle, P, polys, glyphs, w, h, leads=()):
     parts = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {w} {h}" width="{w}" '
              f'height="{h}" font-size="16">', STYLE,
@@ -1428,6 +1487,12 @@ def build(slug, title, subtitle, builder, wirer, w, h, pagetitle):
             print("   ", h_)
         sys.exit(1)
     svg = render(title, subtitle, P, polys, glyphs, w, h, leads)
+    smudged = text_overlaps(svg)
+    if smudged:
+        print(f"{slug}: labels printed over each other ({len(smudged)}):")
+        for s_ in smudged:
+            print("   ", s_)
+        sys.exit(1)
     open(f"{ROOT}/docs/{slug}.svg", "w").write(svg)
     page = (PAGE.replace("<!--SVG-->", svg).replace("__PARTS__", str(len(refs)))
                 .replace("__WIRES__", str(len(polys))).replace("__TITLE__", title)
