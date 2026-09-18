@@ -798,9 +798,9 @@
       (stroke (width 0.05) (type solid)) (layer "F.CrtYd") (tstamp e63b5d7b-3601-40bf-a8b2-bae5a14466d9))
     (fp_line (start 1.35 0.8) (end -1.35 0.8)
       (stroke (width 0.05) (type solid)) (layer "F.CrtYd") (tstamp e4449af9-1185-44b4-984b-97acfa555d03))
-    (pad "1" smd rect (at -1.7 0) (size 1.2 0.95) (layers "F.Cu" "F.Paste" "F.Mask")
+    (pad "1" smd rect (at -1.7 0 180) (size 1.2 0.95) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 1 "/GND") (pinfunction "C") (pintype "unspecified") (tstamp 9ea47bdc-4d0a-4f1f-bdff-db6391124a4e))
-    (pad "2" smd rect (at 1.7 0) (size 1.2 0.95) (layers "F.Cu" "F.Paste" "F.Mask")
+    (pad "2" smd rect (at 1.7 0 180) (size 1.2 0.95) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 105 "/LPG_LED_L") (pinfunction "A") (pintype "unspecified") (tstamp ed891536-9fd5-4eb1-a09f-0fa1adaa2196))
     (model "lib/vuulgaris.3dshapes/SOD-123_L2.7-W1.6-LS3.7-RD-1.wrl"
       (offset (xyz 0 0 0))
@@ -6963,9 +6963,9 @@
       (stroke (width 0.05) (type solid)) (layer "F.CrtYd") (tstamp cff8a071-9823-42e4-b88d-74b6ad76db19))
     (fp_line (start 1.35 0.8) (end -1.35 0.8)
       (stroke (width 0.05) (type solid)) (layer "F.CrtYd") (tstamp ae5f9758-2d04-4408-ba99-8ab65350f4d6))
-    (pad "1" smd rect (at -1.7 0) (size 1.2 0.95) (layers "F.Cu" "F.Paste" "F.Mask")
+    (pad "1" smd rect (at -1.7 0 180) (size 1.2 0.95) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 1 "/GND") (pinfunction "C") (pintype "unspecified") (tstamp c8c73017-1ff2-4b99-b5d1-0607f75b482a))
-    (pad "2" smd rect (at 1.7 0) (size 1.2 0.95) (layers "F.Cu" "F.Paste" "F.Mask")
+    (pad "2" smd rect (at 1.7 0 180) (size 1.2 0.95) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 106 "/LPG_LED_R") (pinfunction "A") (pintype "unspecified") (tstamp 0d904a69-137f-4cb4-b981-ff5da7f58307))
     (model "lib/vuulgaris.3dshapes/SOD-123_L2.7-W1.6-LS3.7-RD-1.wrl"
       (offset (xyz 0 0 0))
