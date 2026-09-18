@@ -113,9 +113,32 @@ SYM = {
     "F1":  "ASMD1812-200",             # resettable PTC, 2A hold
     "R22": "RT0603BRD075K1L", "R23": "RT0603BRD075K1L",   # CC1/CC2 5k1
     "C28": "CC0603JRNPO9BN103",        # 10nF at the connector
-    "C29": "RVT1H220M0605",            # 22uF 50V, input bulk
+    # C29 was RVT1H220M0605, a 22uF 50V aluminium can, until 2026-09-18.
+    # A fuse is a DC short, so everything on VBUS and VBUS_F counts as sink
+    # capacitance at the port, and the USB limit on a device's VBUS bypass is
+    # 10uF -- there to bound hot-plug inrush. 22uF + 1uF + 100nF + 10nF put us
+    # at 23uF, well over. The reference design (reference/V3.0.kicad_sch) sits
+    # deliberately ON that limit with a 10uF can.
+    #
+    # Ceramic rather than another can: the DKM10 datasheet specifies NO minimum
+    # external input capacitance and the module carries its own Pi input filter,
+    # so the bulk is a courtesy, not a requirement. A 10uF X5R loses ~25% to DC
+    # bias at 5V, which puts the real total under 10uF instead of just at it.
+    # CL21A106KAYNNNE is already on this board seven times over (C20/C22/C24/
+    # C25/C42/C110/C210) and is JLC Basic, so this removes a BOM line's worth
+    # of loading fee rather than adding one.
+    #
+    # The one thing the can was buying was ESR, which damps the LC ring when a
+    # cable is plugged into an all-ceramic input. D3 covers that: an SMAJ6.0A
+    # breaks down at 6.67V minimum, far below the DKM10's 9V continuous limit.
+    "C29": "CL21A106KAYNNNE",          # 10uF 25V X5R, input bulk
     "C30": "CC0805KKX7R9BB105",        # 1uF
     "C31": "CC0603JRX7R8BB104",        # 100nF
+    # C43, added 2026-09-18 with the C29 change above. The reference design
+    # puts 100nF and 10nF together on raw VBUS; we had only the 10nF. This is
+    # the missing half of that pair -- HF bypass at the connector, ahead of the
+    # fuse, where C30/C31 cannot reach because they are on the converter side.
+    "C43": "CC0603JRX7R8BB104",        # 100nF at the connector, beside C28
     "U7":  "DKM10E-12",
     # Transient suppressor across VBUS at the connector, added 2026-09-10.
     # The source schematic (reference/V3.0.kicad_sch) carries an SMBJ5.0A here
@@ -252,7 +275,11 @@ POS.update({
     "J11": (80, 760), "C28": (170, 760), "F1": (240, 760),
     "D3":  (310, 760),          # TVS, beside C28 at the connector
     "R22": (100, 850), "R23": (170, 850),
-    "C29": (310, 760), "C30": (375, 760), "C31": (440, 760),
+    # C29 used to sit at (310, 760), on top of D3. Two symbols at one point is
+    # the failure this sheet's spacing exists to avoid -- netcheck never caught
+    # it because the stubs happened not to collide, which is luck, not design.
+    "C29": (375, 760), "C30": (440, 760), "C31": (505, 760),
+    "C43": (240, 850),          # 100nF beside C28, under the inlet row
     "U7":  (530, 800),
     # +12V rail, above the converter
     "C32": (620, 720), "C34": (685, 720), "L1": (755, 720),
@@ -317,11 +344,12 @@ FPMAP.update({
     "J11": "USB-C_SMD-TYPE-C-31-M-12_1",
     "F1":  "F1812",
     "R22": "R0603", "R23": "R0603", "R24": "R0603", "R25": "R0603",
-    "C28": "C0603", "C30": "C0805", "C31": "C0603",
+    "C28": "C0603", "C29": "C0805", "C30": "C0805", "C31": "C0603",
+    "C43": "C0603",
     "C34": "C0603", "C35": "C0603", "C38": "C0603", "C39": "C0603",
     # SMD aluminium cans -- 6.6mm square / 5.3mm square footprints, and they
     # stand 6.0mm and 5.4mm tall. Height matters near the OLED standoff.
-    "C29": "CAP-SMD_BD6.3-L6.6-W6.6-FD", "C36": "CAP-SMD_BD6.3-L6.6-W6.6-FD",
+    "C36": "CAP-SMD_BD6.3-L6.6-W6.6-FD",
     "C37": "CAP-SMD_BD6.3-L6.6-W6.6-FD",
     "C32": "CAP-SMD_BD5.0-L5.3-W5.3-LS6.3-FD",
     "C33": "CAP-SMD_BD5.0-L5.3-W5.3-LS6.3-FD",

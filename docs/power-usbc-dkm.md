@@ -113,9 +113,10 @@ Designators are renumbered to fit this project's sequence:
 | F1 | F1 | ASMD1812-200 PTC 2A | C135364 |
 | C28 | C105 | 10nF 0603 NP0 | C389113 |
 | R22, R23 | R438, R439 | 5.1k 0603 | C122969 |
-| C29 | C81 | 22uF 50V SMD can | C72505 |
+| C29 | C81 | 10uF 25V X5R 0805 | C15850 |
 | C30 | C82 | 1uF 0805 | C91185 |
 | C31 | C100 | 100nF 0603 | C327087 |
+| C43 | — | 100nF 0603, at the connector; new 2026-09-18 | C14663 |
 | U7 | U44 | DKM10E-12 | C6934792 |
 | C32, C33 | U50, U49 | 47uF 25V SMD can | C2977553 |
 | C34, C35 | C102, C104 | 100nF 0603 | C327087 |
@@ -195,7 +196,8 @@ SKM10/DKM10 spec: `1=+Vin 2=-Vin 3=+Vout 4=Common 5=-Vout 6=R.C.`, with R.C.
 left open in both, which the datasheet confirms means ON. The 5.1k CC pulldowns
 and the 2A fuse match too. Our input caps sit *after* the fuse where the
 reference puts them before it; that feeds the converter directly and is the
-better of the two.
+better of the two. **See the 2026-09-18 section below** — that comparison was
+apples to oranges, and reading it properly changed two parts.
 
 One genuine omission, since fixed:
 
@@ -223,13 +225,70 @@ One genuine omission, since fixed:
   switch with an overvoltage cutoff, or a series FET and comparator. The TVS
   covers transients and ESD, which is what the reference uses it for.
 
+### Sink capacitance and the missing 100nF — 2026-09-18
+
+Re-read the reference's input stage properly, tracing its netlist rather than
+its picture, and the earlier "ours is the better of the two" was comparing
+different things.
+
+**The reference's pre-fuse caps are not input caps.** Its `+5V` node is
+exported: it lands on pins 5 and 6 of both 16-pin Eurorack headers. So `C1`
+(10uF), `C2` (100nF), `C3` (10nF) and the `D1` TVS are the bulk and bypass for
+a rail that leaves the board, and the fuse is on a *branch* off that rail
+feeding only the converter — whose input pin has no local capacitor at all. We
+export no 5V (`P5V` comes off the Daisy's A6, `P5V_BBD` off `U8`), so `VBUS_F`
+reaches exactly one thing, `U7` pin 1, and our caps belong where they are.
+
+Three things came out of it:
+
+- **`C29` 22uF → 10uF, and ceramic.** A fuse is a DC short, so everything on
+  `VBUS` *and* `VBUS_F` counts as sink capacitance at the port, and the USB
+  limit on a device's VBUS bypass is 10uF — there to bound hot-plug inrush.
+  22uF + 1uF + 100nF + 10nF was 23uF, and the reference sits deliberately *on*
+  the limit with a 10uF can.
+
+  Ceramic rather than a smaller can because the DKM10 spec gives **no minimum
+  external input capacitance** and lists its own input filter as "Pi type", so
+  this bulk is a courtesy. A 10uF X5R gives up roughly a quarter of its value
+  to DC bias at 5V, which puts the real total under 10uF instead of level with
+  it. `CL21A106KAYNNNE` (C15850) is JLC Basic and already on this board seven
+  times, so the swap adds no BOM line and removes one part from the 22uF can
+  line. On the board it is the same spot, 6.6mm square down to 0805.
+
+  The one thing the can bought was ESR, which damps the ring when a cable is
+  plugged into an all-ceramic input. `D3` covers it: an SMAJ6.0A breaks down at
+  6.67V minimum, well under the DKM10's 9V continuous ceiling.
+
+- **`C43`, a 100nF at the connector.** The reference pairs 100nF with its 10nF
+  on raw VBUS; we had the 10nF alone. `C30`/`C31` cannot do this job because
+  they are on the converter side of the fuse. Placed on the back at
+  (366.895, 63.12), 2.8mm right of `C28`, tapping the same `VBUS` track with
+  its own GND via at (367.595, 64.2).
+
+- **Rail bulk is inside the converter's capacitive-load limit.** `U7`'s
+  maximum capacitive load is 440uF, footnoted "for each output" (spec page 2).
+  Per rail: `C32` 47uF + `C36` 22uF + about 1.3uF of 100nFs = roughly **70uF**,
+  well inside it, and below the reference's 100uF per output. The ferrite beads
+  are DC shorts, so everything downstream counts, and nothing downstream is
+  bulk. Worth having written down because exceeding this limit is a *start-up*
+  failure rather than a running one — the converter cannot charge the bulk
+  inside its soft-start window, so it hiccups and retries — which presents as
+  a board that simply never powers up. Recheck it if any rail cap grows.
+
+  `C32`/`C33` are **47uF**, not 470uF: `RVT1E470M0505` carries an EIA
+  three-digit code, 47 × 10^0. Its sibling `RVT1H220M0605` has its own descr in
+  the footprint, "22uF 50V", which settles the reading, and 470uF at 25V is a
+  10mm can rather than the 5.0mm one this footprint is. `schdraw.py` had a
+  hardcoded fallback string saying 470uF and was the only record in the repo
+  that did; it is fixed, and it is the reason to distrust display fallbacks.
+
 ### Open, and not yet checked
 
 - **U7 is 25.4mm square and about 10mm tall**, mounted on the back. That is a
   much bigger part than the B1212S it replaces. Its footprint is placed but the
   enclosure clearance underneath is not verified.
-- **C29/C32/C33/C36/C37 are SMD aluminium cans**, 5.3 and 6.6mm square, standing
-  5.4 and 6.0mm. Same unverified-height family as the OLED standoff question.
+- **C32/C33/C36/C37 are SMD aluminium cans**, 5.3 and 6.6mm square, standing
+  5.4 and 6.0mm. (`C29` was one of these until 2026-09-18 and is now an 0805.) Same unverified-height family as the OLED standoff question.
 - **The USB-C mouth must reach the top edge.** Seed position only; the rotation
   and the overhang need `gerbercheck.py` and a render, not arithmetic. That
   exact class of reasoning has been wrong here three times.
