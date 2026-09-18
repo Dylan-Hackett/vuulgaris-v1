@@ -220,7 +220,7 @@
 <line x1="46" y1="960" x2="3154" y2="960" class="dashbox"/>
 <text x="46" y="1010" class="ref" style="font-size:20px">MIX — feedback, wet/dry, output</text>
 <line x1="46" y1="1440" x2="3154" y2="1440" class="dashbox"/>
-<text x="46" y="1500" class="ref" style="font-size:20px">CLOCK — CD4046 VCO, TIME control, sample trigger</text>
+<text x="46" y="1478" class="ref" style="font-size:20px">CLOCK — CD4046 VCO, TIME control, sample trigger</text>
 <line x1="46" y1="2260" x2="3154" y2="2260" class="dashbox"/>
 <text x="46" y="2310" class="ref" style="font-size:20px">SUPPLIES</text>
 <polygon points="180,300 166,285 12.200000000000017,285 12.200000000000017,315 166,315" class="port"/><text x="158" y="305" class="port-label" text-anchor="end">BBD_IN_L  ← LPG out</text>
