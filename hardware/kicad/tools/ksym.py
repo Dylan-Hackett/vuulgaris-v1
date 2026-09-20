@@ -83,6 +83,12 @@ def load(path):
     return out
 
 if __name__ == '__main__':
+    # The docstring above has warned about this since the file was written,
+    # and the warning is not a guard: run it bare and it writes an empty
+    # kpins.json, after which mksch.py dies on KeyError: 'C' several steps
+    # away from the cause. Refuse instead.
+    if not sys.argv[1:]:
+        sys.exit(__doc__.strip().split('\n\n')[1])
     libs = {}
     for path in sys.argv[1:]:
         libs.update(load(path))
