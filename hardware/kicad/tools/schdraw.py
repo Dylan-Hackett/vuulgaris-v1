@@ -536,7 +536,7 @@ def psu(netmap, values):
     put("D3", zener(520, 420, "D3", V("D3"), anode_up=False))
     put("C28", cap(660, 420, "C28", V("C28") or "10nF", vert=True))
     put("C43", cap(760, 420, "C43", V("C43") or "100nF", vert=True))
-    put("F1", resistor(870, 284, "F1", V("F1") or "PTC 2A"))
+    put("F1", resistor(870, 284, "F1", V("F1") or "PTC 3A"))
 
     # --- converter -------------------------------------------------------
     put("C29", cap(960, 420, "C29", V("C29") or "10uF", vert=True))
