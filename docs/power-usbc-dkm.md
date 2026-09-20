@@ -53,7 +53,7 @@ USB-C  A4/B9,B4/A9 ── DKM5V ──┬── C105 10nF ── GND
 | Ref | Part | Function |
 |---|---|---|
 | USBC1 | `TYPE-C-31-M-12` | 16-pin USB-C receptacle, power-only (D+/D-/SBU floated) |
-| F1 | `ASMD1812-200` | 2.0A resettable PTC, 1812 |
+| F1 | `ASMD1812-300` | 3.0A hold / 5.0A trip resettable PTC, 1812 (was `-200`, 2.0A/4.0A, until 2026-09-20) |
 | R438, R439 | `RT0603BRD075K1L` | 5.1k CC1/CC2 pulldowns |
 | C105 | `CC0603JRNPO9BN103` | 10nF NP0, at the connector |
 | C81 | `RVT1H220M0605` | 22uF 50V electrolytic, input bulk |
@@ -110,7 +110,7 @@ Designators are renumbered to fit this project's sequence:
 | here | EasyEDA | part | LCSC |
 |---|---|---|---|
 | J11 | USBC1 | TYPE-C-31-M-12 | C165948 |
-| F1 | F1 | ASMD1812-200 PTC 2A | C135364 |
+| F1 | F1 | ASMD1812-300 PTC 3A | C135366 |
 | C28 | C105 | 10nF 0603 NP0 | C389113 |
 | R22, R23 | R438, R439 | 5.1k 0603 | C122969 |
 | C29 | C81 | 10uF 25V X5R 0805 | C15850 |
@@ -204,7 +204,7 @@ One genuine omission, since fixed:
 - **No transient suppressor on VBUS.** The reference carries `D1`, an SMBJ5.0A
   5V TVS, cathode to +5V and anode to GND, right at the connector. Our `/VBUS`
   held only `C28` (10nF), `F1` and the two `J11` VBUS pads. `F1` is an
-  ASMD1812-200 resettable polyfuse — it limits *current* and does nothing about a
+  resettable polyfuse — it limits *current* and does nothing about a
   *voltage* transient, and the datasheet gives the DKM10E-12 4.7–9Vdc continuous
   with 12Vdc tolerated for 100ms only. A hot-plug inductive kick into our 22uF
   of input bulk rings toward 2x supply, which is already past continuous spec
@@ -282,8 +282,63 @@ Three things came out of it:
   hardcoded fallback string saying 470uF and was the only record in the repo
   that did; it is fixed, and it is the reason to distrust display fallbacks.
 
+### Current budget — 2026-09-20
+
+Nobody had added this up. The working assumption was "well under an amp"; it is
+about **1.4A at 5V**, roughly three times that. Written down here so the next
+person does not have to guess, and because three separate decisions depend on it.
+
+| rail | load | mA |
+|---|---|---|
+| **+12V** | Daisy Patch SM, including the 5V and 3V3 it returns to the OLED, MSP430, both MCP23017s and the microSD | 250–300 |
+| | 28 TL07x/TL08x channels (6 x TL072 dual, 2 x TL074 quad, 2 x TL084 quad) at 1.4mA typ / 2.5mA max per amplifier | 40–70 |
+| | vactrol LED drive, both channels fully open | ~30 |
+| | `U8` AMS1117-5.0 feeding two V3205SDs and two CD4046s | ~23 |
+| | `D1` rail LED through `R24`, bias and dividers | ~10 |
+| **−12V** | the same op-amp quiescent current (it flows rail to rail), the Daisy's analog section, `D2` | 75–120 |
+
+That is about **6W out**, so **1.3–1.4A in at 5V** after the DKM10's 87%, plus
+its own 40mA no-load draw.
+
+**Caveat, and it is the dominant term:** Electrosmith's Patch SM datasheet gives
+absolute maximum ratings and what the module can *supply* (5V out 800mA, 3V3 out
+500mA) but never states what it *consumes*. The 250–300mA is an estimate. This
+whole table wants a bench-supply measurement before anything is ordered in
+quantity.
+
+Three things depend on the number:
+
+- **The fuse, since changed.** A PPTC's hold current derates with ambient --
+  roughly 0.7x at 60C, which a closed enclosure dissipating 6W will reach. The
+  old `ASMD1812-200` was therefore holding about 1.4A against a 1.4A draw. That
+  is a *warm-up* trip, not a start-up one: it would run for ten minutes and then
+  the rails would sag. `ASMD1812-300` holds 3A and trips at 5A, so derated it
+  still holds about 2.1A -- 50% margin -- and it is closer to Mean Well's own
+  "5A delay time Type" recommendation for the 5V-input models. Same 1812
+  footprint, same 8V rating, so no layout change.
+
+- **Input voltage headroom, which is the tighter constraint.** The DKM10E-12
+  needs **4.4V to start** and 4.7V minimum to run. At 1.4A a thin 1m USB-C cable
+  (0.3–0.4 ohm round trip) drops 0.4–0.6V before the board sees anything. The
+  fuse change helps here too: `R1max` goes 100mohm -> 40mohm, worth 85mV. From a
+  5.0V source on a good cable that lands near 4.65V; on a cheap charge-only cable
+  it can land under 4.4V and simply not start. **The instrument needs a
+  data-grade cable, and that is a spec, not a suggestion.**
+
+- **USB current advertisement, and this one is not fixed.** `J11`'s CC1 and CC2
+  go to `R22`/`R23`, 5.1k to ground, and nowhere else -- nothing on the board
+  reads what the source is advertising. A 5.1k pulldown says only "I am a sink".
+  A host advertising *default* USB power offers 500mA (900mA on USB3); we would
+  take 1.4A. Many ports will current-limit or shut down, which reads as a board
+  that will not start on a laptop but is fine on a charger. Either the 5V/3A
+  source becomes a documented requirement, or something has to read CC. See
+  the open list below.
+
 ### Open, and not yet checked
 
+- **Nothing reads CC.** Covered in the current budget above: the board draws
+  ~1.4A and advertises nothing, so it needs a source offering 5V at 1.5A or 3A.
+  Unresolved -- either document the requirement or add CC sensing.
 - **U7 is 25.4mm square and about 10mm tall**, mounted on the back. That is a
   much bigger part than the B1212S it replaces. Its footprint is placed but the
   enclosure clearance underneath is not verified.

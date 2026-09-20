@@ -110,7 +110,17 @@ SYM = {
     # origin2.2.eprj -- see docs/power-usbc-dkm.md. The parts are the same LCSC
     # ones, so pin numbering carries over with no translation.
     "J11": "TYPE-C-31-M-12",           # USB-C receptacle, power only
-    "F1":  "ASMD1812-200",             # resettable PTC, 2A hold
+    # 3A hold / 5A trip, up from ASMD1812-200 (2A/4A) on 2026-09-20 after the
+    # current budget in docs/power-usbc-dkm.md came out at ~1.4A, not the
+    # "well under an amp" it had been assumed to be. A PPTC's hold current
+    # derates with ambient -- roughly 0.7x at 60C, which a closed enclosure
+    # dissipating 6W will reach -- so the 2A part was holding about 1.4A
+    # against a 1.4A draw. That is a warm-up trip, not a startup one.
+    #
+    # Same 1812 footprint, same 8V rating, and R1max drops 100mohm -> 40mohm,
+    # which is 85mV less drop at 1.4A -- the DKM10E-12 needs 4.4V to start and
+    # the input headroom is the tighter constraint of the two.
+    "F1":  "ASMD1812-300",             # resettable PTC, 3A hold / 5A trip
     "R22": "RT0603BRD075K1L", "R23": "RT0603BRD075K1L",   # CC1/CC2 5k1
     "C28": "CC0603JRNPO9BN103",        # 10nF at the connector
     # C29 was RVT1H220M0605, a 22uF 50V aluminium can, until 2026-09-18.

@@ -3479,7 +3479,7 @@
     )
   )
 
-  (symbol "ASMD1812-200"
+  (symbol "ASMD1812-300"
     (in_bom yes)
     (on_board yes)
     (property
@@ -3491,7 +3491,7 @@
     )
     (property
       "Value"
-      "ASMD1812-200"
+      "ASMD1812-300"
       (id 1)
       (at 0 -5.08 0)
       (effects (font (size 1.27 1.27) ) )
@@ -3505,7 +3505,7 @@
     )
     (property
       "Datasheet"
-      "https://lcsc.com/product-detail/Surface-Mount-Fuses_2A-Self-recovery_C135364.html"
+      "https://www.lcsc.com/product-detail/C135366.html"
       (id 3)
       (at 0 -10.16 0)
       (effects (font (size 1.27 1.27) ) hide)
@@ -3519,14 +3519,14 @@
     )
     (property
       "MPN"
-      "ASMD1812-200"
+      "ASMD1812-300"
       (id 5)
       (at 0 -15.24 0)
       (effects (font (size 1.27 1.27) ) hide)
     )
     (property
       "LCSC Part"
-      "C135364"
+      "C135366"
       (id 6)
       (at 0 -17.78 0)
       (effects (font (size 1.27 1.27) ) hide)
@@ -3538,7 +3538,7 @@
       (at 0 -20.32 0)
       (effects (font (size 1.27 1.27) ) hide)
     )
-    (symbol "ASMD1812-200_0_1"
+    (symbol "ASMD1812-300_0_1"
       (arc
         (start 0.00 -0.00)
         (mid -1.27 1.27)
