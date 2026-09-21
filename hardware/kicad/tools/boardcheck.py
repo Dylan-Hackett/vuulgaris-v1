@@ -182,6 +182,38 @@ for net, g in byn.items():
         if ti == 'p': grp[find(i)].append(f"{a['ref']}.{a['pin']}")
     if len(grp) > 1: broken.append((nets[net], list(grp.values())))
 
+def seg_seg(s, o):
+    """Distance between two segment CENTRELINES -- zero when they cross.
+
+    This used to be the minimum of the four endpoint-to-segment distances,
+    which is exact for two segments that do not meet and wrong in the one case
+    that matters most: an X crossing. The closest point of a crossing is the
+    intersection, which is not an endpoint of either segment, so the endpoint
+    formula returns a comfortable positive gap for two tracks that are lying
+    on top of each other.
+
+    It missed a dead short on both channels. /LPG_LED_L crossed /LPG_LEDK_L at
+    (229.42, 121.895) and /LPG_LED_R crossed /LPG_LEDK_R at (231.675, 155.0),
+    both on F.Cu, and this file reported "clearance violations: 0" for days.
+    KiCad's own DRC found them in a second. The nets either side of that short
+    are the two ends of the vactrol LED string, so it shorted out both LEDs --
+    it would have undone the LED-drive fix entirely and the gates would never
+    have opened.
+
+    Orientation test first, endpoint distances only if they do not cross.
+    """
+    def ccw(ax, ay, bx, by, cx, cy):
+        return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)
+    d1 = ccw(s['x1'], s['y1'], s['x2'], s['y2'], o['x1'], o['y1'])
+    d2 = ccw(s['x1'], s['y1'], s['x2'], s['y2'], o['x2'], o['y2'])
+    d3 = ccw(o['x1'], o['y1'], o['x2'], o['y2'], s['x1'], s['y1'])
+    d4 = ccw(o['x1'], o['y1'], o['x2'], o['y2'], s['x2'], s['y2'])
+    if ((d1 > 0) != (d2 > 0)) and ((d3 > 0) != (d4 > 0)):
+        return 0.0
+    return min(p2s(s['x1'], s['y1'], o), p2s(s['x2'], s['y2'], o),
+               p2s(o['x1'], o['y1'], s), p2s(o['x2'], o['y2'], s))
+
+
 # ---------------- clearance ----------------
 G = collections.defaultdict(list); C = 3.0
 for i, s in enumerate(SEG):
@@ -199,8 +231,7 @@ for i, s in enumerate(SEG):
         o = SEG[j]
         if o['lay'] != s['lay'] or o['net'] == s['net']: continue
         req = pair_clr(s['net'], o['net'])
-        g = min(p2s(s['x1'], s['y1'], o), p2s(s['x2'], s['y2'], o),
-                p2s(o['x1'], o['y1'], s), p2s(o['x2'], o['y2'], s)) - s['w'] / 2 - o['w'] / 2
+        g = seg_seg(s, o) - s['w'] / 2 - o['w'] / 2
         if g < req - 5e-4: viol.append(('track/track', nets.get(s['net']), nets.get(o['net']), s['lay'], round(g, 4), req))
 for p in PADS:
     for s in SEG:

@@ -1,107 +1,15 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/kicad/vuulgaris.kicad_pcb **
-** Created on 2026-09-10 18:14:13 **
+** Created on 2026-09-21 16:59:44 **
 
-** Found 275 DRC violations **
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2501 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(376.4701 mm, 57.2300 mm): Track [/GND] on F.Cu, length 1.3500 mm
-    @(375.6700 mm, 57.2300 mm): Pad A4B9 [/VBUS] of J11 on F.Cu
-[clearance]: Clearance violation (netclass 'Rails_12V' clearance 0.2500 mm; actual 0.2292 mm)
-    Rule: netclass 'Rails_12V'; Severity: error
-    @(301.1601 mm, 109.9799 mm): Via [/GND] on F.Cu - B.Cu
-    @(299.1143 mm, 106.6200 mm): Track [/POS12V_RAW] on In1.Cu, length 34.0977 mm
-[clearance]: Clearance violation (netclass 'Rails_12V' clearance 0.2500 mm; actual 0.2080 mm)
-    Rule: netclass 'Rails_12V'; Severity: error
-    @(371.9450 mm, 71.4192 mm): Via [/GND] on F.Cu - B.Cu
-    @(363.6615 mm, 64.4198 mm): Track [/POS12V] on In1.Cu, length 21.4058 mm
-[clearance]: Clearance violation (netclass 'Rails_12V' clearance 0.2500 mm; actual 0.2204 mm)
-    Rule: netclass 'Rails_12V'; Severity: error
-    @(295.2200 mm, 118.5200 mm): Via [/GND] on F.Cu - B.Cu
-    @(295.8116 mm, 116.6267 mm): Track [/NEG12V_RAW] on F.Cu, length 2.8165 mm
-[clearance]: Clearance violation (netclass 'Rails_12V' clearance 0.2500 mm; actual 0.2185 mm)
-    Rule: netclass 'Rails_12V'; Severity: error
-    @(296.2150 mm, 127.7172 mm): Via [/GND] on F.Cu - B.Cu
-    @(297.0994 mm, 127.4694 mm): Track [/NEG12V_RAW] on In1.Cu, length 8.2104 mm
-[clearance]: Clearance violation (netclass 'Rails_12V' clearance 0.2500 mm; actual 0.2257 mm)
-    Rule: netclass 'Rails_12V'; Severity: error
-    @(281.2550 mm, 98.7075 mm): Via [/GND] on F.Cu - B.Cu
-    @(285.4267 mm, 101.5700 mm): Track [/POS12V] on In1.Cu, length 8.0340 mm
-[clearance]: Clearance violation (netclass 'Rails_12V' clearance 0.2500 mm; actual 0.2003 mm)
-    Rule: netclass 'Rails_12V'; Severity: error
-    @(209.7550 mm, 134.8630 mm): Via [/GND] on F.Cu - B.Cu
-    @(209.3036 mm, 135.7633 mm): Track [/NEG12V] on B.Cu, length 0.6834 mm
-[clearance]: Clearance violation (netclass 'Rails_12V' clearance 0.2500 mm; actual 0.2297 mm)
-    Rule: netclass 'Rails_12V'; Severity: error
-    @(209.9870 mm, 137.2900 mm): Track [/NEG12V] on B.Cu, length 1.5267 mm
-    @(209.7550 mm, 134.8630 mm): Via [/GND] on F.Cu - B.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2874 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(367.7450 mm, 61.5450 mm): Track [/VBUS] on F.Cu, length 4.4194 mm
-    @(371.5450 mm, 58.0146 mm): Track [/CC2] on F.Cu, length 0.0707 mm
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2500 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(370.8700 mm, 57.9106 mm): Track [/VBUS] on F.Cu, length 0.5094 mm
-    @(371.5450 mm, 58.0146 mm): Track [/CC2] on F.Cu, length 0.0707 mm
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2000 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(374.7400 mm, 55.6904 mm): Track [/VBUS] on F.Cu, length 1.3152 mm
-    @(375.0200 mm, 57.2300 mm): Pad B8 [unconnected-(J11-SBU2-PadB8)] of J11 on F.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2000 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(370.8700 mm, 56.6204 mm): Track [/VBUS] on F.Cu, length 1.3152 mm
-    @(371.5200 mm, 57.2300 mm): Pad B5 [/CC2] of J11 on F.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2500 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(365.7950 mm, 61.5200 mm): Via [/VBUS] on F.Cu - B.Cu
-    @(363.8201 mm, 60.7450 mm): Track [/CC2] on B.Cu, length 6.6999 mm
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2751 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(364.7950 mm, 62.4950 mm): Track [/VBUS] on B.Cu, length 1.3435 mm
-    @(363.8201 mm, 60.7450 mm): Track [/CC2] on B.Cu, length 6.6999 mm
-[clearance]: Clearance violation (netclass 'Rails_12V' clearance 0.2500 mm; actual 0.2185 mm)
-    Rule: netclass 'Rails_12V'; Severity: error
-    @(297.0994 mm, 114.4339 mm): Track [/NEG12V_RAW] on In1.Cu, length 13.0355 mm
-    @(296.2150 mm, 127.7172 mm): Via [/GND] on F.Cu - B.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2734 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(371.5450 mm, 58.0146 mm): Track [/CC2] on F.Cu, length 0.0707 mm
-    @(370.8700 mm, 57.2300 mm): Pad B4A9 [/VBUS] of J11 on F.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2500 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(371.5450 mm, 57.2550 mm): Track [/CC2] on F.Cu, length 0.7596 mm
-    @(370.8700 mm, 57.9106 mm): Track [/VBUS] on F.Cu, length 0.5094 mm
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2250 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(371.5200 mm, 57.2300 mm): Track [/CC2] on F.Cu, length 0.0354 mm
-    @(370.8700 mm, 57.2300 mm): Pad B4A9 [/VBUS] of J11 on F.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2250 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(371.5950 mm, 58.0646 mm): Track [/CC2] on F.Cu, length 1.5804 mm
-    @(367.7450 mm, 61.5450 mm): Track [/VBUS] on F.Cu, length 4.4194 mm
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2000 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(376.4700 mm, 57.2300 mm): Pad A1B12 [/GND] of J11 on F.Cu
-    @(375.6700 mm, 57.2300 mm): Pad A4B9 [/VBUS] of J11 on F.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2000 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(375.6700 mm, 57.2300 mm): Pad A4B9 [/VBUS] of J11 on F.Cu
-    @(375.0200 mm, 57.2300 mm): Pad B8 [unconnected-(J11-SBU2-PadB8)] of J11 on F.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2000 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(370.0700 mm, 57.2300 mm): Pad B1A12 [/GND] of J11 on F.Cu
-    @(370.8700 mm, 57.2300 mm): Pad B4A9 [/VBUS] of J11 on F.Cu
-[clearance]: Clearance violation (netclass 'Power_5V_IN' clearance 0.3000 mm; actual 0.2000 mm)
-    Rule: netclass 'Power_5V_IN'; Severity: error
-    @(370.8700 mm, 57.2300 mm): Pad B4A9 [/VBUS] of J11 on F.Cu
-    @(371.5200 mm, 57.2300 mm): Pad B5 [/CC2] of J11 on F.Cu
+** Found 268 DRC violations **
 [silk_edge_clearance]: Silkscreen clipped by board edge
     Rule: board setup constraints silk; Severity: warning
-    @(100.0000 mm, 50.0000 mm): Line on Edge.Cuts
-    @(377.7400 mm, 49.6700 mm): Line on F.Silkscreen
+    @(366.8000 mm, 43.0000 mm): Line on Edge.Cuts
+    @(377.7400 mm, 42.6700 mm): Line on F.Silkscreen
 [silk_edge_clearance]: Silkscreen clipped by board edge
     Rule: board setup constraints silk; Severity: warning
-    @(100.0000 mm, 50.0000 mm): Line on Edge.Cuts
-    @(368.8000 mm, 49.6700 mm): Line on F.Silkscreen
+    @(366.8000 mm, 43.0000 mm): Line on Edge.Cuts
+    @(368.8000 mm, 42.6700 mm): Line on F.Silkscreen
 [silk_edge_clearance]: Silkscreen clipped by board edge
     Rule: board setup constraints silk; Severity: warning
     @(100.0000 mm, 50.0000 mm): Line on Edge.Cuts
@@ -241,12 +149,18 @@
 [lib_footprint_mismatch]: Footprint 'DAISY_PATCH_SM' does not match copy in library 'vuulgaris'.
     Local override; Severity: warning
     @(363.8450 mm, 131.3050 mm): Footprint U1
+[lib_footprint_mismatch]: Footprint 'SMA_L4.3-W2.6-LS5.2-RD' does not match copy in library 'vuulgaris'.
+    Local override; Severity: warning
+    @(366.5000 mm, 66.0000 mm): Footprint D3
 [lib_footprint_mismatch]: Footprint 'DIP-8_SPECIAL_V3205SD' does not match copy in library 'vuulgaris'.
     Local override; Severity: warning
     @(184.2880 mm, 140.0000 mm): Footprint U201
 [lib_footprint_mismatch]: Footprint 'TF-SMD_TF-PUSH' does not match copy in library 'vuulgaris'.
     Local override; Severity: warning
     @(374.4200 mm, 86.5700 mm): Footprint J1
+[lib_footprint_mismatch]: Footprint 'C0805' does not match copy in library 'vuulgaris'.
+    Local override; Severity: warning
+    @(365.8450 mm, 78.2700 mm): Footprint C30
 [lib_footprint_mismatch]: Footprint 'DIP-8_SPECIAL_V3205SD' does not match copy in library 'vuulgaris'.
     Local override; Severity: warning
     @(184.0450 mm, 101.9200 mm): Footprint U101
@@ -690,6 +604,9 @@
     @(157.2000 mm, 163.1000 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
+    @(366.5000 mm, 70.0000 mm): Reference 'D3'
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
     @(168.5780 mm, 145.6000 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
@@ -798,6 +715,12 @@
     @(225.0590 mm, 108.2470 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
+    @(366.8950 mm, 64.9200 mm): Reference 'C43'
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
+    @(366.0950 mm, 62.7200 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
     @(198.9700 mm, 99.8400 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
@@ -838,19 +761,66 @@
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(213.2760 mm, 137.3700 mm): Circle on B.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(284.7200 mm, 98.5450 mm): Circle on B.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(275.0700 mm, 97.4950 mm): Circle on B.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(192.3730 mm, 116.6000 mm): Circle on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(377.5800 mm, 116.0200 mm): Reference 'R21'
     @(377.8150 mm, 115.3030 mm): Footprint Text 'D' of U1
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(235.3510 mm, 124.9140 mm): Reference 'C303'
+    @(232.2450 mm, 125.8950 mm): Reference 'D301'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(233.9610 mm, 127.1140 mm): Line on F.Silkscreen
+    @(232.2450 mm, 125.8950 mm): Reference 'D301'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(234.2710 mm, 126.3140 mm): Arc on F.Silkscreen
+    @(232.2450 mm, 125.8950 mm): Reference 'D301'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(234.5000 mm, 159.0000 mm): Reference 'D401'
+    @(236.5260 mm, 159.4190 mm): Arc on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(234.5000 mm, 159.0000 mm): Reference 'D401'
+    @(236.2160 mm, 160.2190 mm): Line on F.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(234.5000 mm, 159.0000 mm): Reference 'D401'
+    @(237.6060 mm, 158.0190 mm): Reference 'C403'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(366.5000 mm, 70.0000 mm): Reference 'D3'
+    @(367.1100 mm, 67.9700 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(366.8950 mm, 64.9200 mm): Reference 'C43'
+    @(363.9000 mm, 64.5700 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(365.6200 mm, 67.4300 mm): Line on B.Silkscreen
+    @(366.8950 mm, 64.9200 mm): Reference 'C43'
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(365.4850 mm, 63.5200 mm): Line on B.Silkscreen
+    @(365.5050 mm, 62.7200 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(365.4850 mm, 63.5200 mm): Line on B.Silkscreen
+    @(365.8150 mm, 62.7200 mm): Arc on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(365.4850 mm, 63.5200 mm): Line on B.Silkscreen
+    @(365.8150 mm, 63.5200 mm): Arc on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(365.1750 mm, 62.7200 mm): Arc on B.Silkscreen
+    @(365.5050 mm, 62.7200 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(365.1750 mm, 63.5200 mm): Arc on B.Silkscreen
+    @(365.5050 mm, 62.7200 mm): Line on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(153.6100 mm, 134.6600 mm): Line on B.Silkscreen
