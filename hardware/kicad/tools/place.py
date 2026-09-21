@@ -399,7 +399,103 @@ if reverted:
 else:
     # count, not a literal -- "all 20" stayed on screen after SW1/SW2 made it 22
     print(f"panel parts on their holes: all {sum(1 for r in targets if r in PANEL)}")
-oob = [r for r, (x, y) in targets.items() if not (0 <= x <= W and 0 <= y <= H)]
+_edge = []
+for _m in re.finditer(r'\(gr_line \(start ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\)'
+                      r'.{0,160}?\(layer "Edge\.Cuts"\)', src, re.S):
+    _edge.append(tuple(map(float, _m.groups())))
+for _m in re.finditer(r'\(gr_arc \(start ([-\d.]+) ([-\d.]+)\) \(mid ([-\d.]+) ([-\d.]+)\)'
+                      r' \(end ([-\d.]+) ([-\d.]+)\).{0,160}?\(layer "Edge\.Cuts"\)', src, re.S):
+    _g = list(map(float, _m.groups()))
+    # start -> mid -> end, not start -> end plus a loose point: the loop walker
+    # below needs arcs to be traversable or the cutout never closes.
+    _edge.append((_g[0], _g[1], _g[2], _g[3]))
+    _edge.append((_g[2], _g[3], _g[4], _g[5]))
+# The outer boundary used to be a plain rectangle, and every test here was
+# "is it inside W x H". It stopped being one on 2026-09-20, when the top edge
+# was stepped out 7mm over J11 so the USB-C mouth could reach the enclosure
+# wall. The old code called any Edge.Cuts vertex not lying on the BOUNDING BOX
+# an interior loop, so the two inside corners of that step read as a hole in
+# the board and the connector standing on it read as hanging over the edge:
+# three false alarms, and a cutout test aimed at a shape that does not exist.
+#
+# So chain the segments into closed loops instead. The loop enclosing the most
+# area is the board; anything else is a hole in it. Everything below then asks
+# point-in-polygon, which does not care whether the outline is convex.
+def _chain(edges, tol=0.01):
+    _segs = [e for e in edges if math.hypot(e[2]-e[0], e[3]-e[1]) > tol]
+    _out = []
+    while _segs:
+        _a = _segs.pop()
+        _p = [(_a[0], _a[1]), (_a[2], _a[3])]
+        _grew = True
+        while _grew:
+            _grew = False
+            for _s in list(_segs):
+                for _u, _v in (((_s[0], _s[1]), (_s[2], _s[3])),
+                               ((_s[2], _s[3]), (_s[0], _s[1]))):
+                    if math.hypot(_u[0]-_p[-1][0], _u[1]-_p[-1][1]) < tol:
+                        _p.append(_v); _segs.remove(_s); _grew = True; break
+                    if math.hypot(_u[0]-_p[0][0], _u[1]-_p[0][1]) < tol:
+                        _p.insert(0, _v); _segs.remove(_s); _grew = True; break
+                else:
+                    continue
+                break
+        if len(_p) > 2:
+            _out.append(_p)
+    return _out
+
+
+def _area(_p):
+    _n = len(_p)
+    return abs(sum(_p[_i][0]*_p[(_i+1) % _n][1] - _p[(_i+1) % _n][0]*_p[_i][1]
+                   for _i in range(_n))) / 2.0
+
+
+def _inpoly(_pt, _poly):
+    _x, _y = _pt
+    _c = False
+    _n = len(_poly)
+    for _i in range(_n):
+        _x1, _y1 = _poly[_i]
+        _x2, _y2 = _poly[(_i+1) % _n]
+        if (_y1 > _y) != (_y2 > _y) and _x < (_x2-_x1)*(_y-_y1)/(_y2-_y1) + _x1:
+            _c = not _c
+    return _c
+
+
+def _polydist(_pt, _poly):
+    """Distance from a point to a polygon's boundary."""
+    _x, _y = _pt
+    _best = 1e9
+    _n = len(_poly)
+    for _i in range(_n):
+        _x1, _y1 = _poly[_i]
+        _x2, _y2 = _poly[(_i+1) % _n]
+        _dx, _dy = _x2-_x1, _y2-_y1
+        _l = _dx*_dx + _dy*_dy
+        _t = 0.0 if _l == 0 else max(0.0, min(1.0, ((_x-_x1)*_dx + (_y-_y1)*_dy)/_l))
+        _best = min(_best, math.hypot(_x - (_x1+_t*_dx), _y - (_y1+_t*_dy)))
+    return _best
+
+
+def _outside_by(_rect, _poly):
+    """How far a box pokes out of a polygon, 0 if it is wholly inside."""
+    _x0, _y0, _x1, _y1 = _rect
+    _worst = 0.0
+    for _c in ((_x0, _y0), (_x1, _y0), (_x0, _y1), (_x1, _y1)):
+        if not _inpoly(_c, _poly):
+            _worst = max(_worst, _polydist(_c, _poly))
+    return _worst
+
+
+_loops = sorted(_chain(_edge), key=_area, reverse=True) if _edge else []
+_outer = _loops[0] if _loops else []
+_cutpoly = _loops[1:]
+_cuts = [(min(q[0] for q in _l), min(q[1] for q in _l),
+          max(q[0] for q in _l), max(q[1] for q in _l)) for _l in _cutpoly]
+
+oob = [r for r, (x, y) in targets.items()
+       if _outer and not _inpoly((x + ORG[0], y + ORG[1]), _outer)]
 print(f"outside board outline (origins): {oob or 'none'}")
 
 # ------------------------------------------------- shaft offset, independently
@@ -586,14 +682,17 @@ def ov(A, B):
 # geometry, not by origin.
 # These deliberately overhang: their barrels pass through the enclosure wall,
 # which sits 1mm beyond the board edge and is 6mm thick.
-EDGE_OK = {"J2", "J3", "J4", "J5", "J7", "J8", "J9", "J10", "J11"}
+# J6 is the headphone jack -- the same PJ-376 as J2-J5, on the same top wall,
+# overhanging by the same 7.0mm. It was just never added here, so this check
+# has been reporting one deliberate overhang forever, which is how a real one
+# would have gone unnoticed.
+EDGE_OK = {"J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J11"}
 edge = []
 for ref, (x0, y0, x1, y1) in box.items():
     if ref in EDGE_OK:
         continue
-    # box{} is in SHEET coordinates; the outline is board coordinates
-    x0, y0, x1, y1 = x0 - ORG[0], y0 - ORG[1], x1 - ORG[0], y1 - ORG[1]
-    over = max(0 - x0, 0 - y0, x1 - W, y1 - H)
+    # box{} and the outline polygon are both in SHEET coordinates
+    over = _outside_by((x0, y0, x1, y1), _outer) if _outer else 0.0
     if over > 0.01:
         edge.append((ref, round(over, 2)))
 if edge:
@@ -606,8 +705,7 @@ else:
 padedge = []
 for ref, rects in padbox.items():
     for (x0, y0, x1, y1, _th) in rects:
-        x0, y0, x1, y1 = x0 - ORG[0], y0 - ORG[1], x1 - ORG[0], y1 - ORG[1]
-        over = max(0 - x0, 0 - y0, x1 - W, y1 - H)
+        over = _outside_by((x0, y0, x1, y1), _outer) if _outer else 0.0
         if over > 0.005:
             padedge.append((ref, round(over, 2)))
             break
@@ -626,34 +724,6 @@ else:
 #
 # Cutouts are read from Edge.Cuts rather than hardcoded: any edge geometry that
 # does not touch the outer boundary is an interior loop.
-_edge = []
-for _m in re.finditer(r'\(gr_line \(start ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\)'
-                      r'.{0,160}?\(layer "Edge\.Cuts"\)', src, re.S):
-    _edge.append(tuple(map(float, _m.groups())))
-for _m in re.finditer(r'\(gr_arc \(start ([-\d.]+) ([-\d.]+)\) \(mid ([-\d.]+) ([-\d.]+)\)'
-                      r' \(end ([-\d.]+) ([-\d.]+)\).{0,160}?\(layer "Edge\.Cuts"\)', src, re.S):
-    _g = list(map(float, _m.groups()))
-    _edge.append((_g[0], _g[1], _g[4], _g[5]))
-    _edge.append((_g[2], _g[3], _g[2], _g[3]))
-_cuts = []
-if _edge:
-    _xs = [v for e in _edge for v in (e[0], e[2])]
-    _ys = [v for e in _edge for v in (e[1], e[3])]
-    _ox0, _oy0, _ox1, _oy1 = min(_xs), min(_ys), max(_xs), max(_ys)
-    def _onedge(x, y, t=0.05):
-        return (abs(x-_ox0) < t or abs(x-_ox1) < t or abs(y-_oy0) < t or abs(y-_oy1) < t)
-    _pts = [(e[i], e[i+1]) for e in _edge for i in (0, 2)
-            if not _onedge(e[i], e[i+1])]
-    while _pts:                          # cluster interior points into loops
-        _grp = [_pts.pop()]
-        _grew = True
-        while _grew:
-            _grew = False
-            for _q in list(_pts):
-                if any(math.hypot(_q[0]-r[0], _q[1]-r[1]) < 30.0 for r in _grp):
-                    _grp.append(_q); _pts.remove(_q); _grew = True
-        _gx = [q[0] for q in _grp]; _gy = [q[1] for q in _grp]
-        _cuts.append((min(_gx), min(_gy), max(_gx), max(_gy)))
 # The outline itself is checked before anything is measured against it. A board
 # whose Edge.Cuts does not enclose its own parts is not a board, and every other
 # check in this file quietly becomes meaningless -- "pads inside the outline"

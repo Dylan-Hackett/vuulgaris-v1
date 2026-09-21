@@ -346,6 +346,9 @@ Three things depend on the number:
   enclosure clearance underneath is not verified.
 - **C32/C33/C36/C37 are SMD aluminium cans**, 5.3 and 6.6mm square, standing
   5.4 and 6.0mm. (`C29` was one of these until 2026-09-18 and is now an 0805.) Same unverified-height family as the OLED standoff question.
-- **The USB-C mouth must reach the top edge.** Seed position only; the rotation
-  and the overhang need `gerbercheck.py` and a render, not arithmetic. That
-  exact class of reasoning has been wrong here three times.
+- ~~**The USB-C mouth must reach the top edge.**~~ **Settled 2026-09-20, and it
+  did not** — the mouth sat 6.67mm behind the wall's outer face and no cable
+  could have reached it. The top edge now steps out 7.00mm over J11 on a
+  13.00mm tab and the mouth is 0.33mm proud of the wall. Geometry, the slot the
+  wall needs and the assembly order are in `design-state.md`. The render, not
+  the arithmetic, is what settled it.
