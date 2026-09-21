@@ -586,18 +586,31 @@ constraint that pins the PJ-376 at exactly flush. 6.5mm was needed.
 
 | | |
 |---|---|
-| tab | x 366.8 – 379.8 (13.00mm wide), out to y 43.00 (7.00mm deep) |
+| step | x 366.8 – **384.30**, i.e. out to the board's right edge (17.50mm wide), out to y 43.00 (7.00mm deep) |
 | J11 | moved forward 7.00mm, now at (373.27, 47.76) |
 | mouth | −7.33 in the wall frame — 0.33mm proud of the wall's outer face |
+
+It was a 13.00mm tab with 4.5mm of normal top edge beside it, which left a
+notch between the tab and the corner that was doing nothing. Running the step
+out to the right edge instead gives a square corner, two fewer outline
+segments and no inside corner for the router to pick at. J11 stays where it
+is, so it sits 2.28mm left of the step's centre — of no consequence, the wall
+opening is sized off the connector, not the step.
 
 All three connector types now present one plane, so the wall is flat with plain
 holes instead of a shaped pocket, and its position is a single number rather
 than a set of exceptions.
 
-**What the enclosure has to provide.** The tab passes *through* the wall, so the
-wall needs a slot about **13.5mm wide × 5.5mm tall** (1.6mm board + ~3.2mm
-connector body + clearance) at the tab's x range, cut the full 6mm depth. The
-plug then mates at the outer face with its overmold entirely outside.
+**What the enclosure has to provide.** The step passes *through* the wall, so
+the wall needs a slot about **18mm wide × 5.5mm tall** (1.6mm board + ~3.2mm
+connector body + clearance) over the step's x range, cut the full 6mm depth.
+The plug then mates at the outer face with its overmold entirely outside.
+
+**Watch the corner.** The slot now runs out to the board's right edge, so it
+stops only an assembly gap short of the right wall. That leaves a thin tongue
+of top-wall material at the corner. Either accept it braced by the right wall,
+or cut the slot through to the corner and let the right wall close the opening
+— whichever suits how the box comes apart, which is still undecided.
 
 **Assembly, which this does not change.** The board already could not drop into
 the cavity vertically — nine panel-mount jack barrels cannot enter round holes
@@ -608,9 +621,9 @@ that way. It has always had to slide in along y, and the travel is set by the
 |---|---|---|
 | J7–J10, 1/4" | 9.00mm | **8.00mm** |
 | J2–J6, 3.5mm | 7.00mm | 6.00mm |
-| the tab | 7.00mm | 6.00mm |
+| the step | 7.00mm | 6.00mm |
 
-So the tab needs 6mm of travel where the jacks already demand 8mm — it costs
+So the step needs 6mm of travel where the jacks already demand 8mm — it costs
 nothing. **The cavity must run 124.81mm** from the front wall's inner face to
 the back wall, leaving **8mm of air behind the board when seated**. That gap
 cannot be permanently filled; it is also how the board comes out for service.
@@ -621,8 +634,9 @@ it → nuts onto the jack threads from outside → faceplate on last over the 24
 panel parts. The board never moves vertically.
 
 **Cost on the fab side:** the outline is no longer a rectangle. The envelope is
-284.30 × 123.81mm and JLC quotes on the envelope, so the 13 × 7mm tab is paid
-for as if it were the full strip.
+284.30 × 123.81mm and JLC quotes on the envelope, so the step is paid for as if
+it were the full strip either way — which is the other reason not to keep the
+notch.
 
 ---
 
