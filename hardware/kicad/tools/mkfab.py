@@ -13,7 +13,7 @@ no package.
 
     python3 tools/mkfab.py
 """
-import os, sys, time, zipfile, subprocess
+import os, sys, re, time, zipfile, subprocess
 
 KI = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HW = os.path.dirname(KI)
@@ -59,7 +59,7 @@ flat layout JLC expects, 13 gerbers plus 2 Excellon drill files.
 
 BOARD
 -----
-  284.30 x 116.81 mm, 4 layer (F.Cu / In1.Cu / In2.Cu = GND plane / B.Cu)
+  {size}, 4 layer (F.Cu / In1.Cu / In2.Cu = GND plane / B.Cu)
   {placements} placements
   Absolute origin throughout -- gerbers, drills and CPL share it.
 
@@ -102,7 +102,23 @@ def main():
     for r in csv.DictReader(open(f"{FAB}/vuulgaris-BOM.csv")):
         if not r["LCSC Part #"]:
             uns.append(f"     {r['Designator']:26}{r['Comment']}")
-    readme = README.format(stamp=time.strftime("%Y-%m-%d"), commit=commit,
+    # Derived, not typed. It read "284.30 x 116.81 mm" for a day after the top
+    # edge was stepped out 7mm over the USB-C, which is the exact failure this
+    # script's docstring is about: a generated artefact carrying a hand-kept
+    # fact goes stale without saying so.
+    _pcb = open(PCB).read()
+    _e = re.findall(r'\(gr_line \(start ([-\d.]+) ([-\d.]+)\) \(end ([-\d.]+) '
+                    r'([-\d.]+)\).{0,160}?\(layer "Edge\.Cuts"\)', _pcb, re.S)
+    _e += [(g[0], g[1], g[4], g[5]) for g in
+           re.findall(r'\(gr_arc \(start ([-\d.]+) ([-\d.]+)\) \(mid ([-\d.]+) '
+                      r'([-\d.]+)\) \(end ([-\d.]+) ([-\d.]+)\).{0,160}?'
+                      r'\(layer "Edge\.Cuts"\)', _pcb, re.S)]
+    _x = [float(v) for g in _e for v in (g[0], g[2])]
+    _y = [float(v) for g in _e for v in (g[1], g[3])]
+    size = (f"{max(_x)-min(_x):.2f} x {max(_y)-min(_y):.2f} mm overall envelope "
+            f"-- NOT a rectangle, the top edge steps out at the USB-C; JLC quotes "
+            f"on the envelope")
+    readme = README.format(stamp=time.strftime("%Y-%m-%d"), commit=commit, size=size,
                            placements=placements, unsourced="\n".join(uns) + "\n")
 
     with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as z:

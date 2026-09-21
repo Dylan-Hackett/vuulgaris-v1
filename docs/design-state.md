@@ -556,6 +556,76 @@ recorded in `gerbercheck.py`'s docstring.
 
 ---
 
+### The USB-C sits on a tab through the wall — decided 2026-09-20
+
+**The problem, found by looking at the board.** Every panel connector on the top
+edge presents a different face to the wall, because the parts are different
+shapes. A right-angle jack's working face is the *nut face* at the end of a 7mm
+barrel. An SMD USB-C's working face is its *mouth*, level with its own pads.
+
+```
+  outside                                              inside
+  ─────────|#####  6mm wall  #####|· gap ·|board edge
+         -7.00                  -1.00    0.00
+  1/4"  ●                                              tip -9.00, 2mm proud
+  3.5mm          ●                                     tip -7.00, flush
+  USB-C                                        ●       mouth -0.33   <-- 6.67mm behind
+```
+
+The mouth did not even reach the wall's *inner* face. A plug would have needed
+about 13.7mm of exposed shell to seat; a real USB-C cable has 7 to 7.5mm.
+**It could not have been plugged in.** This was on the open list as "the USB-C
+mouth must reach the top edge, seed position only, needs a render not
+arithmetic" — the arithmetic was never done, and the render is what settled it.
+
+**Why it is not fixed by moving J11.** Its shield legs sit 2.29mm inside the
+edge, so it can move forward maybe 2mm before they walk off the board. The same
+constraint that pins the PJ-376 at exactly flush. 6.5mm was needed.
+
+**The fix: a tab.** The top edge steps out over the USB-C:
+
+| | |
+|---|---|
+| tab | x 366.8 – 379.8 (13.00mm wide), out to y 43.00 (7.00mm deep) |
+| J11 | moved forward 7.00mm, now at (373.27, 47.76) |
+| mouth | −7.33 in the wall frame — 0.33mm proud of the wall's outer face |
+
+All three connector types now present one plane, so the wall is flat with plain
+holes instead of a shaped pocket, and its position is a single number rather
+than a set of exceptions.
+
+**What the enclosure has to provide.** The tab passes *through* the wall, so the
+wall needs a slot about **13.5mm wide × 5.5mm tall** (1.6mm board + ~3.2mm
+connector body + clearance) at the tab's x range, cut the full 6mm depth. The
+plug then mates at the outer face with its overmold entirely outside.
+
+**Assembly, which this does not change.** The board already could not drop into
+the cavity vertically — nine panel-mount jack barrels cannot enter round holes
+that way. It has always had to slide in along y, and the travel is set by the
+1/4" jacks:
+
+| | protrudes past the board edge | travel to clear the wall's inner face |
+|---|---|---|
+| J7–J10, 1/4" | 9.00mm | **8.00mm** |
+| J2–J6, 3.5mm | 7.00mm | 6.00mm |
+| the tab | 7.00mm | 6.00mm |
+
+So the tab needs 6mm of travel where the jacks already demand 8mm — it costs
+nothing. **The cavity must run 124.81mm** from the front wall's inner face to
+the back wall, leaving **8mm of air behind the board when seated**. That gap
+cannot be permanently filled; it is also how the board comes out for service.
+It is somewhere to put the retaining bosses or a cable coil.
+
+Order of assembly: slide the board forward → screws down into bosses to locate
+it → nuts onto the jack threads from outside → faceplate on last over the 24
+panel parts. The board never moves vertically.
+
+**Cost on the fab side:** the outline is no longer a rectangle. The envelope is
+284.30 × 123.81mm and JLC quotes on the envelope, so the 13 × 7mm tab is paid
+for as if it were the full strip.
+
+---
+
 ### Enclosure TODO: counterbore the top wall at the four CV jacks
 
 **Decided 2026-08-18. Do this when the enclosure is built.** Pocket the **outside** face of the top wall from 6.0mm down to ~3.0mm at four spots, so the 3.5mm CV/gate jacks have enough thread proud of the wall to take a nut.
