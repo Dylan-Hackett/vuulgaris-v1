@@ -349,6 +349,6 @@ Three things depend on the number:
 - ~~**The USB-C mouth must reach the top edge.**~~ **Settled 2026-09-20, and it
   did not** — the mouth sat 6.67mm behind the wall's outer face and no cable
   could have reached it. The top edge now steps out 7.00mm over J11 on a
-  17.50mm step out to the right edge, and the mouth is 0.33mm proud of the wall. Geometry, the slot the
+  13.00mm tab and the mouth is 0.33mm proud of the wall. Geometry, the slot the
   wall needs and the assembly order are in `design-state.md`. The render, not
   the arithmetic, is what settled it.
