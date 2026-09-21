@@ -325,20 +325,22 @@ Three things depend on the number:
   it can land under 4.4V and simply not start. **The instrument needs a
   data-grade cable, and that is a spec, not a suggestion.**
 
-- **USB current advertisement, and this one is not fixed.** `J11`'s CC1 and CC2
-  go to `R22`/`R23`, 5.1k to ground, and nowhere else -- nothing on the board
-  reads what the source is advertising. A 5.1k pulldown says only "I am a sink".
-  A host advertising *default* USB power offers 500mA (900mA on USB3); we would
-  take 1.4A. Many ports will current-limit or shut down, which reads as a board
-  that will not start on a laptop but is fine on a charger. Either the 5V/3A
-  source becomes a documented requirement, or something has to read CC. See
-  the open list below.
+- **USB current advertisement.** `J11`'s CC1 and CC2 go to `R22`/`R23`, 5.1k to
+  ground, and nowhere else -- nothing on the board reads what the source is
+  advertising. A 5.1k pulldown says only "I am a sink". A host advertising
+  *default* USB power offers 500mA (900mA on USB3); we would take 1.4A, and many
+  ports will current-limit or shut down.
+
+  **Decided 2026-09-20, [ADR 0010](decisions/0010-usb-source-5v-3a-no-cc-sensing.md):
+  the 5V/3A source and a data-grade cable are a stated requirement of the
+  instrument, and CC sensing is NOT being added.** The instrument cannot do its
+  job on 500mA -- the Daisy, the OLED, both BBDs and twelve op-amp packages are
+  none of them optional -- so there is no useful degraded mode to negotiate down
+  to. The requirement has to reach the user: manual, product page, and ideally a
+  label at the jack. No board change.
 
 ### Open, and not yet checked
 
-- **Nothing reads CC.** Covered in the current budget above: the board draws
-  ~1.4A and advertises nothing, so it needs a source offering 5V at 1.5A or 3A.
-  Unresolved -- either document the requirement or add CC sensing.
 - **U7 is 25.4mm square and about 10mm tall**, mounted on the back. That is a
   much bigger part than the B1212S it replaces. Its footprint is placed but the
   enclosure clearance underneath is not verified.
