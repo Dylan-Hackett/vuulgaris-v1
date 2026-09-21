@@ -28,6 +28,26 @@ CPL = f"{FAB}/vuulgaris-CPL-jlc.csv"
 README = """Vuulgaris V1 -- JLCPCB fab package
 Generated {stamp} from hardware/kicad/vuulgaris.kicad_pcb ({commit})
 
+*** DO NOT ORDER YET -- 2 KNOWN BOARD DEFECTS, see docs/review-packet.md ***
+
+  1. SW4-SW9, all six buttons are shorted to ground. The TS1103S joins its
+     pins 1-2 internally and 3-4 internally; we wired BTN to 1+3 and GND to
+     2+4, so each terminal carries both nets. Every button reads permanently
+     pressed. Fix is a reroute, not a part change.
+
+  2. RV1-RV6 are 10k and the design needs 100k. C380211 / RK09L1240A12 is a
+     10k dual-gang. At 10k the TIME knob's sweep collapses. Needs a 100k
+     dual-gang JLC stocks.
+
+  Unresolved, needs a meter rather than a decision:
+
+  3. J7-J10, the 1/4" jacks. Neither manufacturer drawing labels the contacts.
+     If pad 3 is the tip rather than the ring, a mono plug shorts every output
+     to ground. Beep out one physical jack first.
+
+  This file is generated. When those are fixed, delete this block from
+  tools/mkfab.py and regenerate.
+
 WHAT TO UPLOAD WHERE
 --------------------
   vuulgaris-gerbers.zip          -> PCB tab, "Add gerber file"
