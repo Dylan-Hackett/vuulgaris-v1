@@ -19,3 +19,4 @@ reasoning is usually the useful part.
 | [0007](0007-buchla-lpg-over-serge-vcfq.md) | Buchla-style low pass gate, not Serge VCFQ | Accepted |
 | [0008](0008-boot-sram-not-qspi.md) | Build APP_TYPE=BOOT_SRAM, reserve QSPI for samples | Accepted |
 | [0009](0009-io-plan-12-adc.md) | IO plan: 12 ADC, no mux, 1-bit SD, no panel USB | Accepted |
+| [0010](0010-usb-source-5v-3a-no-cc-sensing.md) | USB source is a stated requirement: 5V/3A and a data-grade cable, no CC sensing | Accepted |
