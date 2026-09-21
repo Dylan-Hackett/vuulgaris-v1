@@ -649,9 +649,31 @@ wall outer face   y  -7.00     6.0mm wall
 
 Two alternatives were considered and rejected. **Closing the 1.0mm board-to-wall gap** buys only 1mm — not enough for a nut — and spends the entire fit tolerance doing it; JLC holds board outline to about ±0.2mm, so at zero designed clearance an oversize board will not go into the cavity. **Accepting PCB-held jacks** works and is normal for right-angle parts, but a hard pull on a patch cable then loads the solder joints instead of the enclosure.
 
-**The four 1/4" jacks need none of this.** PJ-603 sits 2.00mm proud already and can reach 8.20mm, so those nut to the wall normally and will take the abuse.
+~~**The four 1/4" jacks need none of this.** PJ-603 sits 2.00mm proud already and can reach 8.20mm, so those nut to the wall normally and will take the abuse.~~
 
-Still unverified: the split between threaded bushing and shoulder is not in either footprint — the silk outline's far end is the whole barrel. If PJ-603's thread is shorter than the 2mm currently protruding, the nut will not bite. Check both datasheets before ordering.
+**Wrong, corrected 2026-09-20 — it is the 1/4" jacks that cannot be nutted, not the 3.5mm ones.** The 2.00mm protruding is the **smooth Ø10.3 collar**, not thread. That figure came off the silk outline, which is the whole barrel; the datasheets were never read.
+
+Both drawings, now read:
+
+| | barrel | threaded portion | nut |
+|---|---|---|---|
+| PJ-376, 3.5mm | 4.6mm projection, Ø7.5 flange behind | ØM6 over the 4.6mm | M6 |
+| PJ-603, 1/4" | 9.0mm, front 4.5mm smooth Ø10.3 | **M12 over the REAR 4.5mm**, against the body | M12, 14mm A/F, 3.0mm thick |
+
+**Both threads are ~4.5mm and the wall is 6mm.** The thread is shorter than the wall on both parts.
+
+In board coordinates, with the wall spanning y 43.00 (outer) to 49.00 (inner):
+
+- **PJ-376** — thread runs 43.00 → 47.60, so it exactly reaches the outer face and protrudes by nothing. **The 3.0mm counterbore fixes it**: 3.0mm of M6 thread proud, enough for a panel nut. The hole has to be stepped, Ø7.6 for the first 1.4mm to clear the flange, then Ø6.2. The pocket also has to be wide enough to turn an M6 nut in, ~11mm.
+- **PJ-603** — the body face sits on the board edge at 50.00 and the thread runs 45.50 → 50.00, so it **ends 2.50mm inside the wall**. A 3.0mm counterbore exposes 0.5mm. Since the wall must clear the body by the 1.0mm assembly gap, at most 3.5mm of thread is ever available past its inner face, and a 3.0mm M12 nut would need the wall down to about 0.5mm. **Moving the jack forward makes it worse — the thread is at the back of the barrel.**
+
+So the 1/4" jacks cannot be nutted to this wall at any position. Three ways out, none chosen yet:
+
+1. **PCB-held.** Normal for right-angle parts, and the option already rejected for the 3.5mm jacks because a hard cable pull loads the solder joints instead of the enclosure. Four 1/4" jacks on an instrument is where that matters most.
+2. **Thin the wall to ~1.5mm across the 1/4" row.** Gets a nut on, but a 1.5mm wall under four jacks being yanked is its own problem.
+3. **A different 1/4" jack with a longer threaded bushing.** Cleanest if one exists in the same footprint that JLC stocks. Not yet searched.
+
+This is the item the section below used to list as "still unverified: the split between threaded bushing and shoulder". It is verified now, and the answer was worse than the worry.
 
 ---
 
