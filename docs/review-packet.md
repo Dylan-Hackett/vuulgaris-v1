@@ -101,6 +101,56 @@ and every block to its source schematic.
    we wired it, but nothing rules out pad 3 being the tip. If it is, a mono plug
    shorts every output to ground. Beep out one physical jack before ordering.
 
+### Connector and module pinouts — checked 2026-09-21
+
+Four blocks had never been diffed against their datasheets. Three are clean;
+the fourth cannot be checked yet because the thing it mates with does not exist.
+
+**`U1` Daisy Patch SM, 28 of 40 pins — clean.** Diffed pin by pin against
+Electrosmith Table 2 (Pin Functions), cross-checked against Table 3. 26 direct
+matches. The SPI2 group is self-consistent — CS on D1, SCK on D10, MOSI on D9's
+`SPI2_MOSI` alternate. UART direction is right: the MSP's TX lands on A2, whose
+alternate is `UART4_RX`, and A3 (`UART4_TX`) drives the MSP's RX. Both CV
+outputs sit on the only two output-capable CV pins, C1 and C10, and `CV_IN_JACK`
+sits on C9, which is input-only.
+
+Two pins are repurposed, both deliberate and both recorded in
+[ADR 0009](decisions/0009-io-plan-12-adc.md):
+
+| pin | datasheet | ours | depends on |
+|---|---|---|---|
+| A9 | `USB_DP` | `OLED_RES` | no panel USB, which ADR 0009 decides |
+| D2 | `SDMMC1_D3` | `OLED_DC` | 1-bit SD, so D1/D2/D3 are free |
+
+ADR 0009 carries a standing action on the first of these — *"verify A9 drives
+the display cleanly, the module may carry ESD or filtering on the USB_HS
+lines."* Still open, but the risk is much smaller than when it was written:
+the ADR was contemplating putting **MOSI** on A9, and A9 now carries **RES**,
+which is a static level toggled once at init rather than a clocked signal.
+
+**`J1` microSD, 10 pins — clean.** The vendor drawing's own table gives
+1 `DAT2`, 2 `CD/DAT3`, 3 `CMD`, 4 `VDD`, 5 `CLK`, and the rest follow the SD
+standard. Ours uses 3/4/5/6/7 for CMD/VDD/CLK/VSS/DAT0 and leaves 1 (`DAT2`)
+and 8 (`DAT1`) open, which is correct for 1-bit. `DAT3` is pulled up through
+`R508` rather than driven — correct, it keeps the card out of SPI mode. Shell
+tabs 10-13 to GND.
+
+**`DS1` OLED, 8 pins — clean, and it was already documented.** Listing this as
+unverified was wrong: [ADR 0006](decisions/0006-ssd1309-oled.md) carries the
+full pin table and the FS0/CS2 reasoning, it just never made it into the table
+above. `netmap.json` matches the datasheet's section 1.5 exactly, including the
+two that are easy to get wrong: **pin 8 `FS0` is the font ROM's data OUTPUT and
+is left open on purpose**, and **pin 9 `CS2` is held high through `R505`** so
+the font die stays off the shared bus.
+
+**`J12` faceplate IDC, 10 pins — cannot be verified yet.** A 2x5 IDC has no
+vendor pinout to diff against; the pinout is ours to define. What is checkable
+is checked: the footprint uses the standard convention (odd pins one row, even
+the other, 2.54mm pitch, pin 1 at the end), and every signal on the odd row has
+a ground directly opposite for its return. It becomes a real check only when the
+faceplate board exists to mate with it. **Treat this table as the interface
+contract and design the faceplate to it.**
+
 ## Not verified — what a second pass should cover
 
 1. ~~**U7 pin coordinates**~~ — **done 2026-09-16.** The Mean Well drawing

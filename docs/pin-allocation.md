@@ -205,7 +205,7 @@ and those three are wherever they were physically left.
 | A6 | 5V out | | D1 | OLED CS |
 | A7 | GND | | D2 | OLED DC |
 | **A8** | **RESERVED** | | **D3, D4** | **FREE** (SDMMC_D2, SDMMC_D1) |
-| A9 | **FREE** | | D5, D6, D7 | SD 1-bit: D0, CLK, CMD |
+| A9 | **OLED RES** (was listed FREE until 2026-09-21) | | D5, D6, D7 | SD 1-bit: D0, CLK, CMD |
 | A10 | 3V3 out | | **D8** | **free** (ADC) |
 | B1-B4 | audio out/in L/R | | D9 | OLED MOSI (native SPI2) |
 | B5, B6 | **GATE OUT 1, 2** | | D10 | OLED SCK |
