@@ -1,8 +1,19 @@
 #!/usr/bin/env python3
 """Connectivity, parity and clearance check on the board -- no KiCad needed.
 
-KiCad 7's kicad-cli has no `drc` subcommand, so this stands in for it. Three
-mistakes cost real time building it, all recorded here so they are not repeated:
+KiCad 7's kicad-cli has no `drc` subcommand, and this used to stand in for it.
+It no longer does: `tools/drc.py` runs KiCad's own engine through pcbnew and is
+the authority on clearance. This is the fast pass, and the only one that checks
+parity against netmap.json, which DRC knows nothing about. Run both.
+
+The demotion was earned. This file's track-to-track test measured from segment
+ENDPOINTS, which is exact for two segments that do not meet and wrong for an X
+crossing, whose closest point is the intersection. /LPG_LED and /LPG_LEDK lay
+directly across each other on both channels and measured 0.6mm apart. See
+seg_seg() below, and tools/drc.py's docstring for what that nearly cost.
+
+Three more mistakes cost real time building it, all recorded here so they are
+not repeated:
 
   * A custom pad's (size ...) is a 0.005mm ANCHOR. The copper is in
     (primitives (gr_poly ...)). J11's VBUS pads read as points and the net
