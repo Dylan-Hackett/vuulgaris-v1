@@ -269,10 +269,27 @@ board = collections.defaultdict(dict)
 for blk in blocks(T):
     r = (re.search(r'\(fp_text reference "([^"]+)"', blk) or [None, None])[1]
     if not r: continue
-    for pm in re.finditer(r'\(pad "([^"]+)"[\s\S]{0,600}?\(net (\d+) "([^"]*)"\)', blk):
-        board[r][pm.group(1)] = pm.group(3)
+    # Bound each pad to ITSELF, the same way the clearance parser above does.
+    # This used to search up to 600 characters ahead for the next "(net ...)",
+    # which is only safe if every pad has one. A pad with no net then borrowed
+    # the NEXT pad's net and swallowed that pad whole, so it was never recorded
+    # at all. It surfaced on 2026-09-22 when SW4-SW9 each lost a diagonal pair
+    # of connections: pad 1 on SW4 read as GND and pad 2 -- genuinely on GND --
+    # read as missing, six parity "mismatches" on a board that was correct.
+    # Empty-named pads (NPTH holes) still do not match [^"]+ and are skipped.
+    for pm in re.finditer(r'\(pad "([^"]+)"([\s\S]*?)(?=\n    \(pad "|\n  \)|\n    \(model)', blk):
+        nn = re.search(r'\(net (\d+) "([^"]*)"\)', pm.group(2))
+        board[r][pm.group(1)] = nn.group(2) if nn else None
 par = [(r, p, n, board.get(r, {}).get(p)) for r, pins in nm.items() for p, n in pins.items()
        if board.get(r, {}).get(p) != '/' + n]
+# The other direction. Parity above asks "is every pin netmap names on the net
+# it names?" -- it never asks "is any pad on a net netmap did NOT ask for?".
+# That is the direction that would let a deliberately disconnected pad stay
+# quietly on GND. On 2026-09-22 twelve pads across SW4-SW9 were taken off their
+# nets to un-short the buttons, and nothing here would have noticed if one had
+# been missed. KiCad's own "unconnected-(...)" nets and net-less pads are fine.
+extra = [(r, p, n) for r, pins in board.items() for p, n in pins.items()
+         if n and not n.startswith('unconnected-') and p not in nm.get(r, {})]
 degen = [1 for s in SEG if math.hypot(s['x2'] - s['x1'], s['y2'] - s['y1']) < 0.01]
 
 print(f"netclass clearances: { {k: v for k, v in sorted(CLS.items())} }")
@@ -283,4 +300,6 @@ print(f"clearance violations     : {len(viol)}")
 for v in sorted(viol, key=lambda z: z[4])[:20]: print(f"   {v}")
 print(f"board/schematic parity   : {len(par)} mismatches over {sum(len(v) for v in nm.values())} connections")
 for x in par[:10]: print(f"   {x}")
+print(f"pads on nets netmap never asked for: {len(extra)}")
+for x in extra[:10]: print(f"   {x}")
 print(f"degenerate (zero-length) segments: {sum(degen)}")

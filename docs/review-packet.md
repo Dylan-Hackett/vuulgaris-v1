@@ -87,7 +87,11 @@ and every block to its source schematic.
    The footprint's pads 1+2 are the 12.5mm-apart pair and 3+4 the other, which is
    forced by the hole pattern regardless of anyone's numbering convention. We
    wired BTN to 1+3 and GND to 2+4, so each terminal carries both nets. Every
-   button reads permanently pressed. **Not yet fixed.**
+   button reads permanently pressed. **Fixed 2026-09-22** — each switch now keeps
+   one diagonal pair (BTN on one joined bar, GND on the other) and the other
+   diagonal is net-less. SW4/5/6/8 keep BTN 3 + GND 2; SW7/9 keep BTN 1 + GND 4,
+   chosen per switch by where the BTN feed actually lands. One track removed
+   per switch. Re-read against the TS1103S drawing's own circuit diagram first.
 2. **`RV1`–`RV6` are the wrong value.** The BOM buys `C380211` =
    `RK09L1240A12`, which the ALPS datasheet gives as **10kΩ**. The design needs
    **100kΩ**: `lpg-bergman.md` specifies 100K for OFFSET, RESONANCE and CV
