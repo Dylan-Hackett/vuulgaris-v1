@@ -99,6 +99,41 @@ and every block to its source schematic.
    arithmetic in `bbd-mki.md` (10.17V at full CCW, 36k at centre) only comes out
    at 100k. At 10k the TIME knob's sweep collapses. **Needs a part that JLC
    stocks.**
+
+   **Searched 2026-09-22 — no such part exists at JLC.** Recorded because the
+   obvious candidate is a trap:
+
+   - **Do NOT use `C470470` / `RK09L1220A1B`.** It is the only RK09L listed at
+     100k with JLC stock, and it is a **Horizontal type** (right-angle) pot
+     with a 15mm shaft on a different drawing. It cannot come up through the
+     faceplate. ALPS' own RK09L family table (LCSC's C470470 datasheet, p1)
+     shows the vertical 2-gang parts come only in **10k and 50k**; ours,
+     `RK09L1240A12`, is the vertical / 20mm / 1B / 10k row.
+   - Alpha `RV09AF-40-30K-B100K` and `RV09BF-40-20K-B100K` are at JLC but
+     **zero stock, pre-order only**, gang count and mechanics unverified.
+   - LCSC's parametric filter (100kΩ + 6-pin + in stock) returns nothing, but
+     LCSC files the ALPS duals under "Trimmer" as plain "Through Hole", so
+     that proves little.
+
+   Two ways out, not yet chosen:
+
+   **A — keep the stocked 10k part and rescale around it.** Zero mechanical
+   risk: same footprint, shaft height and faceplate holes. FEEDBACK (`RV5`)
+   becomes exactly what the manual specifies (B10k). Eight value changes, all
+   0603 Basic:
+   `R110`/`R111`/`R210`/`R211` 22k -> 2k2 (TIME, already the documented fix in
+   `bbd-mki.md`); `R318`/`R418` 100k -> 10k and `C310`/`C410` 22pF -> 220pF
+   (RESONANCE: its gain is 1 + R_upper/(R_lower + R318), so the pot/R318
+   ratio and the C310 corner both scale by ten and the control keeps its
+   1-to-2 range). `RV1`/`RV6` work unchanged at 10k. Cost: Bergman's
+   resonance network runs at a tenth of his impedance, and `RV3` loads the
+   Daisy's CV_OUT_1 at ~2mA instead of ~0.2mA.
+
+   **B — pre-order or hand-fit a real B100k dual.** Keeps every circuit as
+   drawn. Costs a part that must be sourced outside JLC's stock and hand
+   soldered six times, and its footprint, pin order and shaft height have to
+   be verified against this board before ordering — the C470470 trap above
+   is what skipping that looks like.
 3. **`J7`–`J10`, the 1/4" jacks — unresolved, needs a meter.** Neither
    manufacturer drawing labels the contacts. The cross-section implies pad 2 =
    sleeve, pad 3 = ring, pads 4/5 = tip and its normalling switch, which is how
