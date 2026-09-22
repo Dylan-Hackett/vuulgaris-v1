@@ -45,6 +45,25 @@ Then, before plotting fab files:
 python3 tools/place.py --check && python3 tools/gerbercheck.py
 ```
 
+And the one that has the last word on clearance:
+
+```
+python3 tools/drc.py
+```
+
+`drc.py` runs **KiCad's own DRC** through `pcbnew.WriteDRCReport`, because
+`kicad-cli` in 7.0.8 cannot. It fails on anything the project settings call an
+ERROR and merely counts WARNINGs, of which this board has ~270 silkscreen ones
+that JLC clips at plot time.
+
+`boardcheck.py` is still worth running — it is fast and it checks parity
+against `netmap.json`, which DRC knows nothing about — but it is no longer the
+authority on clearance. It reimplemented the geometry and got the X-crossing
+case wrong, so two tracks lying on top of each other on `/LPG_LED` and
+`/LPG_LEDK` measured 0.6mm apart and it reported the board clean for days.
+Pcbnew found them in a second.
+```
+
 ## Libraries
 
 | Library | Source | Notes |
