@@ -28,21 +28,17 @@ CPL = f"{FAB}/vuulgaris-CPL-jlc.csv"
 README = """Vuulgaris V1 -- JLCPCB fab package
 Generated {stamp} from hardware/kicad/vuulgaris.kicad_pcb ({commit})
 
-*** DO NOT ORDER YET -- 1 KNOWN BOARD DEFECT, see docs/review-packet.md ***
+*** DO NOT ORDER YET -- 1 CHECK NEEDS A METER, see docs/review-packet.md ***
 
   (SW4-SW9, the six shorted buttons, were fixed 2026-09-22.)
+  (RV1-RV6, 10k where the design needs 100k, came off the JLC BOM
+   2026-09-22 -- hand-fit Alpha pots, see BEFORE YOU ORDER.)
 
-  1. RV1-RV6 are 10k and the design needs 100k. C380211 / RK09L1240A12 is a
-     10k dual-gang. At 10k the TIME knob's sweep collapses. Needs a 100k
-     dual-gang JLC stocks.
-
-  Unresolved, needs a meter rather than a decision:
-
-  2. J7-J10, the 1/4" jacks. Neither manufacturer drawing labels the contacts.
+  1. J7-J10, the 1/4" jacks. Neither manufacturer drawing labels the contacts.
      If pad 3 is the tip rather than the ring, a mono plug shorts every output
      to ground. Beep out one physical jack first.
 
-  This file is generated. When those are fixed, delete this block from
+  This file is generated. When that is done, delete this block from
   tools/mkfab.py and regenerate.
 
 WHAT TO UPLOAD WHERE
@@ -69,9 +65,16 @@ BEFORE YOU ORDER
 2. DS1, HS242L01W4S01 (C5139768) -- not in JLC's assembly library at all.
    Buy from LCSC (~$12.22) and fit by hand.
 
-3. These BOM lines have no source anywhere. All through-hole, all hand-solder:
+3. RV1-RV6 -- the BOM line is deliberately blank, so JLC places nothing.
+   Buy from Tayda and hand-fit:
+     5x Alpha RD902F-40-15R1-B100K  (Tayda A-5440)  RV1-RV4, RV6
+     1x Alpha RD902F-40-15R1-B10K   (Tayda A-6433)  RV5 FEEDBACK
+   The footprint's tab slots are turned for the Alpha. An ALPS RK09L will not
+   go in -- do not let JLC "helpfully" match the line to one.
+
+4. These BOM lines have no source anywhere. All through-hole, all hand-solder:
 {unsourced}
-4. J7-J10 (PJ-603, C41409498) had 64 in stock on 2026-09-11 -- 16 boards'
+5. J7-J10 (PJ-603, C41409498) had 64 in stock on 2026-09-11 -- 16 boards'
    worth. The only line thin enough to cap a run.
 
 NOTES
@@ -97,7 +100,7 @@ def main():
     uns = []
     import csv
     for r in csv.DictReader(open(f"{FAB}/vuulgaris-BOM.csv")):
-        if not r["LCSC Part #"]:
+        if not r["LCSC Part #"] and not r["Note"].startswith("NOT FROM JLC"):
             uns.append(f"     {r['Designator']:26}{r['Comment']}")
     # Derived, not typed. It read "284.30 x 116.81 mm" for a day after the top
     # edge was stepped out 7mm over the USB-C, which is the exact failure this

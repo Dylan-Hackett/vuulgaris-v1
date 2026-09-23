@@ -646,7 +646,7 @@ its own S&H, its own output amp and its own output.
 
 ## Panel controls
 
-All three are **existing dual-gang `RK09L1240A12` pots**, already placed for the
+All three are **existing dual-gang pots** (`RK09L1240A12` footprint, Alpha `RD902F` fitted), already placed for the
 faceplate. One shaft, two independent sections, one knob per stereo pair — which
 is exactly the arrangement the stereo argument above wants.
 
@@ -666,26 +666,23 @@ other — so the L and R sections cannot end up reversed relative to each other.
 and carries no CW/CCW information; the netmap assumes the near-universal
 **1 = CCW, 2 = wiper, 3 = CW** (and 4/5/6 likewise). If that is backwards, all
 three knobs turn the wrong way *together*, nothing is damaged, and the fix is
-swapping 1↔3 and 4↔6 in `netmap.json`. Confirm against the Alps RK09L drawing or
-on the bench.
+swapping 1↔3 and 4↔6 in `netmap.json`. Confirm on the bench — the parts are
+Alpha `RD902F` now, not the Alps RK09L the footprint was drawn from.
 
-**UNVERIFIED and more consequential: what resistance these pots actually are.**
-`values.json` records only the label and the symbol only the MPN
-(`RK09L1240A12`, LCSC `C380211`). The manual needs **B100k** for TIME and
-DRY/WET and **B10k** for FEEDBACK, and one part number cannot be both. What
-happens in each case:
+**RESOLVED 2026-09-22: what resistance these pots are.** They were `C380211`
+= ALPS `RK09L1240A12`, which is **10k**, and JLC stocks no vertical dual at
+100k. They are now hand-fit Alpha `RD902F-40-15R1` duals, off the JLC BOM:
+**B100K** for TIME and DRY/WET (and the three LPG pots), **B10K** for FEEDBACK —
+exactly what the manual draws. See `review-packet.md`, open defect 2.
 
-- **If the part is 100k:** TIME and DRY/WET are correct. FEEDBACK at 100k
-  instead of 10k still works — it loads the wet node *less*, and the wiper's
-  source impedance (up to 25k) adds to `R112` 82k, so mid-rotation feedback is
-  about 23% lower than the drawing intends. A taper change, not a fault.
-- **If the part is 10k:** FEEDBACK is correct and **TIME is broken.** In the
-  +12V / 22k / pot / 22k string a 10k pot gives a wiper span of only 4.89–7.11V
-  instead of 1.83–10.17V, collapsing the delay range to about a third. Fixable
-  by rescaling `R110`/`R111` to 2k2, but it has to be caught first.
+What the old part would have done, kept because it is the reason for the fix:
 
-Check the LCSC page before ordering. This is the single most likely way for this
-block to arrive wrong.
+- **At 10k, TIME was broken.** In the +12V / 22k / pot / 22k string a 10k pot
+  gives a wiper span of only 4.89–7.11V instead of 1.83–10.17V, collapsing the
+  delay range to about a third.
+- **At 100k across the board, FEEDBACK would have worked** — loading the wet
+  node *less*, with the wiper's source impedance (up to 25k) adding to `R112`
+  82k, so about 23% less feedback at mid-rotation. The B10K avoids even that.
 
 ---
 

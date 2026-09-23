@@ -2081,28 +2081,28 @@
     )
     (property
       "Datasheet"
-      "https://lcsc.com/product-detail/New-Arrivals_ALPS-Electric-RK09L1240A12_C380211.html"
+      "https://www.taydaelectronics.com/100k-ohm-linear-dual-taper-potentiometer-round-shaft-pcb-9mm.html"
       (id 3)
       (at 0 -16.51 0)
       (effects (font (size 1.27 1.27) ) hide)
     )
     (property
       "Manufacturer"
-      "ALPSALPINE(阿尔卑斯阿尔派)"
+      "ALPHA"
       (id 4)
       (at 0 -19.05 0)
       (effects (font (size 1.27 1.27) ) hide)
     )
     (property
       "MPN"
-      "RK09L1240A12"
+      "RD902F-40-15R1"
       (id 5)
       (at 0 -21.59 0)
       (effects (font (size 1.27 1.27) ) hide)
     )
     (property
       "LCSC Part"
-      "C380211"
+      ""
       (id 6)
       (at 0 -24.13 0)
       (effects (font (size 1.27 1.27) ) hide)
