@@ -118,9 +118,8 @@ the shaft axis, and for three of these parts that sits away from the origin:
 |---|---|---|---|
 | ENC1-ENC10 | `SW-TH_EC12EXXXX` | `(0, -3.75)` | silk body centre **and** both mounting lugs |
 | ENC0 | `SW-TH_ALPS_EC11L1525G01` | `(0, -0.20)` | bushing circle r 4.00 |
-| RV1 | `RES-ADJ-TH_RK09L1240A12` (dual-gang) | `(0, -4.83)` | bushing circle r 3.24 |
-| RV2-RV4 | `RES-ADJ-TH_RK09D1130C4G` | `(0, -3.56)` | bushing circle r 2.50 |
-| SW4-SW7 | `KEY-TH_CPG1511F01S0X` (Cherry MX) | `(0.63, 3.81)` | centre post, also a 4.2mm pad |
+| RV1-RV6 | `RES-ADJ-TH_RK09L1240A12` (dual-gang, Alpha `RD902F` fitted) | `(0, -5.00)` — but **placed** at `(0, -4.83)`, see `place.py` | on the tab-slot line: ALPS RK09L drawing, KiCad's Alpha footprint |
+| SW4-SW9 | `KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5` (12x12 tactile) | `(0, 0)` | pads symmetric about the origin |
 | DS1 | `LCD-TH_HS242L01W4S01` | header, mid of the left edge | (folded into `PANEL`) |
 
 Placing those by origin puts the knob 4-5mm off its hole, which nothing downstream

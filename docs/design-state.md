@@ -721,7 +721,7 @@ What actually passes through the faceplate:
 | family | qty | load it takes |
 |---|---|---|
 | `EC12E2430803` encoder | 8 | rotation **and** push — the most abused parts on the panel |
-| `RK09L1240A12` pot, dual-gang | 6 | rotation |
+| Alpha `RD902F-40-15R1` pot, dual-gang (in the `RK09L1240A12` footprint) | 6 | rotation |
 | `EC11L1525G01` encoder + push | 1 | rotation and push |
 | DPDT toggle | 2 | flick |
 | UI buttons | 4 (going to 6) | push only |
@@ -749,13 +749,33 @@ panel rests on).
 
 | part | body | bushing | thread | cross-check |
 |---|---|---|---|---|
-| `RK09L1240A12` pot | **10mm** | 7mm (`LB`) | M9 x 0.75 | 10 + `L1` 20 = 30 vs 30.2mm measured off the 3D model |
+| Alpha `RD902F-40-15R1` pot | **10mm** | 5mm | M7 x 0.75 | Tayda: shaft "10mm+5mm", panel hole 7.5mm; photo scaled off the 6.35mm shaft gives ~10.2mm body, ~4.9mm thread |
 | `EC12E2430803` encoder | **5.5mm** | 7mm | M9 x 0.75 | "With bushing" style, confirms the §11 rejection of `C470602` |
 | `EC11L1525G01` | not read | — | — | 13.1mm square body, 11mm size — will not exceed the pot |
 
 **The pots are the datum, not the encoders.** They stand 4.5mm proud of the
 EC12s, so the faceplate underside sits **10mm** above the main PCB and 11.6mm to
 its outer face.
+
+**Pot swap, 2026-09-22.** This table used to carry the ALPS `RK09L1240A12`
+(10mm body, 7mm M9 bushing, 20mm flatted shaft). That part is 10k and the
+design needs 100k, so the pots are now hand-fit Alpha `RD902F` duals — see
+`review-packet.md`, open defect 2. Same 10mm body, so the datum and every
+height below are unchanged. What did change, for whoever lays out the
+faceplate PCB:
+
+- **Pot holes are 7.5mm, not 9.5mm.** M7 x 0.75 bushing.
+- **Drill them 0.17mm toward the top (jack) edge of the panel coordinate.**
+  The shafts really sit there: `place.py` carried a 0.17mm error in the
+  shaft offset, and moving the six pots to fix it broke 21 clearances. All
+  six are off by the same amount in the same direction, so drilling at the true
+  shaft puts every hole dead on. The encoders are unaffected.
+- **3.4mm of thread above the panel** (bushing tip at 15mm, outer face at
+  11.6mm), down from 5.4mm on the ALPS. Enough for the supplied flat nut and
+  washer. There's no room for a thicker panel, a spacer or a lock washer.
+- **Knobs take a 6.35mm (1/4") round shaft**, set-screw type, not 6mm
+  D-shaft. 13.4mm of shaft stands above the panel. Thonk sells a D-shaft
+  RD902F, but not in B100K.
 
 ### Consequence 1: the encoder nuts cannot bite
 

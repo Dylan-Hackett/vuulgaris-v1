@@ -57,12 +57,6 @@ CURATED = {
     # C28 is VBUS decoupling, so the original NP0 buys nothing over X7R here.
     "CC0603JRNPO9BN103":     "C57112",
     "PJ-376":                "C22355746",  # SOFNG 3.5mm right-angle TH, 571 stock
-    "CUTOFF":                "C380211",    # ALPS RK09L1240A12 dual 10k, all six pots
-    "RESONANCE":             "C380211",
-    "FILTER CV AMT":         "C380211",
-    "TIME":                  "C380211",
-    "FEEDBACK":              "C380211",
-    "WET/DRY":               "C380211",
     "MCP23017-E_SO":         "C47023",
     "TL074":                 "C12594",     # TL074CDR SOIC-14
     "TL084":                 "C8956",      # TL084CDR SOIC-14
@@ -110,6 +104,15 @@ CURATED = {
 # was ever chosen. Each is an Extended part rather than Basic; JLC charges a
 # small per-part fee for those, which is the right trade here because all four
 # are in signal paths where the dielectric or the value actually matters.
+_POT = ("NOT FROM JLC -- FIT BY HAND. Alpha RD902F-40-15R1-{v}, dual {v} 9mm "
+        "vertical, Tayda {sku}. Goes in the RK09L footprint; its tab slots were "
+        "turned 90deg to take the Alpha's tabs on 2026-09-22, so an ALPS RK09L no "
+        "longer fits. M7x0.75 bushing, 6.35mm round shaft.")
+POT = _POT.format(v="B100K", sku="A-5440")
+# FEEDBACK is the one pot the BBD manual draws at B10k (R3). 100k would work
+# with about 23% less feedback at mid-rotation -- docs/bbd-mki.md -- but it is
+# hand-fit from the same shop at the same price, so it gets the real value.
+POT10 = _POT.format(v="B10K", sku="A-6433")
 NOTE = {
     # Stock and placeability below were read off JLC's parts library in a
     # browser on 2026-09-11, not inferred from LCSC. The two are different
@@ -124,6 +127,12 @@ NOTE = {
     "VTL5C3":                "no LCSC source -- hand solder, Xvive reissue",
     "SW_DPDT_FLAT":          "no LCSC source -- hand solder",
     "ES_DAISY_PATCH_SM_REV1":"module, socketed or hand soldered",
+    # RV1-RV6. These were C380211 = ALPS RK09L1240A12, which is 10k -- the
+    # design needs B100k and JLC stocks no vertical dual 100k at all (the one
+    # that looks like it, C470470, is a HORIZONTAL part). So no LCSC number:
+    # a blank line is what keeps JLC from placing the 10k.
+    **{v: POT for v in ("CUTOFF", "RESONANCE", "FILTER CV AMT", "TIME", "WET/DRY")},
+    "FEEDBACK": POT10,
     "HS242L01W4S01":         "BUY FROM LCSC, FIT BY HAND -- C5139768, 27 in stock at $12.22. "
                              "Not in JLC's assembly library, and it is a display module on its "
                              "own 68x43mm PCB with a glass panel: do not reflow or wave solder it",
@@ -318,7 +327,10 @@ def main():
     # JLC prices the reel twice.
     merged = {}
     for r in rows:
-        key = (r["LCSC Part #"], r["Footprint"]) if r["LCSC Part #"] else id(r)
+        # Unsourced lines merge on their note instead: the six pots have six
+        # different values (their panel labels) and one part behind them.
+        key = ((r["LCSC Part #"], r["Footprint"]) if r["LCSC Part #"] else
+               (r["Note"], r["Footprint"]) if r["Note"] else id(r))
         if key in merged:
             m = merged[key]
             m["Designator"] = ",".join(sorted(

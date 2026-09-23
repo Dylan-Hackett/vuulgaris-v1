@@ -97,8 +97,8 @@ and every block to its source schematic.
    **100kΩ**: `lpg-bergman.md` specifies 100K for OFFSET, RESONANCE and CV
    Level; the BBD manual specifies 100k for DRY/WET; and the TIME divider's own
    arithmetic in `bbd-mki.md` (10.17V at full CCW, 36k at centre) only comes out
-   at 100k. At 10k the TIME knob's sweep collapses. **Needs a part that JLC
-   stocks.**
+   at 100k. At 10k the TIME knob's sweep collapses. **Fixed 2026-09-22 by
+   option B below** — hand-fit Alpha duals, off the JLC BOM.
 
    **Searched 2026-09-22 — no such part exists at JLC.** Recorded because the
    obvious candidate is a trap:
@@ -115,7 +115,7 @@ and every block to its source schematic.
      LCSC files the ALPS duals under "Trimmer" as plain "Through Hole", so
      that proves little.
 
-   Two ways out, not yet chosen:
+   Two ways out. **B was chosen, 2026-09-22.**
 
    **A — keep the stocked 10k part and rescale around it.** Zero mechanical
    risk: same footprint, shaft height and faceplate holes. FEEDBACK (`RV5`)
@@ -134,6 +134,41 @@ and every block to its source schematic.
    soldered six times, and its footprint, pin order and shaft height have to
    be verified against this board before ordering — the C470470 trap above
    is what skipping that looks like.
+
+   **What B turned into.** Alpha `RD902F-40-15R1`, dual 9mm vertical, from
+   Tayda: **B100K ×5** (`A-5440`, 2175 in stock) and **B10K ×1** for FEEDBACK
+   (`A-6433`, 597 in stock). FEEDBACK gets 10k because the BBD manual draws it
+   at B10k (`R3`) — 100k would have worked with ~23% less feedback at
+   mid-rotation, but it is hand-fit from the same shop at the same price, so it
+   gets the real value. The BOM line for `RV1`–`RV6` now carries **no LCSC
+   number**, which is what stops JLC placing `C380211`.
+
+   Checked against the footprint, and one thing did not match:
+
+   - **The six pins match**: 2.5mm pitch, 2.5mm row spacing, near row 7.5mm
+     from the shaft, verified against KiCad's own `Alpha_RD902F-40-00D` and
+     `Alps_RK09L_Double_Vertical` footprints. The gangs are numbered the other
+     way round, which does not matter on a pot whose two gangs are identical.
+   - **The two mounting-tab slots did not.** Same positions (±4.75mm on the
+     shaft line) and same 1.1 x 1.8mm slot, but the ALPS slot runs *along* the
+     tab line and the Alpha's runs *across* it — KiCad's Alpha footprint and a
+     photo of the part agree. An Alpha tab would not have gone in. **Both slots
+     on all six pots are now turned 90°**, board and library, and DRC is clean
+     after lifting one `/LPG_OFS_L` trace on In1.Cu 0.15mm clear of the longer
+     pads. An ALPS RK09L no longer fits this footprint.
+   - **Body fits the existing courtyard**: 6.5mm from the shaft on the pin side,
+     4.85mm on the other, 9.5mm wide — the same numbers as the ALPS.
+   - **Height is unchanged**: 10mm body, so the pots stay the faceplate datum.
+     The bushing is **M7 x 0.75, 5mm**, not M9 x 7mm, and the shaft is **6.35mm
+     round** and 15mm long from the mounting surface. Consequences in
+     `design-state.md`, "Panel part heights".
+
+   Found along the way and **not** fixed: `place.py` put the shaft 0.17mm
+   off, at (0, −4.83) from the footprint origin instead of (0, −5.00) on the
+   tab line. Moving all six pots to correct it put 21 clearance errors into the
+   traces threaded between and under the pin rows, so the pots stay, and the
+   faceplate drills its pot holes where the shafts actually are. Closing it
+   properly is a Pcbnew push-and-shove job; the steps are in `place.py`.
 3. **`J7`–`J10`, the 1/4" jacks — unresolved, needs a meter.** Neither
    manufacturer drawing labels the contacts. The cross-section implies pad 2 =
    sleeve, pad 3 = ring, pads 4/5 = tip and its normalling switch, which is how

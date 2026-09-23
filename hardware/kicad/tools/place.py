@@ -276,8 +276,18 @@ ORIGIN_OFFSET = {
     # about the origin, so the button centre IS the origin -- no offset. The old
     # (0.63, 3.81) was the Cherry MX centre post and would now push every button
     # off its hole by that much.
-    # All six pots are RK09L1240A12 dual-gang now, so they share one offset.
-    "RV1": (0.0, -4.83), "RV5": (0.0, -4.83), "RV6": (0.0, -4.83),                        # dual-gang, deeper body
+    # All six pots share one footprint, so they share one offset -- but -4.83 is
+    # NOT where the shaft is. The shaft is on the line through the two tab
+    # slots, (0, -5.00): ALPS' RK09L drawing and KiCad's Alpha RD902F footprint
+    # both put it there, and -4.83 was copied off a stray easyeda silk circle.
+    # Correcting it moves all six pots 0.17mm, which on 2026-09-22 put 21
+    # clearance errors into the traces threaded between and under the pin rows
+    # -- a push-and-shove job for Pcbnew's router, not a script. So the pots
+    # stay, and every pot shaft sits 0.17mm toward the TOP (jack) edge of its
+    # panel coordinate. The faceplate PCB drills its six pot holes there -- see
+    # docs/design-state.md, "Panel part heights". To close this properly: set
+    # these to -5.00, run place.py, and let the router shove the 21 traces.
+    "RV1": (0.0, -4.83), "RV5": (0.0, -4.83), "RV6": (0.0, -4.83),
     "RV2": (0.0, -4.83), "RV3": (0.0, -4.83), "RV4": (0.0, -4.83),
     "ENC0": (0.0, -0.20),
 }
