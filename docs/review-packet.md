@@ -169,11 +169,30 @@ and every block to its source schematic.
    traces threaded between and under the pin rows, so the pots stay, and the
    faceplate drills its pot holes where the shafts actually are. Closing it
    properly is a Pcbnew push-and-shove job; the steps are in `place.py`.
-3. **`J7`–`J10`, the 1/4" jacks — unresolved, needs a meter.** Neither
-   manufacturer drawing labels the contacts. The cross-section implies pad 2 =
-   sleeve, pad 3 = ring, pads 4/5 = tip and its normalling switch, which is how
-   we wired it, but nothing rules out pad 3 being the tip. If it is, a mono plug
-   shorts every output to ground. Beep out one physical jack before ordering.
+3. **`J7`–`J10`, the 1/4" jacks — resolved from documents, 2026-09-22.**
+   This item used to say "needs a meter", on a 2026-09-16 reading that the
+   drawing labels no contacts and that pad 3 might be the ring. A meter needs
+   a physical jack, which can't be had before the fab order, so it was settled
+   from three independent sources instead. All three agree with the wiring
+   (2 = sleeve, 4 = tip, 3 = tip switch, 5 = ring) and none agrees with the
+   09-16 reading:
+
+   - **The mono variant.** The drawing's `PJ-603-3` keeps pads 2/3/4 and drops
+     5. A mono jack has no ring, so **5 is the ring** — and pad 3, which the
+     mono part keeps, cannot be.
+   - **LCSC's symbol draws the switch.** In `PJ-603_C41409498`, pin 2 runs
+     straight to the body (sleeve), pins 4 and 5 carry the V-bend of a spring
+     the plug deflects, and **pin 3 ends in an arrowhead resting on pin 4's
+     spring** — the normally-closed contact. So 4 is the switched contact, and
+     with 5 the ring, 4 is the tip.
+   - **The footprint.** Pads 3 and 4 share y = +2.50 as a side-by-side pair,
+     which is what a tip spring and its switch look like, with 5 opposite.
+
+   What is left is the chance that LCSC's library author mis-drew the symbol
+   *and* the variant logic is wrong. If so, the failure is not destructive —
+   J7/J8 would ground the source's tip, and J9/J10 would feed the switch leaf
+   instead of the tip — but it is four bodges. **Beep one jack on the first
+   assembled board before patching it into anything you care about.**
 
 ### Connector and module pinouts — checked 2026-09-21
 

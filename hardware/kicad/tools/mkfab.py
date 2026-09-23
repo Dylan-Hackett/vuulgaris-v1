@@ -28,18 +28,14 @@ CPL = f"{FAB}/vuulgaris-CPL-jlc.csv"
 README = """Vuulgaris V1 -- JLCPCB fab package
 Generated {stamp} from hardware/kicad/vuulgaris.kicad_pcb ({commit})
 
-*** DO NOT ORDER YET -- 1 CHECK NEEDS A METER, see docs/review-packet.md ***
+No known board defects as of 2026-09-22 -- docs/review-packet.md.
 
   (SW4-SW9, the six shorted buttons, were fixed 2026-09-22.)
   (RV1-RV6, 10k where the design needs 100k, came off the JLC BOM
    2026-09-22 -- hand-fit Alpha pots, see BEFORE YOU ORDER.)
-
-  1. J7-J10, the 1/4" jacks. Neither manufacturer drawing labels the contacts.
-     If pad 3 is the tip rather than the ring, a mono plug shorts every output
-     to ground. Beep out one physical jack first.
-
-  This file is generated. When that is done, delete this block from
-  tools/mkfab.py and regenerate.
+  (J7-J10, the 1/4" jack pinout, was settled from the drawing and LCSC's
+   symbol rather than a meter, since there is no jack to meter before the
+   order. Beep one on the first assembled board before patching into it.)
 
 WHAT TO UPLOAD WHERE
 --------------------
