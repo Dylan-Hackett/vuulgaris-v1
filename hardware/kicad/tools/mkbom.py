@@ -105,9 +105,9 @@ CURATED = {
 # small per-part fee for those, which is the right trade here because all four
 # are in signal paths where the dielectric or the value actually matters.
 _POT = ("NOT FROM JLC -- FIT BY HAND. Alpha RD902F-40-15R1-{v}, dual {v} 9mm "
-        "vertical, Tayda {sku}. Goes in the RK09L footprint; its tab slots were "
-        "turned 90deg to take the Alpha's tabs on 2026-09-22, so an ALPS RK09L no "
-        "longer fits. M7x0.75 bushing, 6.35mm round shaft.")
+        "vertical, Tayda {sku}. Pad-for-pad with the RK09L footprint per Alpha's "
+        "drawing RD902F-40-(L)R1-XXX-00D70. M7x0.75 bushing, 6.35mm round shaft. "
+        "Do not substitute C380211 -- that is the 10k ALPS this replaced.")
 POT = _POT.format(v="B100K", sku="A-5440")
 # FEEDBACK is the one pot the BBD manual draws at B10k (R3). 100k would work
 # with about 23% less feedback at mid-rotation -- docs/bbd-mki.md -- but it is

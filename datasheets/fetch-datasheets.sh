@@ -28,6 +28,9 @@ fetch "https://www.ti.com/lit/pdf/slaa891"      SLAA891-OpenSCAD-CapTouch-Script
 fetch "https://www.ti.com/lit/pdf/slaa843"      SLAA843-Sensitivity-SNR.pdf
 fetch "https://www.ti.com/lit/pdf/slaa685"      SLAA685-Code-Protection.pdf
 fetch "https://www.ti.com/lit/pdf/slaa842"      SLAA842-CapTIvate-Selection.pdf
+# RV1-RV6. Alpha's drawing RD902F-40-(L)R1-XXX-00D70 rev -0057, hosted by Thonk (A50K;
+# same mechanics as the B100K/B10K fitted). Settles tab-slot orientation and CCW = terminal 1.
+fetch "https://www.thonk.co.uk/wp-content/uploads/Documents/alpha/9mm/DUAL%20GANG%20-%20RD902F-40-15R1-A50K-0057.pdf" Alpha-RD902F-40-15R1-dual-9mm-pot.pdf
 fetch "https://daisy.nyc3.cdn.digitaloceanspaces.com/products/patch-sm/ES_Patch_SM_datasheet_v1.0.5.pdf" Electrosmith-Patch-SM-v1.0.5.pdf
 
 # ---- analog / power / IO, added 2026-09-10 -------------------------------

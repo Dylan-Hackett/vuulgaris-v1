@@ -153,8 +153,11 @@ stays: it is in the main loop and is still the LED-drive depth trim.
 
 ## CV section — `U2` TL074
 
-`CV1 IN` through a **Level 100K** pot into `R27`/`R28` 100K; `CV2 IN` through a
-**Level + Invert 100K** pot into `R23` 100K at `U2-A` (`R20` 100K feedback).
+`CV1 IN` through a **Level 100K** pot, its wiper into `R28` 100K; `CV2 IN`
+into `R23` 100K at `U2-A` (`R20` 100K feedback) and across the **Level + Invert
+100K** pot, whose wiper feeds `R27` 100K. `R27` and `R28` both land on `U2-D`
+pin 13. (Corrected 2026-09-23 — this used to say CV1 fed both, and the drop
+below named `R27` as CV1's. On the drawing `R27` is CV2's and `R28` is CV1's.)
 `U2-D` (12/13/14, `R30` 100K feedback) sums, `R31` 100K feeds `U2-C` (10/9/8,
 `R33` 100K feedback), whose output runs back to the `R4`/`R5` summing node in the
 LED driver. **`U2-B` is unused.**
@@ -177,12 +180,14 @@ This settles the `values.json` vs `pin-allocation.md:408-410` disagreement in
 favour of `values.json`. **`pin-allocation.md` is now stale** and should be
 updated to match.
 
-**CV1 is dropped entirely** — its jack, its Level pot, and `R27`. `LPG_ENV` from
+**CV1 is dropped entirely** — its jack, its Level pot, and `R28`. The resistor
+kept, `R328`/`R428`, is electrically Bergman's **`R27`**: CV2's attenuverter
+wiper into `U2-D` pin 13. Only the designator is off by one. `LPG_ENV` from
 the Daisy's CV_OUT_1 is the only control voltage.
 
 ### Dropping CV1 frees a whole op-amp package
 
-With `R27` gone, `U2-D` has a single input, so `U2-D` + `U2-C` are two cascaded
+With `R28` gone, `U2-D` has a single input, so `U2-D` + `U2-C` are two cascaded
 unity inverters — a buffer. Per channel `U2` needs only **`U2-A`** (the
 attenuverter's inverter) and **one summing/buffer stage**, so:
 
@@ -213,9 +218,15 @@ No symbol or footprint in `lib/` yet.
 
 > **Two rows of this table were wrong and shipped into the board: the LED drive
 > and the input stage.** Both were caught by eye, 2026-09-16, by reading the
-> drawing at full resolution. Treat every remaining row as unverified until it
-> has been re-read against the image — this table was written against the
-> document, not the drawing, which is why it agreed with the mistakes.
+> drawing at full resolution.
+>
+> **Re-read in full 2026-09-23**, the 6000px image against `netmap.json` itself
+> rather than against this document, cropped to full resolution wherever the
+> overview was ambiguous: the pin 5/`R8` crossing (a gap, no junction), `D1`
+> (anode on the LED node), pin 7's vertical (stops at the DEEP switch, never
+> reaches the LED anode), the `R3`/`C5`/`R4`/`R5` node pair, the input stage,
+> and the C8 → VCF → `U1-D` out return. **Every row below matches the board.**
+> The one error found was a name: `R27`/`R28`, above.
 
 `datasheets/` now holds Bergman's schematic image. `netmap.json` was diffed
 against it node by node, L and R. **The two channels are structurally identical**
@@ -322,5 +333,13 @@ never made.
   choice not a package dimension; the 5.08mm within each pair is from the
   datasheet and is fixed.
 - **Match the four vactrols** on on-resistance and decay, L against R.
+- **Two knobs turn the unconventional way** — found 2026-09-23 once Alpha's
+  drawing confirmed terminal 1 is CCW. `RV1` CUTOFF has `POS12V` on 1/4 and
+  GND on 3/6, so **clockwise closes the gate**. `RV3` CV AMOUNT has `LPG_ENV`
+  on 1/4 and the inverted `LPG_ENVN` on 3/6, so **clockwise is the inverted
+  envelope**. Bergman's drawing does not say which lug is CW, so neither is a
+  departure from the source; both are a choice nobody made. `RV2` RESONANCE
+  is conventional (CW = more). Fix is swapping 1↔3 and 4↔6 on each, a reroute
+  at the pads.
 - With `R16` unfitted the LDRs work into `R13` 4M7, so at full dark the gate
   reaches about **-14dB**, not silence — the "vactrol bleed" of `design-state` §6.

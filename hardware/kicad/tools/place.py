@@ -283,7 +283,7 @@ ORIGIN_OFFSET = {
     # off its hole by that much.
     # All six pots share one footprint, so they share one offset -- but -4.83 is
     # NOT where the shaft is. The shaft is on the line through the two tab
-    # slots, (0, -5.00): ALPS' RK09L drawing and KiCad's Alpha RD902F footprint
+    # slots, (0, -5.00): ALPS' RK09L drawing and Alpha's RD902F drawing
     # both put it there, and -4.83 was copied off a stray easyeda silk circle.
     # Correcting it moves all six pots 0.17mm, which on 2026-09-22 put 21
     # clearance errors into the traces threaded between and under the pin rows

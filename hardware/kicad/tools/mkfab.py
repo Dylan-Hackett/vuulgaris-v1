@@ -65,8 +65,8 @@ BEFORE YOU ORDER
    Buy from Tayda and hand-fit:
      5x Alpha RD902F-40-15R1-B100K  (Tayda A-5440)  RV1-RV4, RV6
      1x Alpha RD902F-40-15R1-B10K   (Tayda A-6433)  RV5 FEEDBACK
-   The footprint's tab slots are turned for the Alpha. An ALPS RK09L will not
-   go in -- do not let JLC "helpfully" match the line to one.
+   Do not let JLC "helpfully" match the line to C380211 -- that is the 10k
+   ALPS these replace, and it fits the same holes.
 
 4. These BOM lines have no source anywhere. All through-hole, all hand-solder:
 {unsourced}

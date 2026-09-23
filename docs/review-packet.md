@@ -66,7 +66,7 @@ and every block to its source schematic.
 | U3/U4 I2C addresses | **distinct** — 0x20 and 0x21 | A0–A2 strapping |
 | Power/ground pin semantics, all 309 parts | **1 defect found** (U8), since fixed | `boardcheck.py` pin-name vs net |
 | PSU input stage vs its source | **clean** — DKM pinout, CC pulldowns, fuse all match; one omission (no TVS) since fixed as `D3` | `schnet.py` netlist of `V3.0.kicad_sch` |
-| LPG vs Bergman's drawing, **both channels** | **one defect, since fixed** — the LED drive was inverted (see `lpg-bergman.md`). The rest is clean; `R12`/`R16` absent by decision, BOTH+VCF only | node-by-node diff 2026-09-11, drawing re-read at full resolution 2026-09-16 |
+| LPG vs Bergman's drawing, **both channels** | **one defect, since fixed** — the LED drive was inverted (see `lpg-bergman.md`). The rest is clean; `R12`/`R16` absent by decision, BOTH+VCF only | node-by-node diff 2026-09-11, drawing re-read at full resolution 2026-09-16, **full re-read against the netmap 2026-09-23: every node matches**; only `R27`/`R28` were misnamed in the doc, and `RV1`/`RV3` turn the unconventional way (`lpg-bergman.md`, Still to do) |
 | 3.5mm jacks `J2`–`J6` | **clean** — the datasheet's plug gauge numbers the sections 1 sleeve, 2 ring, 3 tip, matching the contact numbers | SOFNG PJ-376 drawing |
 | DPDT `SW1`/`SW2` | **clean** — commons on 2 and 5, throws 1/3 and 4/6 | Dailywell 2MDP0428 |
 | `AMS1117` `U5`/`U6`/`U8` | **clean** — 1 = GND/ADJ, 2 = VOUT, 3 = VIN, tab = VOUT | Advanced Monolithic ds1117 |
@@ -144,25 +144,37 @@ and every block to its source schematic.
    gets the real value. The BOM line for `RV1`–`RV6` now carries **no LCSC
    number**, which is what stops JLC placing `C380211`.
 
-   Checked against the footprint, and one thing did not match:
+   Checked against the footprint — **pad-for-pad, against Alpha's own drawing**
+   (`RD902F-40-(L)R1-XXX-00D70`, rev -0057, read 2026-09-23):
 
-   - **The six pins match**: 2.5mm pitch, 2.5mm row spacing, near row 7.5mm
-     from the shaft, verified against KiCad's own `Alpha_RD902F-40-00D` and
-     `Alps_RK09L_Double_Vertical` footprints. The gangs are numbered the other
-     way round, which does not matter on a pot whose two gangs are identical.
-   - **The two mounting-tab slots did not.** Same positions (±4.75mm on the
-     shaft line) and same 1.1 x 1.8mm slot, but the ALPS slot runs *along* the
-     tab line and the Alpha's runs *across* it — KiCad's Alpha footprint and a
-     photo of the part agree. An Alpha tab would not have gone in. **Both slots
-     on all six pots are now turned 90°**, board and library, and DRC is clean
-     after lifting one `/LPG_OFS_L` trace on In1.Cu 0.15mm clear of the longer
-     pads. An ALPS RK09L no longer fits this footprint.
+   - **The six pins match**: Ø1.0 holes, 2.5mm pitch, 2.5mm row spacing, near
+     row 7.5mm from the shaft. The gangs are numbered the other way round,
+     which does not matter on a pot whose two gangs are identical.
+   - **The two mounting-tab slots match**: 1.1 x 1.8mm, 9.5mm apart on the
+     shaft line (11.3mm over the outside), **long side along the line joining
+     them** — the same as the ALPS.
+
+   > **Corrected 2026-09-23.** On 2026-09-22 this said the Alpha's slots run
+   > *across* the tab line, on the strength of KiCad's library footprint
+   > `Potentiometer_Alpha_RD902F-40-00D_Dual_Vertical` (which does draw them
+   > that way) and a product photo, and all twelve slots were turned 90°. Alpha's
+   > drawing — the PCB mounting-hole detail, and the side view looking along
+   > the tab line — says the opposite, and KiCad's library is wrong. The
+   > rotation is **reverted**, board and library; DRC clean. The one lasting
+   > change from it is the `/LPG_OFS_L` In1.Cu run lifted 0.15mm, which is
+   > harmless.
    - **Body fits the existing courtyard**: 6.5mm from the shaft on the pin side,
      4.85mm on the other, 9.5mm wide — the same numbers as the ALPS.
-   - **Height is unchanged**: 10mm body, so the pots stay the faceplate datum.
-     The bushing is **M7 x 0.75, 5mm**, not M9 x 7mm, and the shaft is **6.35mm
-     round** and 15mm long from the mounting surface. Consequences in
-     `design-state.md`, "Panel part heights".
+   - **Height is unchanged**: 10mm body (±0.5), so the pots stay the faceplate
+     datum. The bushing is **M7 x 0.75, 5mm**, not M9 x 7mm, and the shaft is
+     **Ø6.35 round** and 15mm long from the mounting surface — all read off the
+     drawing, which also gives the supplied nut as M7, 1.8mm thick, and a Ø12 /
+     Ø7.2 washer. Consequences in `design-state.md`, "Panel part heights".
+   - **Direction: terminal 1 is the CCW end**, confirmed — the drawing's
+     circuit puts the wiper on terminal 1 at full CCW, and its front view (from
+     the shaft end, pins down) puts 1 on the left, where our footprint has it.
+     That closes the `bbd-mki.md` "which end is CCW" question in favour of what
+     the netmap assumed.
 
    Found along the way and **not** fixed: `place.py` put the shaft 0.17mm
    off, at (0, −4.83) from the footprint origin instead of (0, −5.00) on the
