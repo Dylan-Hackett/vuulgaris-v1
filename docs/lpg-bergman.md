@@ -333,13 +333,13 @@ never made.
   choice not a package dimension; the 5.08mm within each pair is from the
   datasheet and is fixed.
 - **Match the four vactrols** on on-resistance and decay, L against R.
-- **Two knobs turn the unconventional way** — found 2026-09-23 once Alpha's
-  drawing confirmed terminal 1 is CCW. `RV1` CUTOFF has `POS12V` on 1/4 and
-  GND on 3/6, so **clockwise closes the gate**. `RV3` CV AMOUNT has `LPG_ENV`
-  on 1/4 and the inverted `LPG_ENVN` on 3/6, so **clockwise is the inverted
-  envelope**. Bergman's drawing does not say which lug is CW, so neither is a
-  departure from the source; both are a choice nobody made. `RV2` RESONANCE
-  is conventional (CW = more). Fix is swapping 1↔3 and 4↔6 on each, a reroute
-  at the pads.
+- ~~**Two knobs turn the unconventional way**~~ — **flipped 2026-09-23.** Found
+  once Alpha's drawing confirmed terminal 1 is CCW: `RV1` CUTOFF had `POS12V`
+  on 1/4, so clockwise *closed* the gate, and `RV3` CV AMOUNT had `LPG_ENV` on
+  1/4, so clockwise was the *inverted* envelope. Bergman's drawing does not say
+  which lug is CW, so neither was a departure from the source — just a choice
+  nobody made. Now `RV1` is GND 1/4, `POS12V` 3/6 (**clockwise opens**) and
+  `RV3` is `LPG_ENVN` 1/4, `LPG_ENV` 3/6 (**clockwise is the normal envelope,
+  noon is zero**). `RV2` RESONANCE was already conventional (CW = more).
 - With `R16` unfitted the LDRs work into `R13` 4M7, so at full dark the gate
   reaches about **-14dB**, not silence — the "vactrol bleed" of `design-state` §6.
