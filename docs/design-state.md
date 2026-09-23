@@ -643,8 +643,9 @@ cannot be permanently filled; it is also how the board comes out for service.
 It is somewhere to put the retaining bosses or a cable coil.
 
 Order of assembly: slide the board forward → screws down into bosses to locate
-it → nuts onto the jack threads from outside → faceplate on last over the 24
-panel parts. The board never moves vertically.
+it → nuts onto the **3.5mm** jack threads from outside (the 1/4" jacks take
+none, see below) → faceplate on last over the 24 panel parts. The board never
+moves vertically.
 
 **Cost on the fab side:** the outline is no longer a rectangle. The envelope is
 284.30 × 123.81mm and JLC quotes on the envelope, so the 13 × 7mm tab is paid
@@ -693,11 +694,40 @@ In board coordinates, with the wall spanning y 43.00 (outer) to 49.00 (inner):
 - **PJ-376** — thread runs 43.00 → 47.60, so it exactly reaches the outer face and protrudes by nothing. **The 3.0mm counterbore fixes it**: 3.0mm of M6 thread proud, enough for a panel nut. The hole has to be stepped, Ø7.6 for the first 1.4mm to clear the flange, then Ø6.2. The pocket also has to be wide enough to turn an M6 nut in, ~11mm.
 - **PJ-603** — the body face sits on the board edge at 50.00 and the thread runs 45.50 → 50.00, so it **ends 2.50mm inside the wall**. A 3.0mm counterbore exposes 0.5mm. Since the wall must clear the body by the 1.0mm assembly gap, at most 3.5mm of thread is ever available past its inner face, and a 3.0mm M12 nut would need the wall down to about 0.5mm. **Moving the jack forward makes it worse — the thread is at the back of the barrel.**
 
-So the 1/4" jacks cannot be nutted to this wall at any position. Three ways out, none chosen yet:
+So the 1/4" jacks cannot be nutted to this wall at any position. Three ways out — **option 1 chosen 2026-09-23**, see below:
 
 1. **PCB-held.** Normal for right-angle parts, and the option already rejected for the 3.5mm jacks because a hard cable pull loads the solder joints instead of the enclosure. Four 1/4" jacks on an instrument is where that matters most.
 2. **Thin the wall to ~1.5mm across the 1/4" row.** Gets a nut on, but a 1.5mm wall under four jacks being yanked is its own problem.
 3. **A different 1/4" jack with a longer threaded bushing.** Cleanest if one exists in the same footprint that JLC stocks. Not yet searched.
+
+**Decided 2026-09-23: option 1, PCB-held — no nut on the 1/4" jacks.** Option 3
+was the only one that touched the board, and it would have meant a new part and
+footprint days before fab. The objection to PCB-held is weaker than it reads:
+a **sideways** yank is what hurts, and that load goes into the wall, because the
+smooth Ø10.3 collar sits in a close-fitting hole. Only a **straight** pull
+loads the joints, and pulling a plug out is a small force. Most gear with
+right-angle jacks is built this way.
+
+What it asks of the printed case:
+
+- **A stepped hole per jack, small at the outside.** Ø10.5 around the collar,
+  then Ø12.2 for the rear 3.5mm of wall, where the M12 thread sits (y 45.50 →
+  49.00). Put the step ~0.3mm in front of the thread shoulder so it never
+  touches it: the board's locating screws set where the board sits, not four
+  jack threads.
+- **The collar pokes 2mm out of the wall.** PJ-603's barrel reaches 9mm past
+  the board edge where PJ-376 and the USB-C tab reach 7mm, so the 3.5mm jacks
+  and USB-C finish exactly at the outer face (y 43.00) and the 1/4" collars
+  finish at y 41.00. Nothing is wrong with that as it stands, but only 2.5mm
+  of collar is inside the wall.
+- **If it should be flush, raise the wall, don't move the jacks.** A 2mm band
+  on the outside of the top wall across the 1/4" row puts the collar faces
+  flush with it and gives them 4.5mm of wall to sit in — better retention for
+  free on a printed case. Moving J7–J10 back 2mm on the board instead was
+  tried on a scratch copy on 2026-09-23: their rear pads land on five traces
+  running behind them (`GATE_OUT_1`, `GATE_IN`, `CV_IN_JACK`, `BBD_OUT_L`,
+  `LINE_OUT_L`) and on `R513`'s courtyard, 20 DRC errors — a reroute of a dense
+  area for something the case can do.
 
 This is the item the section below used to list as "still unverified: the split between threaded bushing and shoulder". It is verified now, and the answer was worse than the worry.
 
