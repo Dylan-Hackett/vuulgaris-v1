@@ -145,8 +145,10 @@ def vactrol(x, y, ref, part="VTL5C3"):
         "1": _t(x-24, ly), "2": _t(x+bw+24, ly), "3": _t(x-24, ry), "4": _t(x+bw+24, ry)}
 
 
-def pot(x, y, ref, val, vert=True, wiper_right=True, ganged=True):
-    """Panel pot. Terminals 1 (cw end) 2 (wiper) 3 (ccw end)."""
+def pot(x, y, ref, val, vert=True, wiper_right=True, ganged=True, flip=False):
+    """Panel pot. Terminals 1 (ccw end) 2 (wiper) 3 (cw end) -- 1 = CCW per
+    Alpha's RD902F drawing, 2026-09-23; this said the reverse before anyone had
+    read one. Drawn 1 on top; flip=True puts 3 on top instead."""
     L, w = 76, 22
     body = f'<rect x="{x-w/2}" y="{y-L/2}" width="{w}" height="{L}" class="body"/>'
     wires = (f'<line x1="{x}" y1="{y-L/2-22}" x2="{x}" y2="{y-L/2}" class="pin"/>'
@@ -159,8 +161,9 @@ def pot(x, y, ref, val, vert=True, wiper_right=True, ganged=True):
     lab = (f'<text x="{tx}" y="{y-6}" class="ref" text-anchor="{anchor}">{ref}</text>'
            f'<text x="{tx}" y="{y+10}" class="val" text-anchor="{anchor}">{val}</text>'
            + (f'<text x="{tx}" y="{y+26}" class="note" text-anchor="{anchor}">dual gang</text>' if ganged else ""))
+    top, bot = _t(x, y-L/2-22), _t(x, y+L/2+22)
     return body + wires + arrow + lab, {
-        "1": _t(x, y-L/2-22), "2": _t(x+d*(w/2+34), y), "3": _t(x, y+L/2+22)}
+        "1": bot if flip else top, "2": _t(x+d*(w/2+34), y), "3": top if flip else bot}
 
 
 def trimmer(x, y, ref, val):
@@ -336,7 +339,8 @@ def lpg_left(netmap, values):
         T[ref] = {**T.get(ref, {}), pins[0]: t["out"], pins[1]: t["-"], pins[2]: t["+"]}
 
     # --- LED drive -----------------------------------------------------
-    put("RV1", pot(170, 220, "RV1", "CUTOFF", wiper_right=True))
+    # flip: +12V is on terminal 3 so CUTOFF opens clockwise (2026-09-23)
+    put("RV1", pot(170, 220, "RV1", "CUTOFF", wiper_right=True, flip=True))
     put("R303", resistor(330, 220, "R303", V("R303")))
     opamp_unit("U301", "B", 540, 220, ("7", "6", "5"))
     put("R308", resistor(490, 400, "R308", V("R308"), vert=True))
@@ -380,7 +384,8 @@ def lpg_left(netmap, values):
     put("R323", resistor(330, 1600, "R323", V("R323")))
     opamp_unit("U302", "A", 520, 1600, ("1", "2", "3"))
     put("R320", resistor(580, 1700, "R320", V("R320"), flip_label=True))
-    put("RV3", pot(900, 1620, "RV3", "FILTER CV AMT", wiper_right=True))
+    # flip: the uninverted envelope is on terminal 3, so clockwise is + (2026-09-23)
+    put("RV3", pot(900, 1620, "RV3", "FILTER CV AMT", wiper_right=True, flip=True))
     put("R328", resistor(1060, 1620, "R328", V("R328")))
     opamp_unit("U302", "D", 1200, 1620, ("14", "13", "12"))
     put("R330", resistor(1260, 1740, "R330", V("R330"), flip_label=True))
@@ -612,8 +617,8 @@ def psu(netmap, values):
 def lpg_left_wires():
     return [
         # ---- LED drive, exactly Bergman's arrangement ----
-        ("POS12V",      [("RAIL", 170, 160, "+12V", True), ("RV1", "1")]),
-        ("GND",         [("RV1", "3"), ("GND", 170, 280)]),
+        ("POS12V",      [("RAIL", 170, 160, "+12V", True), ("RV1", "3")]),
+        ("GND",         [("RV1", "1"), ("GND", 170, 280)]),
         ("LPG_OFS_L",   [("RV1", "2"), ("R303", "1")]),
         ("LPG_SUM_L",   [("R303", "2"), (430, 220), (430, 247), ("U301", "6")]),
         ("LPG_SUM_L",   [(430, 220), (430, 400), (200, 400), (200, 620), ("C305", "1")]),
@@ -685,11 +690,11 @@ def lpg_left_wires():
         # ---- CV chain: invert, attenuvert, invert, invert ----
         ("LPG_ENV",     [("PORT", 200, 1600, "LPG_ENV  ← Daisy CV_OUT_1", False),
                          ("R323", "1")]),
-        ("LPG_ENV",     [(240, 1600), (240, 1500), (900, 1500), ("RV3", "1")]),
+        ("LPG_ENV",     [(240, 1600), (240, 1500), (900, 1500), ("RV3", "3")]),
         ("LPG_CVI_L",   [("R323", "2"), (450, 1600), (450, 1627), ("U302", "2")]),
         ("LPG_CVI_L",   [("U302", "2"), (496, 1700), ("R320", "1")]),
         ("LPG_ENVN_L",  [("R320", "2"), (700, 1700), (700, 1600), ("U302", "1")]),
-        ("LPG_ENVN_L",  [(700, 1600), (820, 1600), (820, 1680), ("RV3", "3")]),
+        ("LPG_ENVN_L",  [(700, 1600), (820, 1600), (820, 1680), ("RV3", "1")]),
         ("LPG_CVW_L",   [("RV3", "2"), ("R328", "1")]),
         ("LPG_SUMCV_L", [("R328", "2"), (1140, 1620), (1140, 1647), ("U302", "13")]),
         ("LPG_SUMCV_L", [("U302", "13"), (1176, 1740), ("R330", "1")]),

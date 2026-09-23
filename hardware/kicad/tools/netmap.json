@@ -1094,12 +1094,12 @@
   "3": "EXT_FB_R"
  },
  "RV1": {
-  "1": "POS12V",
+  "1": "GND",
   "2": "LPG_OFS_L",
-  "3": "GND",
-  "4": "POS12V",
+  "3": "POS12V",
+  "4": "GND",
   "5": "LPG_OFS_R",
-  "6": "GND",
+  "6": "POS12V",
   "7": "GND",
   "8": "GND"
  },
@@ -1114,12 +1114,12 @@
   "8": "GND"
  },
  "RV3": {
-  "1": "LPG_ENV",
+  "1": "LPG_ENVN_L",
   "2": "LPG_CVW_L",
-  "3": "LPG_ENVN_L",
-  "4": "LPG_ENV",
+  "3": "LPG_ENV",
+  "4": "LPG_ENVN_R",
   "5": "LPG_CVW_R",
-  "6": "LPG_ENVN_R",
+  "6": "LPG_ENV",
   "7": "GND",
   "8": "GND"
  },
