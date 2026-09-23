@@ -807,7 +807,7 @@ panel rests on).
 
 | part | body | bushing | thread | cross-check |
 |---|---|---|---|---|
-| Alpha `RD902F-40-15R1` pot | **10mm** | 5mm | M7 x 0.75 | Tayda: shaft "10mm+5mm", panel hole 7.5mm; photo scaled off the 6.35mm shaft gives ~10.2mm body, ~4.9mm thread |
+| Alpha `RD902F-40-15R1` pot | **10mm** ±0.5 | 5mm | M7 x 0.75 | Alpha drawing `RD902F-40-(L)R1-XXX-00D70`: body 10, thread 5.0, L 15, Ø6.35; agrees with Tayda's "10mm+5mm" |
 | `EC12E2430803` encoder | **5.5mm** | 7mm | M9 x 0.75 | "With bushing" style, confirms the §11 rejection of `C470602` |
 | `EC11L1525G01` | not read | — | — | 13.1mm square body, 11mm size — will not exceed the pot |
 
@@ -829,7 +829,7 @@ faceplate PCB:
   six are off by the same amount in the same direction, so drilling at the true
   shaft puts every hole dead on. The encoders are unaffected.
 - **3.4mm of thread above the panel** (bushing tip at 15mm, outer face at
-  11.6mm), down from 5.4mm on the ALPS. Enough for the supplied flat nut and
+  11.6mm), down from 5.4mm on the ALPS. Enough for the supplied nut (1.8mm per Alpha's drawing) and
   washer. There's no room for a thicker panel, a spacer or a lock washer.
 - **Knobs take a 6.35mm (1/4") round shaft**, set-screw type, not 6mm
   D-shaft. 13.4mm of shaft stands above the panel. Thonk sells a D-shaft

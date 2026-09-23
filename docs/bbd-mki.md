@@ -662,9 +662,12 @@ each other inside the symbol and left unwired here. The two gangs are drawn with
 matching orientation — pin 1 and pin 4 are on the same side, 3 and 6 on the
 other — so the L and R sections cannot end up reversed relative to each other.
 
-**UNVERIFIED: which end terminal is CCW.** The symbol names its pins "1".."8"
-and carries no CW/CCW information; the netmap assumes the near-universal
-**1 = CCW, 2 = wiper, 3 = CW** (and 4/5/6 likewise). If that is backwards, all
+**RESOLVED 2026-09-23: terminal 1 is CCW**, from Alpha's RD902F drawing — its
+circuit puts the wiper on terminal 1 at full CCW, and its front view (shaft end,
+pins down) puts 1 on the left, where the footprint has it. So TIME, FEEDBACK and
+DRY/WET turn exactly as drawn below. The original note: the symbol names its
+pins "1".."8" and carries no CW/CCW information; the netmap assumes the
+near-universal **1 = CCW, 2 = wiper, 3 = CW** (and 4/5/6 likewise). If that is backwards, all
 three knobs turn the wrong way *together*, nothing is damaged, and the fix is
 swapping 1↔3 and 4↔6 in `netmap.json`. Confirm on the bench — the parts are
 Alpha `RD902F` now, not the Alps RK09L the footprint was drawn from.
