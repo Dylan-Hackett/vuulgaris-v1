@@ -586,13 +586,14 @@ constraint that pins the PJ-376 at exactly flush. 6.5mm was needed.
 
 | | |
 |---|---|
-| tab | x 366.8 – 379.8 (13.00mm wide), out to y 43.00 (7.00mm deep) |
-| J11 | moved forward 7.00mm, now at (373.27, 47.76) |
+| tab | x 366.8 – 379.8 (13.00mm wide), out to y 41.00 (7.00mm deep) — was 43.00 before the 2026-09-23 extension below |
+| J11 | moved forward 7.00mm, then 2.00mm more with the extension — now at (373.27, 45.76) |
 | mouth | −7.33 in the wall frame — 0.33mm proud of the wall's outer face |
 
 All three connector types now present one plane, so the wall is flat with plain
 holes instead of a shaped pocket, and its position is a single number rather
-than a set of exceptions.
+than a set of exceptions. **That was not quite true until 2026-09-23** — the
+1/4" jacks stood 2mm proud of it. See "Top edge extended 2mm" below.
 
 **What the enclosure has to provide.** The tab passes *through* the wall, so the
 wall needs a slot about **13.5mm wide × 5.5mm tall** (1.6mm board + ~3.2mm
@@ -632,15 +633,17 @@ that way. It has always had to slide in along y, and the travel is set by the
 
 | | protrudes past the board edge | travel to clear the wall's inner face |
 |---|---|---|
-| J7–J10, 1/4" | 9.00mm | **8.00mm** |
+| J7–J10, 1/4" | 7.00mm (9.00mm before 2026-09-23) | 6.00mm |
 | J2–J6, 3.5mm | 7.00mm | 6.00mm |
 | the tab | 7.00mm | 6.00mm |
 
-So the tab needs 6mm of travel where the jacks already demand 8mm — it costs
-nothing. **The cavity must run 124.81mm** from the front wall's inner face to
-the back wall, leaving **8mm of air behind the board when seated**. That gap
-cannot be permanently filled; it is also how the board comes out for service.
-It is somewhere to put the retaining bosses or a cable coil.
+Since the 2026-09-23 extension every connector needs the same 6mm. **The cavity
+must run 125.81mm** from the front wall's inner face to the back wall: the 1mm
+gap, the 118.81mm board, and **6mm of air behind it when seated**. (This read
+124.81mm with 8mm of air before the extension — 1mm short either way, the front
+gap had been left out.) That gap cannot be permanently filled; it is also how
+the board comes out for service. It is somewhere to put the retaining bosses or
+a cable coil.
 
 Order of assembly: slide the board forward → screws down into bosses to locate
 it → nuts onto the **3.5mm** jack threads from outside (the 1/4" jacks take
@@ -648,8 +651,43 @@ none, see below) → faceplate on last over the 24 panel parts. The board never
 moves vertically.
 
 **Cost on the fab side:** the outline is no longer a rectangle. The envelope is
-284.30 × 123.81mm and JLC quotes on the envelope, so the 13 × 7mm tab is paid
-for as if it were the full strip.
+284.30 × 125.81mm (123.81 before the extension) and JLC quotes on the envelope,
+so the 13 × 7mm tab is paid for as if it were the full strip.
+
+### Top edge extended 2mm — 2026-09-23
+
+PJ-603's barrel reaches 9mm past its body where PJ-376 and the USB-C tab reach
+7mm. With all three bodies on the board edge, the 3.5mm jacks and USB-C ended
+exactly at the wall's outer face and the 1/4" collars stood 2mm proud of it.
+
+**Fix: the whole top edge moved out 2mm** (y 50.00 → 48.00, tab 43.00 → 41.00,
+GND zone with it), and **J2–J6 and J11 moved forward 2mm onto it**. J7–J10 did
+not move, so their bodies now sit 2mm behind the edge and every connector
+reaches the same 7mm past it. The wall stays a flat 6mm, and the 1/4" collars
+get 4.5mm of it to sit in instead of 2.5mm — which matters now that they are
+PCB-held. Board 284.30 × 118.81mm, envelope 125.81mm.
+
+Two alternatives were tried on scratch copies first: moving only J7–J10 back
+2mm (20 DRC errors, five traces behind them plus `R513`), and a 2mm raised band
+on the case over the 1/4" row (no board change, but a stepped wall). This one
+was chosen for the flat wall.
+
+**Rerouted by hand.** Moving the six connectors dragged their track ends with
+them, so nothing was disconnected (0 unconnected, parity 932/932), but it left
+55 clearance errors: 27 in the J11 fan-out, 19 where long In1.Cu trunks —
+`P5V`, `NEG12V`, `GATE_OUT_1` — thread between the J2–J5 pins, and 9 at J6.
+Rerouted in Pcbnew the same day: DRC 0 errors, no net narrower than before, no
+net more than 2mm longer except GND (+9mm), no vias added, zone fill current.
+The one electrical change worth knowing is the 0.25mm `VBUS` neck from J11's
+A4/B9 pads to the wide feed, stretched 0.7 → 2.7mm — about 5mΩ, 7mV at the
+1.4A budget.
+
+**Still owed: the faceplate.** The enclosure's front wall moved 2mm outward
+relative to the board, so the faceplate needs 2mm more at the jack edge and
+every panel y grows by 2. The knobs themselves do not move. `place.py`'s `OY`
+goes 7.000 → 9.000 in the same commit as the regenerated
+`placement-panel-facing.txt`, or it will move all 24 panel parts 2mm. Nothing
+on the main board changes.
 
 ---
 
@@ -689,7 +727,7 @@ Both drawings, now read:
 
 **Both threads are ~4.5mm and the wall is 6mm.** The thread is shorter than the wall on both parts.
 
-In board coordinates, with the wall spanning y 43.00 (outer) to 49.00 (inner):
+In board coordinates, with the wall spanning y 43.00 (outer) to 49.00 (inner) — **pre-extension**; since 2026-09-23 subtract 2.00 from every y here for the wall, the PJ-376 and J11, but not the PJ-603:
 
 - **PJ-376** — thread runs 43.00 → 47.60, so it exactly reaches the outer face and protrudes by nothing. **The 3.0mm counterbore fixes it**: 3.0mm of M6 thread proud, enough for a panel nut. The hole has to be stepped, Ø7.6 for the first 1.4mm to clear the flange, then Ø6.2. The pocket also has to be wide enough to turn an M6 nut in, ~11mm.
 - **PJ-603** — the body face sits on the board edge at 50.00 and the thread runs 45.50 → 50.00, so it **ends 2.50mm inside the wall**. A 3.0mm counterbore exposes 0.5mm. Since the wall must clear the body by the 1.0mm assembly gap, at most 3.5mm of thread is ever available past its inner face, and a 3.0mm M12 nut would need the wall down to about 0.5mm. **Moving the jack forward makes it worse — the thread is at the back of the barrel.**
@@ -710,24 +748,14 @@ right-angle jacks is built this way.
 
 What it asks of the printed case:
 
-- **A stepped hole per jack, small at the outside.** Ø10.5 around the collar,
-  then Ø12.2 for the rear 3.5mm of wall, where the M12 thread sits (y 45.50 →
-  49.00). Put the step ~0.3mm in front of the thread shoulder so it never
-  touches it: the board's locating screws set where the board sits, not four
-  jack threads.
-- **The collar pokes 2mm out of the wall.** PJ-603's barrel reaches 9mm past
-  the board edge where PJ-376 and the USB-C tab reach 7mm, so the 3.5mm jacks
-  and USB-C finish exactly at the outer face (y 43.00) and the 1/4" collars
-  finish at y 41.00. Nothing is wrong with that as it stands, but only 2.5mm
-  of collar is inside the wall.
-- **If it should be flush, raise the wall, don't move the jacks.** A 2mm band
-  on the outside of the top wall across the 1/4" row puts the collar faces
-  flush with it and gives them 4.5mm of wall to sit in — better retention for
-  free on a printed case. Moving J7–J10 back 2mm on the board instead was
-  tried on a scratch copy on 2026-09-23: their rear pads land on five traces
-  running behind them (`GATE_OUT_1`, `GATE_IN`, `CV_IN_JACK`, `BBD_OUT_L`,
-  `LINE_OUT_L`) and on `R513`'s courtyard, 20 DRC errors — a reroute of a dense
-  area for something the case can do.
+- **A stepped hole per jack, small at the outside.** With the top edge
+  extended (below), the wall spans y 41.00 → 47.00. The collar fills 41.00 →
+  45.50 and the M12 thread starts at 45.50, so: Ø10.5 around the collar, then
+  Ø12.2 for the last 1.5mm of wall. Put the step ~0.3mm in front of the thread
+  shoulder so it never touches it: the board's locating screws set where the
+  board sits, not four jack threads.
+- **The collars are flush with the wall**, and 4.5mm of each sits inside it —
+  see "Top edge extended 2mm" above.
 
 This is the item the section below used to list as "still unverified: the split between threaded bushing and shoulder". It is verified now, and the answer was worse than the worry.
 

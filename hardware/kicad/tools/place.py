@@ -31,9 +31,14 @@ import re, sys, json, os, math
 KI = "/Users/dylanhackett/V1/hardware/kicad"
 PCB = f"{KI}/vuulgaris.kicad_pcb"
 FREE_JSON = f"{KI}/tools/free-placement.json"
-ORG = (100.0, 50.0)          # board top-left on the sheet
+# ORG is a fixed sheet reference, no longer the board corner: the top edge was
+# extended 2mm to y 48.0 on 2026-09-23 so every edge connector reaches the wall
+# by the same 7mm. The knobs did not move, so neither does ORG or this
+# transform -- UNTIL the faceplate is regenerated with the 2mm it now needs at
+# the jack edge. That shifts every panel y by +2, and OY must become 9.000 in the
+# same commit, or this script moves all 24 panel parts 2mm. docs/design-state.md.
+ORG = (100.0, 50.0)
 OX, OY = 6.995, 7.000        # panel -> pcb
-W, H = 284.3, 116.81      # board shrunk 2026-08-26; H was 125.0
 RESET = "--reset" in sys.argv
 CHECK = "--check" in sys.argv
 
