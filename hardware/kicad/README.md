@@ -435,7 +435,7 @@ U103 --470R(R131)-- BBD_OUT_L --+-- C503 1u ---- SW2 -- AUDIO_IN_L    9.5Vpp, in
                                 |                    wiper |
                                 |                          U9 (unity) --4R7-- J6 tip
                                 |
-                                +-- R513 1k3 --+-- J9 tip   (1/4" line out)
+                                +-- R513 1k2 --+-- J9 tip   (1/4" line out)
                                               R514 1k
                                                GND
 ```
@@ -445,25 +445,32 @@ trick, and it is the reason nothing internal had to change: the resample loop an
 the headphone feed still see the Eurorack level they were designed around, while
 the jack sees whatever the divider gives it.
 
-### 1/4" line out (J9/J10) -- +3.9dBu full scale
+*Nearly* that level: the taps are on the far side of `R131`, and the line-out
+divider loads that node with 2.2k, so `BBD_OUT` sits at 2200/2670 = 0.82 of
+U103's swing, **-1.7dB**. The resample path reaches the Patch SM about 2dB under
+full scale instead of at it. Harmless, but it is not the unloaded buffer level.
 
-`R131` 470R is already in series, so the divider is **(470 + 1300) : 1000**.
+### 1/4" line out (J9/J10) -- +4.2dBu full scale
+
+`R131` 470R is already in series, so the divider is **(470 + 1200) : 1000**.
+(`R513`/`R515` are 1k2 on the board. This section was written for 1k3; the
+numbers below are for 1k2, 0.3dB hotter.)
 
 | | |
 |---|---|
-| ratio | 1000/2770 = 0.361, **-8.85dB** |
-| full scale | 3.359Vrms -> **1.213Vrms = +3.9dBu** |
-| output impedance | 1770 \|\| 1000 = **639R** |
-| load on U103 | 2770R -- a TL072 is rated to 2k, so this is inside spec |
+| ratio | 1000/2670 = 0.375, **-8.53dB** |
+| full scale | 3.359Vrms -> **1.258Vrms = +4.2dBu** |
+| output impedance | 1670 \|\| 1000 = **625R** |
+| load on U103 | 2670R -- a TL072 is rated to 2k, so this is inside spec |
 
 It was **+12.7dBu** before, straight off the buffer. That survives a pro interface
 (+18 to +24dBu max) but clips consumer -10dBV gear and anything with an instrument
-input. +3.9dBu is safe everywhere and still hot enough to ignore the noise floor:
-639R of thermal noise is 3.2nV/sqrt(Hz), about **-125dBu** over 20kHz.
+input. +4.2dBu is safe everywhere and still hot enough to ignore the noise floor:
+625R of thermal noise is 3.2nV/sqrt(Hz), about **-125dBu** over 20kHz.
 
 Passive is the right answer here -- U103 already buffers the node, so a divider
 costs two 0603s and no active parts. Into a 10k line input you lose another 0.5dB.
-Into a 600R vintage input you lose 6.3dB, which is the one case worth knowing about.
+Into a 600R vintage input you lose 6.2dB, which is the one case worth knowing about.
 
 ### Headphones (J6) -- set once, on the back
 

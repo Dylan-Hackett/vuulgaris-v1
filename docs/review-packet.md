@@ -78,6 +78,7 @@ and every block to its source schematic.
 | BBD vs the **schematic drawing** | **clean** — every value and node checked. The previously recorded `R120` 62k vs 56K mismatch is **withdrawn**: the manual's schematic is vector (p61, KiCad 5.1.5 export) and reads `R20 62k` at 10x | re-read from the vector source, 2026-09-16 |
 | V3205SD, VTL5C3, MMBFJ113 pinouts | **all three clean** — see items 2-4 below | manual p25, Xvive package drawing, onsemi Rev 5 drawing |
 | Polarity, all 14 polarised parts | **clean** — D103–D106 clamp pairs, zener shunts, D1/D2 bipolar indicator | inspection vs netmap |
+| Headphone / EXT block, `U9`/`U10` + 5xx | **clean**, 2026-09-23 — OPA1688 SOIC-8 pinout matches TI's table on both; ±12V inside its ±18V; `C206212` is OPA1688**IDR** (SOIC), matching the footprint. U9 unity buffers, 4R7 out, J6 tip = L / ring = R per the PJ-376 drawing. U10 non-inverting 1–10.1x, 100k in, J7/J8 normalled to GND; `R517` 1k holds input-clamp current to ~2.5mA against a 10mA limit at +18dBu with gain maxed. U10 cannot swing past its rails, and the Patch SM audio ins are rated ±12V absolute, AC-coupled, 100k. Doc-only fixes: `R513`/`R515` are 1k2 not 1k3 (+4.2dBu, 625R), and the taps sit 1.7dB under U103's swing | TI SBOS724A, Patch SM v1.0.5 Table 1 / Fig 1.1, LCSC |
 | Board ↔ schematic parity | 942/942, 0 unintended | `netcheck.py`, `boardcheck.py` |
 
 ## Open defects — found 2026-09-16, must be fixed before ordering
