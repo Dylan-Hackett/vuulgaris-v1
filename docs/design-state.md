@@ -642,13 +642,19 @@ must run 125.81mm** from the front wall's inner face to the back wall: the 1mm
 gap, the 118.81mm board, and **6mm of air behind it when seated**. (This read
 124.81mm with 8mm of air before the extension — 1mm short either way, the front
 gap had been left out.) That gap cannot be permanently filled; it is also how
-the board comes out for service. It is somewhere to put the retaining bosses or
-a cable coil.
+the board comes out for service. It is somewhere to put a cable coil.
 
-Order of assembly: slide the board forward → screws down into bosses to locate
-it → nuts onto the **3.5mm** jack threads from outside (the 1/4" jacks take
-none, see below) → faceplate on last over the 24 panel parts. The board never
-moves vertically.
+Order of assembly: slide the board forward until the jacks are through the wall →
+nuts onto the **3.5mm** jack threads from outside (the 1/4" jacks take none, see
+below) → faceplate on over the 24 panel parts → nut the six pots → screw the
+faceplate to the case. The board never moves vertically.
+
+> **Corrected 2026-09-24.** This used to say "screws down into bosses to locate
+> it", and the paragraph above offered the air gap for "retaining bosses". Both
+> were wrong: the main board has **no mounting holes, by decision** ("Panel
+> mounting", 2026-09-05, and `hardware/kicad/README.md`). It is located by the six
+> pot nuts to the faceplate and the 3.5mm jack nuts to the wall; once the pots
+> are nutted it cannot slide. The case needs no bosses under the main board.
 
 **Cost on the fab side:** the outline is no longer a rectangle. The envelope is
 284.30 × 125.81mm (123.81 before the extension) and JLC quotes on the envelope,
