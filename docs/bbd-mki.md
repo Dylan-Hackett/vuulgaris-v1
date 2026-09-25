@@ -760,7 +760,7 @@ TEST pin.
 
 **Still open, same drift:** `R26`/`R27` are the matching divider from
 `GATE_OUT_1` to `MSP_RST` and are still there, so `GATE_OUT_1` is not a usable
-gate output. `MSP_TEST` now lands only on `J12.9` and nothing drives it from this
+gate output. `MSP_TEST` now lands only on `J12.1` and nothing drives it from this
 board.
 
 **Jack allocation still needs revisiting.** `GATE_OUT_2` is no longer available
