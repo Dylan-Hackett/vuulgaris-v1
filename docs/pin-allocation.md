@@ -32,7 +32,7 @@ and added five jacks. Safe to lay out against.
 
 ### MSP430 reset on U4 GPB3 — added 2026-09-08
 
-`U4.4` (GPB3) drives `MSP_RST` across `J12.7`. **This is not BSL.** Blank detection
+`U4.4` (GPB3) drives `MSP_RST` across `J12.3`. **This is not BSL.** Blank detection
 means the Daisy never needs the entry sequence; this is a recovery reset for a
 touch chip that has hung, and the way to re-arm the BSL after SLAU550 §3.4's
 ten-second time-out without power-cycling the module.
@@ -50,7 +50,10 @@ touch chip is too wedged to answer on the serial link.
 > pullup and capacitor TI specifies on RST/NMI must be on the faceplate. It was
 > good practice before; it is now required.
 
-`MSP_TEST` stays undriven on `J12.9` and still wants a pulldown at the chip end.
+`MSP_TEST` stays undriven on `J12.1` and still wants a pulldown at the chip end.
+
+(J12 pin numbers changed 2026-09-25, when `J12` moved to the back of the main board facing
+down — see `hardware/faceplate/README.md` §5 for the full pin map.)
 
 ### Four channel buttons — added 2026-08-16
 

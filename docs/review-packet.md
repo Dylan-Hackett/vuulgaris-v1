@@ -257,6 +257,12 @@ a ground directly opposite for its return. It becomes a real check only when the
 faceplate board exists to mate with it. **Treat this table as the interface
 contract and design the faceplate to it.**
 
+*2026-09-25: `J12` moved to the back of the main board, facing down.* Flipping
+mirrors the part, so the pin numbers reversed along the row — pin 1 is now
+`MSP_TEST`, pin 9 `P3V3_MSP430` — while every net kept its hole and its
+routing. Still odd = signal, even = ground. Pin map in
+`hardware/faceplate/README.md` §5.
+
 ## Not verified — what a second pass should cover
 
 1. ~~**U7 pin coordinates**~~ — **done 2026-09-16.** The Mean Well drawing

@@ -73,21 +73,36 @@ answers Q18.
 
 ### 5. The connector
 
-Main board `J12`: 2x5 2.54mm box header (LCSC C5665), ribbon to the faceplate.
+Main board `J12`: 2x5 2.54mm box header (LCSC C5665), **on the BACK of the main board,
+facing down** (moved 2026-09-25), ribbon to the faceplate.
+
+**The route.** The main board has a **24 x 12mm cutout** directly beside `J12`, at board
+(210, 97.5)–(234, 109.5) — sheet (310, 147.5)–(334, 159.5) — made for exactly this. The
+faceplate's connector sits **over that cutout, facing down**; its ribbon plug hangs through
+the hole in the main board, and the ribbon runs underneath to `J12`. That is what makes the
+10mm faceplate gap workable: neither mated plug has to fit inside it. So:
+
+- **Put the faceplate header over the cutout.** A 2x5 IDC plug is about 20 x 9mm; the hole
+  is 24 x 12.
+- **The case floor needs about 15mm below the main board** around `J12` and the cutout: a
+  9.2mm header plus the mated plug and the ribbon's fold.
 
 | pin | net | |
 |---|---|---|
-| 1 | `P3V3_MSP430` | its own AMS1117 (`U6`) on the main board |
-| 3 | `MSP430_TXD` | MSP430 **drives** → Daisy A2 (UART4 RX) |
+| 1 | `MSP_TEST` | |
+| 3 | `MSP_RST` | driven by MCP23017 `U4` |
 | 5 | `MSP430_RXD` | Daisy A3 (UART4 TX) → MSP430 |
-| 7 | `MSP_RST` | driven by MCP23017 `U4` |
-| 9 | `MSP_TEST` | |
+| 7 | `MSP430_TXD` | MSP430 **drives** → Daisy A2 (UART4 RX) |
+| 9 | `P3V3_MSP430` | its own AMS1117 (`U6`) on the main board |
 | 2,4,6,8,10 | GND | |
 
+The order runs backwards from the original (pin 1 was 3V3) because flipping the header to
+the back mirrors it; every net kept its hole and its routing. **Pin 1 is the ribbon's red
+stripe** — check it end to end with the faceplate header's orientation before ordering
+that board.
+
 **No I2C and no IRQ cross the cable** (`pin-allocation.md`, superseding design-state §9).
-With both headers on the same side of the ribbon it is straight-through; check pin 1 end
-to end before ordering. There is **no 5V** on this cable unless someone added it before
-the main board was ordered.
+There is **no 5V** on it unless someone adds it before the main board is ordered.
 
 ### 6. MSP430
 
