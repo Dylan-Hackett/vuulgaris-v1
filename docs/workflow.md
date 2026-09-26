@@ -28,7 +28,9 @@ consequences are marked as such, because they are inference and have not been co
 
    5. RESAMPLE    with the SOURCE switch on "resample", the LPG's
                   analog output returns to AUDIO_IN and is captured
-                  into one channel as a new sample
+                  into one channel as a new sample -- including
+                  anything playing into EXT, which always feeds the
+                  analog chain too (ADR 0011)
 
    6. repeat from 2, now scrubbing the resampled material
 ```
@@ -86,6 +88,11 @@ between the LPG return and the external input. The Daisy has **no pin on it** (s
 Functionally this is fine. **The cost is that the OLED cannot show the current source**, the
 same trade already accepted for the analog offset pot. If showing it ever becomes important,
 `B10 (GATE_IN_1)` is the only pin left.
+
+**It also means firmware must never pass `AUDIO_IN` through to `AUDIO_OUT`** (ADR 0011). Since
+2026-09-25 the external input reaches the LPG directly, so on EXT a passthrough would double it,
+and on RESAMPLE it would close a feedback loop around the analog chain. Firmware cannot tell the
+two apart, so the rule is unconditional: the Daisy records its input, it never monitors it.
 
 ### 2. The analog round trip adds latency, which offsets the loop start
 

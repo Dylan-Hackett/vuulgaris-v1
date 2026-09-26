@@ -252,17 +252,37 @@ Matching, and including the three things this drawing is easy to get wrong:
 
 Zero dangling nets anywhere in the block.
 
-Deviations that are deliberate and recorded above: CV1 and `R27` dropped, `Tp2`
-and the DEEP switch not fitted, ±12V rails instead of ±15V.
+Deviations that are deliberate and recorded above: CV1 and `R28` dropped, `Tp2`
+and the DEEP switch not fitted, ±12V rails instead of ±15V — and, since
+2026-09-25, the **input mix** below.
+
+### The input is a mix of the Daisy and EXT — added 2026-09-25, ADR 0011
+
+The LPG input used to be the Daisy's output alone, into `C306`/`C406` (Bergman's
+`C6`). It is now a passive two-resistor mix into that same cap:
+
+```
+AUDIO_OUT ──────┬── R301 10k ──┬── C306 1u ── U301A (+)     U301A (−) ─┬─ R311 15k ─ out
+          R310 100k (R9)       │                                       └─ R312 15k ─ GND
+EXT_AMP_OUT ──── R302 10k ─────┘                   (L; R channel is the 4xx set)
+```
+
+`R312`/`R412` is **Bergman's own `R12`, fitted permanently to ground** instead of
+switched in for VCA mode. With it, `U1-A` runs at gain 2, which takes back the 6dB
+the passive mix costs: each source reaches the LDRs at 0.95x its old level. It does
+**not** implement VCA mode — that needs `R16` as well, which is still absent. Why
+the mix exists, and what it costs, is in ADR 0011.
 
 ### VCA mode is deliberately not implemented — decided, do not re-raise
 
-**This instrument ships BOTH and VCF only.** Confirmed 2026-09-11. `R12` and
-`R16` are on Bergman's drawing and on neither channel here, and that is the
-intended design, not an omission:
+**This instrument ships BOTH and VCF only.** Confirmed 2026-09-11. `R16` is on
+Bergman's drawing and on neither channel here, and that is the intended design,
+not an omission. (`R12` was omitted too until 2026-09-25; it is now fitted
+permanently for the input mix above, which is not VCA mode.)
 
-- `R12` 15K, `U1-A` pin 2 → [S1/S2] → GND. Omitted, so `U1-A` is a unity
-  follower. Bergman would get **gain 2** from it in VCA.
+- `R12` 15K, `U1-A` pin 2 → [S1/S2] → GND. **Now fitted as `R312`/`R412`,
+  straight to ground** — `U1-A` at gain 2 on a halved input, net unity. In
+  Bergman's circuit it gives gain 2 only in VCA.
 - `R16` 10K, LDR2 output → [S3/S4] → GND. Omitted, so nothing pins the response
   flat — which is the whole point of VCA mode.
 
@@ -294,7 +314,8 @@ restoring VCA would need the quad analog switch *and* four resistors
 
 | net | direction | currently |
 |---|---|---|
-| `AUDIO_OUT_L` / `_R` | Daisy → LPG in | only on `U1.B2`/`U1.B1` |
+| `AUDIO_OUT_L` / `_R` | Daisy → LPG in | via `R301`/`R401` into the input mix |
+| `EXT_AMP_OUT_L` / `_R` | EXT preamp → LPG in | via `R302`/`R402` into the input mix (ADR 0011) |
 | `BBD_IN_L` / `_R` | LPG out → delay | only on `R106`/`R107`, `R206`/`R207` |
 | `LPG_ENV` | Daisy CV_OUT_1 → LED drive | only on `U1.C10` |
 | `RV1` `RV2` `RV3` | panel, dual-gang | **placed, zero pins wired** |
@@ -320,9 +341,10 @@ before this and are now connected. `SW1` pole A switches `C308`, pole B `C408` �
 open is BOTH, closed is VCF.
 
 **Removed, all by explicit decision and not by inference:** the CV1 jack, its
-Level pot and `R27`; the DEEP switch and `Tp2` with it; and
-`R12`/`R16`, because only BOTH and VCF modes are wanted so the VCA contact is
-never made.
+Level pot and `R28`; the DEEP switch and `Tp2` with it; and
+`R16`, because only BOTH and VCF modes are wanted so the VCA contact is
+never made. (`R12` was on this list until 2026-09-25; it is now fitted as the input
+mix's gain makeup.)
 
 ### Still to do
 

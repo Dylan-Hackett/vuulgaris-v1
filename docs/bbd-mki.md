@@ -698,7 +698,9 @@ panel has no seventh slot. The netmap therefore carries **`R104`/`R204`, a
 single resistor standing in for the pot**, seeded at 0Ω (straight through).
 
 **Recommendation: keep it a fixed part with the same value in both channels;
-choose the value at bring-up; do not fit a trimmer.**
+choose the value at bring-up; do not fit a trimmer.** Since 2026-09-25 the LPG's
+input is a mix of the Daisy and EXT (ADR 0011), so choose it with **both playing** —
+`design-state.md` §12, "Bring-up checklist", item 8.
 
 - Straight through is already −14dB into the summing node, and the BBD's window
   is 1.3Vpp centred on 2.55V, so the block accepts about **6.6Vpp** at
