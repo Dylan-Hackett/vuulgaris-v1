@@ -932,6 +932,54 @@ checks it along with the proud height and the plunger/hole fit.
 8. Generate the slider electrode assignment in Design Center **first**, then lay out to match.
 9. Decide sample-storage strategy: factory samples in QSPI so the instrument makes sound with no card, user samples on SD. Both stream into SDRAM at load; playback always from SDRAM so scrubbing has no latency. Decide the advertised per-track length limit early — it's bounded by SDRAM, not card size.
 
+### Bring-up checklist — main board, when it arrives (2026-09-25)
+
+Everything the paper checks could not settle, in the order it is safe to do it. Each item
+points at where the reasoning lives.
+
+**Power first, no faceplate, no Daisy.**
+1. Current-limited bench supply at 5V into `J11`, **Daisy not fitted**. Only `POS12V` /
+   `NEG12V` (the DKM10) and `P5V_BBD` (`U8`) exist yet — check those.
+2. Fit the Daisy. It is the source of `P5V` (its A6) and `P3V3_DAISY` (its A10), and `P5V`
+   feeds `U5`/`U6`, so `P3V3_OLED` and `P3V3_MSP430` come up only now — check all four. Then
+   **measure the real 5V draw**: the Patch SM's consumption is an estimate and the whole
+   current budget rests on it (`power-usbc-dkm.md`, "Current budget").
+
+**Mechanical, with the parts in hand.**
+3. **Beep one 1/4" jack**: plug tip on pad 4, its switch on pad 3, ring on 5, sleeve on 2
+   (`review-packet.md`, open defect 3).
+4. **Calipers on a seated Alpha pot**: shoulder at 10.0mm ±0.5 is the faceplate datum; check
+   the M7 nut bites on 1.6mm with its washer ("Panel part heights").
+5. **Knob directions**: every pot should go *up* clockwise — CUTOFF opens, CV AMOUNT goes
+   positive, TIME longer, FEEDBACK more, DRY/WET wetter (`lpg-bergman.md`, `bbd-mki.md`).
+6. **`J12` pin 1 end to end** before the faceplate is ever powered: 3V3 is on pin 9 now
+   (`hardware/faceplate/README.md` §5).
+
+**Levels — the LPG input is now a mix (ADR 0011).** Everything inside runs at Eurorack level
+(±4.75V); U10 is where line level is brought up to it, and its one output feeds both the
+Daisy and the LPG. Each source alone swings exactly as before; **both at full scale reach
+about ±9V at `U301A`/`U401A`** (TL084 on ±12V swings about ±10.5V) and push the BBD, which
+takes only about 6.6Vpp at `BBD_IN` with `R104` at 0Ω, well into clipping. So:
+
+7. **Set `RT503`/`RT504` (EXT gain, 0 to +20dB) for about −6dB peaks**, not full scale: play
+   your usual source at its normal level and trim for about 4.7Vpp (±2.4V) at `C501`/`C502`
+   pad 1. Roughly +14dB for a −10dBV consumer line source, +4dB for a phone's headphone out
+   at full volume, +3dB for a pro +4dBu one. A Eurorack-level source is already above the
+   target and U10 cannot go below unity, so turn that one down at the source. That leaves
+   the mix its headroom; the Daisy's converter does not miss 6dB when sampling dry.
+8. **Choose `R104`/`R204` (BBD IN GAIN, a 0Ω placeholder) with the Daisy at full output and
+   EXT at the level set in 7, both playing** — not one source alone. The BBD's window is
+   1.3Vpp centred on 2.55V at its input (`bbd-mki.md`, "IN GAIN"); a series value into the
+   summing node lowers the drive, about 22k for a single full-scale source, more for the
+   sum. Same value in both channels. Scope it, don't judge it by ear.
+9. **Firmware**: a master output level, so the Daisy can back off when a hot EXT is mixed
+   in; and **no `AUDIO_IN` → `AUDIO_OUT` passthrough, ever** (ADR 0011).
+
+**Trims and the rest.**
+10. LPG LED-drive depth, `RT301`/`RT401` (`lpg-bergman.md`, ±12V instead of ±15V).
+11. Headphone level, `RT501`/`RT502` — clockwise is quieter.
+12. **A9 drives the OLED reset cleanly** (ADR 0009; the module may filter the USB_HS lines).
+
 ---
 
 ## 13. Reference links

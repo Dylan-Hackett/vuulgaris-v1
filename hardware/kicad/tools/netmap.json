@@ -176,7 +176,7 @@
   "2": "LPG_C5_L"
  },
  "C306": {
-  "1": "AUDIO_OUT_L",
+  "1": "LPG_MIX_L",
   "2": "LPG_INF_L"
  },
  "C307": {
@@ -256,7 +256,7 @@
   "2": "LPG_C5_R"
  },
  "C406": {
-  "1": "AUDIO_OUT_R",
+  "1": "LPG_MIX_R",
   "2": "LPG_INF_R"
  },
  "C407": {
@@ -1550,5 +1550,29 @@
   "2": "LPG_LEDK_R",
   "3": "LPG_MID_R",
   "4": "LPG_LDR_R"
+ },
+ "R301": {
+  "1": "AUDIO_OUT_L",
+  "2": "LPG_MIX_L"
+ },
+ "R302": {
+  "1": "EXT_AMP_OUT_L",
+  "2": "LPG_MIX_L"
+ },
+ "R312": {
+  "1": "LPG_AFB_L",
+  "2": "GND"
+ },
+ "R401": {
+  "1": "AUDIO_OUT_R",
+  "2": "LPG_MIX_R"
+ },
+ "R402": {
+  "1": "EXT_AMP_OUT_R",
+  "2": "LPG_MIX_R"
+ },
+ "R412": {
+  "1": "LPG_AFB_R",
+  "2": "GND"
  }
 }

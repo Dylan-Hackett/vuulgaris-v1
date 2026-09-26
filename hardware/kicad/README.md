@@ -369,8 +369,14 @@ J7 tip --R517 1k-- C511 1uF --+-- U10A +        gain = 1 + RT503/R521
                               GND
                    U10A - --+-- R521 2k2 -- GND
                             +-- RT503 20k rheostat -- U10A out
-                   U10A out -- C501 1uF -- SW2.1
+                   U10A out -+-- C501 1uF -- SW2.1
+                              +-- R302 10k -- LPG input mix (C306)     since 2026-09-25
 ```
+
+**U10 also drives the LPG directly** (ADR 0011): its output is mixed with the Daisy's into
+the LPG input through `R302`/`R402`, so external audio reaches the analog chain with no
+conversion and can be resampled after the effects in one pass. `C306`/`C406` block its DC
+there, as `C501` does on the way to the Daisy.
 
 **Before SW2, on the EXT branch only** -- the resample path is already at Eurorack
 level and must not be gained.

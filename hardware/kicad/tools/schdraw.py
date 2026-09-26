@@ -356,11 +356,16 @@ def lpg_left(netmap, values):
     put("VT302", vactrol(1120, 560, "VT302"))
 
     # --- audio in ------------------------------------------------------
-    put("R310", resistor(280, 930, "R310", V("R310"), vert=True))
+    # R301/R302 mix the Daisy and EXT into C306; R312 (Bergman's R12) gives U301A
+    # the gain of 2 that the passive mix takes back. Added 2026-09-25, ADR 0011.
+    put("R310", resistor(220, 930, "R310", V("R310"), vert=True))
+    put("R301", resistor(290, 860, "R301", V("R301")))
+    put("R302", resistor(350, 790, "R302", V("R302"), vert=True))
     put("C306", cap(400, 860, "C306", V("C306")))
     put("R309", resistor(500, 930, "R309", V("R309"), vert=True))
     opamp_unit("U301", "A", 620, 860, ("1", "2", "3"))
     put("R311", resistor(680, 1000, "R311", V("R311"), swap=True, flip_label=True))
+    put("R312", resistor(560, 1070, "R312", V("R312"), vert=True))
 
     # --- filter network and output ------------------------------------
     put("C307", cap(1020, 770, "C307", V("C307"), vert=True))
@@ -641,14 +646,20 @@ def lpg_left_wires():
         ("LPG_LEDM_L",  [("VT301", "2"), ("VT302", "1")]),
 
         # ---- audio in ----
-        ("AUDIO_OUT_L", [("PORT", 200, 860, "AUDIO_OUT_L  ← source select", False),
-                         (280, 860), ("C306", "1")]),
-        ("AUDIO_OUT_L", [(280, 860), ("R310", "1")]),
-        ("GND",         [("R310", "2"), ("GND", 280, 980)]),
+        ("AUDIO_OUT_L", [("PORT", 200, 860, "AUDIO_OUT_L  ← Daisy out", False),
+                         (220, 860), ("R301", "1")]),
+        ("AUDIO_OUT_L", [(220, 860), ("R310", "1")]),
+        ("GND",         [("R310", "2"), ("GND", 220, 980)]),
+        ("EXT_AMP_OUT_L", [("PORT", 200, 740, "EXT_AMP_OUT_L  ← EXT in, U10", False),
+                         ("R302", "1")]),
+        ("LPG_MIX_L",   [("R301", "2"), (350, 860), ("C306", "1")]),
+        ("LPG_MIX_L",   [(350, 860), ("R302", "2")]),
         ("LPG_INF_L",   [("C306", "2"), (500, 860), (560, 860), (560, 833), ("U301", "3")]),
         ("LPG_INF_L",   [(500, 860), ("R309", "1")]),
         ("GND",         [("R309", "2"), ("GND", 500, 980)]),
         ("LPG_AFB_L",   [("U301", "2"), (560, 887), (560, 1000), ("R311", "2")]),
+        ("LPG_AFB_L",   [(560, 1000), ("R312", "1")]),
+        ("GND",         [("R312", "2"), ("GND", 560, 1120)]),
         ("LPG_ABUF_L",  [("U301", "1"), (796, 860), (796, 658), ("VT301", "3")]),
         ("LPG_ABUF_L",  [("R311", "1"), (790, 1000), (796, 1000), (796, 860)]),
 
