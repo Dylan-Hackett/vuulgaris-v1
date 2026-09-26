@@ -7,7 +7,8 @@ MSP430FR2675 touch faceplate. Two PCBs:
 - **Main board** — `hardware/kicad/`, KiCad 7, 4-layer, JLC assembly. **Finished:**
   DRC clean, fab package at `hardware/vuulgaris-v1-fab.zip`.
 - **Faceplate** — `hardware/faceplate/`. Not laid out yet. Its README opens with
-  everything the main board has already fixed for it.
+  everything the main board has already fixed for it; `KICKOFF.md` there is the prompt
+  that starts that session.
 
 ## Read first
 

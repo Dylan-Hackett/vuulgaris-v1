@@ -45,6 +45,21 @@ Q17).
 - The six pot nuts are the **only** clamp. Encoders (EC12, 0.9mm of bushing through),
   toggles, buttons and the OLED locate but carry nothing. The whole main board hangs off
   the faceplate through those six nuts (`design-state.md`, "Panel mounting").
+- **The 10mm gap is shared.** Anything on the faceplate's back (the MSP430, the ESD network,
+  LEDs, the connector) sits in the same 10mm as the main board's top-side parts beneath it.
+  The tall ones, board coordinates (panel = board + (6.995, 9.000) once §1's offset is in):
+
+  | main-board part | height | board bbox x0,y0 – x1,y1 | faceplate room above |
+  |---|---|---|---|
+  | `C36`, `C37` electrolytics | 7.8mm | 190–200, 72.8–90.9 | ~2.2mm |
+  | `C32`, `C33` electrolytics | 5.4mm | 190–201, 50.1–68.3 | ~4.6mm |
+  | `U1` Daisy Patch SM | ~7mm soldered direct (no 3D model) | 243.8–283.9, 47.2–115.4 | ~3mm |
+  | `VT301`/`302`/`401`/`402` vactrols | unknown (no 3D model) | 132.6–165.3, 58.0–67.8 and 134.9–167.5, 91.1–100.9 | read the Xvive drawing |
+
+  Everything else on the main board's top is under 3.5mm apart from the panel parts, which
+  pass through. Keep faceplate back-side parts low over those areas, or put them elsewhere.
+  **The Daisy must be soldered in or on low-profile sockets** — standard 8.5mm sockets put
+  it near 13mm and into the faceplate.
 
 ### 3. Holes
 
