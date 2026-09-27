@@ -97,8 +97,21 @@ faceplate's connector sits **over that cutout, facing down**; its ribbon plug ha
 the hole in the main board, and the ribbon runs underneath to `J12`. That is what makes the
 10mm faceplate gap workable: neither mated plug has to fit inside it. So:
 
-- **Put the faceplate header over the cutout.** A 2x5 IDC plug is about 20 x 9mm; the hole
-  is 24 x 12.
+- **Put the faceplate header over the cutout, centred on board (222.0, 103.5)** — panel
+  (228.995, 112.5) once §1's offset is in. A 2x5 IDC plug is about 20.3 x 9mm; the hole is
+  24 x 12, so 1.5–2mm clear per side. Checked 2026-09-26: `J12` is centred on the cutout
+  in x (0.00mm), its body 1.44mm from the cutout's edge, nothing sits in the cutout, and
+  nothing else is on the main board's back in the ribbon's path.
+- **`J12`'s pin 1 is at its +x end (right, viewed from the top), on the row nearest the
+  cutout.** Orient the faceplate header so the ribbon takes pin 1 to pin 1 — mock it up
+  with a real cable before ordering; the two plugs sit at different depths, so it is easy
+  to get backwards on paper.
+- **`U7` (the DKM10, ~10mm tall, on the back) is 1.03mm from `J12`'s far side.** A plug
+  sits inside the header's shroud, so it fits; run the ribbon out toward the cutout, not
+  toward `U7`.
+- **Leave the ribbon slack.** The faceplate end is plugged in with the faceplate lifted and
+  then lowered onto the pots, so the cable folds under the main board rather than spanning
+  the 12mm between the plugs taut.
 - **The case floor needs about 15mm below the main board** around `J12` and the cutout: a
   9.2mm header plus the mated plug and the ribbon's fold.
 
