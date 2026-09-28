@@ -4,6 +4,7 @@
     python3 tools/drc.py            # regenerate DRC.rpt and judge it
     python3 tools/drc.py --keep     # judge the existing DRC.rpt, run nothing
     python3 tools/drc.py OTHER.kicad_pcb    # judge some other board
+    python3 tools/drc.py --project faceplate   # the faceplate's board and DRC.rpt
 
 The third form is how this gets tested: point it at a board with a known
 short and it must fail. A checker nobody has watched fail is a checker
@@ -45,10 +46,10 @@ If a silk warning ever needs to be an error, change it in the project file
 and this will start failing on it.
 """
 import os, re, sys, subprocess, collections
+import proj
 
-KI = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PCB = f"{KI}/vuulgaris.kicad_pcb"
-RPT = f"{KI}/DRC.rpt"
+PCB = proj.P.pcb
+RPT = proj.P.drc_rpt
 KPY = ("/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework"
        "/Versions/3.9/bin/python3")
 

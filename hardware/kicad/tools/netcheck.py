@@ -15,12 +15,19 @@ flag that, because a short between two real nets is an electrically legal
 connection. It is only visible by diffing against a declared intent.
 
 Run after every mksch.py.
+
+    python3 tools/netcheck.py                       # main board
+    python3 tools/netcheck.py --project faceplate   # hardware/faceplate
+    python3 tools/netcheck.py OTHER.kicad_sch       # some other schematic, same project's netmap
 """
 import re, sys, os, json, subprocess, tempfile, collections
+import proj
 
-KI = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SCH = f"{KI}/vuulgaris.kicad_sch"
-MAP = f"{KI}/tools/netmap.json"
+SCH = proj.P.sch
+MAP = proj.P.netmap
+_other = [a for a in sys.argv[1:] if not a.startswith("--")]
+if _other:
+    SCH = os.path.abspath(_other[0])
 CLI = "/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli"
 
 

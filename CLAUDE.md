@@ -25,8 +25,9 @@ MSP430FR2675 touch faceplate. Two PCBs:
 ## Main board: the loop
 
 `hardware/kicad/tools/netmap.json` is the intent. The schematic is **generated** —
-never hand-edit `vuulgaris.kicad_sch`; change netmap / `values.json` / `mksch.py`
-and regenerate. From `hardware/kicad/`, with `set -o pipefail` whenever output is
+never hand-edit `vuulgaris.kicad_sch`; change netmap / `values.json` / `tools/design.py`
+(symbols, sheet positions, footprints) and regenerate. `mksch.py` is the engine only.
+The loop tools take `--project faceplate` for the faceplate board (`tools/proj.py`). From `hardware/kicad/`, with `set -o pipefail` whenever output is
 piped (a masked failure once let netcheck pass against a stale schematic):
 
 ```bash

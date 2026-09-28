@@ -33,6 +33,12 @@ pin that carries a net, taken from `docs/pin-allocation.md`. The check is:
 python3 tools/mksch.py && python3 tools/netcheck.py
 ```
 
+`mksch.py` is the drawing engine; the design it draws — which symbol each ref uses,
+where it sits on the sheet, which footprint it gets — is `tools/design.py`. They were
+one file until 2026-09-27, when the faceplate needed the same engine. The loop tools
+(`mksch`, `netcheck`, `drc`, `boardcheck`, `ksym`) all take `--project faceplate`;
+`tools/proj.py` says where each project keeps what.
+
 `netcheck.py` exports the netlist with `kicad-cli` — KiCad's own code, not a
 reimplementation — and diffs every `(ref, pin) -> net` both ways. The reverse
 direction is the one that matters: a pin KiCad bound to a net that `netmap.json`

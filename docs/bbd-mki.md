@@ -780,14 +780,14 @@ from the netmap. Flanger mode is the thing given up.
 
 Adopted: KiCad's generic `Device:R` / `Device:C` for the BBD block's passives,
 with the value in `values.json` and the existing `R0603` / `C0603` / `C0805`
-footprints. `Device.kicad_sym` was already in `mksch.py`'s `LIBS`, so it cost
+footprints. `Device.kicad_sym` was already in `LIBS` (now in `tools/design.py`), so it cost
 nothing. A resistor symbol carries no information its value does not; what has to
 be right is the footprint, and those already existed. The one thing it costs is
 the LCSC part number in the BOM, which needs a value→part mapping at order time
 either way.
 
 The two 1µF **film** caps per channel (`C113`, `C120`) and the 15nF hold cap
-(`C119`) are the exceptions, and they are handled by `BBD_C0805` in `mksch.py` —
+(`C119`) are the exceptions, and they are handled by `BBD_C0805` in `tools/design.py` —
 see "Caps that are not 0603 X7R" below. Do not substitute plain X7R for any of
 the three.
 
@@ -796,7 +796,7 @@ the three.
 ## Symbols — pulled 2026-09-02
 
 All present in `lib/vuulgaris.kicad_sym` with `SYM` and `FPMAP` entries in
-`mksch.py`, and every pin number checked against the real symbol.
+`tools/design.py` (then `mksch.py`), and every pin number checked against the real symbol.
 
 | part | symbol | LCSC | footprint |
 |---|---|---|---|
@@ -835,7 +835,7 @@ numbers. A 14-pin socket fits it.
 
 ### Caps that are not 0603 X7R
 
-`BBD_C0805` in `mksch.py`. `C_19` is the sample-and-hold storage cap on a
+`BBD_C0805` in `tools/design.py`. `C_19` is the sample-and-hold storage cap on a
 high-impedance node — **15nF C0G in 0805**, because X7R's voltage coefficient and
 piezoelectric response both land straight in the audio there. `C_13` and `C_20`
 are the 1µF signal-path caps the drawing marks "Film", and `C_10` / `C42` are
