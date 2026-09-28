@@ -49,7 +49,7 @@ part("J1", "Conn_02x05_Odd_Even", "IDC-SMD_10P-P2.54_C41376028", (100, 100))
 
 # ---------------------------------------------------------------- the MCU
 # MSP430FR2675TPT, LCSC C2052972. Symbol and PT0048A footprint from
-# design/mklib_msp430.py (SLASEO5D Figure 7-1 == Table 7-1, TI land pattern).
+# design/mklib_faceplate.py (SLASEO5D Figure 7-1 == Table 7-1, TI land pattern).
 part("U1", "MSP430FR2675TPT", "LQFP-48_7x7mm_P0.5mm_PT0048A", (330, 220))
 
 # Supply, from SLASEO5D section 10.1.1, Figure 10-1: "a combination of a 10-uF
