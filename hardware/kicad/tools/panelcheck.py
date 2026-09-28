@@ -58,8 +58,11 @@ def board(path):
         s = d.GetShape()
         if s == pcbnew.SHAPE_T_CIRCLE:
             edges.append({"kind": "circle", "c": pt(d.GetCenter()), "r": T(d.GetRadius())})
-        elif s in (pcbnew.SHAPE_T_SEGMENT, pcbnew.SHAPE_T_ARC):
+        elif s == pcbnew.SHAPE_T_SEGMENT:
             edges.append({"kind": "seg", "pts": [pt(d.GetStart()), pt(d.GetEnd())]})
+        elif s == pcbnew.SHAPE_T_ARC:
+            edges.append({"kind": "seg", "pts": [pt(d.GetStart()), pt(d.GetEnd())],
+                          "arc_c": pt(d.GetCenter()), "arc_r": T(d.GetRadius())})
         elif s == pcbnew.SHAPE_T_RECT:
             a, z = pt(d.GetStart()), pt(d.GetEnd())
             c = [a, [z[0], a[1]], z, [a[0], z[1]]]
@@ -147,6 +150,14 @@ def main():
         dev = max(abs(a - b) for a, b in zip((x0, y0, x1, y1), want))
         row(dev < 0.001, "outline is the generator's panel",
             f"{x1 - x0:.3f} x {y1 - y0:.3f} at ({x0:.3f}, {y0:.3f}), off by {dev:.4f}")
+        # corners: one arc each, of the generator's radius, centred r in from both edges
+        cr = pg.generator()[0].CFG["panel_corner_r_mm"]
+        want_c = [(x0 + cr, y0 + cr), (x1 - cr, y0 + cr), (x1 - cr, y1 - cr), (x0 + cr, y1 - cr)]
+        arcs = [e for e in face["edges"] if "arc_r" in e]
+        hit = [any(abs(e["arc_c"][0] - cx) < 0.005 and abs(e["arc_c"][1] - cy) < 0.005
+                   and abs(e["arc_r"] - cr) < 0.005 for e in arcs) for cx, cy in want_c]
+        row(all(hit), "outline corners filleted to the generator's radius",
+            f"r {cr:g}mm on all four" if all(hit) else f"{sum(hit)} of 4 corners at r {cr:g}mm")
 
     # ---- cable
     fn = json.load(open(proj.P.netmap)).get("J1", {})

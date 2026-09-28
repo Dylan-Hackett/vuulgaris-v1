@@ -257,6 +257,14 @@ CFG = {
     # nothing checked against an enclosure.
     "inset_composition": True,
     "panel_screw_inset_mm": 3.0,  # from panel edge, into the wall top
+    # Panel corners, filleted 2026-09-28 (Dylan: a rounder feel). The enclosure's
+    # outer corners take the same radius. At the wall thickness the cavity keeps
+    # square inside corners, so the main board's outline is untouched; any bigger
+    # and the cavity -- and the board -- would need rounding too. The cost: a
+    # screw can no longer sit in the corner. At 3mm in, its head has to clear the
+    # arc, so corner screws go at least panel_screw_corner_min_mm along the edge.
+    "panel_corner_r_mm":    6.0,
+    "panel_screw_corner_min_mm": 9.0,
     # What the cavity has to hold along y (design-state "Assembly"): the jack
     # wall's 1mm assembly gap, the main board, and the travel it slides to put
     # its jacks through that wall. --check asserts the panel covers exactly this.
@@ -793,7 +801,8 @@ def render(c, g):
       f'and the OLED at the right. {c["n_ticks"]} tick divisions per pad '
       f'with crosses at marks {", ".join(str(m) for m in c["cross_at"])}, Greek acrophonic '
       f'numerals in the margins, and the rotary encoder in the right margin beside the pads.</desc>')
-    A(f'<rect x="0.4" y="0.4" width="{f(PW_-0.8)}" height="{f(PH_-0.8)}" rx="1.5" '
+    A(f'<rect x="0.4" y="0.4" width="{f(PW_-0.8)}" height="{f(PH_-0.8)}" '
+      f'rx="{f(c["panel_corner_r_mm"] - 0.4)}" '
       f'fill="none" stroke="{INK2}" stroke-width="0.3"/>')
 
     # rules
@@ -1279,6 +1288,13 @@ def check(c, g):
     scr = c["panel_screw_inset_mm"]
     row("panel screws land on the cheek, not past it",
         f"screw at {scr:.1f}mm, cheek spans 0..{wall:.1f}mm", 1.5 <= scr <= wall - 1.5)
+    # Corner fillet: no bigger than the wall (the cavity stays square inside), and a
+    # corner screw's head (M3 pan, 2.75 radius) clear of the arc at the minimum distance.
+    cr, cmin = c["panel_corner_r_mm"], c["panel_screw_corner_min_mm"]
+    _hd = (cmin - 2.75) - cr                 # head's near edge past the arc's end
+    row("panel corners filleted inside the wall", f"r {cr:g}mm, wall {wall:g}mm", 0 <= cr <= wall)
+    row("corner screws clear the fillet",
+        f"screws >= {cmin:g}mm along the edge: head {_hd:+.2f}mm past the arc", _hd >= 0.0)
     row("OLED inside panel", f"right edge {g['oled_x0']+c['oled_w_mm']:.2f} of {PW_:.2f}",
         g["oled_x0"] + c["oled_w_mm"] <= PW_)
     w, aa, gl, d = g["OLED_WIN"], g["OLED_AA"], g["OLED_GLASS"], g["OLED_DEPTH"]
