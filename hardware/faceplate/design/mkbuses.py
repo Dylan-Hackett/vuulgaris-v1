@@ -84,25 +84,35 @@ def main():
             (0, V(0, lambda x: x > mid), top_line, True),
             (1, V(1), bot_line, False),
             (3, V(3), bot_line, True))
+        # Via to via, never through: every via must sit on a segment END. KiCad counts a
+        # track that merely passes over a via as connected; Freerouting does not, and saw
+        # every intermediate via as an island it had to reach under the fenced-off pads.
         for rx, vs, line, out in stretches:
-            x0, x1 = vs[0][0], (EXIT if out else vs[-1][0])
-            n += seg(net(rx), pcbnew.In1_Cu, (x0, line), (x1, line))
-            for x, y in vs:                        # a via off the line: stub to it
-                if abs(y - line) > 0.25:
+            nodes = []
+            for x, y in vs:
+                if abs(y - line) <= 0.25:           # on the line (short bars sit a hair in)
+                    nodes.append((x, y))
+                else:                               # walked in to clear J1: stub to it
+                    nodes.append((x, line))
                     n += seg(net(rx), pcbnew.In1_Cu, (x, line), (x, y))
-        # RX2 out, under zone 4's RX0
-        xa = V(2)[-1][0]
-        n += seg(net(2), pcbnew.In1_Cu, (xa, top_line), (xa, top_deep))
+            if out:
+                nodes.append((EXIT, line))
+            for a, z in zip(nodes, nodes[1:]):
+                n += seg(net(rx), pcbnew.In1_Cu, a, z)
+        # RX2 out, under zone 4's RX0, from its last via's centre
+        xa, ya = V(2)[-1]
+        n += seg(net(2), pcbnew.In1_Cu, (xa, ya), (xa, top_deep))
         n += seg(net(2), pcbnew.In1_Cu, (xa, top_deep), (EXIT, top_deep))
         # RX1 out, under RX3
-        xc = V(1)[-1][0]
-        n += seg(net(1), pcbnew.In1_Cu, (xc, bot_line), (xc, bot_deep))
+        xc, yc = V(1)[-1]
+        n += seg(net(1), pcbnew.In1_Cu, (xc, yc), (xc, bot_deep))
         n += seg(net(1), pcbnew.In1_Cu, (xc, bot_deep), (EXIT, bot_deep))
-        # RX0 join on L3, under RX2
-        xz1, xz4 = V(0, lambda x: x < mid)[-1][0], V(0, lambda x: x > mid)[0][0]
-        n += seg(net(0), pcbnew.In2_Cu, (xz1, top_line), (xz1, top_deep))
+        # RX0 join on L3, under RX2, via centre to via centre
+        (xz1, yz1), (xz4, yz4) = V(0, lambda x: x < mid)[-1], V(0, lambda x: x > mid)[0]
+        n += seg(net(0), pcbnew.In2_Cu, (xz1, yz1), (xz1, top_deep))
         n += seg(net(0), pcbnew.In2_Cu, (xz1, top_deep), (xz4, top_deep))
-        n += seg(net(0), pcbnew.In2_Cu, (xz4, top_deep), (xz4, top_line))
+        n += seg(net(0), pcbnew.In2_Cu, (xz4, top_deep), (xz4, yz4))
+    pcbnew.ZONE_FILLER(b).Fill(b.Zones())      # the GND plane clears round new vias
     pcbnew.SaveBoard(proj.P.pcb, b)
     print(f"{n} bus tracks on E1-E4 (replaced {len(old)}). File -> Revert in Pcbnew before touching it.")
 

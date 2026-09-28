@@ -111,7 +111,15 @@ def board(path):
     vias = [{"xy": pt(t.GetPosition()), "net": t.GetNetname().lstrip("/"),
              "d": T(t.GetWidth()), "drill": T(t.GetDrillValue())}
             for t in b.GetTracks() if isinstance(t, pcbnew.PCB_VIA)]
-    return {"edges": edges, "fps": fps, "vias": vias,
+    tracks = [{"a": pt(t.GetStart()), "b": pt(t.GetEnd()), "net": t.GetNetname().lstrip("/"),
+               "layer": b.GetLayerName(t.GetLayer()), "w": T(t.GetWidth())}
+              for t in b.GetTracks() if not isinstance(t, pcbnew.PCB_VIA)]
+    zones = []
+    for z in b.Zones():
+        q = z.GetBoundingBox()
+        zones.append({"net": z.GetNetname().lstrip("/"), "layer": b.GetLayerName(z.GetLayer()),
+                      "bbox": [T(q.GetLeft()), T(q.GetTop()), T(q.GetRight()), T(q.GetBottom())]})
+    return {"edges": edges, "fps": fps, "vias": vias, "tracks": tracks, "zones": zones,
             "outer": [T(ob.GetLeft()), T(ob.GetTop()), T(ob.GetRight()), T(ob.GetBottom())]}
 print(json.dumps({"face": board(sys.argv[1]), "main": board(sys.argv[2])}))
 '''
@@ -252,6 +260,55 @@ def main():
         f"{wall:g}mm walls, inner faces x {wall:g}..{W - wall:.2f}" if not over
         else "over the wall top: " + ", ".join(sorted(over)))
 
+    # ---- the routing fences (design/mkroute.py): nothing on F.Cu but the pads, and nothing
+    # under a pad but that pad's own nets -- a trace under another pad couples to it and
+    # breaks position sensing, and passes DRC. J1's own nets are allowed on B.Cu where its
+    # pads reach under the pads' edges.
+    nm_ = json.load(open(proj.P.netmap))
+    prect = {p: (g["PAD_X0"], g["PAD_TOPS"][p - 1], g["PAD_X1"], g["PAD_TOPS"][p - 1] + g["PW"])
+             for p in range(1, 5)}
+    own = {p: set(nm_[f"E{p}"].values()) for p in range(1, 5)}
+    j1n = set(nm_["J1"].values())
+    j1box = None
+    if j1:
+        xs = [q for pp in j1["pads"] for q in (pp["bbox"][0], pp["bbox"][2])]
+        ys = [q for pp in j1["pads"] for q in (pp["bbox"][1], pp["bbox"][3])]
+        a0, a1 = to_panel((min(xs), min(ys))), to_panel((max(xs), max(ys)))
+        j1box = (a0[0] - 0.5, a0[1] - 0.5, a1[0] + 0.5, a1[1] + 0.5)
+    inside = lambda r, x, y: r[0] < x < r[2] and r[1] < y < r[3]
+
+    def under_wrong_pad(pts, net, layer):
+        for x, y in pts:
+            for p, r in prect.items():
+                if inside(r, x, y) and net not in own[p]:
+                    if layer == "B.Cu" and net in j1n and j1box and inside(j1box, x, y):
+                        continue
+                    return p
+        return None
+    on_top = [t for t in face["tracks"] if t["layer"] == "F.Cu"]
+    bad_u = []
+    for t in face["tracks"]:
+        a_, b_ = to_panel(t["a"]), to_panel(t["b"])
+        n_ = max(2, int(max(abs(b_[0] - a_[0]), abs(b_[1] - a_[1])) / 0.5) + 1)
+        pts = [(a_[0] + (b_[0] - a_[0]) * k / n_, a_[1] + (b_[1] - a_[1]) * k / n_) for k in range(n_ + 1)]
+        p = under_wrong_pad(pts, t["net"], t["layer"])
+        if p:
+            bad_u.append(f"{t['net']} ({t['layer']}) under pad {p}")
+    for v in face["vias"]:
+        p = under_wrong_pad([to_panel(v["xy"])], v["net"], "*")
+        if p:
+            bad_u.append(f"{v['net']} via under pad {p}")
+    for z in face["zones"]:
+        zb = [*to_panel(z["bbox"][:2]), *to_panel(z["bbox"][2:])]
+        for p, r in prect.items():
+            if zb[0] < r[2] and zb[2] > r[0] and zb[1] < r[3] and zb[3] > r[1]:
+                bad_u.append(f"{z['net']} zone on {z['layer']} under pad {p}")
+    row(not on_top, "nothing routed on F.Cu", f"{len(face['tracks'])} tracks, none on the top layer"
+        if not on_top else f"{len(on_top)} tracks on F.Cu")
+    row(not bad_u, "nothing under a pad but its own nets",
+        f"{len(face['tracks'])} tracks, {len(face['vias'])} vias, {len(face['zones'])} zones checked"
+        if not bad_u else f"{len(bad_u)}: " + "; ".join(sorted(set(bad_u))[:4]))
+
     # ---- the panel screws, where the generator puts them
     sc, sd = pg.screws()
     circ = [(to_panel(e["c"]), 2 * e["r"]) for e in face["edges"] if e["kind"] == "circle"]
@@ -300,6 +357,8 @@ def main():
         bad_cu, bad_via, n_cu, n_via = [], [], 0, 0
         board_vias = {}
         for v in face["vias"]:
+            if v["xy"][0] - O[0] > g["PAD_X1"]:      # the margin's are routing vias
+                continue
             board_vias.setdefault(v["net"], set()).add((q(v["xy"][0] - O[0]), q(v["xy"][1] - O[1]),
                                                         q(v["d"]), q(v["drill"])))
         for p in range(1, 5):
