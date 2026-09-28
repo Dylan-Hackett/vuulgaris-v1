@@ -1,5 +1,5 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/faceplate/vuulgaris-faceplate.kicad_pcb **
-** Created on 2026-09-28 02:57:12 **
+** Created on 2026-09-28 03:00:44 **
 
 ** Found 523 DRC violations **
 [via_dangling]: Via is not connected or connected on only one layer

@@ -81,8 +81,17 @@ def holes():
             out.append((ref, (x, y), 2 * cfg["mx_hole_r_mm"], "generator mx_hole_r_mm (6.2mm plunger)"))
         elif re.fullmatch(r"SW[12]", ref):
             out.append((ref, (x, y), cfg["switch_hole_d_mm"], "generator switch_hole_d_mm (Dailywell DW3)"))
-        elif re.fullmatch(r"ENC\d+", ref):
-            out.append((ref, (x, y), None, "EC12E / EC11L bushing: read the ALPS drawings"))
+        elif ref == "ENC0":
+            # ALPS EC11L1525G01 drawing (LE2115L02G): no thread. A 7mm bushing ends
+            # 9.5mm above the board, then a KNURLED 9.03mm shaft from 10 to 18mm --
+            # so what passes the faceplate (10-11.6mm) turns, and pushes 1.5mm.
+            # Running clearance, not a bushing fit: 10.0mm.
+            out.append((ref, (x, y), 10.0, "ALPS EC11L drawing: knurled 9.03mm shaft turns in it"))
+        elif re.fullmatch(r"ENC[1-8]", ref):
+            # ALPS EC12E2430803 (bushing type): body 5.5mm, then 7mm of M9 x 0.75,
+            # ending 0.9mm above the outer face. The static thread passes the
+            # faceplate: M9 + 0.5, the pots' margin (M7 -> 7.5).
+            out.append((ref, (x, y), 9.5, "ALPS EC12E drawing: M9 x 0.75 bushing"))
         elif ref == "DS1":
             out.append((ref, (x, y), None, "OLED window: size to the active area at the final height"))
         else:
