@@ -10,8 +10,8 @@ a move made in Pcbnew is reverted (and reported).  KiCad's board format is
 Y-down and native millimetres, the same convention as that file, so the only
 transform is the origin shift:
 
-    pcb_mm = panel_mm - (6.995, 7.000)     # board sits inside the 6mm walls
-    sheet  = BOARD_ORIGIN + pcb_mm
+    pcb_mm = panel_mm - (6.995, 9.000)     # (OX, OY); the placement file's footer
+    sheet  = ORG + pcb_mm
 
 FREE parts are CHOSEN, and the board wins.  Move them in Pcbnew, save, and this
 script keeps them there -- it re-reads their positions every run and records
@@ -33,12 +33,13 @@ PCB = f"{KI}/vuulgaris.kicad_pcb"
 FREE_JSON = f"{KI}/tools/free-placement.json"
 # ORG is a fixed sheet reference, no longer the board corner: the top edge was
 # extended 2mm to y 48.0 on 2026-09-23 so every edge connector reaches the wall
-# by the same 7mm. The knobs did not move, so neither does ORG or this
-# transform -- UNTIL the faceplate is regenerated with the 2mm it now needs at
-# the jack edge. That shifts every panel y by +2, and OY must become 9.000 in the
-# same commit, or this script moves all 24 panel parts 2mm. docs/design-state.md.
+# by the same 7mm. The knobs did not move, so neither does ORG. The faceplate
+# took the same 2mm at the jack edge on 2026-09-27 (generate-faceplate.py
+# panel_top_extra_mm), which shifted every panel y by +2.000, so OY went 7.000
+# -> 9.000 in that commit: the board's top edge is at panel y 7 (6mm wall + 1mm
+# gap) and ORG 2mm below it. The placement file's footer prints the same pair.
 ORG = (100.0, 50.0)
-OX, OY = 6.995, 7.000        # panel -> pcb
+OX, OY = 6.995, 9.000        # panel -> pcb
 RESET = "--reset" in sys.argv
 CHECK = "--check" in sys.argv
 

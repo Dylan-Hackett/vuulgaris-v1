@@ -2,18 +2,14 @@
 
 ## comb-pad-generator.html
 
-**Parametric generator for the scrub pad copper.** Open in any browser, no build step.
+**Superseded as the source of the copper by `generate-faceplate.py` below**, which draws the
+pads in place on the panel. Kept for single-pad experiments. Open in any browser, no build
+step; live-checks against fab limits and exports SVG at true mm scale, one `<g>` per net.
 
-Live-checks the geometry against fab limits and **exports SVG at true mm scale with one
-`<g>` per net**, which imports into EasyEDA/KiCad as separate copper zones.
-
-**The tool defaults to 175mm, which is not current.** Pad length is now **derived** from the
-inter-pad gap via `pad length = 12 x pad pitch`
-([ADR 0003](../docs/decisions/0003-comb-pad-rx0-wraparound.md)). Working value **216mm** at a
-6mm gap, giving 54mm zones. **Do not regenerate until [Q17](../docs/notes/open-questions.md)
-settles the gap**, since zone length, tooth pitch and tooth count all follow from the length.
-
-Other geometry is unchanged: 12mm wide, 4 zones, minimum copper 0.15mm enforced.
+**Its defaults are the old 175mm / 12mm pad.** The settled geometry (2026-09-27,
+[ADR 0003](../docs/decisions/0003-comb-pad-rx0-wraparound.md)) is 216mm long, 10mm wide, 8mm
+gap, 100 teeth; the `12 x pad pitch` length lock it was built around turned out to be an
+artefact of the reference sketch.
 
 > **Cross-check its output against TI's SLAA891 OpenSCAD scripts before committing copper.**
 > Those generate TI's own validated pattern and export DXF. Two independent generators
@@ -44,7 +40,9 @@ the inter-pad gap, so the gap sets the size of the whole instrument. See
 = 1mm), including the actual comb-tooth electrode geometry.
 
 ```bash
-python3 generate-faceplate.py                          > faceplate-v1-298x154.svg
+python3 generate-faceplate.py                          > faceplate-v1.svg
+python3 generate-faceplate.py --fab                    > faceplate-v1-FAB.svg
+python3 generate-faceplate.py --placement              > ../hardware/placement-panel-facing.txt
 python3 generate-faceplate.py --check                  # verification report, no SVG
 python3 generate-faceplate.py --set pad_length_mm=264  # one-off override
 ```
@@ -56,7 +54,8 @@ every position and both placement flags live there. Nothing in the drawing code 
 
 | Want to change | Edit |
 |---|---|
-| Panel size | `pad_length_mm` (panel derives from it) |
+| Panel width | `pad_length_mm` (panel derives from it) |
+| Panel depth | `panel_top_extra_mm` / `panel_bottom_extra_mm` — pure extensions. **Not** `composition_h_mm`, which re-flows every panel part |
 | Pad spacing | `pad_gap_mm` |
 | Tick count, cross positions | `n_ticks`, `cross_at` |
 | Knob size or spacing | `knob_r_mm`, `knob_pitch_mm`, `offset_knob_r_mm` |

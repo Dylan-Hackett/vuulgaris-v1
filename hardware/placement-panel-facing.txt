@@ -1,43 +1,44 @@
 # Vuulgaris V1 panel-facing placement, generated from mockups/generate-faceplate.py
 #   python3 mockups/generate-faceplate.py --placement > hardware/placement-panel-facing.txt
 # ORIGIN: panel top-left corner. X right, Y DOWN. Millimetres.
-# Panel 298.286 x 130.810mm. All parts on the MAIN PCB,
+# Panel 298.286 x 137.810mm. All parts on the MAIN PCB,
 # protruding through faceplate openings, EXCEPT the pads which are faceplate copper.
 
 REF     PART                                               X         Y  NOTE
-ENC1    encoder, ch1 A                                25.143    21.395  -> MCP23017
-ENC2    encoder, ch1 B                                25.143    37.851  -> MCP23017
-ENC3    encoder, ch2 A                                47.143    21.395  -> MCP23017
-ENC4    encoder, ch2 B                                47.143    37.851  -> MCP23017
-ENC5    encoder, ch3 A                                69.143    21.395  -> MCP23017
-ENC6    encoder, ch3 B                                69.143    37.851  -> MCP23017
-ENC7    encoder, ch4 A                                91.143    21.395  -> MCP23017
-ENC8    encoder, ch4 B                                91.143    37.851  -> MCP23017
-RV1     POT 9mm DUAL-GANG, CUTOFF                    119.143    21.395  ANALOG -> LPG
-RV2     POT 9mm DUAL-GANG, RESONANCE                 119.143    37.851  ANALOG -> LPG
-RV3     POT 9mm DUAL-GANG, FILTER CV AMT             141.143    21.395  ANALOG -> LPG
-RV4     POT 9mm DUAL-GANG, TIME                      141.143    37.851  ANALOG -> BBD
-RV5     POT 9mm DUAL-GANG, FEEDBACK                  163.143    21.395  ANALOG -> BBD
-RV6     POT 9mm DUAL-GANG, WET/DRY                   163.143    37.851  ANALOG -> BBD
-SW1     DPDT LPG mode VCF/VCA                        180.643    37.631  ANALOG -> LPG
-SW2     DPDT SOURCE resample/ext                     193.643    37.631  ANALOG -> LPG
-DS1     OLED 2.42in SSD1309 (TOP-LEFT)               205.043    10.049  SPI -> Daisy
-ENC0    encoder + PUSH, main UI                       33.571    73.453  -> MCP23017 U4 GPB0-2
-SW4     12x12 tactile, UI button 1                    25.821    91.953  -> MCP23017 U4 GPA4
-SW5     12x12 tactile, UI button 2                    41.321    91.953  -> MCP23017 U4 GPA5
-SW6     12x12 tactile, UI button 3                    25.821   104.653  -> MCP23017 U4 GPA6
-SW7     12x12 tactile, UI button 4                    41.321   104.653  -> MCP23017 U4 GPA7
-SW8     12x12 tactile, UI button 5                    25.821   117.353  -> MCP23017 U4 GPA0
-SW9     12x12 tactile, UI button 6                    41.321   117.353  -> MCP23017 U4 GPA1
+ENC1    encoder, ch1 A                                25.143    23.395  -> MCP23017
+ENC2    encoder, ch1 B                                25.143    39.851  -> MCP23017
+ENC3    encoder, ch2 A                                47.143    23.395  -> MCP23017
+ENC4    encoder, ch2 B                                47.143    39.851  -> MCP23017
+ENC5    encoder, ch3 A                                69.143    23.395  -> MCP23017
+ENC6    encoder, ch3 B                                69.143    39.851  -> MCP23017
+ENC7    encoder, ch4 A                                91.143    23.395  -> MCP23017
+ENC8    encoder, ch4 B                                91.143    39.851  -> MCP23017
+RV1     POT 9mm DUAL-GANG, CUTOFF                    119.143    23.395  ANALOG -> LPG
+RV2     POT 9mm DUAL-GANG, RESONANCE                 119.143    39.851  ANALOG -> LPG
+RV3     POT 9mm DUAL-GANG, FILTER CV AMT             141.143    23.395  ANALOG -> LPG
+RV4     POT 9mm DUAL-GANG, TIME                      141.143    39.851  ANALOG -> BBD
+RV5     POT 9mm DUAL-GANG, FEEDBACK                  163.143    23.395  ANALOG -> BBD
+RV6     POT 9mm DUAL-GANG, WET/DRY                   163.143    39.851  ANALOG -> BBD
+SW1     DPDT LPG mode VCF/VCA                        180.643    39.631  ANALOG -> LPG
+SW2     DPDT SOURCE resample/ext                     193.643    39.631  ANALOG -> LPG
+DS1     OLED 2.42in SSD1309 (TOP-LEFT)               205.043    12.049  SPI -> Daisy
+ENC0    encoder + PUSH, main UI                       33.571    75.453  -> MCP23017 U4 GPB0-2
+SW4     12x12 tactile, UI button 1                    25.821    93.953  -> MCP23017 U4 GPA4
+SW5     12x12 tactile, UI button 2                    41.321    93.953  -> MCP23017 U4 GPA5
+SW6     12x12 tactile, UI button 3                    25.821   106.653  -> MCP23017 U4 GPA6
+SW7     12x12 tactile, UI button 4                    41.321   106.653  -> MCP23017 U4 GPA7
+SW8     12x12 tactile, UI button 5                    25.821   119.353  -> MCP23017 U4 GPA0
+SW9     12x12 tactile, UI button 6                    41.321   119.353  -> MCP23017 U4 GPA1
 
 # FACEPLATE COPPER (layer 1, exposed, no soldermask):
-#   pad1  x 61.143..277.143   y 60.453..70.453
-#   pad2  x 61.143..277.143   y 78.453..88.453
-#   pad3  x 61.143..277.143   y 96.453..106.453
-#   pad4  x 61.143..277.143   y 114.453..124.453
+#   pad1  x 61.143..277.143   y 62.453..72.453
+#   pad2  x 61.143..277.143   y 80.453..90.453
+#   pad3  x 61.143..277.143   y 98.453..108.453
+#   pad4  x 61.143..277.143   y 116.453..126.453
 #   100 comb teeth per pad, pitch 2.160mm, width 1.950mm
 
 # ENCLOSURE: 6mm walls all round, panel screws onto the wall tops
-#   cavity        286.29 x 118.81mm
-#   MAIN PCB MAX  284.3 x 116.8mm
-#   PCB ORIGIN sits at panel (6.995, 7.000); pcb = panel - that offset
+#   cavity        286.29 x 125.81mm = 1 gap + 118.81 board + 6 slide travel
+#   MAIN PCB MAX  284.3mm wide
+#   PCB ORG (sheet 100, 50) sits at panel (6.995, 9.000); pcb = panel - that offset
+#   (place.py OX, OY). The board's top edge is at panel y 7.000, 1mm inside the wall.

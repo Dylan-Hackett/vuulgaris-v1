@@ -33,7 +33,7 @@ Then read, in the repo root:
   file disagree, **that file wins** and you should tell the user.
 - `docs/design-state.md` §3 for the CapTIvate layout rules, §6 for the analog section
 - `hardware/placement-panel-facing.txt` — exact mm coordinates, generated
-- `mockups/faceplate-v1-298x139-FAB.svg` — the faceplate copper, true scale
+- `mockups/faceplate-v1-FAB.svg` — the faceplate copper, true scale
 
 ---
 

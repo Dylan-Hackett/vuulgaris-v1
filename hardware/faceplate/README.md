@@ -9,14 +9,21 @@ handoff below for the size, which is not what older docs say.
 The main board is finished: DRC clean, fab package at `../vuulgaris-v1-fab.zip`. What
 follows is fixed by it. The faceplate works around these, not the other way round.
 
-### 1. Size: the generator is the source of truth, and it needs two changes
+### 1. Size: the generator is the source of truth — DONE 2026-09-27, 298.286 x 137.81mm
 
-`generate-faceplate.py` currently gives **298.286 x 130.81mm** (`panel_h_mm`, "panel =
-board + 14": a 6mm wall and 1mm gap at each end). Numbers still in circulation that are
-**superseded**: "~285 x 155" (this file, until today), "298 x 154" (`panel-budget.md`),
-and the filename `mockups/faceplate-v1-298x139.svg`, whose contents are 130.81.
+`generate-faceplate.py` gives **298.286 x 137.81mm**: the 130.81mm composition frame
+(`composition_h_mm`, "board + 14" as of 2026-08-26) plus `panel_top_extra_mm` 2.0 and
+`panel_bottom_extra_mm` 5.0, both pure extensions. `--check` re-derives with the extras
+zeroed and fails if any placement row moves other than y += 2, and asserts the cavity is
+1 + 118.81 + 6. Numbers still in circulation that are **superseded**: 130.81, "~285 x 155",
+"298 x 154" (`panel-budget.md`). The mockup SVGs are now `mockups/faceplate-v1.svg` and
+`faceplate-v1-FAB.svg`; they were `-298x139`, which was never their size.
 
-- **+2mm at the top (jack) edge — required.** The main board's top edge moved out 2mm on
+- **+2mm at the top (jack) edge — DONE 2026-09-27.** Every one of the 24 rows in
+  `../placement-panel-facing.txt` moved +2.000 in y and nothing else (compared in integer
+  thousandths), `OY` went 7.000 → 9.000 in the same commit, and `place.py --check` reports
+  all 24 on their holes with output identical to before; with the old `OY` it reports all
+  24 off by 2.0. What the requirement was: The main board's top edge moved out 2mm on
   2026-09-23 so every edge connector ends flush with the wall (`design-state.md`, "Top
   edge extended 2mm"); the board is now 118.81mm. The knobs did not move, so **every
   panel y grows by exactly 2.000 and nothing may re-flow.** The generator centres and
