@@ -75,6 +75,28 @@ CFG = {
     # rather than just softening their corners.
     "pad_corner_r_mm":     0.0,
 
+    # ---- connecting the bars ------------------------------------------------
+    # Every bar is its own island of copper: nothing joins them on L1. Each
+    # one takes an open through-via (decided 2026-09-28, not filled or capped)
+    # down to its net's bus on L2. The project's minimum via, JLC standard.
+    # The hole is copper the finger does not see, so it goes into the same
+    # area compensation as the fillets. A bar too short to hold the via's pad
+    # (only the 0.197mm slivers beside each zone boundary) instead gets a
+    # BRIDGE across the tooth gap to its same-net neighbour, at the pad edge,
+    # and gives back the bridge's copper by shortening. See connections().
+    "via_drill_mm":        0.3,
+    "via_dia_mm":          0.5,
+    "via_inset_mm":        0.5,   # via centre from the bar's OUTER edge (pad edge)
+    "bridge_h_mm":         0.3,   # bridge strip height, or the thinner bar's if less
+    # Through vias come out on the BACK, so they must clear whatever sits
+    # there over the pads. Only J1 does: the hanxia 2x5's pads at panel
+    # (228.995, 112.5), rows over the edges of pads 3 and 4 (hanxia drawing;
+    # mkboard.py placed it). tools/panelcheck.py derives these rectangles
+    # from J1's real pads on the board and fails if they differ.
+    "via_keepouts_mm": ((223.405, 106.75, 234.585, 111.4),
+                        (223.405, 113.6, 234.585, 118.25)),
+    "via_keepout_clear_mm": 0.2,  # project Default clearance
+
     # ---- pad markings -------------------------------------------------------
     "n_ticks":              13,   # 13 marks = 12 intervals = a TRUE centre mark
     "cross_at":     (4, 7, 10),   # 1-indexed. Centre +/-3, lands on 1/4, 1/2, 3/4.
@@ -385,6 +407,14 @@ def corner_inset(x, x0, x1, r):
     return r - (r * r - (r - d) ** 2) ** 0.5
 
 
+def hole_area(c, h):
+    """Copper a bar of height h loses to its via hole (none if it is too
+    short to take a via and is bridged instead)."""
+    if c.get("via_drill_mm", 0.0) <= 0.0 or h < c["via_dia_mm"]:
+        return 0.0
+    return math.pi * (c["via_drill_mm"] / 2.0) ** 2
+
+
 def teeth(c, g, y_top):
     out, usable = [], g["PW"] - c["top_bottom_gap_mm"]
     x0, x1 = g["PAD_X0"], g["PAD_X1"]
@@ -403,7 +433,7 @@ def teeth(c, g, y_top):
             # Fixed-point iteration handles the clamping and converges fast.
             W = g["T_WIDTH"]
             k = lambda h: (lambda rr: 4.0 * (rr * rr - math.pi * rr * rr / 4.0))(
-                min(c["tooth_fillet_mm"], W / 2.0, max(h, 0.0) / 2.0))
+                min(c["tooth_fillet_mm"], W / 2.0, max(h, 0.0) / 2.0)) + hole_area(c, h)
             ht = frac * usable
             for _ in range(40):
                 kt, kb = k(ht), k(usable - ht)
@@ -437,6 +467,173 @@ def teeth(c, g, y_top):
             ry0, ry1 = max(ry0, lim_top), min(ry1, lim_bot)
             if ry1 - ry0 >= c["min_copper_mm"]:
                 out.append((net, x, ry0, w, ry1 - ry0))
+    return out
+
+
+def in_rrect(px, py, x, y, w, h, r):
+    """Point inside a rounded rectangle (corner radius r)."""
+    if px < x or px > x + w or py < y or py > y + h:
+        return False
+    cx = min(max(px, x + r), x + w - r)
+    cy = min(max(py, y + r), y + h - r)
+    return (px - cx) ** 2 + (py - cy) ** 2 <= r * r + 1e-12
+
+
+def bar_r(c, w, h):
+    return min(c["tooth_fillet_mm"], w / 2.0, h / 2.0)
+
+
+def rr_span(x, bx, by, bw, bh, r):
+    """Vertical extent [y0, y1] of a rounded rectangle at abscissa x, or None."""
+    if x < bx or x > bx + bw:
+        return None
+    d = min(x - bx, bx + bw - x)
+    ins = 0.0 if d >= r else r - math.sqrt(max(r * r - (r - d) ** 2, 0.0))
+    return by + ins, by + bh - ins
+
+
+def bridge_extra(c, bridge, a, b, n=4000):
+    """Copper a bridge ADDS: its area outside both rounded bars it joins.
+    Integrated column by column; the bars are disjoint, so their overlaps
+    with the bridge just subtract."""
+    bx, by, bw, bh = bridge
+    dx = bw / n
+    tot = 0.0
+    for i in range(n):
+        x = bx + (i + 0.5) * dx
+        cov = 0.0
+        for q in (a, b):
+            sp = rr_span(x, *q, bar_r(c, q[2], q[3]))
+            if sp:
+                cov += max(0.0, min(sp[1], by + bh) - max(sp[0], by))
+        tot += max(0.0, bh - cov) * dx
+    return tot
+
+
+def bar_area(c, w, h):
+    return w * h - 4.0 * (bar_r(c, w, h) ** 2 * (1 - math.pi / 4))
+
+
+def via_clear(c, x, y):
+    """A via at panel (x, y) clears every via keepout (the back-side parts
+    over the pads): its pad plus via_keepout_clear_mm outside each rect."""
+    m = c["via_dia_mm"] / 2.0 + c["via_keepout_clear_mm"]
+    return all(not (k[0] - m < x < k[2] + m and k[1] - m < y < k[3] + m)
+               for k in c["via_keepouts_mm"])
+
+
+_COPPER = {}
+
+
+def copper(c, g, y_top):
+    """One pad's final copper: bars, bridges and vias, in panel mm.
+
+    Returns dict(bars=[(net, x, y, w, h)], bridges=[(net, x, y, w, h)],
+    vias=[(net, x, y)], charge=[(bridge_index, charged_bar_x, other_bar_x)]).
+
+    Every bar tall enough to hold the via pad gets one via, centred across the
+    tooth and via_inset_mm in from its OUTER edge (the pad edge), capped at
+    mid-bar, so each net's vias line up for a straight L2 bus. Inside a via
+    keepout the via walks inward along the bar until it clears; a bar that
+    cannot hold a via anywhere clear -- the 0.197mm slivers beside each zone
+    boundary, and the thin bars behind J1 -- is bridged along the pad edge,
+    tooth to tooth, to the nearest same-net bar on the same side that has one.
+    Each bridge's own copper is paid for by shortening the THINNER bar it
+    joins from its inner edge, so every column's area ratio still matches the
+    presence function (--check measures it).
+    """
+    key = (tuple(sorted((k, repr(v)) for k, v in c.items())), g["PAD_X0"], g["PW"], y_top)
+    if key in _COPPER:
+        return _COPPER[key]
+    bars = [list(b) for b in teeth(c, g, y_top)]
+    top = lambda b: b[0] in (0, 2)
+    idx = lambda b: round((b[1] - g["PAD_X0"]) / g["T_PITCH"])
+    side = {(idx(b), top(b)): k for k, b in enumerate(bars)}
+
+    def via_for(b):
+        net, x, y, w, h = b
+        if h < c["via_dia_mm"]:
+            return None
+        k = min(c["via_inset_mm"], h / 2.0)
+        cx = x + w / 2.0
+        while k <= h - c["via_dia_mm"] / 2.0 + 1e-9:
+            vy = y + k if top(b) else y + h - k
+            if via_clear(c, cx, vy):
+                return (net, cx, vy)
+            k += 0.05
+        return None
+
+    vias = {k: via_for(b) for k, b in enumerate(bars)}
+    # chains: each via-less bar walks to the nearest via bar of its net, same side
+    links = set()
+    for k, b in enumerate(bars):
+        if vias[k]:
+            continue
+        best = None
+        for step in (-1, 1):
+            path, j = [k], idx(b)
+            while True:
+                j += step
+                q = side.get((j, top(b)))
+                if q is None or bars[q][0] != b[0]:
+                    break
+                path.append(q)
+                if vias[q]:
+                    if best is None or len(path) < len(best):
+                        best = path
+                    break
+        if best is None:
+            raise SystemExit(f"tooth {idx(b)} at y {y_top}: no via and no same-net bar with one")
+        for u, v in zip(best, best[1:]):
+            links.add(tuple(sorted((u, v))))
+    # Every bar's copper budget is what teeth() gave it: its filleted area less
+    # the via hole it was compensated for. A bar that ended up with no via has
+    # that hole's worth too much copper; a bar that pays for a bridge has the
+    # bridge's worth too much. Both are taken off by shortening the bar from
+    # its inner edge. Each bridge is paid for by the THINNER bar it joins.
+    # Iterate: a short bar's fillet shrinks with it, and the bridge on its thin
+    # side is measured against it.
+    orig = {k: tuple(b) for k, b in enumerate(bars)}
+    hole = math.pi * (c["via_drill_mm"] / 2.0) ** 2
+    for _ in range(12):
+        bridges, charge, extra = [], [], {}
+        for u, v in sorted(links):
+            thin, thick = (u, v) if orig[u][4] <= orig[v][4] else (v, u)
+            tb, kb = bars[thin], bars[thick]
+            bx0, bx1 = sorted((tb[1] + tb[3] / 2.0, kb[1] + kb[3] / 2.0))
+            bh = min(tb[4], c["bridge_h_mm"])
+            yb = tb[2] if top(tb) else tb[2] + tb[4] - bh
+            br = (bx0, yb, bx1 - bx0, bh)
+            extra[thin] = extra.get(thin, 0.0) + bridge_extra(c, br, tuple(tb[1:]), tuple(kb[1:]))
+            bridges.append((tb[0],) + br)
+            charge.append((len(bridges) - 1, tb[1], kb[1]))
+        moved = 0.0
+        for k, b in enumerate(bars):
+            net, x, y, w, h0 = orig[k]
+            target = bar_area(c, w, h0) - hole_area(c, h0) - extra.get(k, 0.0)
+            mine = hole if vias[k] else 0.0
+            if abs(bar_area(c, w, b[4]) - mine - target) < 1e-12:
+                continue
+            lo, hi = c["min_copper_mm"], h0
+            for _ in range(60):
+                mid = (lo + hi) / 2
+                lo, hi = (mid, hi) if bar_area(c, w, mid) - mine < target else (lo, mid)
+            if lo < c["min_copper_mm"] + 1e-9:
+                raise SystemExit(f"tooth {idx(b)}: paying for its bridge takes it below the fab floor")
+            moved = max(moved, abs(lo - b[4]))
+            b[2], b[4] = (y if top(b) else y + h0 - lo), lo
+        if moved < 1e-9:
+            break
+    else:
+        raise SystemExit("bridge compensation did not settle")
+    for k, v in vias.items():
+        if v:
+            b = bars[k]
+            r = c["via_dia_mm"] / 2.0
+            assert b[2] + r - 1e-9 <= v[2] <= b[2] + b[4] - r + 1e-9, f"via off its bar at tooth {idx(b)}"
+    out = dict(bars=[tuple(b) for b in bars], bridges=bridges, charge=charge,
+               vias=[vias[k] for k in range(len(bars)) if vias[k]])
+    _COPPER[key] = out
     return out
 
 
@@ -587,8 +784,13 @@ def render(c, g):
 
     # copper, one group per net
     bars = {0: [], 1: [], 2: [], 3: []}
+    holes = []
     for y0 in g["PAD_TOPS"]:
-        for net, x, y, w, h in teeth(c, g, y0):
+        cu = copper(c, g, y0)
+        for net, x, y, w, h in cu["bridges"]:
+            bars[net].append(f'<rect x="{f(x)}" y="{f(y)}" width="{f(w)}" height="{f(h)}"/>')
+        holes += cu["vias"]
+        for net, x, y, w, h in cu["bars"]:
             # Fillet each tooth's own corners. Clamped per tooth, because the
             # shortest bars are only 0.236mm tall and rx must not exceed half
             # the smaller dimension or the rect degenerates into a lozenge.
@@ -600,6 +802,11 @@ def render(c, g):
         A(f'<g id="{NET_NAME[net]}" fill="{NET_COLOR[net]}" stroke="none">')
         L.extend(bars[net])
         A('</g>')
+    # open via holes, one per bar: what the finger sees of them
+    A(f'<g id="via-holes" fill="#FFFFFF" stroke="none">')
+    for _, x, y in holes:
+        A(f'<circle cx="{f(x)}" cy="{f(y)}" r="{f(c["via_drill_mm"] / 2.0)}"/>')
+    A('</g>')
 
     # encoder
     A(f'<g id="encoder" fill="none" stroke="{INK}" stroke-width="0.3">'
@@ -738,69 +945,96 @@ def check(c, g):
     usable = g["PW"] - c["top_bottom_gap_mm"]
     r = c["pad_corner_r_mm"]
     x0, x1 = g["PAD_X0"], g["PAD_X1"]
-    y_top = g["PAD_TOPS"][0]
-    rects = teeth(c, g, y_top)
-
-    row("min copper bar >= fab floor",
-        f"{min(h for _, _, _, _, h in rects):.4f} vs {c['min_copper_mm']}mm",
-        min(h for _, _, _, _, h in rects) >= c["min_copper_mm"])
-
-    # away from the corner zones a top/bottom pair must still fill the pad
-    mids = {}
-    for _, x, y, w, h in rects:
-        if x - x0 > r and x1 - (x + w) > r:
-            mids[round(x, 6)] = mids.get(round(x, 6), 0.0) + h
-    bad = [x for x, s in mids.items() if abs(s - usable) > 1e-6]
-    row("tooth pairs fill the pad, away from the ends",
-        f"{len(mids)} columns, {usable:.2f}mm", not bad)
-
-    # nothing may poke outside the rounded outline
-    worst = 0.0
-    for _, x, y, w, h in rects:
-        for px in (x, x + w):
-            ins = corner_inset(px, x0, x1, r)
-            worst = max(worst, (y_top + ins) - y, (y + h) - (y_top + g["PW"] - ins))
-    row("no copper outside the rounded outline", f"worst overhang {worst:.4f}mm",
-        worst <= 1e-9)
-
-    # tooth fillets: must never exceed half the smaller dimension
     tf = c["tooth_fillet_mm"]
-    worst_rr, clamped = 0.0, 0
-    for _, x, y, w, h in rects:
-        rr = min(tf, w / 2.0, h / 2.0)
-        if rr < tf - 1e-9:
-            clamped += 1
-        worst_rr = max(worst_rr, rr)
-    row("tooth fillet within half the smaller side",
-        f"r={tf}mm, {clamped} of {len(rects)} teeth clamped to fit",
-        worst_rr <= tf + 1e-9)
-    row("pad ends not tapered", f"pad_corner_r_mm = {r}", True)
+    hole = math.pi * (c["via_drill_mm"] / 2.0) ** 2
+    worst = worst_rr = err = 0.0
+    clamped = nbars = nvias = nbr = nshort = ncols = 0
+    minh, bad, conn_bad = 9e9, [], []
+    for y_top in g["PAD_TOPS"]:
+        cu = copper(c, g, y_top)
+        rects = cu["bars"]
+        nbars += len(rects); nvias += len(cu["vias"]); nbr += len(cu["bridges"])
+        minh = min(minh, min(h for *_, h in rects))
+        find = lambda net, x: next(i for i, b in enumerate(rects) if b[0] == net and abs(b[1] - x) < 1e-6)
+        via_at = set()
+        for net, vx, vy in cu["vias"]:
+            k = next((i for i, b in enumerate(rects) if b[0] == net and b[1] <= vx <= b[1] + b[3]
+                      and b[2] <= vy <= b[2] + b[4]), None)
+            if k is None:
+                conn_bad.append(f"via at ({vx:.3f}, {vy:.3f}) is on no bar of its net")
+            via_at.add(k)
+        # Every column must fill the pad, except where a bar was shortened to
+        # pay for a bridge, or for the via hole it was compensated for and did
+        # not get.
+        short = {round(cx, 6) for _, cx, _ in cu["charge"]} | \
+                {round(b[1], 6) for i, b in enumerate(rects) if i not in via_at}
+        mids = {}
+        for _, x, y, w, h in rects:
+            if x - x0 > r and x1 - (x + w) > r:
+                mids[round(x, 6)] = mids.get(round(x, 6), 0.0) + h
+        bad += [x for x, sm in mids.items() if abs(sm - usable) > 1e-6 and x not in short]
+        ncols += len(mids); nshort += len(short & set(mids))
+        # every bar: a via, or a bridge chain to a bar that has one
+        linked = {}
+        for bi, cx, ox in cu["charge"]:
+            net = cu["bridges"][bi][0]
+            u, v = find(net, cx), find(net, ox)
+            linked.setdefault(u, set()).add(v); linked.setdefault(v, set()).add(u)
+        for i in range(len(rects)):
+            seen, todo = {i}, [i]
+            while todo:
+                for q in linked.get(todo.pop(), ()):
+                    if q not in seen:
+                        seen.add(q); todo.append(q)
+            if not seen & via_at:
+                conn_bad.append(f"bar at x {rects[i][1]:.3f}, pad y {y_top:.2f} reaches no via")
+        # nothing may poke outside the rounded outline; fillets in range
+        for _, x, y, w, h in rects:
+            for px in (x, x + w):
+                ins = corner_inset(px, x0, x1, r)
+                worst = max(worst, (y_top + ins) - y, (y + h) - (y_top + g["PW"] - ins))
+            rr = min(tf, w / 2.0, h / 2.0)
+            clamped += rr < tf - 1e-9
+            worst_rr = max(worst_rr, rr)
+        # THE ONE THAT MATTERS: position is read from the copper AREA ratio
+        # between the top and bottom bars. Compare the emitted area ratio --
+        # fillets, via holes and bridges all counted -- against the fraction
+        # the presence function ASKED FOR. Comparing against emitted height
+        # would be circular, since compensation works by making the heights
+        # non-linear. A bridge's own copper counts in the column of the bar
+        # that paid for it. Classify by NET, not by y: RX0/RX2 are the top
+        # bars, RX1/RX3 the bottom (ADR 0003).
+        cols = {}
+        for bi, cx, ox in cu["charge"]:
+            net = cu["bridges"][bi][0]
+            d = cols.setdefault(round(cx, 6), [0.0, 0.0])
+            d[0 if net in (0, 2) else 1] += bridge_extra(
+                c, cu["bridges"][bi][1:], rects[find(net, cx)][1:], rects[find(net, ox)][1:])
+        for i, (net, x, y, w, h) in enumerate(rects):
+            d = cols.setdefault(round(x, 6), [0.0, 0.0])
+            d[0 if net in (0, 2) else 1] += bar_area(c, w, h) - (hole if i in via_at else 0.0)
+        for i in range(g["N_TEETH"]):
+            p = presences((i + 0.5) / g["N_TEETH"] * 4.0)
+            d = cols.get(round(g["PAD_X0"] + i * g["T_PITCH"], 6))
+            if d and d[0] + d[1] > 0:
+                err = max(err, abs(d[0] / (d[0] + d[1]) - (p[0] + p[2])))
 
-    # THE ONE THAT MATTERS: position is read from the copper AREA ratio between
-    # the top and bottom bars, so fillets bend the position curve unless the
-    # heights are pre-compensated. Measure it on the emitted geometry.
-    # Compare the emitted AREA ratio against the fraction the presence function
-    # ASKED FOR. Comparing area against emitted height would be circular, since
-    # compensation works precisely by making the heights non-linear.
-    cols = {}
-    for net, x, y, w, h in rects:
-        rr = min(tf, w / 2.0, h / 2.0)
-        area = w * h - 4.0 * (rr * rr - math.pi * rr * rr / 4.0)
-        # Classify by NET, not by y. A tooth whose complement fell below the
-        # fab floor takes the FULL pad height and therefore starts at y_top
-        # whichever bar it is, so position is not a reliable classifier.
-        # RX0/RX2 are the top bars, RX1/RX3 the bottom (ADR 0003).
-        d = cols.setdefault(round(x, 6), [0.0, 0.0])
-        d[0 if net in (0, 2) else 1] += area
-    err = 0.0
-    for i in range(g["N_TEETH"]):
-        p = presences((i + 0.5) / g["N_TEETH"] * 4.0)
-        want = p[0] + p[2]
-        d = cols.get(round(g["PAD_X0"] + i * g["T_PITCH"], 6))
-        if not d or d[0] + d[1] <= 0:
-            continue
-        err = max(err, abs(d[0] / (d[0] + d[1]) - want))
-    row("fillet does not bend the position curve",
+    row("min copper bar >= fab floor", f"{minh:.4f} vs {c['min_copper_mm']}mm",
+        minh >= c["min_copper_mm"])
+    row("tooth pairs fill the pad, away from the ends",
+        f"{ncols - nshort} of {ncols} columns, {usable:.2f}mm; {nshort} short by their bridge or hole",
+        not bad)
+    row("no copper outside the rounded outline", f"worst overhang {worst:.4f}mm", worst <= 1e-9)
+    row("tooth fillet within half the smaller side",
+        f"r={tf}mm, {clamped} of {nbars} bars clamped to fit", worst_rr <= tf + 1e-9)
+    row("pad ends not tapered", f"pad_corner_r_mm = {r}", True)
+    row("every bar reaches a via, all 4 pads",
+        f"{nvias} vias, {nbr} bridges, {nbars} bars" + ("" if not conn_bad else "; " + conn_bad[0]),
+        not conn_bad)
+    row("no via in a keepout (J1's pads)", f"{len(c['via_keepouts_mm'])} keepouts, "
+        f"{c['via_keepout_clear_mm']}mm clear",
+        all(via_clear(c, vx, vy) for y_top in g["PAD_TOPS"] for _, vx, vy in copper(c, g, y_top)["vias"]))
+    row("fillets, holes, bridges do not bend the position curve",
         f"worst {err*100:.3f}% of scale = {err*g['PL']:.2f}mm on a {g['PL']:.0f}mm pad",
         err * g["PL"] < 0.5)
 

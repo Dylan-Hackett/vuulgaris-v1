@@ -5,6 +5,7 @@
     python3 tools/drc.py --keep     # judge the existing DRC.rpt, run nothing
     python3 tools/drc.py OTHER.kicad_pcb    # judge some other board
     python3 tools/drc.py --project faceplate   # the faceplate's board and DRC.rpt
+    python3 tools/drc.py --unrouted            # placed, not yet routed: see below
 
 The third form is how this gets tested: point it at a board with a known
 short and it must fail. A checker nobody has watched fail is a checker
@@ -44,11 +45,17 @@ over silk) which JLC clips at plot time and which nobody is going to fix by
 hand. Burying two real shorts in that pile is exactly how they survived.
 If a silk warning ever needs to be an error, change it in the project file
 and this will start failing on it.
+
+--unrouted is for a board that is placed and deliberately left for hand-
+routing (the faceplate, 2026-09-28): unconnected items ARE the ratsnest, so
+they are counted and shown, not failed. Every other error still fails. It is
+never the check for a board going to fab -- run it bare for that.
 """
 import os, re, sys, subprocess, collections
 import proj
 
 PCB = proj.P.pcb
+UNROUTED = "--unrouted" in sys.argv
 RPT = proj.P.drc_rpt
 KPY = ("/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework"
        "/Versions/3.9/bin/python3")
@@ -101,7 +108,7 @@ def main():
             else:
                 detail.append(lines[j].strip())
         seen[(m.group(1), sev)] += 1
-        if sev == "error":
+        if sev == "error" and not (UNROUTED and m.group(1) == "unconnected_items"):
             errors.append((m.group(1), ln.strip(), detail))
 
     # the report footer carries two counts of its own
@@ -109,7 +116,7 @@ def main():
     for label, pat in (("unconnected pads", r"Found (\d+) unconnected pads"),
                        ("footprint errors", r"Found (\d+) Footprint errors")):
         f = re.search(pat, txt)
-        if f and int(f.group(1)):
+        if f and int(f.group(1)) and not (UNROUTED and label == "unconnected pads"):
             extra.append(f"{f.group(1)} {label}")
 
     total = sum(seen.values())
@@ -130,6 +137,9 @@ def main():
         print(f"\n{len(errors) + len(extra)} DRC ERROR(S) -- these are real")
         return 1
     warn = sum(n for (k, s), n in seen.items() if s == "warning")
+    if UNROUTED:
+        print(f"\n--unrouted: {seen[('unconnected_items', 'error')]} unconnected items are the "
+              f"ratsnest, not failures. NOT a fab check.")
     print(f"\n0 errors. {warn} warnings, none fatal "
           f"(silkscreen and library overrides -- see this file's docstring).")
     return 0

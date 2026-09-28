@@ -84,11 +84,18 @@ def board(path):
             "fab": bb,
             "pads": [{"n": p.GetNumber(), "xy": pt(p.GetPosition()),
                       "net": p.GetNetname().lstrip("/"),
+                      "size": [T(p.GetSize().x), T(p.GetSize().y)],
+                      "bbox": [T(p.GetBoundingBox().GetLeft()), T(p.GetBoundingBox().GetTop()),
+                               T(p.GetBoundingBox().GetRight()), T(p.GetBoundingBox().GetBottom())],
+                      "layer": "F.Cu" if p.IsOnLayer(pcbnew.F_Cu) else "B.Cu",
                       "drill": T(p.GetDrillSize().x) if p.GetDrillSize().x else 0.0}
                      for p in f.Pads()],
         }
     ob = b.GetBoardEdgesBoundingBox()
-    return {"edges": edges, "fps": fps,
+    vias = [{"xy": pt(t.GetPosition()), "net": t.GetNetname().lstrip("/"),
+             "d": T(t.GetWidth()), "drill": T(t.GetDrillValue())}
+            for t in b.GetTracks() if isinstance(t, pcbnew.PCB_VIA)]
+    return {"edges": edges, "fps": fps, "vias": vias,
             "outer": [T(ob.GetLeft()), T(ob.GetTop()), T(ob.GetRight()), T(ob.GetBottom())]}
 print(json.dumps({"face": board(sys.argv[1]), "main": board(sys.argv[2])}))
 '''
@@ -204,7 +211,62 @@ def main():
     if n_ok:
         row(True, "panel holes on their parts", f"{n_ok} checked")
 
-    todos.append("scrub pad copper: not on the board yet (generator PAD_TOPS / PAD_X0..X1)")
+    # ---- scrub pads: the board's copper IS the generator's copper()
+    gen, _ = pg.generator()
+    cfg = dict(gen.CFG)
+    nm = json.load(open(proj.P.netmap))
+    q = lambda v: round(v, 4)
+    missing = [f"E{p}" for p in range(1, 5) if f"E{p}" not in face["fps"]]
+    if missing:
+        row(False, "scrub pads on the board", "missing " + ", ".join(missing))
+    else:
+        bad_cu, bad_via, n_cu, n_via = [], [], 0, 0
+        board_vias = {}
+        for v in face["vias"]:
+            board_vias.setdefault(v["net"], set()).add((q(v["xy"][0] - O[0]), q(v["xy"][1] - O[1]),
+                                                        q(v["d"]), q(v["drill"])))
+        for p in range(1, 5):
+            ref, cu = f"E{p}", gen.copper(cfg, g, g["PAD_TOPS"][p - 1])
+            fp = face["fps"][ref]
+            want = sorted((q(x + w / 2), q(y + h / 2), q(w), q(h), nm[ref]["1" if n == 0 else str(n + 1)])
+                          for n, x, y, w, h in cu["bars"] + cu["bridges"])
+            have = sorted((q(pp["xy"][0] - O[0]), q(pp["xy"][1] - O[1]), q(pp["size"][0]),
+                           q(pp["size"][1]), pp["net"]) for pp in fp["pads"])
+            # footprint coordinates are written to 0.1um, so compare within 1um
+            close = lambda u, v: u[4] == v[4] and all(abs(i - j) <= 0.001 for i, j in zip(u[:4], v[:4]))
+            if fp["layer"] != "F.Cu" or len(want) != len(have) or \
+                    not all(close(u, v) for u, v in zip(want, have)):
+                diff = [(u, v) for u, v in zip(want, have) if not close(u, v)]
+                bad_cu.append(f"{ref}: {fp['layer']}, {len(have)} pads vs {len(want)}"
+                              + (f", first difference {diff[0]}" if diff else ""))
+            n_cu += len(want)
+            for n, x, y in cu["vias"]:
+                net = nm[ref]["1" if n == 0 else str(n + 1)]
+                key = (q(x), q(y), q(cfg["via_dia_mm"]), q(cfg["via_drill_mm"]))
+                if key not in board_vias.get(net, ()):
+                    bad_via.append(f"{net} via at ({x:.3f}, {y:.3f})")
+                else:
+                    board_vias[net].discard(key)
+                n_via += 1
+        stray = [f"{n} ({len(s)})" for n, s in board_vias.items()
+                 if n.startswith("PAD") and s]
+        row(not bad_cu, "scrub pad copper == generator copper()",
+            f"{n_cu} bars + bridges on E1-E4, F.Cu" if not bad_cu else bad_cu[0])
+        row(not bad_via and not stray, "one via per bar, where the generator puts it",
+            f"{n_via} vias on their bar's net" if not (bad_via or stray)
+            else (bad_via[:1] + [f"extra vias on {', '.join(stray)}"])[0])
+    # The generator's via keepouts must be exactly J1's pads, read off the board.
+    if j1:
+        rows_ = {}
+        for pp in j1["pads"]:
+            (x0_, y0_), (x1_, y1_) = to_panel(pp["bbox"][:2]), to_panel(pp["bbox"][2:])
+            rows_.setdefault(round(to_panel(pp["xy"])[1], 2), []).append((x0_, y0_, x1_, y1_))
+        derived = sorted(tuple(round(v, 3) for v in (min(r[0] for r in rs), min(r[1] for r in rs),
+                                                     max(r[2] for r in rs), max(r[3] for r in rs)))
+                         for rs in rows_.values())
+        typed = sorted(tuple(round(v, 3) for v in k) for k in cfg["via_keepouts_mm"])
+        row(derived == typed, "generator via keepouts == J1's pad rows",
+            f"{len(typed)} rows" if derived == typed else f"J1 {derived} vs generator {typed}")
 
     for s in oks:
         print(f"  OK    {s}")

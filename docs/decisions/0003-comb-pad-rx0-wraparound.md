@@ -39,7 +39,8 @@ spans many teeth, so tooth quantisation never reaches the reported position valu
 - **Minimum copper enforcement.** Near a ramp end, one bar's computed height falls below
   the fab limit. Do **not** draw it as a sliver: sub-0.127mm copper etches away or comes
   out fragile. Drop the bar and hand its height to the surviving bar, which is already the
-  dominant channel at that point. The position ramp is unaffected.
+  dominant channel at that point. The position ramp is unaffected. (At 100 teeth no bar
+  falls below the floor; the thinnest, 0.197mm, are bridged — see "Connecting the bars".)
 - **Pin assignment order is not arbitrary: RX0->E00, RX1->E01, RX2->E02, RX3->E03.**
   Generate the assignment in Design Center **first**, then lay out the PCB to match.
   Swapped pins produce garbage interpolation.
@@ -75,6 +76,41 @@ riding high or low reads as a position error, alternating in sign zone by zone. 
 continuous, so it does not break monotonicity, but it varies with where each player's
 finger lands, which is the repeatability term Q1 cares about. A pad closer to a fingertip's
 width keeps it smaller. That last point is reasoning about the geometry, not a TI figure.
+
+## Connecting the bars — decided 2026-09-28
+
+The generator draws every bar as its own island: 200 per pad, 800 on the board, nothing
+joining them on L1. TI's SLAA891 slider elements (Figure 4) are each one continuous body,
+so there was no TI pattern to cross-check this against; the question was how each island
+reaches its net. Two options were weighed: a spine along each long edge (a true comb, 5
+pieces per pad, 20 vias outside the scrub surface) or **one via per bar**. Chosen: **one
+via per bar**, keeping the settled geometry.
+
+- **Open through vias**, 0.3mm drill / 0.5mm pad, **not filled or capped** (Dylan's call),
+  and open on the back too — a via open at one end only traps plating chemistry. They show
+  as 0.3mm dots in the copper.
+- Via centre 0.5mm in from the bar's **outer** edge (the pad edge), capped at mid-bar, so a
+  net's vias line up for a straight L2 bus. The hole is copper the finger does not see; it
+  goes into the same area compensation as the fillets.
+- A bar too short for the via pad (the 0.197mm slivers, two either side of each zone
+  boundary) is **bridged** along the pad edge to its same-net neighbour, and shortened to
+  pay for the bridge's copper.
+- **Keepout:** through vias come out on the back, and `J1` sits there over the edges of
+  pads 3 and 4. Inside `J1`'s pad rows a via walks inward along its bar until it clears;
+  the thin RX0 bars at the start of pad 4's zone 4 cannot, and are chain-bridged to the
+  first bar past `J1`.
+- `--check` measures the emitted area ratio with fillets, holes and bridges all counted:
+  0.00mm worst error. Uncompensated, holes alone cost 0.72mm and bridges 2.02mm.
+
+Totals: 763 vias, 37 bridges. The copper enters KiCad as four generated footprints
+(`hardware/faceplate/design/mkpads.py`), one per pad.
+
+**The L2 buses run under their own net's bars**, so they add almost nothing: a net's bus
+is shielded above by its own electrode, and there is no ground under the pads. Where a bus
+has to continue past its own stretch (RX1 under RX3, RX2 under zone-4 RX0, RX0's join under
+RX2) it runs under elements of the same pad, which are scanned in the same cycle with the
+same waveform: close to a driven shield. That reasoning still needs confirming against the
+CapTIvate Technology Guide. It is what makes the right-margin MCU placement work (Layout rules).
 
 ## Resolution and the thing that actually limits it
 
