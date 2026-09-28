@@ -4,7 +4,7 @@ Every `[unverified]` flag and unresolved conflict from `../design-state.md`, ord
 it blocks. **Nothing open here should drive a decision until it is closed.**
 
 **Resolved: Q2, Q3, Q4, Q5, Q6, Q8, Q9, Q11, Q12, Q14, Q21.** Kept below with their answers, because
-the reasoning is usually the useful part. **Still open: Q1, Q7, Q10, Q15, Q17, Q18.**
+the reasoning is usually the useful part. **Still open: Q1, Q7, Q10, Q15, Q17, Q18, Q23, Q24.**
 
 ---
 
@@ -621,3 +621,39 @@ The budget closes with CS on D1, so this is not on the critical path. But if a p
 needed, SSD1309 in 4-wire SPI generally tolerates **CS tied permanently low** when it is the
 only device on the bus. Some SSD130x controllers use CS edges to resync the command/data state
 machine. Test before relying on it.
+
+---
+
+## Q23. Keep the UART quiet while the pads are being scanned
+
+**Blocks:** nothing in hardware; it is a firmware rule the faceplate layout depends on.
+**Status: OPEN** (raised 2026-09-28, faceplate layout).
+
+`J1` is fixed by the main board in the gap between pads 3 and 4, and its signal row sits on
+the back behind pad 4's top edge. No routing moves that. So the UART must not toggle during
+a CapTIvate conversion: the MSP430 holds its reports until a scan is done, and the Daisy
+only transmits when asked (request/response), so `MSP430_RXD` is idle while the pads are
+being measured. The lines themselves run in the gap over an L3 ground strip, away from the
+pad copper.
+
+**How to close:** write it into the protocol when the touch firmware is written, then check
+on the bench that no conversion ever overlaps a frame (scope `MSP430_TXD` / `MSP430_RXD`
+against a GPIO toggled around the scan).
+
+---
+
+## Q24. Is a trace under same-pad, same-cycle elements really shielded?
+
+**Blocks:** confidence in the faceplate's L2 routing, not the routing itself.
+**Status: OPEN** (raised 2026-09-28).
+
+The faceplate brings each pad's four lines to the right margin under their own pad on L2:
+RX1's bus runs on under the RX3 bars, RX2's under zone 4's RX0, and RX0's join under RX2.
+The argument that this is harmless is that a pad's four elements are one pin from each
+CapTIvate block, measured in the same cycle and driven with the same waveform, so to a
+trace below them they act close to a driven shield (ADR 0003, "Connecting the bars"). That
+is reasoning, not a TI statement.
+
+**How to close:** find it in the CapTIvate Technology Guide (parallel scanning / mutual
+capacitance between elements of one sensor) or measure it on the first board: a finger
+over zone 4 must not move RX1's count more than over any other non-RX1 zone.

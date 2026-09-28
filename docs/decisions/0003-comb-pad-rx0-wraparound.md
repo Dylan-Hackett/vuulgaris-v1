@@ -159,10 +159,22 @@ players at once. Keep the marks away from it.
   nearby pour is the dominant parasitic contributor. Hatched ground at distance if needed.
 - Decoupling caps and ESD parts right at the MCU.
 - Route digital lines to the main board away from electrodes, ideally exiting the opposite edge.
+  **Not possible here (2026-09-28):** `J1` is fixed by the main board in the gap between pads
+  3 and 4. The UART, 3V3, RST and TEST run from it along that gap on L4, over a narrow L3
+  ground strip kept ~2.5mm off both pads' copper, into the right margin. The gap carries
+  nothing else. Firmware keeps the UART quiet during scans ([Q23](../notes/open-questions.md)).
 - Stackup: L1 electrodes, L2 traces, L3 hatched ground, L4 MCU + components. RX0's
   full-length return cannot run under the electrodes on the same layer.
 - MCU placement: centre of the pad group, to equalise trace length across all four pads.
   Unequal lengths give unequal baselines.
+  **Superseded for this board (2026-09-28): the MCU is in the right margin.** The rule assumes
+  pads arranged around a chip. Ours are four long strips stacked on top of each other: at the
+  centre, pads 1 and 4 would reach it only by running four lines each under pads 2 and 3
+  (measured in other cycles, so they really couple), and the MCU, crystal and UART would sit
+  behind the centre printed mark of pads 2 and 3. From the right margin every pad's lines run
+  to the right end under their own pad and nothing runs under another pad. Every pad's route
+  has the same shape, which is what equal lengths were for; within a pad the lengths differ
+  (RX3 short, RX1 long), and CapTIvate calibrates each element on its own.
 - Avoid electrodes at PCB edges, which weakens ground shielding.
 
 ## Why ratio encoding matters more than expected
