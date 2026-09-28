@@ -86,6 +86,10 @@ for blk in blocks(T):
                           r' \(size ([\d.]+) ([\d.]+)\)[\s\S]*?(?=\n    \(pad "|\n  \)|\n    \(model)', blk):
         pin, typ, shape = pm.group(1), pm.group(2), pm.group(3)
         lx, ly = float(pm.group(4)), float(pm.group(5))
+        # A pad's angle in the file is its ABSOLUTE orientation (footprint's included),
+        # and absent when that is 0 -- not "absent, so use the footprint's". Taking the
+        # footprint's stood the faceplate U1's pins on end (flipped, turned 90) and
+        # reported 27 overlaps with the neighbouring pins' tracks that were not there.
         prot = float(pm.group(6) or 0)
         w, h = float(pm.group(7)), float(pm.group(8))
         if shape == 'custom':
@@ -99,7 +103,7 @@ for blk in blocks(T):
         nm = re.search(r'\(net (\d+)', pm.group(0))
         thru = typ in ('thru_hole', 'np_thru_hole')
         PADS.append(dict(x=ax + lx * ca + ly * sa, y=ay - lx * sa + ly * ca, w=w, h=h,
-                         shape=shape, rad=rad, rot=(ang if prot == 0 else prot), ref=ref, pin=pin,
+                         shape=shape, rad=rad, rot=prot, ref=ref, pin=pin,
                          net=int(nm.group(1)) if nm else 0, thru=thru,
                          lay='*' if thru else ('B.Cu' if '"B.Cu"' in pm.group(0).split('(net')[0] else 'F.Cu')))
 SEG = [dict(x1=float(m.group(1)), y1=float(m.group(2)), x2=float(m.group(3)), y2=float(m.group(4)),
