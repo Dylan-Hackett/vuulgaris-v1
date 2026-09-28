@@ -36,10 +36,21 @@ CFG = {
     "pad_gap_mm":          8.0,   # was 9.0; 1mm off each of 3 gaps to fit
                                   # the shorter panel. Width stays 10.0 --
                                   # that is the sensitivity number, ADR 0003 floor.
-    # Depth override. None = the original Salamis 1.933:1 ratio (154.29mm).
-    # 129 was chosen 2026-08-09 to shrink the footprint WITHOUT touching the gap.
-    "panel_h_mm":        130.81,   # was 139.0. Shrunk 2026-08-26: the board
-                                  # bottoms out at 116.81 on U1, panel = board + 14.
+    # Depth. The COMPOSITION is laid out in this frame and every panel part's y
+    # comes out of it, scaled, so changing it RE-FLOWS the panel and moves all
+    # 24 panel parts on a routed main board. None = the original Salamis 1.933:1
+    # ratio (154.29mm). 129 was chosen 2026-08-09 to shrink the footprint without
+    # touching the gap; 130.81 on 2026-08-26 as board + 14 (board then 116.81).
+    "composition_h_mm":  130.81,
+    # Size changes since then go on OUTSIDE the frame, as pure extensions.
+    # +2 at the top (jack) edge, 2026-09-27: the main board's top edge and the
+    # wall moved out 2mm on 2026-09-23. Every panel y grows by exactly this, and
+    # place.py's OY is 7.000 + this. --check proves the offset is pure.
+    "panel_top_extra_mm":    2.0,
+    # +5 at the bottom (back) edge, 2026-09-27: the board slides 6mm along y to
+    # clear the jacks, so the cavity is 1 + 118.81 + 6 = 125.81, not board + 2,
+    # and the panel covers the box to both outer faces. Moves nothing.
+    "panel_bottom_extra_mm": 5.0,
 
     # ---- copper: comb teeth -------------------------------------------------
     "teeth_per_zone":       25,   # x4 zones = 100 teeth/pad
@@ -179,6 +190,12 @@ CFG = {
     # nothing checked against an enclosure.
     "inset_composition": True,
     "panel_screw_inset_mm": 3.0,  # from panel edge, into the wall top
+    # What the cavity has to hold along y (design-state "Assembly"): the jack
+    # wall's 1mm assembly gap, the main board, and the travel it slides to put
+    # its jacks through that wall. --check asserts the panel covers exactly this.
+    "front_gap_mm":        1.0,
+    "main_pcb_h_mm":     118.81,  # 2026-09-23, after the 2mm top-edge extension
+    "slide_travel_mm":     6.0,
 
     "fab_output":        False,   # True = explicit mm size, flush edges
     "view_margin_mm":     10.0,   # breathing room around the panel on screen
@@ -208,15 +225,22 @@ def derive(c):
     g["PL"], g["PW"], g["GAP"] = PL, PW, GAP
     g["PITCH"] = PW + GAP
     g["PANEL_W"] = PL * (580.0 / 420.0)          # pad is 420/580 of panel width
-    # Height was locked to the Salamis 1.933:1 ratio. panel_h_mm now overrides it
-    # so depth can be reduced independently of the pad length. X and Y therefore
-    # need SEPARATE scales; using one for both is what tied them together.
-    g["PANEL_H"] = c["panel_h_mm"] or g["PANEL_W"] * (300.0 / 580.0)
+    # Height was locked to the Salamis 1.933:1 ratio. composition_h_mm now
+    # overrides it so depth can be reduced independently of the pad length. X and
+    # Y therefore need SEPARATE scales; using one for both is what tied them.
+    COMP_H = c["composition_h_mm"] or g["PANEL_W"] * (300.0 / 580.0)
+    TOP, BOT = c["panel_top_extra_mm"], c["panel_bottom_extra_mm"]
+    # The composition frame runs COMP_Y0..COMP_Y1 inside a panel that is TOP
+    # taller above it and BOT taller below. Nothing below reads PANEL_H to place
+    # a part: that is what keeps the extensions from re-flowing anything.
+    g["COMP_H"], g["TOP_X"], g["BOT_X"] = COMP_H, TOP, BOT
+    g["COMP_Y0"], g["COMP_Y1"] = TOP, TOP + COMP_H
+    g["PANEL_H"] = TOP + COMP_H + BOT
     g["S"] = g["PANEL_W"] / 580.0                # reference-unit -> mm, HORIZONTAL
     INSET = (c["enclosure_wall_mm"] + c["wall_clearance_mm"]) if c["inset_composition"] else 0.0
     g["INSET"] = INSET
-    g["SY"] = (g["PANEL_H"] - 2.0 * INSET) / 300.0   # reference-unit -> mm, VERTICAL
-    uy = lambda u: INSET + (u - 40.0) * g["SY"]
+    g["SY"] = (COMP_H - 2.0 * INSET) / 300.0     # reference-unit -> mm, VERTICAL
+    uy = lambda u: TOP + INSET + (u - 40.0) * g["SY"]
     g["uy"] = uy
 
     # pads: centred on the panel width
@@ -230,7 +254,7 @@ def derive(c):
     # bounded by the pad block plus the numeral row still fitting.
     g["DIV_Y"] = uy(150) + c["divider_nudge_mm"]
     block = 4 * PW + 3 * GAP
-    avail = (g["PANEL_H"] - (g["DIV_Y"] + c["below_divider_mm"])
+    avail = (g["COMP_Y1"] - (g["DIV_Y"] + c["below_divider_mm"])
              - c["numeral_row_mm"] - c["bottom_margin_mm"])
     g["BLOCK_H"], g["AVAIL"] = block, avail
     if c["center_pads_in_region"]:
@@ -238,7 +262,7 @@ def derive(c):
         # the bottom edge, and let the numeral row live in the space beneath.
         # The old behaviour subtracted the numeral row before centring, which
         # left the pads visibly high: 5.6mm above, 17.1mm below.
-        g["PAD_Y0"] = g["DIV_Y"] + (g["PANEL_H"] - g["DIV_Y"] - block) / 2.0
+        g["PAD_Y0"] = g["DIV_Y"] + (g["COMP_Y1"] - g["DIV_Y"] - block) / 2.0
     else:
         g["PAD_Y0"] = g["DIV_Y"] + c["below_divider_mm"] + max(0.0, (avail - block) / 2.0)
     g["PAD_TOPS"] = [g["PAD_Y0"] + i * g["PITCH"] for i in range(4)]
@@ -256,7 +280,7 @@ def derive(c):
     g["RULE_Y"] = [uy(r) for r in (54, 75, 96, 118, 139)]
     # OLED centred in the upper strip. Tying its top to rule 1 was what made it
     # collide with the top wall: rule 1 scales with the panel and sits near the edge.
-    g["OLED_Y"] = INSET + ((g["DIV_Y"] - INSET) - c["oled_h_mm"]) / 2.0
+    g["OLED_Y"] = TOP + INSET + ((g["DIV_Y"] - TOP - INSET) - c["oled_h_mm"]) / 2.0
     g["R2"], g["R3"], g["R4"] = g["RULE_Y"][1], g["RULE_Y"][2], g["RULE_Y"][3]
     # Switch centre-line. Computed ONCE here: the SVG, the validation box and
     # the placement rows all read it. They used to each recompute from R3,
@@ -333,9 +357,9 @@ def derive(c):
             g["MX_CY"] = [first + i * RP for i in range(NR)]
             g["BTN_CY"] = []
         else:
-            g["ENC_CY"] = 72.0
-            g["SHIFT_CY"] = 87.0
-            g["BTN_CY"] = [97.0, 106.0, 115.0, 124.0][:c.get("n_buttons", 4)]
+            g["ENC_CY"] = TOP + 72.0
+            g["SHIFT_CY"] = TOP + 87.0
+            g["BTN_CY"] = [TOP + y for y in (97.0, 106.0, 115.0, 124.0)][:c.get("n_buttons", 4)]
     return g
 
 
@@ -639,8 +663,8 @@ def render(c, g):
         # LEFT MARGIN ONLY, and confined below the divider rule.
         seq = list(c["inscription"])
         gh = c["inscription_h_mm"]
-        y0 = (g["DIV_Y"] + 6.5) if c["inscription_below_divider"] else 12.0
-        y1 = PH_ - 6.0
+        y0 = (g["DIV_Y"] + 6.5) if c["inscription_below_divider"] else g["COMP_Y0"] + 12.0
+        y1 = g["COMP_Y1"] - 6.0
         step = (y1 - y0) / (len(seq) - 1)
         dl = [archaic_glyph(ch, 8.0, y0 + i * step, gh) for i, ch in enumerate(seq)]
         A(f'<g id="inscription-left" fill="none" stroke="{INK3}" stroke-width="0.32" '
@@ -667,6 +691,8 @@ def check(c, g):
     PW_, PL = g["PANEL_W"], g["PL"]
     out.append(f"panel {PW_:.2f} x {g['PANEL_H']:.2f}mm   pad {PL}x{g['PW']}mm   "
                f"gap {g['GAP']}mm   pitch {g['PITCH']}mm")
+    out.append(f"composition {g['COMP_H']:.2f}mm, +{g['TOP_X']:.2f} at the jack edge, "
+               f"+{g['BOT_X']:.2f} at the back")
     out.append(f"teeth {g['N_TEETH']}/pad, pitch {g['T_PITCH']:.3f}mm, width {g['T_WIDTH']:.3f}mm")
     out.append("")
 
@@ -689,17 +715,19 @@ def check(c, g):
     fr = [round((g["TICK_X"][m-1] - g["PAD_X0"]) / PL, 4) for m in c["cross_at"]]
     row("crosses on clean fractions", f"{fr}", fr == [0.25, 0.5, 0.75])
     if c["center_pads_in_region"]:
-        region = g["PANEL_H"] - g["DIV_Y"]
+        region = g["COMP_Y1"] - g["DIV_Y"]
         need = g["BLOCK_H"] + c["numeral_row_mm"]
         row("pad block + numerals fit below the divider",
             f"{need:.1f} in {region:.1f}mm", need <= region + 0.01)
     else:
         row("pad block fits lower region", f"{g['BLOCK_H']:.1f} in {g['AVAIL']:.1f}mm",
             g["BLOCK_H"] <= g["AVAIL"] + 0.01)
+    # Centred in the COMPOSITION frame. The back-edge extension adds to the space
+    # below on purpose: re-centring would move ENC0 and SW4-SW9 with the pads.
     above = g["PAD_Y0"] - g["DIV_Y"]
-    below = g["PANEL_H"] - (g["PAD_TOPS"][3] + g["PW"])
-    row("pad block centred below the divider", f"{above:.2f} above / {below:.2f} below",
-        abs(above - below) < 0.05)
+    below = g["COMP_Y1"] - (g["PAD_TOPS"][3] + g["PW"])
+    row("pad block centred below the divider", f"{above:.2f} above / {below:.2f} below"
+        f" (+{g['BOT_X']:.2f} to the back edge)", abs(above - below) < 0.05)
     nb = g["PAD_TOPS"][3] + g["PW"] + c["numeral_row_mm"]
     row("bottom numerals inside the panel", f"baseline {nb:.2f} of {g['PANEL_H']:.2f}",
         nb < g["PANEL_H"] - 2.0)
@@ -948,8 +976,8 @@ def check(c, g):
     if c["salamis_marks"]:
         seq = list(c["inscription"])
         gw = c["inscription_h_mm"] * 0.58
-        y0 = (g["DIV_Y"] + 6.5) if c["inscription_below_divider"] else 12.0
-        step = (g["PANEL_H"] - 6.0 - y0) / (len(seq) - 1)
+        y0 = (g["DIV_Y"] + 6.5) if c["inscription_below_divider"] else g["COMP_Y0"] + 12.0
+        step = (g["COMP_Y1"] - 6.0 - y0) / (len(seq) - 1)
         rows = [y0 + i * step for i in range(len(seq))]
         row("inscription letters", f"{len(seq)}, left margin only", len(seq) > 0)
         row("LEFT SIDE ONLY", "right column suppressed", c["inscription_left_only"])
@@ -962,6 +990,25 @@ def check(c, g):
             max(rows) <= g["PANEL_H"] - 1.0)
         row("letters do not collide vertically", f"step {step:.2f} vs height "
             f"{c['inscription_h_mm']}mm", step > c["inscription_h_mm"] + 1.0)
+    # ---- the panel extensions ------------------------------------------------
+    # The +2 at the jack edge must be a PURE offset: place.py enforces these
+    # rows on a routed board, and anything that re-flows moves real parts.
+    # Re-derive with both extensions zeroed and compare every placement row.
+    c0 = dict(c, panel_top_extra_mm=0.0, panel_bottom_extra_mm=0.0)
+    now = {r[0]: r[2:4] for r in panel_rows(c, g)}
+    base = {r[0]: r[2:4] for r in panel_rows(c0, derive(c0))}
+    dev = max(max(abs(now[k][0] - base[k][0]), abs(now[k][1] - base[k][1] - g["TOP_X"]))
+              for k in base)
+    pad_dev = max(abs(a - b - g["TOP_X"]) for a, b in zip(g["PAD_TOPS"], derive(c0)["PAD_TOPS"]))
+    row("panel extensions move nothing but y += top",
+        f"{len(now)} parts + 4 pads, worst {max(dev, pad_dev):.2e}mm off +{g['TOP_X']:.3f}",
+        sorted(now) == sorted(base) and max(dev, pad_dev) < 1e-9)
+    cav = g["PANEL_H"] - 2 * c["enclosure_wall_mm"]
+    cav_need = c["front_gap_mm"] + c["main_pcb_h_mm"] + c["slide_travel_mm"]
+    row("panel covers the box the board slides into",
+        f"cavity {cav:.2f} = {c['front_gap_mm']:g} gap + {c['main_pcb_h_mm']:g} board"
+        f" + {c['slide_travel_mm']:g} travel", abs(cav - cav_need) < 1e-6)
+
     # --- check the OUTPUT, not just the geometry -----------------------------
     # Everything above reads `g` and `c`. None of it had ever looked at what
     # render() actually emits, so the two shared no code path: render() spent a
@@ -992,22 +1039,10 @@ def check(c, g):
     return "\n".join(out), ok
 
 
-def placement(c, g):
-    """Emit hardware/placement-panel-facing.txt.
-
-    This is the ONLY place these coordinates should come from. The file used to
-    say it was generated here while actually being hand-maintained, which meant
-    the panel artwork and the PCB placement could drift apart silently.
-    """
-    L = []
-    A = L.append
-    A("# Vuulgaris V1 panel-facing placement, generated from mockups/generate-faceplate.py")
-    A("#   python3 mockups/generate-faceplate.py --placement > hardware/placement-panel-facing.txt")
-    A("# ORIGIN: panel top-left corner. X right, Y DOWN. Millimetres.")
-    A(f"# Panel {g['PANEL_W']:.3f} x {g['PANEL_H']:.3f}mm. All parts on the MAIN PCB,")
-    A("# protruding through faceplate openings, EXCEPT the pads which are faceplate copper.")
-    A("")
-    A(f"{'REF':<7} {'PART':<42} {'X':>9} {'Y':>9}  NOTE")
+def panel_rows(c, g):
+    """(ref, part, x, y, note) for every main-board part that comes through the
+    panel. placement() prints these and check() diffs them, so the file and the
+    purity check can never be looking at different lists."""
     rows = []
     for i, cx in enumerate(g["CH_CX"]):
         for j, cy in enumerate((g["R2"], g["R4"])):
@@ -1047,7 +1082,26 @@ def placement(c, g):
         for k, cy in enumerate(g["BTN_CY"]):
             rows.append((f"SW{4+k}", f"tactile, UI button {k+1}", g["BTN_CX"], cy,
                          f"-> MCP23017 U4 GPA{4+k}"))
-    for ref, part, x, y, note in rows:
+    return rows
+
+
+def placement(c, g):
+    """Emit hardware/placement-panel-facing.txt.
+
+    This is the ONLY place these coordinates should come from. The file used to
+    say it was generated here while actually being hand-maintained, which meant
+    the panel artwork and the PCB placement could drift apart silently.
+    """
+    L = []
+    A = L.append
+    A("# Vuulgaris V1 panel-facing placement, generated from mockups/generate-faceplate.py")
+    A("#   python3 mockups/generate-faceplate.py --placement > hardware/placement-panel-facing.txt")
+    A("# ORIGIN: panel top-left corner. X right, Y DOWN. Millimetres.")
+    A(f"# Panel {g['PANEL_W']:.3f} x {g['PANEL_H']:.3f}mm. All parts on the MAIN PCB,")
+    A("# protruding through faceplate openings, EXCEPT the pads which are faceplate copper.")
+    A("")
+    A(f"{'REF':<7} {'PART':<42} {'X':>9} {'Y':>9}  NOTE")
+    for ref, part, x, y, note in panel_rows(c, g):
         A(f"{ref:<7} {part:<42} {x:9.3f} {y:9.3f}  {note}")
     A("")
     A("# FACEPLATE COPPER (layer 1, exposed, no soldermask):")
@@ -1058,20 +1112,29 @@ def placement(c, g):
     A(f"# ENCLOSURE: {c['enclosure_wall_mm']:.0f}mm walls all round, panel screws onto the wall tops")
     cav_w = g["PANEL_W"] - 2 * c["enclosure_wall_mm"]
     cav_h = g["PANEL_H"] - 2 * c["enclosure_wall_mm"]
-    A(f"#   cavity        {cav_w:.2f} x {cav_h:.2f}mm")
-    A(f"#   MAIN PCB MAX  {cav_w - 2:.1f} x {cav_h - 2:.1f}mm")
-    A("#   PCB ORIGIN sits at panel (%.3f, %.3f); pcb = panel - that offset"
-      % (c["enclosure_wall_mm"] + 0.995, c["enclosure_wall_mm"] + 1.0))
+    A(f"#   cavity        {cav_w:.2f} x {cav_h:.2f}mm = {c['front_gap_mm']:g} gap + "
+      f"{c['main_pcb_h_mm']:g} board + {c['slide_travel_mm']:g} slide travel")
+    A(f"#   MAIN PCB MAX  {cav_w - 2:.1f}mm wide")
+    # ORG is sheet (100, 50) in vuulgaris.kicad_pcb, the board's top-left corner
+    # until its top edge moved out 2mm on 2026-09-23. The panel grew the same
+    # 2mm at the same edge (panel_top_extra_mm), so ORG sits that far below the
+    # board's edge, which sits the front gap inside the wall.
+    wall = c["enclosure_wall_mm"]
+    A("#   PCB ORG (sheet 100, 50) sits at panel (%.3f, %.3f); pcb = panel - that offset"
+      % (wall + 0.995, wall + c["front_gap_mm"] + g["TOP_X"]))
+    A("#   (place.py OX, OY). The board's top edge is at panel y %.3f, %gmm inside the wall."
+      % (wall + c["front_gap_mm"], c["front_gap_mm"]))
     return "\n".join(L)
 
 
 if __name__ == "__main__":
     cfg = dict(CFG)
     args = sys.argv[1:]
-    for a in list(args):
-        if a.startswith("--set"):
-            i = args.index(a)
-            kv = a.split("=", 1)[1] if "=" in a else args[i + 1]
+    # Every --set counts. This used args.index(a), which finds the FIRST --set
+    # each time, so a second or third override silently re-applied the first.
+    for i, a in enumerate(args):
+        if a == "--set" or a.startswith("--set="):
+            kv = a.split("=", 1)[1] if a.startswith("--set=") else args[i + 1]
             k, v = kv.split("=")
             cfg[k] = type(CFG[k])(float(v)) if not isinstance(CFG[k], tuple) else CFG[k]
     if "--fab" in args:

@@ -688,12 +688,13 @@ The one electrical change worth knowing is the 0.25mm `VBUS` neck from J11's
 A4/B9 pads to the wide feed, stretched 0.7 → 2.7mm — about 5mΩ, 7mV at the
 1.4A budget.
 
-**Still owed: the faceplate.** The enclosure's front wall moved 2mm outward
-relative to the board, so the faceplate needs 2mm more at the jack edge and
-every panel y grows by 2. The knobs themselves do not move. `place.py`'s `OY`
-goes 7.000 → 9.000 in the same commit as the regenerated
-`placement-panel-facing.txt`, or it will move all 24 panel parts 2mm. Nothing
-on the main board changes.
+**Faceplate caught up 2026-09-27.** The enclosure's front wall moved 2mm outward
+relative to the board, so the faceplate took 2mm more at the jack edge and every
+panel y grew by exactly 2.000; the knobs themselves did not move. `place.py`'s
+`OY` went 7.000 → 9.000 in the same commit as the regenerated
+`placement-panel-facing.txt`, and `place.py --check` still reports all 24 on
+their holes. The faceplate also took 5mm at the back, to cover the 6mm of slide
+travel: **137.81mm** overall. Nothing on the main board changed.
 
 ---
 
