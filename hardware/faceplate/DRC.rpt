@@ -1,31 +1,28 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/faceplate/vuulgaris-faceplate.kicad_pcb **
-** Created on 2026-09-28 15:42:54 **
+** Created on 2026-09-28 15:54:39 **
 
-** Found 46 DRC violations **
+** Found 51 DRC violations **
 [track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(328.9950 mm, 162.8250 mm): Track [/MSP430_RXD] on B.Cu, length 7.0050 mm
+    @(351.2000 mm, 162.9750 mm): Track [/MSP430_RXD] on B.Cu, length 26.3000 mm
 [track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(326.4550 mm, 162.3750 mm): Track [/MSP430_TXD] on B.Cu, length 9.5450 mm
-[track_dangling]: Track has unconnected end
-    Local override; Severity: warning
-    @(331.5350 mm, 163.2750 mm): Track [/MSP_RST] on B.Cu, length 4.4650 mm
-[track_dangling]: Track has unconnected end
-    Local override; Severity: warning
-    @(323.9150 mm, 161.9000 mm): Track [/P3V3_MSP430] on B.Cu, length 12.0850 mm
+    @(362.0000 mm, 161.6750 mm): Track [/MSP430_TXD] on B.Cu, length 15.5000 mm
 [via_dangling]: Via is not connected or connected on only one layer
     Local override; Severity: warning
     @(380.3000 mm, 124.2500 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
 [track_dangling]: Track has unconnected end
     Local override; Severity: warning
     @(377.1430 mm, 121.9530 mm): Track [/PAD1_RX3] on In1.Cu, length 0.6500 mm
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(390.9200 mm, 130.2500 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
 [track_dangling]: Track has unconnected end
     Local override; Severity: warning
     @(377.1430 mm, 139.9540 mm): Track [/PAD2_RX3] on In1.Cu, length 0.6500 mm
+[via_dangling]: Via is not connected or connected on only one layer
+    Local override; Severity: warning
+    @(380.3000 mm, 136.2500 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
+[track_dangling]: Track has unconnected end
+    Local override; Severity: warning
+    @(375.9579 mm, 148.9535 mm): Track [/PAD3_RX0] on In1.Cu, length 1.8350 mm
 [via_dangling]: Via is not connected or connected on only one layer
     Local override; Severity: warning
     @(383.5000 mm, 136.2500 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
@@ -34,16 +31,22 @@
     @(265.7979 mm, 155.4535 mm): Track [/PAD3_RX1] on In1.Cu, length 111.9950 mm
 [via_dangling]: Via is not connected or connected on only one layer
     Local override; Severity: warning
-    @(388.0000 mm, 136.2500 mm): Via [/PAD3_RX2] on F.Cu - B.Cu
-[track_dangling]: Track has unconnected end
-    Local override; Severity: warning
-    @(319.7979 mm, 149.7535 mm): Track [/PAD3_RX2] on In1.Cu, length 57.9950 mm
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
     @(390.9200 mm, 136.2500 mm): Via [/PAD3_RX3] on F.Cu - B.Cu
 [track_dangling]: Track has unconnected end
     Local override; Severity: warning
     @(377.1430 mm, 157.9540 mm): Track [/PAD3_RX3] on In1.Cu, length 0.6500 mm
+[via_dangling]: Via is not connected or connected on only one layer
+    Local override; Severity: warning
+    @(380.3000 mm, 142.2500 mm): Via [/PAD4_RX0] on F.Cu - B.Cu
+[track_dangling]: Track has unconnected end
+    Local override; Severity: warning
+    @(375.9579 mm, 166.9535 mm): Track [/PAD4_RX0] on In1.Cu, length 1.8350 mm
+[via_dangling]: Via is not connected or connected on only one layer
+    Local override; Severity: warning
+    @(383.5000 mm, 142.2500 mm): Via [/PAD4_RX1] on F.Cu - B.Cu
+[track_dangling]: Track has unconnected end
+    Local override; Severity: warning
+    @(265.7979 mm, 173.4535 mm): Track [/PAD4_RX1] on In1.Cu, length 111.9950 mm
 [track_dangling]: Track has unconnected end
     Local override; Severity: warning
     @(377.1430 mm, 175.9540 mm): Track [/PAD4_RX3] on In1.Cu, length 0.6500 mm
@@ -52,10 +55,10 @@
     @(383.9000 mm, 144.3500 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(366.6000 mm, 159.6000 mm): Circle on B.Silkscreen
+    @(381.7000 mm, 159.8000 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
-    @(363.6000 mm, 159.6000 mm): Circle on B.Silkscreen
+    @(362.4000 mm, 160.2250 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(391.3200 mm, 144.3500 mm): Circle on B.Silkscreen
@@ -140,60 +143,64 @@
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(380.7000 mm, 144.3500 mm): Circle on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(380.6000 mm, 160.2000 mm): Reference 'R3'
+    @(381.1100 mm, 159.5400 mm): Line on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(351.2000 mm, 162.9750 mm): Circle on B.Silkscreen
+    @(352.8200 mm, 162.6250 mm): Footprint Text 'RX' of TP6
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(345.9300 mm, 160.0250 mm): Footprint Text '3V3' of TP3
+    @(344.0000 mm, 160.3750 mm): Circle on B.Silkscreen
+[silk_overlap]: Silkscreen overlap
+    Rule: board setup constraints silk; Severity: warning
+    @(342.8300 mm, 158.9000 mm): Footprint Text 'GND' of TP4
+    @(340.9000 mm, 159.2500 mm): Circle on B.Silkscreen
 
-** Found 13 unconnected pads **
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(382.7176 mm, 128.6534 mm): Track [/GND] on B.Cu, length 3.0068 mm
-    @(384.2824 mm, 125.6466 mm): Track [/GND] on B.Cu, length 0.1165 mm
+** Found 10 unconnected pads **
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(391.6200 mm, 137.1500 mm): Pad 2 [/GND] of D34 on B.Cu
     @(388.7839 mm, 131.2339 mm): Track [/GND] on B.Cu, length 5.8322 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
+    @(384.2000 mm, 125.5642 mm): Track [/GND] on B.Cu, length 0.4142 mm
+    @(381.0000 mm, 125.1500 mm): Pad 2 [/GND] of D11 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(385.2500 mm, 143.8181 mm): Track [/GND] on B.Cu, length 0.3819 mm
     @(389.4600 mm, 142.3900 mm): Track [/GND] on B.Cu, length 1.0748 mm
-    @(385.1199 mm, 144.0699 mm): Track [/GND] on B.Cu, length 0.1301 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(360.0000 mm, 160.0000 mm): Track [/MSP430_RXD] on B.Cu, length 1.0732 mm
-    @(328.9950 mm, 162.8250 mm): Track [/MSP430_RXD] on B.Cu, length 7.0050 mm
+    @(384.0331 mm, 160.2000 mm): Track [/MSP430_RXD] on B.Cu, length 0.7831 mm
+    @(351.2000 mm, 162.9750 mm): Track [/MSP430_RXD] on B.Cu, length 26.3000 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(365.1500 mm, 160.0000 mm): Pad 2 [/MSP430_TXD] of R2 on B.Cu
-    @(356.4000 mm, 160.0000 mm): Pad 1 [/MSP430_TXD] of TP5 on B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(326.4550 mm, 162.3750 mm): Track [/MSP430_TXD] on B.Cu, length 9.5450 mm
-    @(356.4000 mm, 160.0000 mm): Pad 1 [/MSP430_TXD] of TP5 on B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
+    @(362.0000 mm, 161.6750 mm): Track [/MSP430_TXD] on B.Cu, length 15.5000 mm
     @(385.7000 mm, 158.1000 mm): Pad 4 [/MSP430_TXD] of U1 on B.Cu
-    @(365.1500 mm, 160.0000 mm): Pad 2 [/MSP430_TXD] of R2 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(345.6000 mm, 160.0000 mm): Track [/MSP_RST] on B.Cu, length 7.1784 mm
-    @(331.5350 mm, 163.2750 mm): Track [/MSP_RST] on B.Cu, length 4.4650 mm
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(323.9150 mm, 161.9000 mm): Track [/P3V3_MSP430] on B.Cu, length 12.0850 mm
-    @(349.2000 mm, 160.0000 mm): Track [/P3V3_MSP430] on B.Cu, length 1.5685 mm
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(390.9200 mm, 131.1500 mm): Track [/PAD2_RX3] on B.Cu, length 1.2500 mm
-    @(373.7979 mm, 140.1261 mm): Track [/PAD2_RX3] on In1.Cu, length 3.9987 mm
+    @(375.9579 mm, 148.9535 mm): Track [/PAD3_RX0] on In1.Cu, length 1.8350 mm
+    @(380.3000 mm, 138.4000 mm): Pad 1 [/PAD3_RX0] of R31 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(265.7979 mm, 155.4535 mm): Track [/PAD3_RX1] on In1.Cu, length 111.9950 mm
-    @(383.5000 mm, 137.1500 mm): Track [/PAD3_RX1] on B.Cu, length 1.2500 mm
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(319.7979 mm, 149.7535 mm): Track [/PAD3_RX2] on In1.Cu, length 57.9950 mm
-    @(388.0000 mm, 137.1500 mm): Track [/PAD3_RX2] on B.Cu, length 1.2500 mm
+    @(383.5000 mm, 138.4000 mm): Pad 1 [/PAD3_RX1] of R32 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(373.7979 mm, 158.1261 mm): Track [/PAD3_RX3] on In1.Cu, length 3.9987 mm
     @(390.9200 mm, 137.1500 mm): Track [/PAD3_RX3] on B.Cu, length 1.2500 mm
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(375.9579 mm, 166.9535 mm): Track [/PAD4_RX0] on In1.Cu, length 1.8350 mm
+    @(380.3000 mm, 143.1500 mm): Track [/PAD4_RX0] on B.Cu, length 1.2500 mm
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(265.7979 mm, 173.4535 mm): Track [/PAD4_RX1] on In1.Cu, length 111.9950 mm
+    @(383.5000 mm, 143.1500 mm): Track [/PAD4_RX1] on B.Cu, length 1.2500 mm
 
 ** Found 0 Footprint errors **
 

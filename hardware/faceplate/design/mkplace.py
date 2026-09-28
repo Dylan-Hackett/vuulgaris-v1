@@ -94,18 +94,31 @@ PLACE = {
     "C1": (278.55, 112.85, "1", "up"),     # 10uF DVCC bulk
     "C4": (280.725, 112.9, "1", "up"),     # 1nF C0G on RST
     "R1": (282.775, 112.85, "2", "up"),    # 47k RST pull-up
-    # UART pull-ups (SLAU550 3.3.2.1: on the TCK / TMS nets, no distance given) at the end
-    # of the test-pad row, where 3V3, TXD and RXD all run past.
-    "R2": (264.4, 110.0, "1", "left"),     # 47k TXD
-    "R3": (267.4, 110.0, "1", "left"),     # 47k RXD
+    # UART pull-ups (SLAU550 3.3.2.1: on the TCK / TMS nets, no distance given). R2 stands
+    # across the corridor's 3V3 and TXD lines, which run side by side; R3 cannot -- TXD runs
+    # between 3V3 and RXD -- so it sits in the margin under U1, beside RXD's pin (5).
+    "R2": (262.0, 111.025, "1", "up"),     # 47k TXD: pin 1 on the 3V3 line, pin 2 on TXD
+    "R3": (282.5, 110.2, "1", "left"),     # 47k RXD: pin 1 3V3, pin 2 toward pin 5
 }
 # Test pads in the gap between pads 3 and 4, beside J1, where TEST, RST, 3V3, GND and the
 # UART all arrive anyway: one row along the corridor's top edge, so J1's lines run clear
 # underneath, labelled on silk by signal (the main board's rule: the silk carries what it
 # is, not TPn). The UART pull-ups lie at the end of the row.
 TP_LABEL = {"TP1": "TEST", "TP2": "RST", "TP3": "3V3", "TP4": "GND", "TP5": "TX", "TP6": "RX"}
-for k, ref in enumerate(TP_LABEL):
-    PLACE[ref] = (242.0 + k * 3.6, 110.0, None, None)
+# The corridor's lines (design/mkescape.py draws them): out of J1's channel they fan out
+# to these heights, 1.3 apart, and run straight to the margin. Each test pad sits ON its
+# own line -- a tap, not a detour -- staggered along x so no pad reaches the next line.
+# RXD keeps the height it leaves J1's channel at and the others fan away from it, so every
+# neighbouring pair diverges (fanned about a common point, RXD bent up toward TXD's corner
+# and came 0.197mm off it).
+CORRIDOR_Y = {"P3V3_MSP430": 110.375, "MSP430_TXD": 111.675, "MSP430_RXD": 112.975,
+              "MSP_RST": 114.275, "MSP_TEST": 115.575}
+for ref, x, lane in (("TP3", 244.0, "P3V3_MSP430"), ("TP5", 247.6, "MSP430_TXD"),
+                     ("TP6", 251.2, "MSP430_RXD"), ("TP2", 254.8, "MSP_RST"),
+                     ("TP1", 258.4, "MSP_TEST")):
+    PLACE[ref] = (x, CORRIDOR_Y[lane], None, None)
+# SBW GND, above the lines, tracked to J1's GND via; clear of J1's courtyard (to 239.5)
+PLACE["TP4"] = (240.9, 109.25, None, None)
 
 # Silk: where each reference goes (panel mm, and whether it stands on end), placed by the
 # silk's real extents so no reference lands on a body. None = off the silk, onto B.Fab.
@@ -115,7 +128,7 @@ REF_AT = {
     "Y1": (290.9, 117.45, False),
     "C5": (285.55, 113.4, False), "C6": (285.55, 115.9, False),
     "C1": (278.55, 115.65, False), "C4": (280.725, 115.7, False), "R1": (282.775, 115.65, False),
-    "R2": (264.4, 111.9, False), "R3": (267.4, 111.9, False),
+    "R2": (263.6, 111.025, False), "R3": (280.6, 110.2, False),
 }
 REF_AT.update({ref: None for ref in TP_LABEL})
 for _p in range(1, 5):
@@ -207,7 +220,8 @@ def main():
         t.SetLayer(pcbnew.B_SilkS)
         t.SetMirrored(True)
         x, y = PLACE[ref][:2]
-        text_at(t, x, y + 2.2, False)
+        # to its right, a touch high: clear of the next pad's circle, 1.3 lower
+        text_at(t, x + 1.0 + 0.31 * len(label), y - 0.35, False)
         tp.Add(t)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     pcbnew.SaveBoard(P.pcb, b)
