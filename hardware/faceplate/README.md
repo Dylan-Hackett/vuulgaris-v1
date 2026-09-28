@@ -234,6 +234,8 @@ design/netmap.json            the intent
 design/design.py              symbols, sheet positions, footprints (read by mksch.py)
 design/values.json            Value fields
 design/mkboard.py             the one-shot board bootstrap
+design/mklib_msp430.py        U1's symbol and PT0048A footprint, into the shared library;
+                              the pin table twice (Figure 7-1, Table 7-1), checked equal
 DRC.rpt                       from tools/drc.py --project faceplate
 ```
 
