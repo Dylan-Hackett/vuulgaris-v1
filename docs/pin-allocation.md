@@ -602,16 +602,29 @@ column of Table 7-2.
 4 pads x 4 electrodes. This consumes the entire self-cap capacity, and it constrains
 everything else.
 
-| Block | Signals | PT pins |
-|---|---|---|
-| CAP0 | CAP0.0-0.3 | 23, 24, 25, 26 |
-| CAP1 | CAP1.0-1.3 | 27, 28, 29, 30 |
-| CAP2 | CAP2.0-2.3 | 32, 33, 34, 35 |
-| CAP3 | CAP3.0-3.3 | 36, 37, 38, 39 |
+**Corrected 2026-09-28: each pad takes ONE PIN FROM EACH BLOCK, not one block.** Pads are
+numbered 1-4 from the jack edge. Element `E0n` is block `CAPn`, so `RXn` of pad `p` goes to
+`CAPn.(p-1)`:
 
-Put **each pad's four electrodes in one block** so they are measured in parallel. The part has
-exactly four blocks, one per pad. Element order within a pad is `RX0->E00, RX1->E01, RX2->E02,
-RX3->E03`.
+| Pad | RX0 -> E00 | RX1 -> E01 | RX2 -> E02 | RX3 -> E03 |
+|---|---|---|---|---|
+| 1 | CAP0.0 (23) | CAP1.0 (27) | CAP2.0 (32) | CAP3.0 (36) |
+| 2 | CAP0.1 (24) | CAP1.1 (28) | CAP2.1 (33) | CAP3.1 (37) |
+| 3 | CAP0.2 (25) | CAP1.2 (29) | CAP2.2 (34) | CAP3.2 (38) |
+| 4 | CAP0.3 (26) | CAP1.3 (30) | CAP2.3 (35) | CAP3.3 (39) |
+
+A block measures **one pin at a time**: SLASEO5D §9.10.14, "4 CapTIvate measurement blocks to
+enable parallel scanning of up to 4 electrodes simultaneously (**one electrode per block**)".
+The CapTIvate Technology Guide's 4-element slider figure (Design Guide, "Sliders and Wheels")
+labels the blocks themselves E00-E03 and says "Select one pin from each CAP IO block"; the
+same pin number in every block puts all four elements in one measurement cycle. So each pad
+is one cycle with all four elements in parallel, and the four pads are four cycles.
+
+This table used to put each pad's four electrodes in **one block** (pad 1 = CAP0.0-0.3, and
+so on). That measures a pad's elements in four separate cycles with the idle ones held at
+ground -- the linearity loss [ADR 0002](decisions/0002-msp430fr2675-for-touch.md) chose a
+four-block part to avoid. The cost of the fix is fan-out: a pad's four lines leave the
+package from four places instead of four neighbouring pins.
 
 ### Serial link: eUSCI_A and eUSCI_B do NOT share pins
 
