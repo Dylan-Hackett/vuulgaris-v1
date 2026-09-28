@@ -101,3 +101,27 @@ part("R3", "R", "R0603", (315, 300))       # 47k   P1.5 RXD / TMS
 part("Y1", "Crystal", "XTAL-SMD_FC-135_3.2x1.5mm", (360, 300))
 part("C5", "C", "C0603", (390, 300))       # 22pF C0G  XIN
 part("C6", "C", "C0603", (415, 300))       # 22pF C0G  XOUT
+
+# ---------------------------------------------------------------- the pads
+# Sixteen CapTIvate lines, four per pad, each pad ONE PIN FROM EACH BLOCK:
+# RXn of pad p on CAPn.(p-1), so a pad's four elements are measured in one
+# cycle, in parallel (SLASEO5D 9.10.14, "one electrode per block"; the
+# CapTIvate Technology Guide's 4-element slider figure; pin-allocation.md).
+# Pads are numbered 1-4 from the jack edge.
+#
+# Per line, from the CapTIvate Technology Guide, Design Guide, "Electrostatic
+# Discharge (ESD)": "Populate a 470-1k ohm resistor in series with the
+# electrode ... with a protection clamp such as a TVS diode placed between the
+# electrode and ground (return) on the electrode side of the resistor"; the
+# guide names TPD1E10B06. So: electrode net PADp_RXn -- TVS Dpn to GND --
+# series R Rpn -- pin net CAPn.(p-1). 470R, the low end of TI's range and the
+# value TI gives for its RX series resistors. 16 of each (ADR 0004): RX0's two
+# ends are pins 1 and 5 of Ep, both on PADp_RX0, joined ahead of the TVS.
+# Both TVS pins are "ESD Protected I/O. Connect other pin ground": pin 1 goes
+# to the electrode, pin 2 to GND.
+for _p in range(1, 5):
+    _y = 360 + (_p - 1) * 65
+    part(f"E{_p}", "SCRUB_PAD_5SEG", "", (90, _y))
+    for _n in range(4):
+        part(f"D{_p}{_n + 1}", "D_TVS", "X1SON-2_DPY0002A", (180 + _n * 55, _y))
+        part(f"R{_p}{_n + 1}", "R", "R0603", (420 + _n * 25, _y))
