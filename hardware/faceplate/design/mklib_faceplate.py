@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
-"""Write the MSP430FR2675TPT symbol and its PT0048A footprint into the shared
-library (hardware/kicad/lib). Re-runnable: it replaces its own symbol block and
-footprint file, and touches nothing else.
+"""Write the faceplate's own library parts into the shared library
+(hardware/kicad/lib). Re-runnable: it replaces its own symbol blocks and
+footprint files, and touches nothing else.
 
-    python3 hardware/faceplate/design/mklib_msp430.py
+    python3 hardware/faceplate/design/mklib_faceplate.py
+
+  MSP430FR2675TPT               symbol, U1
+  LQFP-48_7x7mm_P0.5mm_PT0048A  footprint, U1
+  XTAL-SMD_FC-135_3.2x1.5mm     footprint, Y1 (Epson FC-135)
+  X1SON-2_DPY0002A              footprint, the electrode TVS (TI TPD1E10B06DPYR)
+  SCRUB_PAD_5SEG                symbol, E1-E4: one scrub pad, five segments
+
+U1 first.
 
 The pinout is transcribed TWICE from TI SLASEO5D (Sept 2021), from two different
 presentations, and the script refuses to write unless they agree pin for pin:
@@ -161,10 +169,9 @@ def symbol():
     return "\n".join(out) + "\n"
 
 
-def write_symbol():
+def write_symbol(name, block):
     s = open(SYM_LIB).read()
-    block = symbol()
-    m = re.search(r'\n  \(symbol "%s".*?\n  \)\n' % re.escape(SYM_NAME), s, re.S)
+    m = re.search(r'\n  \(symbol "%s".*?\n  \)\n' % re.escape(name), s, re.S)
     if m:
         s = s[:m.start() + 1] + block + s[m.end():]
     else:
@@ -216,9 +223,117 @@ def footprint():
     return "\n".join(L) + "\n"
 
 
+# ------------------------------------------------------------------ Y1, FC-135
+# Epson FC-135 32.768kHz, Q13FC13500004 (LCSC C32346, JLC Basic). From Epson's
+# sheet (datasheets/Epson-FC-135-32.768kHz.pdf, p.1): "4. Footprint
+# (Recommended)" two pads 1.0 x 1.8, centres 2.5 apart; "3. External
+# dimensions" 3.2 x 1.5 x 0.8. "Do not design any circuit patterns in the
+# shaded area" -- the 1.5mm between the pads -- is a keepout zone here, so DRC
+# enforces it. Not polarised; #1 and #2.
+XT_NAME = "XTAL-SMD_FC-135_3.2x1.5mm"
+
+
+def xtal():
+    w = '(stroke (width 0.1) (type solid))'
+    ws = '(stroke (width 0.12) (type solid))'
+    L = [f'(footprint "{XT_NAME}" (version 20221018) (generator pcbnew)',
+         '  (layer "F.Cu")',
+         '  (descr "Epson FC-135 32.768kHz crystal, 3.2 x 1.5 x 0.8. Land pattern from Epson\'s '
+         'recommended footprint: pads 1.0 x 1.8, centres 2.5 apart; no copper between the pads")',
+         '  (tags "crystal 32.768kHz FC-135 3215")',
+         '  (property "LCSC Part" "C32346")',
+         '  (attr smd)',
+         '  (fp_text reference "REF**" (at 0 -2) (layer "F.SilkS") (effects (font (size 1 1) (thickness 0.15))))',
+         f'  (fp_text value "{XT_NAME}" (at 0 2) (layer "F.Fab") (effects (font (size 1 1) (thickness 0.15))))',
+         f'  (fp_rect (start -1.6 -0.75) (end 1.6 0.75) {w} (fill none) (layer "F.Fab"))',
+         f'  (fp_line (start -0.6 -1.05) (end 0.6 -1.05) {ws} (layer "F.SilkS"))',
+         f'  (fp_line (start -0.6 1.05) (end 0.6 1.05) {ws} (layer "F.SilkS"))',
+         '  (fp_rect (start -2.0 -1.15) (end 2.0 1.15) (stroke (width 0.05) (type solid)) (fill none) (layer "F.CrtYd"))',
+         '  (pad "1" smd rect (at -1.25 0) (size 1.0 1.8) (layers "F.Cu" "F.Paste" "F.Mask"))',
+         '  (pad "2" smd rect (at 1.25 0) (size 1.0 1.8) (layers "F.Cu" "F.Paste" "F.Mask"))',
+         '  (zone (net 0) (net_name "") (layer "F.Cu") (hatch edge 0.5)',
+         '    (connect_pads (clearance 0))',
+         '    (min_thickness 0.25)',
+         '    (keepout (tracks not_allowed) (vias not_allowed) (pads allowed) (copperpour not_allowed) (footprints allowed))',
+         '    (fill (thermal_gap 0.5) (thermal_bridge_width 0.5))',
+         '    (polygon (pts (xy -0.75 -0.9) (xy 0.75 -0.9) (xy 0.75 0.9) (xy -0.75 0.9)))',
+         '  )',
+         ')']
+    return "\n".join(L) + "\n"
+
+
+# ------------------------------------------------------------------ TVS, DPY0002A
+# TI TPD1E10B06DPYR, X1SON-2 (LCSC C48260). From TI's drawing 4224561/C in the
+# TPD1E10B06 datasheet (SLLSEB1G, datasheets/TI-TPD1E10B06-datasheet.pdf):
+# p.20 "LAND PATTERN EXAMPLE" 2X (0.3) x 2X (0.5), centres (0.7), R0.05, with
+# SOLDER MASK DEFINED marked PREFERRED -- metal under the mask by 0.07 min all
+# around -- so the copper is 0.44 x 0.64 and the mask opening 0.3 x 0.5;
+# p.21 stencil: paste on the 0.3 x 0.5, "(0)" from the exposed pad. Body
+# 1.0 x 0.6, 0.45 max high (p.19). Both pins are "ESD Protected I/O. Connect
+# other pin ground" (Table 4-1); pin 1 goes to the electrode by convention.
+TVS_NAME = "X1SON-2_DPY0002A"
+
+
+def tvs():
+    w = '(stroke (width 0.1) (type solid))'
+    L = [f'(footprint "{TVS_NAME}" (version 20221018) (generator pcbnew)',
+         '  (layer "F.Cu")',
+         '  (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: '
+         'openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")',
+         '  (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")',
+         '  (property "LCSC Part" "C48260")',
+         '  (attr smd)',
+         '  (fp_text reference "REF**" (at 0 -1) (layer "F.SilkS") (effects (font (size 0.6 0.6) (thickness 0.1))))',
+         f'  (fp_text value "{TVS_NAME}" (at 0 1) (layer "F.Fab") (effects (font (size 0.6 0.6) (thickness 0.1))))',
+         f'  (fp_rect (start -0.5 -0.3) (end 0.5 0.3) {w} (fill none) (layer "F.Fab"))',
+         '  (fp_rect (start -0.82 -0.57) (end 0.82 0.57) (stroke (width 0.05) (type solid)) (fill none) (layer "F.CrtYd"))']
+    for n, x in (("1", -0.35), ("2", 0.35)):
+        L.append(f'  (pad "{n}" smd roundrect (at {x} 0) (size 0.44 0.64) (layers "F.Cu" "F.Paste" "F.Mask") '
+                 '(roundrect_rratio 0.1136) (solder_mask_margin -0.07) (solder_paste_margin -0.07))')
+    L.append(')')
+    return "\n".join(L) + "\n"
+
+
+# ------------------------------------------------------------------ the pad
+# One scrub pad as a symbol, E1-E4, so its nets exist before its copper does
+# (the copper comes from mockups/generate-faceplate.py in the layout phase).
+# FIVE pins, one per segment along the pad, ADR 0003: RX0 RX1 RX2 RX3 RX0.
+# Pins 1 and 5 are both RX0 and the netmap puts them on ONE net -- the two end
+# groups join on the electrode side, ahead of the TVS and the series resistor
+# (ADR 0004, "16 of each").
+PAD_NAME = "SCRUB_PAD_5SEG"
+
+
+def pad_symbol():
+    f = "(effects (font (size 1.27 1.27)))"
+    names = ["RX0", "RX1", "RX2", "RX3", "RX0"]
+    out = [f'  (symbol "{PAD_NAME}" (in_bom no) (on_board yes)',
+           f'    (property "Reference" "E" (id 0) (at -15.24 6.35 0) (effects (font (size 1.27 1.27)) (justify left)))',
+           f'    (property "Value" "{PAD_NAME}" (id 1) (at -15.24 -10.16 0) (effects (font (size 1.27 1.27)) (justify left)))',
+           '    (property "Footprint" "" (id 2) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))',
+           '    (property "Datasheet" "" (id 3) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))',
+           '    (property "ki_description" "One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py" (id 4) (at 0 0 0) (effects (font (size 1.27 1.27)) hide))',
+           f'    (symbol "{PAD_NAME}_0_1"',
+           '      (rectangle (start -15.24 5.08) (end 15.24 -5.08)',
+           '        (stroke (width 0.254) (type default)) (fill (type background)))',
+           '    )',
+           f'    (symbol "{PAD_NAME}_1_1"']
+    for i, nm in enumerate(names):
+        x = -12.7 + 6.35 * i
+        out.append(f'      (pin passive line (at {x:.2f} -7.62 90) (length 2.54) '
+                   f'(name "{nm}" {f}) (number "{i + 1}" {f}))')
+    out += ['    )', '  )']
+    return "\n".join(out) + "\n"
+
+
 if __name__ == "__main__":
     check()
-    write_symbol()
+    write_symbol(SYM_NAME, symbol())
+    write_symbol(PAD_NAME, pad_symbol())
     open(FP_FILE, "w").write(footprint())
+    pretty = os.path.dirname(FP_FILE)
+    open(os.path.join(pretty, XT_NAME + ".kicad_mod"), "w").write(xtal())
+    open(os.path.join(pretty, TVS_NAME + ".kicad_mod"), "w").write(tvs())
     print(f"{SYM_NAME}: 48 pins, Figure 7-1 == Table 7-1 on every pin, 16 CAP pins checked")
-    print(f"wrote {os.path.relpath(SYM_LIB)} ({SYM_NAME}) and {os.path.relpath(FP_FILE)}")
+    print(f"wrote {SYM_NAME} and {PAD_NAME} into {os.path.relpath(SYM_LIB)}")
+    print(f"wrote {FP_NAME}, {XT_NAME}, {TVS_NAME} into {os.path.relpath(pretty)}")
