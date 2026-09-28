@@ -4,6 +4,58 @@
 the back. Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
 handoff below for the size, which is not what older docs say.
 
+## Status — 2026-09-27: KiCad project and verification loop, no circuit yet
+
+The project exists and every check in the loop passes, on a **skeleton**: the outline,
+and `J1`, the cable header, on the back over the main board's cutout. `J1` is in first
+because it is the one part whose every pin the main board already fixes. The MSP430
+and everything around it are the next phase.
+
+**`J1`'s footprint is a PLACEHOLDER** — KiCad's generic SMD 2x5 box header. It has to be
+SMD: `J12`'s through-hole C5665 here would put ten pins through the **front face**, in
+the 8mm gap between pads 3 and 4. Choose the real part from its manufacturer drawing,
+and settle pin-1 / key orientation with a real ribbon (§5).
+
+## The loop
+
+Same tools as the main board, with `--project faceplate` (`../kicad/tools/proj.py`).
+From `hardware/kicad/`, with `set -o pipefail` whenever output is piped:
+
+```bash
+python3 tools/mksch.py --project faceplate && python3 tools/netcheck.py --project faceplate
+python3 tools/boardcheck.py --project faceplate   # board pads vs netmap parity
+python3 tools/drc.py --project faceplate          # KiCad's own DRC -- the clearance authority
+python3 tools/panelcheck.py --project faceplate   # outline, holes, J1 vs the main board, the cable
+```
+
+- **Intent** is `design/netmap.json`; **symbols, sheet positions, footprints** are
+  `design/design.py`; values `design/values.json`. Never hand-edit the `.kicad_sch`.
+  `J1`'s netmap was derived from the main board's `J12`, pin for pin — the ribbon is
+  straight through — and `panelcheck` fails if the two ever disagree.
+- **`panelcheck`** is this board's `place.py --check`. It derives everything from the
+  generator, the placement file, and the main board itself (its `J12` and the Edge.Cuts
+  cutout). Parts not placed or not yet sized are **TODO**, not failures; run it with
+  `--strict` before plotting a fab package and every TODO fails.
+- **Pin cache:** `design/kpins.json` is untracked. Rebuild it, from the repo root, with
+  exactly this argument list (stock libraries first, the shared project library last):
+
+  ```bash
+  python3 hardware/kicad/tools/ksym.py --project faceplate /Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols/*.kicad_sym hardware/kicad/lib/vuulgaris.kicad_sym
+  ```
+- **The board** was bootstrapped once by `design/mkboard.py` (KiCad's Python; it refuses
+  to overwrite). From here it is edited like the main board's: scripted through pcbnew,
+  or by hand in Pcbnew — and after a script writes, **File → Revert** before touching it.
+- **Coordinates:** the faceplate board is drawn in panel coordinates, sheet = panel +
+  (100, 50) (`panelgeo.FACE_ORG`). Panel y runs from the jack edge.
+- The library is **shared** with the main board (`../kicad/lib/`, via this project's
+  `sym-lib-table` / `fp-lib-table`). Footprints named `lib:name` in `design.py` come
+  from elsewhere; a bare name means `vuulgaris.pretty`.
+- DRC's one warning is `J1`'s stock footprint not resolving in headless pcbnew; it goes
+  when the real part is in the project library.
+- Every check has been watched failing: a swapped netmap pin (netcheck, panelcheck), a
+  track shorting pins 1 and 3 (DRC, boardcheck), `J1` moved 0.5mm or turned 180°, a pot
+  hole 0.5mm undersize or 0.3mm off (panelcheck).
+
 ## Handoff from the main board — 2026-09-24
 
 The main board is finished: DRC clean, fab package at `../vuulgaris-v1-fab.zip`. What
@@ -167,13 +219,20 @@ the table (2026-09-23): one LED per zone, 16 in all, red/amber on 3.3V or white/
 new 5V pin, driven from the MSP430 through shift registers, lit beside the zones through
 small windows and never PWM'd during a touch scan.
 
-## Contents (expected)
+## Contents
 
 ```
 vuulgaris-faceplate.kicad_pro / .kicad_sch / .kicad_pcb
-pads.svg          from ../../mockups/generate-faceplate.py, true mm scale
-pads-ti.dxf       SLAA891 OpenSCAD output, for cross-checking pads.svg
+sym-lib-table, fp-lib-table   point at ../kicad/lib, shared with the main board
+design/netmap.json            the intent
+design/design.py              symbols, sheet positions, footprints (read by mksch.py)
+design/values.json            Value fields
+design/mkboard.py             the one-shot board bootstrap
+DRC.rpt                       from tools/drc.py --project faceplate
 ```
+
+Still to come: `pads.svg` from `../../mockups/generate-faceplate.py` at true mm scale,
+and `pads-ti.dxf`, SLAA891's OpenSCAD output for cross-checking it.
 
 ## Pad geometry
 

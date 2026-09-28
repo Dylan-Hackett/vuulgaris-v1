@@ -1,0 +1,5 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "vuulgaris")(type "KiCad")(uri "${KIPRJMOD}/../kicad/lib/vuulgaris.pretty")(options "")(descr "Shared with the main board"))
+  (lib (name "Connector_IDC")(type "KiCad")(uri "${KICAD7_FOOTPRINT_DIR}/Connector_IDC.pretty")(options "")(descr "KiCad stock; J1 placeholder only"))
+)

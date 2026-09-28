@@ -6,9 +6,9 @@ MSP430FR2675 touch faceplate. Two PCBs:
 
 - **Main board** — `hardware/kicad/`, KiCad 7, 4-layer, JLC assembly. **Finished:**
   DRC clean, fab package at `hardware/vuulgaris-v1-fab.zip`.
-- **Faceplate** — `hardware/faceplate/`. Not laid out yet. Its README opens with
-  everything the main board has already fixed for it; `KICKOFF.md` there is the prompt
-  that starts that session.
+- **Faceplate** — `hardware/faceplate/`. KiCad project and verification loop set up
+  2026-09-27 on a skeleton (outline + cable header); no circuit yet. Its README has the
+  loop, then the handoff from the main board; `KICKOFF.md` there starts the next session.
 
 ## Read first
 
