@@ -51,9 +51,15 @@ U1_XY = (284.45, 104.0)
 # columns wide enough for three traces (0.15 / 0.2) beside the next column's TVS, and the
 # middle channel wider again for C3 over pin 31.
 # Dylan moved the grid +1.25 / -0.25 in Pcbnew (2026-09-28, widening the left channel);
-# RX3's column then came back 0.73 so its TVS clear the wall (panelcheck).
-COL_X = (280.75, 283.95, 288.45, 290.92)  # RX0..RX3 = CAP0..CAP3
-ROW_Y = {1: 83.15, 2: 87.15, 3: 91.15, 4: 95.15}
+# RX3's column then came back 0.73 so its TVS clear the wall (panelcheck), and columns
+# 0-2 went 0.45 left again so RX3's channel holds its three traces past the TVS (1.57mm).
+# Rows are 5.0 apart, not 4.0: that leaves a via spot in every cell, on the column line
+# 2.9 above the R's centre -- between the TVS and the R above -- where the line comes up
+# from L2 without entering any trace channel. Row 4 stays put: the fan-out into U1 is
+# unchanged; the grid grows upward into empty margin.
+COL_X = (280.30, 283.50, 288.00, 290.92)  # RX0..RX3 = CAP0..CAP3
+ROW_Y = {1: 80.15, 2: 85.15, 3: 90.15, 4: 95.15}
+VIA_DY = -2.9                             # the electrode's via spot, from the R's centre
 TVS_DY = -2.0                             # TVS centre above its R's centre
 TVS_PIN_DX = 0.35                         # X1SON-2 pads at +-0.35: pin 1 over the R
 
@@ -70,7 +76,7 @@ PLACE = {
     "U1": (*U1_XY, "31", "up"),
     # 1uF VREG in the middle channel, over pin 31 -- left of the channel's centre, which
     # leaves RX2's three traces their 1.25mm past R43
-    "C3": (285.7, 95.875, "1", "down"),
+    "C3": (285.25, 95.875, "1", "down"),
     # Under the digital corner. Pins 1-5 (DVCC, RST, TEST, TXD, RXD) run right to left
     # along U1's bottom and 46-48 (XOUT, XIN, GND) up its right side, so C2 goes straight
     # under pin 1 and the channel under pins 2-5 stays open for the lines to J1.
@@ -102,7 +108,7 @@ for k, ref in enumerate(TP_LABEL):
 # Silk: where each reference goes (panel mm, and whether it stands on end), placed by the
 # silk's real extents so no reference lands on a body. None = off the silk, onto B.Fab.
 REF_AT = {
-    "C3": (285.7, 92.975, False),
+    "C3": (285.25, 92.6, False),
     "C2": (285.55, 111.475, False),
     "Y1": (290.9, 117.45, False),
     "C5": (285.55, 113.4, False), "C6": (285.55, 115.9, False),

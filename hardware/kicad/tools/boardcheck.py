@@ -28,7 +28,7 @@ Circles and ovals are also measured as circles and ovals; treating them as
 their bounding box invents ~0.35mm of copper at each corner and manufactured
 113 violations that did not exist.
 """
-import re, math, json, collections, sys, os
+import re, math, json, collections, sys, os, fnmatch
 import proj                     # takes --project NAME out of argv; see tools/proj.py
 
 PCB = sys.argv[1] if len(sys.argv) > 1 else proj.P.pcb
@@ -65,7 +65,11 @@ DEFAULT = CLS.get('Default', 0.2)
 
 
 def clr(n):
-    return CLS.get(NC.get(nets.get(n, ''), 'Default'), DEFAULT)
+    # KiCad's netclass patterns are wildcards (the faceplate's "/PAD*", "/CAP*");
+    # an exact-name lookup silently gave those nets the Default clearance.
+    name = nets.get(n, '')
+    cls = NC.get(name) or next((c for pat, c in NC.items() if fnmatch.fnmatchcase(name, pat)), 'Default')
+    return CLS.get(cls, DEFAULT)
 
 
 def pair_clr(a, b):
