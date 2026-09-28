@@ -93,14 +93,16 @@ absent). The Bergman licensing question is closed — see `review-packet.md`.
 | C29, C32, C33, C36, C37 | Lelon RVT electrolytic | `Lelon-RVT-electrolytic.pdf` |
 | RV1–RV6 | RK09L1240A12 | `ALPS-RK09L1240A12-pot.pdf` |
 | RT301, RT401, RT501–RT504 | 3224W | `Bourns-3224W-trimmer.pdf` |
+| J12 | BOOMELE 2.54-2*5P box header, C5665 | `BOOMELE-C5665-2x5-box-header.pdf` — from JLC's part page, fetched by hand 2026-09-28 |
 | faceplate (not on this board) | MSP430FR2675 | `TI-MSP430FR2675-datasheet.pdf` + the SLAA/SLAU docs |
 
 Every file above was opened on 2026-09-13 and confirmed to name its own part.
 
 **No datasheet, by design:** resistors, MLCCs, ferrite beads FB1/FB2 and L1/L2,
-the F1 PTC — no pin semantics. **No datasheet, gap:** J12 (2×5 IDC, C5665 —
-pin 1 orientation only) and the CoolAudio V3205SD sheet itself (vendor 403s;
-the MN3205 original and the manual cover the pinout).
+the F1 PTC — no pin semantics. **No datasheet, gap:** the CoolAudio V3205SD sheet
+itself (vendor 403s; the MN3205 original and the manual cover the pinout). J12's
+gap closed 2026-09-28: the drawing puts the pin-1 triangle on the keyed wall, as
+the footprint's silkscreen assumed (`hardware/faceplate/README.md` §5).
 
 ## Worth a reviewer's attention
 

@@ -26,8 +26,8 @@ drawing (`datasheets/hanxia-HX-JN2.54-2x5P-TP-H8.9.pdf`): pads 1.02 x 4.65 on 2.
 11.50 overall; body 20.30 x 8.90, **9.60mm seated**, under the 10mm gap. The runner-up,
 XFCN BH254VS-10P (C492446), is 10.5mm tall. The drawing marks pin 1 only by a triangle
 on the key wall, so the footprint puts pin 1 on the key-side row at that end, as KiCad's
-DIN 41651 footprint and `J12` both do. **Confirm pin 1 and the key with a real ribbon
-before ordering** (§5).
+DIN 41651 footprint and `J12` both do. **Pin 1 and the key are settled from both
+manufacturer drawings** (2026-09-28, §5).
 
 ## The loop
 
@@ -180,9 +180,8 @@ the hole in the main board, and the ribbon runs underneath to `J12`. That is wha
   in x (0.00mm), its body 1.44mm from the cutout's edge, nothing sits in the cutout, and
   nothing else is on the main board's back in the ribbon's path.
 - **`J12`'s pin 1 is at its +x end (right, viewed from the top), on the row nearest the
-  cutout.** Orient the faceplate header so the ribbon takes pin 1 to pin 1 — mock it up
-  with a real cable before ordering; the two plugs sit at different depths, so it is easy
-  to get backwards on paper.
+  cutout.** Orient the faceplate header so the ribbon takes pin 1 to pin 1 — the two plugs
+  sit at different depths, so it is easy to get backwards on paper. Done below.
 
   **Paper mock-up, 2026-09-28** (both boards read through pcbnew, panel coordinates):
 
@@ -200,14 +199,16 @@ the hole in the main board, and the ribbon runs underneath to `J12`. That is wha
   identically oriented header, so wire n lands on pin n at both ends, whatever the socket's
   own convention.
 
-  **The one link paper cannot close: `J12`'s key.** That argument needs both headers to have
-  the key on the same side of pin 1. hanxia's drawing puts its pin-1 triangle on the key wall
-  (the footprint follows it). For C5665 the repo has **no drawing** (LCSC's datasheet link is
-  dead; `datasheets/REVIEW-INDEX.md` lists it as a gap); the key position above is the
-  EasyEDA footprint's silkscreen, and LCSC's product photo is too coarse to confirm it. If
-  C5665's key were on the other wall, a keyed socket would sit 180° round at `J12` and the
-  cable would map pin n to pin 11−n -- `P3V3_MSP430` onto `GND`. JLC holds a C5665 drawing;
-  read it, or hold a real C5665 and a real ribbon, before ordering the faceplate.
+  That argument needs both headers to carry the key on the same side of pin 1 -- were
+  C5665's on the other wall, a keyed socket would sit 180° round at `J12` and the cable would
+  map pin n to 11−n, `P3V3_MSP430` onto `GND`. **Closed from both manufacturer drawings,
+  2026-09-28:** hanxia's (`datasheets/hanxia-HX-JN2.54-2x5P-TP-H8.9.pdf`) and BOOMELE's for
+  C5665 (`datasheets/BOOMELE-C5665-2x5-box-header.pdf`, from JLC's part page -- LCSC's link
+  is dead) both mould the pin-1 triangle on the **keyed wall**, at one end. So the key is on
+  the pin-1 row on both parts, which is what both footprints assume (`J12`'s silkscreen,
+  `J1`'s Fab notch). C5665's drawing also confirms `J12`'s 1.0mm holes on the 2.54 grid.
+  What is left is assembly, not design: use a straight cable, both sockets on the same face,
+  red stripe to the triangle. Plugging in the first real cable is still a free sanity check.
 - **`U7` (the DKM10, ~10mm tall, on the back) is 1.03mm from `J12`'s far side.** A plug
   sits inside the header's shroud, so it fits; run the ribbon out toward the cutout, not
   toward `U7`.
