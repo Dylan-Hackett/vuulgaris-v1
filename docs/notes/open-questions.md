@@ -254,6 +254,12 @@ list XT1 alongside REFO as a clock source, so it is a supported configuration fo
 touch link back on UART the crystal is doing real work rather than being
 insurance. Fit the footprint; populating it is a 20 cent decision made later.
 
+**2026-09-28: in the faceplate schematic.** `Y1` is an Epson FC-135 32.768kHz 12.5pF
+(`Q13FC13500004`, LCSC C32346, the only Basic 32.768kHz crystal at JLC; C0 1pF against TI's
+1.6pF max), on pins 47/46 with 22pF C0G to ground each (SLASEO5D Figure 10-2 for the topology;
+the value is 12.5pF less TI's 1pF integrated CL,eff, doubled, rounded to the nearest Basic
+part). Whether it is populated is still open.
+
 ---
 ---
 
