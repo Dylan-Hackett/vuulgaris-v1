@@ -4,12 +4,19 @@
 the back. Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
 handoff below for the size, which is not what older docs say.
 
-## Status — 2026-09-27: KiCad project and verification loop, no circuit yet
+## Status — 2026-09-28: schematic complete; the board is still the skeleton
 
-The project exists and every check in the loop passes, on a **skeleton**: the outline,
-and `J1`, the cable header, on the back over the main board's cutout. `J1` is in first
-because it is the one part whose every pin the main board already fixes. The MSP430
-and everything around it are the next phase.
+**Schematic done**, `mksch → netcheck` 145/145 over 41 nets, every block traced to a TI or
+manufacturer figure in `design/design.py`. 54 parts: `U1` MSP430FR2675TPT; `C1`/`C2`
+10µF + 100nF on DVCC, `C3` 1µF on VREG, `R1`/`C4` 47k + 1nF on RST (SLASEO5D Figures
+10-1, 10-4); `R2`/`R3` 47k on P1.4/P1.5 (SLAU550 §3.3.2.1); `Y1` FC-135 + `C5`/`C6` 22pF
+(Figure 10-2); the sixteen CapTIvate lines, **one pin from each block per pad**, each
+through a TPD1E10B06 to GND on the electrode side and a 470R series resistor (`D11`–`D44`,
+`R11`–`R44`, CapTIvate design guide); `E1`–`E4` the pads as symbols (RX0 on pins 1 and 5,
+one net); `TP1`–`TP6` SBW and UART pads; `J1`.
+
+**The board has only the outline and `J1`.** boardcheck's 135 parity mismatches are exactly
+the parts not placed yet. Layout is the next session: `KICKOFF.md`.
 
 **`J1` is the hanxia HX JN2.54-2x5P TP H8.9, LCSC C41376028** (chosen 2026-09-28).
 It has to be SMD: `J12`'s through-hole C5665 here would put ten pins through the **front

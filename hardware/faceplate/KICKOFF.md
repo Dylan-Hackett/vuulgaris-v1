@@ -1,63 +1,53 @@
-# Faceplate PCB — next session: the schematic
+# Faceplate PCB — next session: layout
 
 Paste everything below the line into a **new** Claude Code session opened in
-`/Users/dylanhackett/V1`. `CLAUDE.md` loads by itself. (The previous kickoff — settle the
-four questions, the +2mm offset, the project setup — is in git history, done 2026-09-27.)
+`/Users/dylanhackett/V1`. `CLAUDE.md` loads by itself. (The schematic kickoff is in git
+history; that session ran 2026-09-27/28, commits `d6ba15b`..`9ed8f22`.)
 
 ---
 
-We're doing the faceplate schematic for Vuulgaris V1. The KiCad project and its
-verification loop exist and pass on a skeleton (outline + the cable header `J1`). The main
-board is finished; don't change it unless a faceplate constraint forces it, and tell me
-before you do.
+We're laying out the faceplate PCB for Vuulgaris V1. The schematic is complete and
+verified (`mksch → netcheck` 145/145, 41 nets); the board is still the skeleton — outline
+and `J1` only. The main board is finished; don't change it unless a faceplate constraint
+forces it, and tell me before you do.
 
 **Read first:**
 
-1. `hardware/faceplate/README.md` — status, **the loop** (every tool takes
-   `--project faceplate`), then the handoff from the main board. §1–§7 are constraints.
-2. ADRs `0002`–`0005` and `0012` in `docs/decisions/`; `docs/pin-allocation.md`
-   (CapTIvate blocks, UART, system pins); `docs/notes/open-questions.md` Q1, Q7, Q17, Q22.
-3. `hardware/faceplate/design/design.py` and `netmap.json`, and
-   `hardware/kicad/tools/proj.py` / `panelcheck.py`, so you know what the loop checks.
-
-**Rule for this phase:** build every IC's support circuit from the manufacturer's
-reference circuit, never from first principles. Datasheets are in `datasheets/`
-(`fetch-datasheets.sh`; ask before downloading anything new). Check pin numbers against
-the datasheet's own table, not a KiCad or LCSC symbol. Say explicitly in the commit which
-parts came from a reference circuit and which did not.
+1. `hardware/faceplate/README.md` — status, **the loop** (`--project faceplate` on every
+   tool), §1–§7 constraints (§2's height table matters now), the layout checklist.
+2. `hardware/faceplate/design/design.py` — every block and the TI figure it came from.
+   `netmap.json` is the intent.
+3. ADRs `0003` (pad geometry, stackup, layout rules), `0004` (ESD network and where it
+   goes), `0005` (PGMR via `J1`, SBW pads); `docs/pin-allocation.md` (the corrected
+   one-pin-per-block CapTIvate table).
+4. `mockups/generate-faceplate.py` — the source of the pad copper.
 
 **Settle with me first, one at a time, each with your recommendation:**
 
-a. **ESD count: 16 or 20** series resistors and TVS diodes? ADR 0004 and the README say
-   20 (5 electrode segments x 4 pads); `design-state.md` §3 says 16 (4 nets per pad, since
-   RX0's two ends are one net). It turns on where RX0's two ends join relative to the
-   resistor and the TVS. TI's no-overlay guidance (SLAA843, the CapTIvate design guide) is
-   the source.
-b. **`J1`'s real part.** It must be an SMD 2x5 2.54mm shrouded box header (a through-hole
-   one puts pins through the front face between pads 3 and 4). JLC-stocked, Basic if
-   possible, checked in JLC's parts library in the browser; footprint from the
-   manufacturer drawing. Its key/pin-1 orientation gets confirmed with a real ribbon
-   (README §5); I'll do the mock-up.
-c. **The CAPTIVATE-PGMR connector**: which connector and pinout TI's PGMR expects on the
-   target, from TI's own user guide.
+a. **How the pad copper enters the board.** `E1`–`E4` are symbols with no footprint.
+   The generator's copper has to land on `PADp_RXn` nets so boardcheck and DRC see it:
+   one generated footprint per pad (custom pads), zones, or something else. Cross-check
+   the geometry against TI's SLAA891 OpenSCAD output before committing copper.
+b. **Where `U1` and its sixteen networks sit.** ADR 0003 says centre the MCU on the pad
+   group and equalise trace lengths; each pad's four lines now come from four different
+   blocks around the package. TVS on the electrode side with a short ground, 470R near the
+   pin, decoupling within millimetres. Mind §2: nothing over the main board's tall parts
+   that does not fit (every faceplate part except `J1` is ≤1.6mm -- `U1`'s LQFP max;
+   the 10µF 0805 is ≤1.45, the crystal 0.9, the TVS 0.45).
+c. **The UART's exit.** ADR 0003 wants digital lines to leave by the edge away from the
+   electrodes, but `J1` is fixed by the main board at panel (228.995, 112.5), in the gap
+   between pads 3 and 4. Say how `MSP430_TXD`/`RXD` get there without running under pads.
 
-**Then the schematic**, into `design/netmap.json` + `design/design.py`, with
-`mksch → netcheck` green after each step:
+**Then place, then stop for me to route.** Hand-routing is mine: place the parts, leave the
+ratsnest, and say what to route. The board is edited by pcbnew script or by me in Pcbnew;
+after a script writes, I File → Revert before touching it. Loop green after each step;
+panelcheck's hole TODOs are for this phase too.
 
-- MSP430FR2675TPT (LCSC C2052972): symbol + footprint into the shared library, pinout
-  checked against SLASEO5D Figure 7-1 / Table 7-2 (PT), footprint against TI's PT package
-  drawing.
-- Its supply, decoupling, VREG, RST/TEST network (SBW needs a specific RST pull-up and
-  cap — TI's hardware tools guide), from TI's reference schematics.
-- 47k pull-ups on P1.4/P1.5 (README §6). The 32.768kHz crystal on pins 46/47 with its
-  load caps (Q22).
-- The 16 CapTIvate lines, one block per pad, `RX0→E00 … RX3→E03`, through the ESD network
-  from (a). The electrodes themselves as a symbol per pad for now; their copper comes from
-  the generator in the layout phase.
-- SBW pads (TEST, RST, 3V3, GND) and test points on TX, RX, RST, TEST.
-
-Every part on the faceplate goes on the **back** and must be **SMD**: the front is exposed
-ENIG copper under the player's hand. Mind the 10mm gap's height limits (README §2).
+**Open, not blocking layout:** `J1`'s pin 1 / key with a real ribbon (I'm doing the
+mock-up); the 1nF on RST has no LCSC part yet; there is no faceplate BOM/CPL tooling yet
+(`mkbom.py` is main-board only) — chosen so far: U1 C2052972, J1 C41376028, Y1 C32346,
+TVS C48260, 22pF C1653, 470R C23179, 47k C25819, 100nF C14663, 10µF C15850, 1µF C28323.
+Q1 and Q17 are still open; the faceplate lives with them.
 
 **Rules:** `CLAUDE.md` applies throughout. Commit per logical step, no AI co-author
-trailer. Split into a new session before layout.
+trailer. Never commit a board that fails DRC.
