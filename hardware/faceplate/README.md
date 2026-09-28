@@ -4,7 +4,7 @@
 the back. Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
 handoff below for the size, which is not what older docs say.
 
-## Status — 2026-09-28: schematic complete; pad copper on the board, parts being placed
+## Status — 2026-09-28: placed, ready for routing
 
 **Schematic done**, `mksch → netcheck` 145/145 over 41 nets, every block traced to a TI or
 manufacturer figure in `design/design.py`. 54 parts: `U1` MSP430FR2675TPT; `C1`/`C2`
@@ -17,8 +17,9 @@ one net); `TP1`–`TP6` SBW and UART pads; `J1`.
 
 **Pad copper is on the board** (2026-09-28): `E1`–`E4` are generated footprints, one via
 per bar (763 vias, 37 bridges), from `design/mkpads.py`; ADR 0003, "Connecting the bars".
-boardcheck parity is 0 over 145. The other 50 footprints came in from the schematic and are
-being placed; routing is Dylan's.
+boardcheck parity is 0 over 145. **Every part is placed** (`design/mkplace.py`, one-shot; see
+"Layout" below) and DRC is 0 errors apart from the ratsnest (`drc.py --unrouted`). **Routing
+is Dylan's.**
 
 **`J1` is the hanxia HX JN2.54-2x5P TP H8.9, LCSC C41376028** (chosen 2026-09-28).
 It has to be SMD: `J12`'s through-hole C5665 here would put ten pins through the **front
@@ -278,6 +279,7 @@ design/design.py              symbols, sheet positions, footprints (read by mksc
 design/values.json            Value fields
 design/mkboard.py             the one-shot board bootstrap
 design/mkpads.py              pad footprints + E1-E4 + their vias, from the generator's copper()
+design/mkplace.py             the one-shot placement of everything else (the table above)
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
                               the pin table twice (Figure 7-1, Table 7-1), checked equal
 DRC.rpt                       from tools/drc.py --project faceplate
@@ -318,6 +320,48 @@ net.
 
 **Cross-check against TI's own SLAA891 OpenSCAD output before committing copper.**
 
+## Layout — placed 2026-09-28
+
+Settled with Dylan, in order: (a) one open via per bar (ADR 0003, "Connecting the bars");
+(b) `U1` and its networks in the **right margin**, not the centre (ADR 0003, layout rules);
+(c) the UART, 3V3, RST and TEST from `J1` along the **gap between pads 3 and 4**.
+
+All parts on B.Cu. The margin strip is panel x 277.14 (copper ends) to 292.29 (the wall's
+inner face); parts keep inside 277.6–291.3, over the Daisy (~3mm clear; nothing here is
+over 1.6mm).
+
+| where (panel) | what |
+|---|---|
+| `U1` (284.45, 104.0) | CAP pins 23–39 face **up**, digital corner (46–5) down-right. Pins 1–5 run right to left along the bottom, 46–48 up the right side |
+| two rows over the CAP pins, y 94.1 / 96.7 | the 16 470R, interleaved, in pin order left to right (block-major: CAP0 = RX0 of pads 1–4, CAP1, CAP2, CAP3); `C3` (VREG) in the slot over pin 31 |
+| a row per pad beside where its lines come in | the 16 TVS, RX0–RX3 left to right: pads 1, 2, 4 at their own band (y 67.45, 85.45, 120.5); pad 3's band holds `U1`, so its row is at y 91.8 |
+| under pin 1 | `C2` 100nF |
+| right edge, y ~110–114 | `Y1` stood on end, `C5` (XIN) / `C6` (XOUT) beside its pads |
+| where the lines from `J1` enter the margin | `C1` 10µF, then `C4` / `R1` (RST RC) |
+| in the gap by `J1`, x 240–252 | `TP1`–`TP6`, and `R2` / `R3` (UART pull-ups) |
+
+**What to route:**
+
+1. **Pads → margin, on L2.** Each net's vias are collinear: top-bar vias 0.5mm below the pad's
+   top edge, bottom-bar vias 0.5mm above its bottom edge (shorter bars at mid-bar). Run each net's
+   bus straight under its own bars, then carry it on to the pad's right end under the same pad:
+   top edge RX0 (zone 1) → under RX2 → joins RX0 (zone 4); RX2 → under zone-4 RX0; bottom edge
+   RX1 → under RX3. Nothing crosses under another pad ([Q24](../../docs/notes/open-questions.md)).
+   Pad 3's bottom vias under `J1` sit ~2.2mm in from the edge; pad 4's first five zone-4 RX0 bars
+   have no via (bridged along the edge). No ground under any of it.
+2. **Margin:** line → its TVS pin 1 (TVS pin 2 to a GND via, short) → its 470R pin 1 → the CAP
+   pin. The R rows are in pin order, so the fan-out does not cross; the upper row's traces pass
+   between the lower row's resistors.
+3. **The gap between pads 3 and 4, on L4:** `MSP430_TXD`, `MSP430_RXD`, `MSP_RST`, `MSP_TEST`,
+   `P3V3_MSP430` from `J1` past the test pads to the margin, over an L3 GND strip ~3mm wide on
+   the gap's centreline.
+4. **Crystal:** XIN (47) and XOUT (46) down `U1`'s right side, XOUT on the outside (over the wall
+   band is fine: copper only).
+5. GND: L3, hatched in the margin, and **not under the pads**.
+
+Silk: ~200 silk-overlap warnings from the reference designators of the packed parts on B.Silk.
+They are warnings; tidy or hide them when routing is done.
+
 ## Pin order is load-bearing
 
 `RX0->E00, RX1->E01, RX2->E02, RX3->E03`. Generate the assignment in Design Center **first**,
@@ -340,14 +384,15 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 
 - [ ] No ground pour under electrodes or their traces
 - [ ] RX0 end groups connected as one net, return on L2, not under electrodes
-- [ ] MCU centred on the pad group, trace lengths equalised
+- [x] MCU placement: right margin, not centred (ADR 0003, layout rules, 2026-09-28)
 - [ ] No electrode within the edge keepout
-- [ ] Digital lines exit the opposite edge from the electrodes
+- [x] Digital lines: along the gap between pads 3 and 4 to `J1`, which the main board fixes
+      (ADR 0003); UART quiet during scans ([Q23](../../docs/notes/open-questions.md))
 - [x] Minimum copper 0.15mm everywhere, no slivers at ramp ends (0.165mm, bridged)
 - [x] CAPTIVATE-PGMR connection: `J1` itself, by jumpering the ribbon's `J12` end to the
       PGMR (ADR 0005, revised 2026-09-28). No separate connector.
-- [ ] 4 SBW test pads present (TEST, RST, 3V3, GND)
-- [ ] Test points on UART Tx/Rx, RST, TEST (there is no IRQ line — `pin-allocation.md`)
+- [x] 4 SBW test pads present (TEST, RST, 3V3, GND): `TP1`–`TP4`, beside `J1`
+- [x] Test points on UART Tx/Rx, RST, TEST (there is no IRQ line — `pin-allocation.md`): `TP5`, `TP6`
 - [x] Soldermask opening over all pad copper (one opening per pad; vias open both sides)
 - [ ] Usable scrub region marked inside the copper, or copper extended past the printed scale
       (endpoint trim eats a few mm at each end)
