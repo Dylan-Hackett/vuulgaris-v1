@@ -183,6 +183,31 @@ the hole in the main board, and the ribbon runs underneath to `J12`. That is wha
   cutout.** Orient the faceplate header so the ribbon takes pin 1 to pin 1 — mock it up
   with a real cable before ordering; the two plugs sit at different depths, so it is easy
   to get backwards on paper.
+
+  **Paper mock-up, 2026-09-28** (both boards read through pcbnew, panel coordinates):
+
+  | | centre | pin 1 | odd row | key (slot) | faces |
+  |---|---|---|---|---|---|
+  | main `J12` (C5665) | (228.995, 100.5) | +x end | +y | +y wall (footprint silk) | down, from the main board's back |
+  | faceplate `J1` (hanxia) | (228.995, 112.5) | +x end | +y | +y wall (hanxia drawing) | down, from the faceplate's back |
+
+  The two headers are the **same orientation**, 12mm apart in y and at different heights;
+  the cutout is on `J12`'s +y side, `U7` on its −y side (y 82). So the cable is a plain
+  straight 10-way IDC ribbon, both sockets pressed on the **same face**, red stripe at the
+  triangle on both. It leaves `J12`'s socket toward +y (the cutout, away from `U7`), sags
+  under the main board, and rises into `J1`'s socket from its −y side: no fold, no twist.
+  Pin mapping then does not depend on the sockets at all -- each is keyed into an
+  identically oriented header, so wire n lands on pin n at both ends, whatever the socket's
+  own convention.
+
+  **The one link paper cannot close: `J12`'s key.** That argument needs both headers to have
+  the key on the same side of pin 1. hanxia's drawing puts its pin-1 triangle on the key wall
+  (the footprint follows it). For C5665 the repo has **no drawing** (LCSC's datasheet link is
+  dead; `datasheets/REVIEW-INDEX.md` lists it as a gap); the key position above is the
+  EasyEDA footprint's silkscreen, and LCSC's product photo is too coarse to confirm it. If
+  C5665's key were on the other wall, a keyed socket would sit 180° round at `J12` and the
+  cable would map pin n to pin 11−n -- `P3V3_MSP430` onto `GND`. JLC holds a C5665 drawing;
+  read it, or hold a real C5665 and a real ribbon, before ordering the faceplate.
 - **`U7` (the DKM10, ~10mm tall, on the back) is 1.03mm from `J12`'s far side.** A plug
   sits inside the header's shroud, so it fits; run the ribbon out toward the cutout, not
   toward `U7`.
