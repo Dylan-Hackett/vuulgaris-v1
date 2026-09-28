@@ -165,6 +165,11 @@ thickness. **The enclosure's outer corners take the same radius**; at 6 the cavi
 square inside corners, so the main board's outline is untouched. The cost: a panel screw
 can no longer sit in the corner — at 3mm in, its head has to clear the arc, so corner
 screws go **at least 9mm along the edge** (`panel_screw_corner_min_mm`, checked).
+
+**Panel screws — 2026-09-28:** ten M3, 3.4mm clearance holes, 3mm in from the edge into
+the wall tops: four along each long edge (x 9.00 / 102.43 / 195.86 / 289.29) and one mid-way
+down each short edge (y 68.91). Generator `panel_screws()`; the enclosure's threaded
+inserts go under them. The panel art draws the M3 pan heads.
 panelcheck checks all four corners.
 
 The generator draws **no pot or encoder holes at all** — the r=8 and r=9.2 circles in the FAB
@@ -307,7 +312,7 @@ design/values.json            Value fields
 design/mkboard.py             the one-shot board bootstrap
 design/mkpads.py              pad footprints + E1-E4 + their vias, from the generator's copper()
 design/mkplace.py             the one-shot placement of everything else (the table above)
-design/mkholes.py             the whole Edge.Cuts layer: outline (r 6 corners), panel holes, OLED window
+design/mkholes.py             the whole Edge.Cuts layer: outline (r 6 corners), panel holes, screws, OLED window
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
                               the pin table twice (Figure 7-1, Table 7-1), checked equal
 DRC.rpt                       from tools/drc.py --project faceplate
