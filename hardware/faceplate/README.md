@@ -337,12 +337,17 @@ over 1.6mm).
 | where (panel) | what |
 |---|---|
 | `U1` (284.45, 104.0) | CAP pins 23–39 face **up**, digital corner (46–5) down-right. Pins 1–5 run right to left along the bottom, 46–48 up the right side |
-| two rows over the CAP pins, y 94.1 / 96.7 | the 16 470R, interleaved, in pin order left to right (block-major: CAP0 = RX0 of pads 1–4, CAP1, CAP2, CAP3); `C3` (VREG) in the slot over pin 31 |
-| a row per pad beside where its lines come in | the 16 TVS, RX0–RX3 left to right: pads 1, 2, 4 at their own band (y 67.45, 85.45, 120.5); pad 3's band holds `U1`, so its row is at y 91.8 |
-| under pin 1 | `C2` 100nF |
-| right edge, y ~110–114 | `Y1` stood on end, `C5` (XIN) / `C6` (XOUT) beside its pads |
+| the 4 × 4 grid over the CAP pins, rows y 83.4–95.4 | the 16 networks. **Column = CapTIvate block** (RX0–RX3 at x 279.5 / 282.7 / 287.2 / 290.4, each over its own pins: CAP0 = 23–26 … CAP3 = 36–39), **row = pad** (1 at the top). Each cell is the TVS directly on top of its 470R, TVS pin 1 over R pin 1, ground pin to the right (ADR 0004: the order and a short ground are what count, and both sit by the MCU) |
+| middle channel, over pin 31 | `C3` 1µF VREG |
+| across the corner by pins 1 / 48 | `C2` 100nF |
+| right edge, y ~112–115 | `Y1` stood on end, `C5` (XIN) / `C6` (XOUT) lying beside its two pads |
 | where the lines from `J1` enter the margin | `C1` 10µF, then `C4` / `R1` (RST RC) |
-| in the gap by `J1`, x 240–252 | `TP1`–`TP6`, and `R2` / `R3` (UART pull-ups) |
+| in the gap by `J1`, x 242–265 | `TP1`–`TP6` in one row, silk-labelled `TEST RST 3V3 GND TX RX`; then `R2` / `R3` (UART pull-ups) |
+
+Pitches come from the silk (R0603's box is 1.47 × 2.93), not the library's small courtyards,
+so no reference or body overlaps another: 0 silk overlaps. The 31 silk-over-copper warnings
+are the library's R/C pin-1 dots, clipped by the mask, as on the main board. The 470Rs'
+references stand on end beside them; the TVS and test pad references are on B.Fab.
 
 **What to route:**
 
@@ -353,18 +358,16 @@ over 1.6mm).
    RX1 → under RX3. Nothing crosses under another pad ([Q24](../../docs/notes/open-questions.md)).
    Pad 3's bottom vias under `J1` sit ~2.2mm in from the edge; pad 4's first five zone-4 RX0 bars
    have no via (bridged along the edge). No ground under any of it.
-2. **Margin:** line → its TVS pin 1 (TVS pin 2 to a GND via, short) → its 470R pin 1 → the CAP
-   pin. The R rows are in pin order, so the fan-out does not cross; the upper row's traces pass
-   between the lower row's resistors.
+2. **The grid:** each line lands on its cell's TVS pin 1 / R pin 1 (a via from L2), TVS pin 2
+   takes a short GND via on its right, and the R's pin 2 runs **down the left side of its column**
+   to the pin. Every column does the same, and that order reaches 23–39 round both corners with no
+   crossing: the outermost trace in each column goes to the farthest pin.
 3. **The gap between pads 3 and 4, on L4:** `MSP430_TXD`, `MSP430_RXD`, `MSP_RST`, `MSP_TEST`,
    `P3V3_MSP430` from `J1` past the test pads to the margin, over an L3 GND strip ~3mm wide on
    the gap's centreline.
 4. **Crystal:** XIN (47) and XOUT (46) down `U1`'s right side, XOUT on the outside (over the wall
    band is fine: copper only).
 5. GND: L3, hatched in the margin, and **not under the pads**.
-
-Silk: ~200 silk-overlap warnings from the reference designators of the packed parts on B.Silk.
-They are warnings; tidy or hide them when routing is done.
 
 ## Pin order is load-bearing
 
