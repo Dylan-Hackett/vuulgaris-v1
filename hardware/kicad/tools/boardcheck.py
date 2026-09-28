@@ -153,6 +153,27 @@ def pad_pt(p, qx, qy):
     return max(math.hypot(ex, ey) - r, 0.0)
 
 
+def pad_samples(p):
+    """centre, edge midpoints and corners of a pad, a hair inside its copper, board coords"""
+    out = []
+    for fx, fy in ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)):
+        r = p.get('rad', 0.0)
+        dx, dy = fx * (p['w'] / 2 - 1e-3), fy * (p['h'] / 2 - 1e-3)
+        if fx and fy and r:                                  # pull corners onto the fillet
+            dx -= fx * r * (1 - 2 ** -0.5)
+            dy -= fy * r * (1 - 2 ** -0.5)
+        if p['rot']:
+            c, s_ = math.cos(math.radians(p['rot'])), math.sin(math.radians(p['rot']))
+            dx, dy = dx * c + dy * s_, -dx * s_ + dy * c
+        out.append((p['x'] + dx, p['y'] + dy))
+    return out
+
+
+def pads_touch(a, b):
+    return any(pad_pt(b, x, y) <= 0 for x, y in pad_samples(a)) or \
+           any(pad_pt(a, x, y) <= 0 for x, y in pad_samples(b))
+
+
 def pad_seg(p, s, N=64):
     return min(pad_pt(p, s['x1'] + i / N * (s['x2'] - s['x1']),
                       s['y1'] + i / N * (s['y2'] - s['y1'])) for i in range(N + 1)) - s['w'] / 2
@@ -179,7 +200,15 @@ for net, g in byn.items():
     for i, (ti, a) in enumerate(items):
         for j in range(i + 1, len(items)):
             tj, b = items[j]; h = False
-            if ti == 's' and tj == 's':
+            if ti == 'p' and tj == 'p':
+                # Overlapping pads of one net are one piece of copper, as KiCad counts
+                # them. The faceplate's scrub pads depend on it: a sliver bar reaches
+                # its via only through a bridge pad laid over it and its neighbour.
+                # Without this every bridge chain read as a separate island.
+                h = a['lay'] in ('*', b['lay']) or b['lay'] == '*'
+                h = h and abs(a['x'] - b['x']) <= (a['w'] + b['w']) / 2 + 1e-6 \
+                    and abs(a['y'] - b['y']) <= (a['h'] + b['h']) / 2 + 1e-6 and pads_touch(a, b)
+            elif ti == 's' and tj == 's':
                 h = a['lay'] == b['lay'] and min(p2s(a['x1'], a['y1'], b), p2s(a['x2'], a['y2'], b),
                                                  p2s(b['x1'], b['y1'], a), p2s(b['x2'], b['y2'], a)) <= (a['w'] + b['w']) / 2
             elif ti == 's' and tj == 'v': h = p2s(b['x'], b['y'], a) <= b['r'] + a['w'] / 2
