@@ -76,6 +76,7 @@ fetch "$LCSC/2fab253063cdc61bc764f9393a362f63.pdf?productCode=C213113"   BZT52C3
 fetch "$LCSC/bb373f7e3048e04274f44a753d40be09.pdf?productCode=C20608782" YLED0402Y.pdf                    # D1 D2
 fetch "$LCSC/28b7f65130241c48e650f325ce318c84.pdf?productCode=C2977553"  Lelon-RVT-electrolytic.pdf       # C29 C32 C33 C36 C37, both series
 fetch "$LCSC/72d5cba536460b3f2bac2dc6342f8983.pdf?productCode=C380211"   ALPS-RK09L1240A12-pot.pdf        # RV1-RV6
+fetch "$LCSC/ef17785fbfa211eb61af722a9283302b.pdf?productCode=C41376028" hanxia-HX-JN2.54-2x5P-TP-H8.9.pdf # faceplate J1
 fetch "$LCSC/3e8e97a55d8a459d9476aee8c031bb82.pdf?productCode=C55071"    Bourns-3224W-trimmer.pdf         # RT301 RT401 RT501-RT504
 
 # ---- will not fetch: these vendors 403 every scripted request ------------
