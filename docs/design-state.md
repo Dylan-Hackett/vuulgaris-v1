@@ -75,7 +75,7 @@ This puts RX0 on top in *both* end zones, keeping the pattern consistent across 
 
 **Minimum copper enforcement.** Near a ramp end one bar's computed height falls below the fab limit. Do **not** draw it as a sliver — sub-0.127mm copper etches away or comes out fragile. Instead drop the bar and hand its height to the surviving bar, which is already the dominant channel at that point. The position ramp is unaffected.
 
-**Working dimensions:**
+**Working dimensions** — **superseded.** The faceplate's settled numbers (216mm, 10mm wide, 8mm gap, 100 teeth at 2.16mm) are in [ADR 0003](decisions/0003-comb-pad-rx0-wraparound.md), 2026-09-27. Kept for the record:
 
 | | |
 |---|---|

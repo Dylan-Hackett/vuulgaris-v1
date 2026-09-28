@@ -46,19 +46,35 @@ spans many teeth, so tooth quantisation never reaches the reported position valu
 
 ## Working dimensions
 
+**Settled 2026-09-27** for the faceplate PCB. `mockups/generate-faceplate.py` draws exactly
+this; the table used to carry 12mm / 6mm gap / 80 teeth at 2.19mm, which were the 175mm
+pad's numbers.
+
 | | |
 |---|---|
-| Pad length | **Derived, not fixed.** The Salamis composition locks `pad length = 12 x pad pitch`, and pitch = 12mm copper + inter-pad gap. Working value **216mm** at a 6mm gap. Settle [Q17](../notes/open-questions.md) first. Was 175mm, then 150mm; both superseded. Inside TI's demonstrated 300mm. |
-| Pad width | 12mm (10-12mm is the useful band) |
-| Zone length | pad length / 4. **54mm** at the 216mm working value. |
-| Teeth per zone | 20, so 80 total (15/zone, 60 total, also fine) |
-| Tooth pitch | 2.19mm @ 80 teeth |
-| Tooth width | 1.98mm |
+| Pad length | **216mm.** Independent of the gap: the `12 x pad pitch` lock measured off the reference sketch was an artefact of pads drawn as zero-width strokes ([Q17](../notes/open-questions.md)). Was 175mm, then 150mm; both superseded. Inside TI's demonstrated 300mm. |
+| Pad width | **10mm** (10-12mm is the useful band) |
+| Inter-pad gap | **8mm**, so an 18mm pitch |
+| Zone length | pad length / 4 = **54mm** |
+| Teeth per zone | **25, so 100 total** |
+| Tooth pitch | **2.160mm** |
+| Tooth width | **1.950mm** |
 | Tooth-to-tooth gap | 0.21mm |
 | Top-to-bottom gap | 0.20mm |
-| Min copper width | 0.15mm, enforced |
+| Tooth fillet | 0.6mm, bar heights area-compensated so the fillet does not bend the position curve |
+| Min copper width | 0.15mm, enforced; thinnest bar drawn is 0.197mm |
 
 Wider than 12mm raises base capacitance without helping a lengthwise scrub.
+
+**Why 10mm and not 12.** The pitch is 18mm either way, so width and gap trade one for one.
+The gap is the untested crosstalk variable (Q17) and wants every millimetre. Bare copper
+already gives a larger signal delta than TI's overlay designs (ADR 0004), so the extra
+width buys sensitivity that is not needed and costs base capacitance. And ratio encoding has
+a weak spot across the pad: top bars are RX0/RX2 and bottom bars RX1/RX3, so a finger
+riding high or low reads as a position error, alternating in sign zone by zone. It is
+continuous, so it does not break monotonicity, but it varies with where each player's
+finger lands, which is the repeatability term Q1 cares about. A pad closer to a fingertip's
+width keeps it smaller. That last point is reasoning about the geometry, not a TI figure.
 
 ## Resolution and the thing that actually limits it
 
@@ -91,8 +107,11 @@ players at once. Keep the marks away from it.
 
 ## Tools
 
-- `mockups/comb-pad-generator.html` - parametric, live checks against fab limits, exports
-  SVG at true mm scale with one `<g>` per net.
+- `mockups/generate-faceplate.py` - **the source of the copper.** Draws the pads in place on
+  the panel, true mm scale, one `<g>` per net, and `--check` asserts the fab floor and the
+  fillet compensation on the emitted geometry.
+- `mockups/comb-pad-generator.html` - the earlier single-pad tool, live checks against fab
+  limits. Its defaults are the superseded 175mm / 12mm pad.
 - TI **SLAA891** OpenSCAD scripts generate TI's own validated pattern and export DXF.
   **Use these to cross-check the generator's output before committing copper.**
 

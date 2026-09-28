@@ -3,7 +3,7 @@
 Every `[unverified]` flag and unresolved conflict from `../design-state.md`, ordered by what
 it blocks. **Nothing open here should drive a decision until it is closed.**
 
-**Resolved: Q2, Q3, Q4, Q5, Q6, Q8, Q9, Q11, Q12, Q14.** Kept below with their answers, because
+**Resolved: Q2, Q3, Q4, Q5, Q6, Q8, Q9, Q11, Q12, Q14, Q21.** Kept below with their answers, because
 the reasoning is usually the useful part. **Still open: Q1, Q7, Q10, Q15, Q17, Q18.**
 
 ---
@@ -229,10 +229,57 @@ Whichever is chosen, **the default state on power-up should not be the runaway o
 
 ---
 
+## Q22. Does the FR2675 clock need a crystal for reliable UART?
+
+**Blocks: nothing yet, but it decides whether I2C is needed as insurance.**
+**Status: LIKELY RESOLVED by adding a crystal.**
+
+The one real failure mode for UART is clock disagreement: neither end is told the baud rate,
+each counts on its own clock, and if the MSP430 drifts far enough the link produces garbage.
+I2C does not have this problem because the master supplies the clock on a wire.
+
+From the **FR2676/FR2675 datasheet, SLASEO5D**:
+
+- On-chip 16MHz DCO with FLL, **"±1% accuracy with on-chip reference at room temperature."**
+  Good enough at 25 degrees. Less reassuring across a full temperature range.
+- **XT1 low-frequency crystal oscillator is supported**, and on the **PT package XIN is pin 47
+  and XOUT is pin 46**. Both are **unassigned in our design.**
+
+**A 32.768kHz watch crystal and two load caps, roughly $0.20, removes the risk entirely.**
+Lock the FLL to XT1 and baud accuracy stops being a question. TI's own CapTIvate power tables
+list XT1 alongside REFO as a clock source, so it is a supported configuration for touch too.
+
+**Consequence: the original reason for carrying I2C goes away**, and with the
+touch link back on UART the crystal is doing real work rather than being
+insurance. Fit the footprint; populating it is a 20 cent decision made later.
+
+---
+---
+
+# Resolved
+
 ## Q21. Do the BSL's fixed pins match our chosen runtime UART pins?
 
-**Blocks: layout.** This is a board-respin bug if it is wrong.
-**Status: OPEN. Partly answered, and the partial answer is uncomfortable.**
+**RESOLVED 2026-09-27: yes. Runtime UART and BSL are the same two wires, pins 4 and 5.**
+
+SLAU550AB does not list pins. §3.1 sends you to *"the Bootloader (BSL) section of each
+device-specific data sheet"*. That section of the device data sheet, **SLASEO5D Table 9-4 "UART BSL Pin Requirements and
+Functions"**, gives **P1.4 = data transmit, P1.5 = data receive** (and Table 9-5 gives the
+I2C BSL as P1.2 SDA / P1.3 SCL). Figure 7-1 puts P1.4/P1.5 on **PT pins 4 and 5**, the
+default UCA0 mapping the runtime UART already uses.
+
+**The remapped 44/45 fallback is dropped.** It only ever covered the BSL being on other
+pins. It also had nowhere to go: `J12` was built with all ten positions spoken for, five
+signals and five grounds.
+
+**One thing taken from SLAU550 §3.3.2.1:** P1.4/P1.5 are also TCK/TMS, and floating TCK/TMS
+raise the odds of landing in JTAG mode during the entry sequence. The faceplate puts a 47k
+pull-up on each, which also stops RXD floating while the Daisy boots. The 1nF pull-downs TI
+pairs with them are left off; they target the hardware entry sequence, which production
+does not use. Bring-up still checks that the blank chip answers on these pins.
+
+The history below is kept for the reasoning.
+
 
 Verified from **SLAU550AB** (MSP430 FRAM Devices Bootloader), September 2022:
 
@@ -273,35 +320,6 @@ answer on pins 4/5, and that nothing about pin 4's shared functions interferes.
 respin is not.
 
 ---
-
-## Q22. Does the FR2675 clock need a crystal for reliable UART?
-
-**Blocks: nothing yet, but it decides whether I2C is needed as insurance.**
-**Status: LIKELY RESOLVED by adding a crystal.**
-
-The one real failure mode for UART is clock disagreement: neither end is told the baud rate,
-each counts on its own clock, and if the MSP430 drifts far enough the link produces garbage.
-I2C does not have this problem because the master supplies the clock on a wire.
-
-From the **FR2676/FR2675 datasheet, SLASEO5D**:
-
-- On-chip 16MHz DCO with FLL, **"±1% accuracy with on-chip reference at room temperature."**
-  Good enough at 25 degrees. Less reassuring across a full temperature range.
-- **XT1 low-frequency crystal oscillator is supported**, and on the **PT package XIN is pin 47
-  and XOUT is pin 46**. Both are **unassigned in our design.**
-
-**A 32.768kHz watch crystal and two load caps, roughly $0.20, removes the risk entirely.**
-Lock the FLL to XT1 and baud accuracy stops being a question. TI's own CapTIvate power tables
-list XT1 alongside REFO as a clock source, so it is a supported configuration for touch too.
-
-**Consequence: the original reason for carrying I2C goes away**, and with the
-touch link back on UART the crystal is doing real work rather than being
-insurance. Fit the footprint; populating it is a 20 cent decision made later.
-
----
----
-
-# Resolved
 
 ## Q2. eUSCI_A / eUSCI_B pin muxing on the FR2675 PT package
 
@@ -544,10 +562,12 @@ which would have made the gap set the size of the whole instrument.
 with no thickness, so the 420/35 measurement described the drawing, not a design intent. Pad
 length and gap are now independent, and the gap costs nothing but blank panel.
 
-**The layout now uses a 9mm gap**, the maximum that fits the lower region. That is close to the
-design state's **>=10mm closest approach** guidance, where the earlier 6mm was well under it.
-So the geometry moved toward the guidance, and a bad answer here is much less expensive than it
-looked.
+**The layout uses an 8mm gap with 10mm pads**, settled for the faceplate PCB on 2026-09-27
+([ADR 0003](../decisions/0003-comb-pad-rx0-wraparound.md)). It was 9mm until the panel shrink
+took 1mm off each gap. That is close to the design state's **>=10mm closest approach**
+guidance, where the earlier 6mm was well under it, and a bad answer here is much less
+expensive than it looked. The faceplate does not answer this question; it only has to live
+with it.
 
 **Still worth measuring**, because a grounded guard strip might permit tighter spacing if the
 layout ever wants it back, and because nobody has confirmed the >=10mm figure applies to

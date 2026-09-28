@@ -26,15 +26,20 @@ and the filename `mockups/faceplate-v1-298x139.svg`, whose contents are 130.81.
   `../kicad/tools/place.py` from 7.000 to 9.000 (the comment above `ORG` explains), and
   `place.py --check` must still report all 24 panel parts on their holes. Get this wrong
   and `place.py` moves 24 parts on a routed board.
-- **+5mm more at the bottom (back) edge — a decision.** "Board + 14" leaves 1mm behind
-  the board, but the board slides in along y and needs 6mm of travel to clear the
-  jacks (`design-state.md`, "Assembly": cavity 125.81 = 1 + 118.81 + 6). A faceplate
-  covering the box to both outer faces is therefore **137.81mm**. Extra height at the
-  bottom edge moves no coordinates.
+- **+5mm more at the bottom (back) edge — DECIDED 2026-09-27: yes, 137.81mm.** "Board +
+  14" leaves 1mm behind the board, but the board slides in along y and needs 6mm of
+  travel to clear the jacks (`design-state.md`, "Assembly": cavity 125.81 = 1 + 118.81 +
+  6), so the box is 137.81 outside. A 132.81 panel on that box stops 5mm short of the
+  back wall's outer face: its back screws (3mm in) would land over the cavity, and pad 4
+  would end 0.36mm from the wall's inner face. The 5mm goes on below pad 4 and **moves no
+  coordinates**. The cost is look: the pad block now sits 6.36mm below the divider and
+  11.36mm above the bottom edge. Re-centring it would move ENC0 and SW4–SW9, which are
+  centred on the pad block, so it stays.
 
-Pads: this file says 12mm wide, 80 teeth, 6mm gap; the generator's own SVG says 10mm
-wide at 18mm pitch (8mm gap), 100 teeth. **Reconcile before any copper** (ADR 0003,
-Q17).
+Pads — **RECONCILED 2026-09-27: the generator's geometry, 10mm wide, 8mm gap, 18mm
+pitch, 100 teeth.** See "Pad geometry" below and ADR 0003. Both candidates sat on the
+same 18mm pitch, so the pad centres (and ENC0, centred on them) come out identical
+either way; this was a sensing decision, not a placement one.
 
 ### 2. Stack-up: the pots are the datum, and the faceplate is structural
 
@@ -130,42 +135,67 @@ stripe** — check it end to end with the faceplate header's orientation before 
 that board.
 
 **No I2C and no IRQ cross the cable** (`pin-allocation.md`, superseding design-state §9).
-There is **no 5V** on it unless someone adds it before the main board is ordered.
+There is **no 5V** on it, by decision (ADR 0012).
 
 ### 6. MSP430
 
 - UART on UCA0 at its **default** pins (P1.4 TXD / P1.5 RXD, pins 4/5), per
   `pin-allocation.md`. UART and I2C do not share pins (Q2, resolved).
-- **Q21 is still marked OPEN and blocks layout**: the BSL's factory-fixed pins must be the
-  ones the runtime UART uses. Moving to the default mapping should have settled it —
-  confirm against SLAU550 and close it first.
+- **Q21 CLOSED 2026-09-27.** SLAU550 §3.1 defers the BSL pins to the device datasheet;
+  SLASEO5D Table 9-4 gives the UART BSL as **P1.4 transmit / P1.5 receive**, PT pins 4/5
+  (Figure 7-1). The runtime UART and the BSL are the same two wires. The remapped
+  P5.1/P5.2 (44/45) fallback is **dropped**: it only ever covered the BSL being elsewhere,
+  and `J12` has no free position to carry it.
+- **47k pull-ups on P1.4 and P1.5.** They are also TCK/TMS, and SLAU550 §3.3.2.1 warns that
+  floating TCK/TMS raise the odds of landing in JTAG mode; the pull-ups also stop RXD
+  floating while the Daisy boots. SLAU550's 1nF pull-downs are left off: they target the
+  hardware entry sequence, which production never uses (blank-device detection, then
+  software invocation).
 - Q22: plan the crystal. SBW pads (TEST, RST, 3V3, GND) and test points on TX/RX/RST/TEST.
 
-### 7. Optional LEDs (discussed 2026-09-23, not decided)
+### 7. LEDs — DECIDED 2026-09-27: none. See ADR 0012.
 
-One LED per zone, 16 in all. On the existing 3.3V pin they must be red, amber or yellow at
-about 5mA each (80mA all on); white, blue or RGB need the 5V pin above. Drive from the
-MSP430 (2x 74HC595, or a TLC59116 on its I2C). Put the light **beside** the zones through
-small windows, not behind the electrodes, and **never PWM during a touch scan**.
+No LEDs on this faceplate, and no 5V on `J12`. The main board orders as it is. What was on
+the table (2026-09-23): one LED per zone, 16 in all, red/amber on 3.3V or white/RGB on a
+new 5V pin, driven from the MSP430 through shift registers, lit beside the zones through
+small windows and never PWM'd during a touch scan.
 
 ## Contents (expected)
 
 ```
 vuulgaris-faceplate.kicad_pro / .kicad_sch / .kicad_pcb
-pads.svg          exported from ../../mockups/comb-pad-generator.html, true mm scale
+pads.svg          from ../../mockups/generate-faceplate.py, true mm scale
 pads-ti.dxf       SLAA891 OpenSCAD output, for cross-checking pads.svg
 ```
 
 ## Pad geometry
 
 Authoritative spec is [ADR 0003](../../docs/decisions/0003-comb-pad-rx0-wraparound.md).
-Summary: 4 channels, 5 segments, 4 zones, order `RX0 RX1 RX2 RX3 RX0`, 12mm wide. **Length is
-derived, not chosen:** the Salamis composition locks `pad length = 12 x pad pitch`, so it
-follows the inter-pad gap ([Q17](../../docs/notes/open-questions.md)). Working value **216mm**
-at a 6mm gap, 80 teeth at 2.19mm pitch, minimum copper 0.15mm enforced.
+Summary: 4 channels, 5 segments, 4 zones, order `RX0 RX1 RX2 RX3 RX0`.
 
-Generate with `../../mockups/comb-pad-generator.html`. It exports SVG at true mm scale with
-one `<g>` per net, which imports cleanly as separate copper zones.
+**Settled 2026-09-27**, and what `../../mockups/generate-faceplate.py` draws:
+
+| | |
+|---|---|
+| Pad length | 216mm, independent of the gap (the "12 x pitch" lock was an artefact — Q17) |
+| Pad width | **10mm** |
+| Gap / pitch | **8mm / 18mm** |
+| Teeth | **100** (25 per zone), 2.160mm pitch, 1.950mm wide, 0.21mm apart |
+| Top-to-bottom gap | 0.20mm |
+| Tooth fillet | 0.6mm, with the bar heights area-compensated so it does not bend the position curve |
+| Min copper | 0.15mm enforced; the thinnest bar drawn is 0.197mm |
+
+Why 10/8 rather than the old 12/6: the gap is the untested crosstalk variable (Q17) and
+wants to be as wide as the pitch allows; bare copper already gives more signal than TI's
+overlay designs, so 12mm buys sensitivity that is not needed at the cost of base
+capacitance; and ratio encoding reads a finger that rides high or low across the pad as a
+position error (top bars are RX0/RX2, bottom RX1/RX3), which a pad closer to a fingertip's
+width keeps smaller. The old "80 teeth at 2.19mm" was the 175mm pad's number; at 216mm, 80
+teeth would be 2.70mm.
+
+The copper comes from `generate-faceplate.py`, not `comb-pad-generator.html`, whose
+defaults are the superseded 175mm / 12mm pad. Its SVG is true mm scale with one `<g>` per
+net.
 
 **Cross-check against TI's own SLAA891 OpenSCAD output before committing copper.**
 
