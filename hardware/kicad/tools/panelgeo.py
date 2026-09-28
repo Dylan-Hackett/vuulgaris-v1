@@ -145,10 +145,3 @@ def oled_module_centre():
     m, g = generator()
     c = m.CFG
     return (g["oled_x0"] - c["oled_hdr_to_edge_mm"] + 36.0, g["OLED_Y"] + 21.5)
-
-
-def oled_outlines():
-    """-> {"aa": .., "glass": ..} as (x0, y0, x1, y1), panel mm: the pixels and the glass,
-    from the generator (HS242L01 drawing), for the faceplate's Fab reference drawing."""
-    _, g = generator()
-    return {"aa": tuple(g["OLED_AA"]), "glass": tuple(g["OLED_GLASS"])}
