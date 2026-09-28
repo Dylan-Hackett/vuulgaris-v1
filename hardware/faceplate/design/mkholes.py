@@ -6,9 +6,7 @@
 Every hole that panelgeo sizes (each row there says which drawing it came from) becomes an
 Edge.Cuts circle at its panel centre; unsized ones are left for panelcheck to list as TODO.
 The OLED window is a rounded rectangle from panelgeo.oled_window() (the generator derives
-it from the module drawing and the stack-up). On F.Fab, for reference only, the module's
-active area (the pixels) and its glass, from the same numbers, so the window can be seen
-against both. Not fabricated. Idempotent: removes every Edge.Cuts circle,
+it from the module drawing and the stack-up). Idempotent: removes every Edge.Cuts circle,
 and every Edge.Cuts line or arc that does not touch the board outline, first.
 tools/panelcheck.py checks each hole and the window against the same sources.
 
@@ -42,7 +40,7 @@ def inner(d):
 # Collect everything to remove before removing any of it: in KiCad 7's bindings
 # b.Drawings() stops being iterable once an item has been removed.
 drawn = list(b.GetDrawings())
-for d in [d for d in drawn if d.GetLayer() == pcbnew.F_Fab or (d.GetLayer() == pcbnew.Edge_Cuts and (
+for d in [d for d in drawn if (d.GetLayer() == pcbnew.Edge_Cuts and (
         (d.GetShape() == pcbnew.SHAPE_T_CIRCLE if hasattr(d, "GetShape") else False) or inner(d)))]:
     b.Remove(d)
 n = 0
@@ -84,23 +82,6 @@ for (cx, cy), (mx, my), start, end in (
         ((x0 + r, y1 - r), (-1, 1), (x0 + r, y1), (x0, y1 - r))):
     a = shape(pcbnew.SHAPE_T_ARC)
     a.SetArcGeometry(P(*start), P(cx + mx * h, cy + my * h), P(*end))
-# ---- reference on F.Fab: the pixels and the glass, labelled
-ol = pg.oled_outlines()
-for key, label, at in (("aa", "OLED pixels (active area) %.2f x %.2f", "top"),
-                       ("glass", "OLED glass %.2f x %.2f -- black past the pixels", "bottom")):
-    gx0, gy0, gx1, gy1 = ol[key]
-    rct = shape(pcbnew.SHAPE_T_RECT)
-    rct.SetLayer(pcbnew.F_Fab)
-    rct.SetStart(P(gx0, gy0))
-    rct.SetEnd(P(gx1, gy1))
-    t = pcbnew.PCB_TEXT(b)
-    t.SetLayer(pcbnew.F_Fab)
-    t.SetText(label % (gx1 - gx0, gy1 - gy0))
-    t.SetTextSize(pcbnew.VECTOR2I(mm(1.0), mm(1.0)))
-    t.SetTextThickness(mm(0.15))
-    t.SetHorizJustify(pcbnew.GR_TEXT_H_ALIGN_LEFT)
-    t.SetPosition(P(gx0 + 1.0, gy0 + 1.4 if at == "top" else gy1 - 1.4))
-    b.Add(t)
 pcbnew.SaveBoard(proj.P.pcb, b)
 print(f"{n} holes and the OLED window ({x1 - x0:.2f} x {y1 - y0:.2f}) drawn. "
       f"File -> Revert in Pcbnew before touching it.")
