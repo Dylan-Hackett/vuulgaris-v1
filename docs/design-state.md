@@ -148,7 +148,7 @@ Direct finger-to-copper contact. This is outside TI's design assumptions (all th
 ### Tuning requires the PGMR — buy one, once
 The Design Center cannot talk to an MSP-FET or a LaunchPad eZ-FET. **CAPTIVATE-PGMR** carries a separate MSP430F5528 running HID Bridge firmware that streams live sensor data to the PC as a USB HID device. That live data view is the entire point: jitter, scan time, linearity, trim.
 
-**Put the CAPTIVATE-PGMR connector on the faceplate PCB.** TI's recommended workflow: build your custom sensing board, integrate while keeping the PGMR connector so Design Center works against real hardware, remove after testing. Tuning against the actual pads in the actual enclosure next to the actual switching supply is the only tuning that counts. Leave unpopulated on production units.
+**Put the CAPTIVATE-PGMR connector on the faceplate PCB** -- revised 2026-09-28: it is the cable header `J1`, which carries TI's six-wire PGMR set; see ADR 0005. TI's recommended workflow: build your custom sensing board, integrate while keeping the PGMR connector so Design Center works against real hardware, remove after testing. Tuning against the actual pads in the actual enclosure next to the actual switching supply is the only tuning that counts. Leave unpopulated on production units.
 
 There is **no FR2675 dev board.** TI's own recommendation for evaluating the FR2675 is CAPTIVATE-FR2676 + CAPTIVATE-PGMR. Same silicon for touch purposes (FR2676 just has 64KB/8KB vs 32KB/6KB). CAPTIVATE-BSWP is listed as required for evaluating self-cap designs and gives a reference slider baseline. The FR2676 board has a 48-pin sensor panel connector for plugging in your own test pad.
 

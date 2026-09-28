@@ -52,7 +52,7 @@ Consequence: the four sliders scan in **four sequential cycles**, so per-pad upd
 
 | Connector | Populate on production? | Why it exists |
 |---|---|---|
-| CAPTIVATE-PGMR header | **No** (DNP) | Design Center live data. Tuning against the actual pads, in the actual enclosure, next to the actual switching supply is the only tuning that counts. |
+| CAPTIVATE-PGMR | nothing to populate | Design Center live data. **The cable header `J1` is the PGMR connection** (2026-09-28): unplug the ribbon from main-board `J12` and jumper it to the PGMR; pin map in ADR 0005. |
 | SBW test pads (TEST, RST, 3V3, GND) | pads only, no connector | Free, and the recovery path. |
 
 ## Per-electrode ESD
