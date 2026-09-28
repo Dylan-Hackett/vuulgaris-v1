@@ -23,7 +23,8 @@ so 0.5 us per count**. A sensor at 250 conversion counts takes **125 us**. Refer
 agree: the CAPTIVATE-METAL panel measures everything in **920 us**, another design in under
 **2.4 ms**.
 
-Our case, with each pad's 4 elements measured in parallel as one block and 4 pads sequential:
+Our case, with each pad's 4 elements measured in parallel (one pin from each block, so one
+measurement cycle per pad; [pin-allocation.md](../pin-allocation.md)) and 4 pads sequential:
 
 | | |
 |---|---|

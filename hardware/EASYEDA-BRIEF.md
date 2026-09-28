@@ -163,15 +163,16 @@ Deliberate, it wants lower latency than a 500Hz I2C poll.
 
 ### 5.4 MSP430 and the capacitive front end
 
-**All 16 CapTIvate electrodes are used**, 4 pads x 4. Keep each pad's four electrodes
-in ONE block so they measure in parallel:
+**All 16 CapTIvate electrodes are used**, 4 pads x 4. Each pad takes ONE PIN FROM EACH
+block so its four electrodes measure in parallel (corrected 2026-09-28 -- this said one block
+per pad; see `docs/pin-allocation.md`):
 
-| Block | Signals | LQFP-48 pins |
-|---|---|---|
-| CAP0 | CAP0.0-0.3 | 23, 24, 25, 26 |
-| CAP1 | CAP1.0-1.3 | 27, 28, 29, 30 |
-| CAP2 | CAP2.0-2.3 | 32, 33, 34, 35 |
-| CAP3 | CAP3.0-3.3 | 36, 37, 38, 39 |
+| Pad | RX0 -> E00 | RX1 -> E01 | RX2 -> E02 | RX3 -> E03 |
+|---|---|---|---|---|
+| 1 | CAP0.0 (23) | CAP1.0 (27) | CAP2.0 (32) | CAP3.0 (36) |
+| 2 | CAP0.1 (24) | CAP1.1 (28) | CAP2.1 (33) | CAP3.1 (37) |
+| 3 | CAP0.2 (25) | CAP1.2 (29) | CAP2.2 (34) | CAP3.2 (38) |
+| 4 | CAP0.3 (26) | CAP1.3 (30) | CAP2.3 (35) | CAP3.3 (39) |
 
 Element order within a pad: `RX0 -> E00, RX1 -> E01, RX2 -> E02, RX3 -> E03`.
 

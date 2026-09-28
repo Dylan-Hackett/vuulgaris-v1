@@ -23,10 +23,13 @@ electrodes.
 ## Measurement blocks
 
 The FR2675 has **4 parallel measurement blocks** (confirmed for this exact part number in TI
-SLAA842). Each slider's four elements should sit in **one block** so they are measured in
-parallel. This is what buys the linearity: elements measured in separate cycles sit at
-ground potential and degrade their neighbours' linearity, which is why TI does not recommend
-devices with fewer than four blocks for sliders.
+SLAA842). A block measures one pin at a time, so each slider takes **one pin from each
+block**, the same pin number in all four: `E00` is block CAP0, `E01` CAP1, and so on (corrected
+2026-09-28; this used to say "one block per slider", which measures a slider's elements in four
+separate cycles). Pad `p` is `CAP0.(p-1)`-`CAP3.(p-1)`; the table is in
+`docs/pin-allocation.md`. This is what buys the linearity: elements measured in separate
+cycles sit at ground potential and degrade their neighbours' linearity, which is why TI does
+not recommend devices with fewer than four blocks for sliders.
 
 Consequence: the four sliders scan in **four sequential cycles**, so per-pad update rate is
 1/4 of a single-slider design. Measure it: see the tuning table in the README.
@@ -56,4 +59,5 @@ Consequence: the four sliders scan in **four sequential cycles**, so per-pad upd
 
 No overlay means ESD is on us. Per electrode: **470R-1k series resistor** plus a
 **TPD1E10B06 TVS** to ground on the **electrode side** of the resistor.
-**5 electrodes x 4 pads = 20 of each.** Place near the MCU with a low-impedance ground path.
+**4 lines x 4 pads = 16 of each**: RX0's two ends join on the electrode side first
+(ADR 0004). Place near the MCU with a low-impedance ground path.

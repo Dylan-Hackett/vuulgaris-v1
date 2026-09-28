@@ -279,11 +279,15 @@ every electrical check.
 
 ## Per-electrode ESD network
 
-5 electrodes x 4 pads = **20 of each**:
-- 470R-1k series resistor per electrode
-- TPD1E10B06 TVS between electrode and ground, on the **electrode side** of the resistor
+4 CapTIvate lines x 4 pads = **16 of each** (settled 2026-09-28; was 20, see ADR 0004):
+- RX0's two end groups join on the electrode side, first
+- TPD1E10B06 TVS between that electrode net and ground
+- 470R-1k series resistor from there to the CapTIvate pin
 
 Place near the MCU with a low-impedance ground path.
+
+Each pad takes **one pin from each CapTIvate block** (`RXn` of pad `p` to `CAPn.(p-1)`), not
+one block; `../../docs/pin-allocation.md` has the table and TI's source.
 
 ## Layout checklist
 
