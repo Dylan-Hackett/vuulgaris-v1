@@ -297,7 +297,8 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 - [ ] No electrode within the edge keepout
 - [ ] Digital lines exit the opposite edge from the electrodes
 - [ ] Minimum copper 0.15mm everywhere, no slivers at ramp ends
-- [ ] CAPTIVATE-PGMR connector present
+- [x] CAPTIVATE-PGMR connection: `J1` itself, by jumpering the ribbon's `J12` end to the
+      PGMR (ADR 0005, revised 2026-09-28). No separate connector.
 - [ ] 4 SBW test pads present (TEST, RST, 3V3, GND)
 - [ ] Test points on UART Tx/Rx, RST, TEST (there is no IRQ line — `pin-allocation.md`)
 - [ ] Soldermask opening over all pad copper

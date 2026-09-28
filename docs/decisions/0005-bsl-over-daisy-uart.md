@@ -86,6 +86,30 @@ an MSP-FET or a LaunchPad eZ-FET; the PGMR carries a separate MSP430F5528 runnin
 Bridge firmware that streams live sensor data to the PC. That live data view is the entire
 point: jitter, scan time, linearity, trim.
 
+> **REVISED 2026-09-28: the PGMR connector is `J1`, the cable header. Nothing is added.**
+> TI's CAPTIVATE-PGMR chapter (CapTIvate Technology Guide) gives the PGMR a 20-pin connector
+> and allows a custom target to use "only the required signals, power and ground using
+> wires", under about 20cm. Its UART set is six: +3.3V, GND, SBWTCK_TST, SBWTDIO_RST,
+> UART-TXD, UART-RXD. `J1` already carries exactly those six. To tune, pull the ribbon off
+> the main board's `J12` and jumper its socket to the PGMR:
+>
+> | ribbon pin | signal | PGMR 20-pin |
+> |---|---|---|
+> | 1 | `MSP_TEST` | 10, SBWTCK_TST |
+> | 3 | `MSP_RST` | 9, SBWTDIO_RST |
+> | 5 | `MSP430_RXD` | 7, HID bridge UART TXD |
+> | 7 | `MSP430_TXD` | 8, HID bridge UART RXD |
+> | 9 | `P3V3_MSP430` | 18, +3.3V to target |
+> | 2 | GND | 19, GND |
+>
+> Why not a header on the faceplate: its back faces the main board across the 10mm gap and
+> cannot be reached assembled; with the ribbon in, the Daisy's TX and the bridge's TX would
+> both drive `MSP430_RXD` and the PGMR's LDO would sit on `U6`'s rail. Unplugging the ribbon
+> removes both conflicts by construction (TI's own FR2676 module needs isolation jumpers for
+> the same reason). The cost: while tuning, the faceplate runs from the PGMR's 3.3V, so noise
+> conducted from the main board is out of the loop; the pads, the enclosure and whatever the
+> main board radiates are still there.
+
 TI's recommended workflow is exactly this: build the custom sensing board, integrate while
 keeping the PGMR connector so Design Center works against real hardware, remove after
 testing. Tuning against the actual pads, in the actual enclosure, next to the actual
