@@ -145,3 +145,9 @@ def oled_module_centre():
     m, g = generator()
     c = m.CFG
     return (g["oled_x0"] - c["oled_hdr_to_edge_mm"] + 36.0, g["OLED_Y"] + 21.5)
+
+
+def screws():
+    """-> ([(x, y)], diameter): the panel screw holes, panel mm, from the generator."""
+    m, g = generator()
+    return list(g["SCREWS"]), m.CFG["panel_screw_d_mm"]

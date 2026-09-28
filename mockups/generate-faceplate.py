@@ -265,6 +265,14 @@ CFG = {
     # arc, so corner screws go at least panel_screw_corner_min_mm along the edge.
     "panel_corner_r_mm":    6.0,
     "panel_screw_corner_min_mm": 9.0,
+    # The panel screws (2026-09-28): M3, clearance 3.4 (ISO 273 medium), down into
+    # the wall tops. Four along each long edge -- the first and last
+    # panel_screw_corner_min_mm from the corners, the rest evenly between -- and one
+    # mid-way down each short edge: ten. The enclosure's inserts go under them.
+    "panel_screw_d_mm":     3.4,
+    "panel_screw_head_d_mm": 5.5,   # M3 pan head: the art draws it, the checks clear it
+    "panel_screws_long":    4,
+    "panel_screws_short":   1,
     # What the cavity has to hold along y (design-state "Assembly"): the jack
     # wall's 1mm assembly gap, the main board, and the travel it slides to put
     # its jacks through that wall. --check asserts the panel covers exactly this.
@@ -386,6 +394,7 @@ def derive(c):
     g["SW_X0"] = g["ui_x0"] + 3 + c.get("switch_x_shift_mm", 0.0)
     g["oled_x0"] = g["ui_x0"] + ui_w + UG + c.get("oled_x_shift_mm", 0.0)
     oled_window(c, g)
+    g["SCREWS"] = panel_screws(c, g)
     g["CH_CX"] = [g["ch_x0"] + KR + i * KP for i in range(4)]
     g["EN_CX"] = [g["env_x0"] + KR + i * KP for i in range(3)]
     g["OFFSET_CX"] = g["EN_CX"][2]      # RV1 now sits in column 3, top row
@@ -437,6 +446,16 @@ def derive(c):
             g["SHIFT_CY"] = TOP + 87.0
             g["BTN_CY"] = [TOP + y for y in (97.0, 106.0, 115.0, 124.0)][:c.get("n_buttons", 4)]
     return g
+
+
+def panel_screws(c, g):
+    """The panel screw centres, panel mm, clockwise from the top-left."""
+    W, H, i = g["PANEL_W"], g["PANEL_H"], c["panel_screw_inset_mm"]
+    m, nl, ns = c["panel_screw_corner_min_mm"], c["panel_screws_long"], c["panel_screws_short"]
+    along = lambda lo, hi, n: [lo + k * (hi - lo) / (n - 1) for k in range(n)] if n > 1 else [(lo + hi) / 2]
+    short = lambda n: [H * (k + 1) / (n + 1) for k in range(n)]
+    return ([(x, i) for x in along(m, W - m, nl)] + [(W - i, y) for y in short(ns)] +
+            [(x, H - i) for x in reversed(along(m, W - m, nl))] + [(i, y) for y in reversed(short(ns))])
 
 
 def oled_window(c, g):
@@ -804,6 +823,11 @@ def render(c, g):
     A(f'<rect x="0.4" y="0.4" width="{f(PW_-0.8)}" height="{f(PH_-0.8)}" '
       f'rx="{f(c["panel_corner_r_mm"] - 0.4)}" '
       f'fill="none" stroke="{INK2}" stroke-width="0.3"/>')
+    A(f'<g id="panel-screws" fill="none" stroke="{INK2}" stroke-width="0.25">')
+    for sx, sy in g["SCREWS"]:
+        A(f'<circle cx="{f(sx)}" cy="{f(sy)}" r="{f(c["panel_screw_head_d_mm"] / 2)}"/>')
+        A(f'<circle cx="{f(sx)}" cy="{f(sy)}" r="{f(c["panel_screw_d_mm"] / 2)}"/>')
+    A('</g>')
 
     # rules
     A(f'<g id="rules" stroke="{INK3}" stroke-width="0.18" fill="none">')
@@ -1295,6 +1319,20 @@ def check(c, g):
     row("panel corners filleted inside the wall", f"r {cr:g}mm, wall {wall:g}mm", 0 <= cr <= wall)
     row("corner screws clear the fillet",
         f"screws >= {cmin:g}mm along the edge: head {_hd:+.2f}mm past the arc", _hd >= 0.0)
+    # every screw on the wall top, clear of the corners, the other panel holes and the
+    # OLED window by its head
+    hr = c["panel_screw_head_d_mm"] / 2
+    W_, H_ = g["PANEL_W"], g["PANEL_H"]
+    on_wall = all(min(x, y, W_ - x, H_ - y) <= wall - hr + 1e-9 for x, y in g["SCREWS"])
+    from_corner = min(min(max(abs(x - cx), abs(y - cy)) for cx in (0, W_) for cy in (0, H_))
+                      for x, y in g["SCREWS"])
+    row("panel screws on the wall tops", f"{len(g['SCREWS'])} x M3, head inside the {wall:g}mm wall",
+        on_wall and len(g["SCREWS"]) == 2 * c["panel_screws_long"] + 2 * c["panel_screws_short"])
+    row("panel screws clear the corners", f"nearest {from_corner:.1f}mm along the edge",
+        from_corner >= cmin - 1e-9)
+    ow = g["OLED_WIN"]
+    near_win = min(max(ow[0] - x, x - ow[2], ow[1] - y, y - ow[3]) for x, y in g["SCREWS"])
+    row("panel screws clear the OLED window", f"{near_win - hr:.1f}mm past the head", near_win - hr > 2.0)
     row("OLED inside panel", f"right edge {g['oled_x0']+c['oled_w_mm']:.2f} of {PW_:.2f}",
         g["oled_x0"] + c["oled_w_mm"] <= PW_)
     w, aa, gl, d = g["OLED_WIN"], g["OLED_AA"], g["OLED_GLASS"], g["OLED_DEPTH"]

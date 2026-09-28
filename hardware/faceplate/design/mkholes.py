@@ -8,6 +8,7 @@
   * The panel holes: every hole panelgeo sizes becomes a circle at its panel centre (each
     row there says which drawing it came from); unsized ones are left for panelcheck to
     list as TODO.
+  * The panel screws: M3 clearance holes from panelgeo.screws() (generator).
   * The OLED window: a rounded rectangle from panelgeo.oled_window() (the generator
     derives it from the module drawing and the stack-up).
 
@@ -79,11 +80,18 @@ for ref, (x, y), dia, src in pg.holes():
     c.SetEnd(P(x + dia / 2.0, y))
     n += 1
 
+# ---- the panel screws
+sc, sd = pg.screws()
+for x, y in sc:
+    c = shape(pcbnew.SHAPE_T_CIRCLE)
+    c.SetCenter(P(x, y))
+    c.SetEnd(P(x + sd / 2.0, y))
+
 # ---- the OLED window
 x0, y0, x1, y1, r = pg.oled_window()
 rounded_rect(x0, y0, x1, y1, r)
 
 pcbnew.SaveBoard(proj.P.pcb, b)
 print(f"outline ({G['PANEL_W']:.3f} x {G['PANEL_H']:.3f}, r {gen.CFG['panel_corner_r_mm']:g}), "
-      f"{n} holes and the OLED window ({x1 - x0:.2f} x {y1 - y0:.2f}) drawn. "
+      f"{n} holes, {len(sc)} screws and the OLED window ({x1 - x0:.2f} x {y1 - y0:.2f}) drawn. "
       f"File -> Revert in Pcbnew before touching it.")

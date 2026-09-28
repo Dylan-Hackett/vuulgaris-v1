@@ -252,6 +252,15 @@ def main():
         f"{wall:g}mm walls, inner faces x {wall:g}..{W - wall:.2f}" if not over
         else "over the wall top: " + ", ".join(sorted(over)))
 
+    # ---- the panel screws, where the generator puts them
+    sc, sd = pg.screws()
+    circ = [(to_panel(e["c"]), 2 * e["r"]) for e in face["edges"] if e["kind"] == "circle"]
+    miss = [(x, y) for x, y in sc
+            if not any(abs(h[0] - x) < 0.005 and abs(h[1] - y) < 0.005 and abs(dd - sd) < 0.005
+                       for h, dd in circ)]
+    row(not miss, "panel screw holes where the generator puts them",
+        f"{len(sc)} x {sd:g}mm" if not miss else f"{len(miss)} missing, first at ({miss[0][0]:.2f}, {miss[0][1]:.2f})")
+
     # ---- the OLED window: what the generator derives, where the main board has DS1
     wx0, wy0, wx1, wy1, _ = pg.oled_window()
     ox0, oy0, ox1, oy1 = face["outer"]
