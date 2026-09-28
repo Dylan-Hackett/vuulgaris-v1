@@ -160,6 +160,13 @@ either way; this was a sensing decision, not a placement one.
 | encoder `ENC0` (EC11L) | **10.0mm** | ALPS EC11L1525G01 drawing (LE2115L02G): **no thread** -- a 7mm bushing ends 9.5mm up, then a knurled 9.03mm shaft that turns and pushes 1.5mm passes the faceplate. Running clearance |
 | OLED `DS1` | **window, 60.09 × 33.90mm**, r 1.0 corners, panel (208.50, 15.15)–(268.59, 49.05) | §4; the generator's `oled_window()` |
 
+**Corners — filleted 2026-09-28, r 6mm** (generator `panel_corner_r_mm`), the wall
+thickness. **The enclosure's outer corners take the same radius**; at 6 the cavity keeps
+square inside corners, so the main board's outline is untouched. The cost: a panel screw
+can no longer sit in the corner — at 3mm in, its head has to clear the arc, so corner
+screws go **at least 9mm along the edge** (`panel_screw_corner_min_mm`, checked).
+panelcheck checks all four corners.
+
 The generator draws **no pot or encoder holes at all** — the r=8 and r=9.2 circles in the FAB
 SVG are knob outlines, not cuts. The board's holes are drawn by `design/mkholes.py` from
 `panelgeo.holes()`, and the OLED window from `panelgeo.oled_window()` (2026-09-28).
@@ -300,7 +307,7 @@ design/values.json            Value fields
 design/mkboard.py             the one-shot board bootstrap
 design/mkpads.py              pad footprints + E1-E4 + their vias, from the generator's copper()
 design/mkplace.py             the one-shot placement of everything else (the table above)
-design/mkholes.py             the panel holes on Edge.Cuts, from panelgeo.holes()
+design/mkholes.py             the whole Edge.Cuts layer: outline (r 6 corners), panel holes, OLED window
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
                               the pin table twice (Figure 7-1, Table 7-1), checked equal
 DRC.rpt                       from tools/drc.py --project faceplate

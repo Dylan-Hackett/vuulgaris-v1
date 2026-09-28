@@ -1,5 +1,5 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/faceplate/vuulgaris-faceplate.kicad_pcb **
-** Created on 2026-09-28 14:35:47 **
+** Created on 2026-09-28 14:44:06 **
 
 ** Found 230 DRC violations **
 [via_dangling]: Via is not connected or connected on only one layer
@@ -784,7 +784,7 @@
     @(388.5500 mm, 156.7500 mm): Pad 48 [/GND] of U1 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(331.5350 mm, 159.0750 mm): Track [/GND] on B.Cu, length 2.5400 mm
+    @(334.0750 mm, 159.0750 mm): Pad 2 [/GND] of J1 on B.Cu
     @(352.8000 mm, 161.2000 mm): Pad 1 [/GND] of TP4 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
