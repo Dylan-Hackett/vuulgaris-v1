@@ -135,6 +135,37 @@ CFG = {
     # corner of the board -- a board-side constraint the composition cannot see.
     "oled_x_shift_mm":    -6.1,
     "oled_h_mm":          42.0,
+    # ---- the OLED WINDOW (2026-09-28) ---------------------------------------
+    # The cut is sized from the module, not from the oled_w/h box above -- that
+    # box is a layout stand-in anchored on the header column. HS242L01W4S01
+    # drawing (datasheets/HS242L01W4S01-OLED.pdf, section 1.4): PCB 72 x 43
+    # (the spec table's "68 x 43" is the hole pitch), the 9-pin header 2.5mm in
+    # from the left edge. Along the long axis the glass (FRAME 62.1), VA (57)
+    # and AA (55.01) are centred, at 4.95 / 7.5 / 8.5 from each end. Across it
+    # they are not: AA 5.11 below the top edge and 10.4 above the bottom, glass
+    # 2.1 from the top and 1.05 from the bottom. The wide black band -- where
+    # the flex bonds -- is on the player's side, which is the side that needs
+    # the viewing margin. The main board's DS1 matches: holes 68 x 39 apart,
+    # header at the left edge, pin 1 at the bottom.
+    "oled_hdr_to_edge_mm":  2.5,
+    "oled_aa_mm":    (8.5, 5.11, 55.01, 27.49),    # x from left edge, y from top edge, w, h
+    "oled_glass_mm": (4.95, 2.1, 62.1, 39.85),
+    # Stack-up: the pots are the datum, outer face 11.6mm above the main board;
+    # the display face at lift + 4.2 (module height). The lift is not chosen yet
+    # -- 3-5mm on a 1x9 socket and nylon standoffs (hardware/faceplate/README.md
+    # section 4) -- so the window is sized at the DEEPEST, 3mm, and only gets
+    # better if the module ends up higher.
+    "panel_outer_mm":       11.6,
+    "oled_module_h_mm":      4.2,
+    "oled_lift_min_mm":      3.0,
+    # How far past the active area the window opens, at that depth. The window
+    # never opens nearer the glass edge than oled_glass_margin_mm (placement:
+    # the faceplate locates on 7.5mm holes round M7 pots, +-0.25), so beyond the
+    # AA it shows black glass, never the module's PCB.
+    "oled_view_player_deg": 45.0,   # toward the player (+y): whole AA seen at 45 deg
+    "oled_view_side_deg":   30.0,   # left, right and far, as far as the black glass allows
+    "oled_glass_margin_mm":  1.0,
+    "oled_window_r_mm":      1.0,   # corner radius: JLC routes internal corners round anyway
     "encoder_r_mm":        9.2,
     # Controls live in ONE column in the left margin: encoder, shift, then the
     # four channel buttons. Decided 2026-08-17. The pad block is pushed right to
@@ -332,6 +363,7 @@ def derive(c):
     # both passed. A generator that crashes only on its main output.
     g["SW_X0"] = g["ui_x0"] + 3 + c.get("switch_x_shift_mm", 0.0)
     g["oled_x0"] = g["ui_x0"] + ui_w + UG + c.get("oled_x_shift_mm", 0.0)
+    oled_window(c, g)
     g["CH_CX"] = [g["ch_x0"] + KR + i * KP for i in range(4)]
     g["EN_CX"] = [g["env_x0"] + KR + i * KP for i in range(3)]
     g["OFFSET_CX"] = g["EN_CX"][2]      # RV1 now sits in column 3, top row
@@ -383,6 +415,24 @@ def derive(c):
             g["SHIFT_CY"] = TOP + 87.0
             g["BTN_CY"] = [TOP + y for y in (97.0, 106.0, 115.0, 124.0)][:c.get("n_buttons", 4)]
     return g
+
+
+def oled_window(c, g):
+    """The OLED window, from the module drawing and the stack-up (CFG comments).
+    Sets OLED_AA / OLED_GLASS / OLED_WIN as (x0, y0, x1, y1) panel mm, and
+    OLED_DEPTH, the display face below the outer face at the deepest mount."""
+    mx0 = g["oled_x0"] - c["oled_hdr_to_edge_mm"]     # module left edge
+    my0 = g["OLED_Y"]                                 # module top edge (DS1's row)
+    box = lambda r: (mx0 + r[0], my0 + r[1], mx0 + r[0] + r[2], my0 + r[1] + r[3])
+    aa, gl = box(c["oled_aa_mm"]), box(c["oled_glass_mm"])
+    d = c["panel_outer_mm"] - (c["oled_lift_min_mm"] + c["oled_module_h_mm"])
+    t = lambda deg: d * math.tan(math.radians(deg))
+    m = c["oled_glass_margin_mm"]
+    g["OLED_AA"], g["OLED_GLASS"], g["OLED_DEPTH"] = aa, gl, d
+    g["OLED_WIN"] = (aa[0] - min(t(c["oled_view_side_deg"]), aa[0] - gl[0] - m),
+                     aa[1] - min(t(c["oled_view_side_deg"]), aa[1] - gl[1] - m),
+                     aa[2] + min(t(c["oled_view_side_deg"]), gl[2] - m - aa[2]),
+                     aa[3] + min(t(c["oled_view_player_deg"]), gl[3] - m - aa[3]))
 
 
 def presences(t):
@@ -768,9 +818,11 @@ def render(c, g):
         A(f'<circle cx="{f(sx + c["switch_w_mm"]/2)}" cy="{f(g["SW_CY"])}" '
           f'r="{f(c["switch_hole_d_mm"]/2)}"/>')
     A('</g>')
+    # the OLED window: a cut, drawn where the board routes it (oled_window())
+    w = g["OLED_WIN"]
     A(f'<g id="oled" fill="none" stroke="{INK}" stroke-width="0.3">'
-      f'<rect x="{f(g["oled_x0"])}" y="{f(g["OLED_Y"])}" width="{f(c["oled_w_mm"])}" '
-      f'height="{f(c["oled_h_mm"])}" rx="1"/></g>')
+      f'<rect x="{f(w[0])}" y="{f(w[1])}" width="{f(w[2] - w[0])}" '
+      f'height="{f(w[3] - w[1])}" rx="{f(c["oled_window_r_mm"])}"/></g>')
 
     # divider rule
     if c["straight_divider"]:
@@ -1207,6 +1259,19 @@ def check(c, g):
         f"screw at {scr:.1f}mm, cheek spans 0..{wall:.1f}mm", 1.5 <= scr <= wall - 1.5)
     row("OLED inside panel", f"right edge {g['oled_x0']+c['oled_w_mm']:.2f} of {PW_:.2f}",
         g["oled_x0"] + c["oled_w_mm"] <= PW_)
+    w, aa, gl, d = g["OLED_WIN"], g["OLED_AA"], g["OLED_GLASS"], g["OLED_DEPTH"]
+    gm = min(w[0] - gl[0], w[1] - gl[1], gl[2] - w[2], gl[3] - w[3])
+    row("OLED window shows only black glass", f"{gm:.2f}mm from the glass edge at the nearest",
+        gm >= c["oled_glass_margin_mm"] - 1e-9 and w[0] <= aa[0] and w[1] <= aa[1]
+        and w[2] >= aa[2] and w[3] >= aa[3])
+    ang = lambda e: math.degrees(math.atan2(e, d))
+    row("OLED active area in view at the deepest mount",
+        f"{d:.1f}mm deep: player {ang(w[3] - aa[3]):.0f} deg, sides {ang(aa[0] - w[0]):.0f} / "
+        f"{ang(w[2] - aa[2]):.0f}, far {ang(aa[1] - w[1]):.0f}",
+        ang(w[3] - aa[3]) >= c["oled_view_player_deg"] - 1e-6 and
+        min(aa[0] - w[0], w[2] - aa[2], aa[1] - w[1]) >= 0.5)
+    row("OLED window clears the divider", f"bottom {w[3]:.2f} vs divider {g['DIV_Y']:.2f}",
+        w[3] < g["DIV_Y"] - 2.0)
     if c["salamis_marks"]:
         seq = list(c["inscription"])
         gw = c["inscription_h_mm"] * 0.58

@@ -42,7 +42,7 @@ python3 tools/mksch.py --project faceplate && python3 tools/netcheck.py --projec
 python3 tools/boardcheck.py --project faceplate   # board pads vs netmap parity
 python3 tools/drc.py --project faceplate          # KiCad's own DRC -- the clearance authority
 python3 tools/drc.py --project faceplate --unrouted   # while placed but not routed: the ratsnest is not a failure
-python3 tools/panelcheck.py --project faceplate   # outline, holes, J1, the cable, pad copper and vias
+python3 tools/panelcheck.py --project faceplate   # outline, holes, OLED window, J1, the cable, pad copper, vias, walls
 ```
 
 **Pad copper** is regenerated, never hand-edited: change `mockups/generate-faceplate.py`
@@ -158,12 +158,12 @@ either way; this was a sensing decision, not a placement one.
 | toggles `SW1`/`SW2` | 4.95mm | generator `switch_hole_d_mm` |
 | encoders `ENC1`–`ENC8` (EC12E) | **9.5mm** | ALPS EC12E2430803 drawing: body 5.5, then 7mm of M9x0.75 -- the static thread passes the faceplate; M9 + 0.5, the pots' margin |
 | encoder `ENC0` (EC11L) | **10.0mm** | ALPS EC11L1525G01 drawing (LE2115L02G): **no thread** -- a 7mm bushing ends 9.5mm up, then a knurled 9.03mm shaft that turns and pushes 1.5mm passes the faceplate. Running clearance |
-| OLED `DS1` | window, **not sized yet** | below |
+| OLED `DS1` | **window, 60.09 × 33.90mm**, r 1.0 corners, panel (208.50, 15.15)–(268.59, 49.05) | §4; the generator's `oled_window()` |
 
 The generator draws **no pot or encoder holes at all** — the r=8 and r=9.2 circles in the FAB
 SVG are knob outlines, not cuts. The board's holes are drawn by `design/mkholes.py` from
-`panelgeo.holes()` (23 of 24, 2026-09-28); only the OLED window is left, waiting on the
-module's final height (§4).
+`panelgeo.holes()`, and the OLED window from `panelgeo.oled_window()` (2026-09-28).
+panelcheck `--strict` has no TODO left.
 
 ### 4. OLED
 
@@ -173,9 +173,26 @@ the main board. **Nylon standoffs, not metal:** the lower-left hole (297.55, 94.
 `POS12V` trace on F.Cu 2.2mm from its centre, under the standoff's hex base, and a metal
 one would put +12V a scratch of soldermask away from the module's mounting hole. The
 other three holes have no copper within 3mm on either side. Its face then sits about **2.4–4.4mm** behind the
-outer surface; at 5.8mm of lift it hits the faceplate. Size the window to the active area
-at the final height and chamfer the edges (`design-state.md`, "Consequence 2"). This
-answers Q18.
+outer surface; at 5.8mm of lift it hits the faceplate. This answers Q18.
+
+**The window — sized 2026-09-28** by the generator's `oled_window()`, from the HS242L01
+drawing (datasheets/, section 1.4: PCB **72** × 43 — the spec table's "68 × 43" is the hole
+pitch; AA 55.01 × 27.49 centred along the long axis, **5.11mm below the top edge and 10.4mm
+above the bottom**; glass 62.1 × 39.85) and the stack-up. The lift is not chosen, so it is
+sized at the **deepest**, 3mm: face 4.4mm below the outer surface.
+
+| | |
+|---|---|
+| active area, panel | x 211.04–266.05, y 17.16–44.65 |
+| window | x 208.50–268.59, y 15.15–49.05 (60.09 × 33.90), r 1.0 |
+| AA in view, at 4.4mm deep | 45° from the player's side, 30° from the sides, 25° from the back |
+| never nearer the glass edge than | 1.0mm, so past the pixels you see black glass, not the module PCB |
+
+It is lopsided on purpose: the wide black band on the glass, where the flex bonds, is on
+the player's side, which is the side that needs the margin. panelcheck checks the drawn
+window against the generator, and the generator's module centre against the main board's
+four `DS1` holes. **No chamfer:** JLC cannot bevel an internal cutout in FR4; the walls are
+straight 1.6mm, and a hand bevel is optional.
 
 ### 5. The connector
 
@@ -331,13 +348,15 @@ Settled with Dylan, in order: (a) one open via per bar (ADR 0003, "Connecting th
 (c) the UART, 3V3, RST and TEST from `J1` along the **gap between pads 3 and 4**.
 
 All parts on B.Cu. The margin strip is panel x 277.14 (copper ends) to 292.29 (the wall's
-inner face); parts keep inside 277.6–291.3, over the Daisy (~3mm clear; nothing here is
-over 1.6mm).
+inner face, where the faceplate rests on the wall top — panelcheck fails any back-side part
+past it), over the Daisy (~3mm clear; nothing here is over 1.6mm). Positions are Dylan's
+Pcbnew adjustments of 2026-09-28 (grid +1.25 / −0.25, the corner group lowered), with RX3's
+column, `Y1` and `C3` brought back in; `design/mkplace.py` records them.
 
 | where (panel) | what |
 |---|---|
 | `U1` (284.45, 104.0) | CAP pins 23–39 face **up**, digital corner (46–5) down-right. Pins 1–5 run right to left along the bottom, 46–48 up the right side |
-| the 4 × 4 grid over the CAP pins, rows y 83.4–95.4 | the 16 networks. **Column = CapTIvate block** (RX0–RX3 at x 279.5 / 282.7 / 287.2 / 290.4, each over its own pins: CAP0 = 23–26 … CAP3 = 36–39), **row = pad** (1 at the top). Each cell is the TVS directly on top of its 470R, TVS pin 1 over R pin 1, ground pin to the right (ADR 0004: the order and a short ground are what count, and both sit by the MCU) |
+| the 4 × 4 grid over the CAP pins, rows y 83.15–95.15 | the 16 networks. **Column = CapTIvate block** (RX0–RX3 at x 280.75 / 283.95 / 288.45 / 290.92, each over its own pins: CAP0 = 23–26 … CAP3 = 36–39), **row = pad** (1 at the top). Each cell is the TVS directly on top of its 470R, TVS pin 1 over R pin 1, ground pin to the right (ADR 0004: the order and a short ground are what count, and both sit by the MCU) |
 | middle channel, over pin 31 | `C3` 1µF VREG |
 | across the corner by pins 1 / 48 | `C2` 100nF |
 | right edge, y ~112–115 | `Y1` stood on end, `C5` (XIN) / `C6` (XOUT) lying beside its two pads |

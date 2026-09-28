@@ -93,7 +93,7 @@ def holes():
             # faceplate: M9 + 0.5, the pots' margin (M7 -> 7.5).
             out.append((ref, (x, y), 9.5, "ALPS EC12E drawing: M9 x 0.75 bushing"))
         elif ref == "DS1":
-            out.append((ref, (x, y), None, "OLED window: size to the active area at the final height"))
+            continue            # a rectangle, not a hole: oled_window() below
         else:
             out.append((ref, (x, y), None, "no rule for this ref"))
     return out
@@ -130,3 +130,18 @@ def cutouts(shapes):
              for g in groups.values()]
     boxes.sort(key=lambda b: (b[2] - b[0]) * (b[3] - b[1]), reverse=True)
     return boxes[1:]
+
+
+def oled_window():
+    """-> (x0, y0, x1, y1, corner_r) of the OLED window, panel mm, from the
+    generator's oled_window() (HS242L01 drawing + stack-up; see its CFG)."""
+    m, g = generator()
+    return tuple(g["OLED_WIN"]) + (m.CFG["oled_window_r_mm"],)
+
+
+def oled_module_centre():
+    """-> the module's centre, panel mm, as the generator places it: the four
+    mounting holes are centred on it (drawing: 68 x 39 on a 72 x 43 board)."""
+    m, g = generator()
+    c = m.CFG
+    return (g["oled_x0"] - c["oled_hdr_to_edge_mm"] + 36.0, g["OLED_Y"] + 21.5)

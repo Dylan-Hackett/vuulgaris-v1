@@ -79,9 +79,22 @@ def board(path):
             box = [T(q.GetLeft()), T(q.GetTop()), T(q.GetRight()), T(q.GetBottom())]
             bb = box if bb is None else [min(bb[0], box[0]), min(bb[1], box[1]),
                                          max(bb[2], box[2]), max(bb[3], box[3])]
+        cy = None
+        for d in f.GraphicalItems():
+            if d.GetLayer() in (pcbnew.F_CrtYd, pcbnew.B_CrtYd):
+                q = d.GetBoundingBox()
+                box = [T(q.GetLeft()), T(q.GetTop()), T(q.GetRight()), T(q.GetBottom())]
+                cy = box if cy is None else [min(cy[0], box[0]), min(cy[1], box[1]),
+                                             max(cy[2], box[2]), max(cy[3], box[3])]
+        for p in f.Pads():
+            q = p.GetBoundingBox()
+            box = [T(q.GetLeft()), T(q.GetTop()), T(q.GetRight()), T(q.GetBottom())]
+            cy = box if cy is None else [min(cy[0], box[0]), min(cy[1], box[1]),
+                                         max(cy[2], box[2]), max(cy[3], box[3])]
         fps[f.GetReference()] = {
             "layer": f.GetLayerName(),
             "fab": bb,
+            "extent": cy,
             "pads": [{"n": p.GetNumber(), "xy": pt(p.GetPosition()),
                       "net": p.GetNetname().lstrip("/"),
                       "size": [T(p.GetSize().x), T(p.GetSize().y)],
@@ -210,6 +223,50 @@ def main():
                                       f"at ({wx:.3f}, {wy:.3f}) -- {src}")
     if n_ok:
         row(True, "panel holes on their parts", f"{n_ok} checked")
+
+    # ---- back-side parts clear the enclosure walls. The faceplate rests on the wall tops
+    # (generator enclosure_wall_mm all round, panel to the walls' outer faces), so anything
+    # on its back must stay inside their inner faces: courtyard and pads, whichever is wider.
+    gen_, _ = pg.generator()
+    wall = gen_.CFG["enclosure_wall_mm"]
+    over = []
+    for ref, f in face["fps"].items():
+        if f["layer"] != "B.Cu" or not f["extent"]:
+            continue
+        (x0_, y0_), (x1_, y1_) = to_panel(f["extent"][:2]), to_panel(f["extent"][2:])
+        m = min(x0_ - wall, y0_ - wall, W - wall - x1_, H - wall - y1_)
+        if m < 0:
+            over.append(f"{ref} {-m:.2f}mm")
+    row(not over, "back-side parts inside the walls",
+        f"{wall:g}mm walls, inner faces x {wall:g}..{W - wall:.2f}" if not over
+        else "over the wall top: " + ", ".join(sorted(over)))
+
+    # ---- the OLED window: what the generator derives, where the main board has DS1
+    wx0, wy0, wx1, wy1, _ = pg.oled_window()
+    ox0, oy0, ox1, oy1 = face["outer"]
+    inside = [to_panel(p) for e in face["edges"] if e["kind"] == "seg"
+              if all(ox0 + 0.5 < q[0] < ox1 - 0.5 and oy0 + 0.5 < q[1] < oy1 - 0.5 for q in e["pts"])
+              for p in e["pts"]]
+    if not inside:
+        todos.append("DS1   OLED window not drawn yet -- design/mkholes.py")
+    else:
+        bb = (min(p[0] for p in inside), min(p[1] for p in inside),
+              max(p[0] for p in inside), max(p[1] for p in inside))
+        dev = max(abs(a - b) for a, b in zip(bb, (wx0, wy0, wx1, wy1)))
+        row(dev < 0.005, "OLED window == generator oled_window()",
+            f"{bb[2] - bb[0]:.2f} x {bb[3] - bb[1]:.2f} at ({bb[0]:.3f}, {bb[1]:.3f}), off by {dev:.4f}")
+    ds1 = mainb["fps"].get("DS1")
+    holes4 = [p for p in (ds1 or {}).get("pads", []) if abs(p["drill"] - 3.3) < 0.05]
+    if len(holes4) != 4:
+        row(False, "OLED module where the window assumes", "main board DS1: expected 4 mounting holes")
+    else:
+        m2p = pg.main_to_panel()
+        mc = m2p((sum(p["xy"][0] for p in holes4) / 4, sum(p["xy"][1] for p in holes4) / 4))
+        gc = pg.oled_module_centre()
+        dev = max(abs(mc[0] - gc[0]), abs(mc[1] - gc[1]))
+        row(dev < 0.01, "OLED module where the window assumes",
+            f"main-board DS1 holes centred at panel ({mc[0]:.3f}, {mc[1]:.3f}), "
+            f"generator ({gc[0]:.3f}, {gc[1]:.3f})")
 
     # ---- scrub pads: the board's copper IS the generator's copper()
     gen, _ = pg.generator()

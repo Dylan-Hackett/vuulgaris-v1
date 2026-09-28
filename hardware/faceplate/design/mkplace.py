@@ -50,8 +50,10 @@ U1_XY = (284.45, 104.0)
 # Pitches from the silk (R0603's box is 1.47 x 2.93), not the courtyards: rows 4.0 apart,
 # columns wide enough for three traces (0.15 / 0.2) beside the next column's TVS, and the
 # middle channel wider again for C3 over pin 31.
-COL_X = (279.5, 282.7, 287.2, 290.4)      # RX0..RX3 = CAP0..CAP3
-ROW_Y = {1: 83.4, 2: 87.4, 3: 91.4, 4: 95.4}
+# Dylan moved the grid +1.25 / -0.25 in Pcbnew (2026-09-28, widening the left channel);
+# RX3's column then came back 0.73 so its TVS clear the wall (panelcheck).
+COL_X = (280.75, 283.95, 288.45, 290.92)  # RX0..RX3 = CAP0..CAP3
+ROW_Y = {1: 83.15, 2: 87.15, 3: 91.15, 4: 95.15}
 TVS_DY = -2.0                             # TVS centre above its R's centre
 TVS_PIN_DX = 0.35                         # X1SON-2 pads at +-0.35: pin 1 over the R
 
@@ -66,23 +68,25 @@ PLACE = {
     # ref: (panel x, panel y, pad that must point, direction)  -- direction of that pad
     # from the part's centre: "up" / "down" / "left" / "right"
     "U1": (*U1_XY, "31", "up"),
-    "C3": (284.45, 96.25, "1", "down"),   # 1uF VREG, over pin 31 in the middle channel
+    # 1uF VREG in the middle channel, over pin 31 -- left of the channel's centre, which
+    # leaves RX2's three traces their 1.25mm past R43
+    "C3": (285.7, 95.875, "1", "down"),
     # Under the digital corner. Pins 1-5 (DVCC, RST, TEST, TXD, RXD) run right to left
     # along U1's bottom and 46-48 (XOUT, XIN, GND) up its right side, so C2 goes straight
     # under pin 1 and the channel under pins 2-5 stays open for the lines to J1.
     # 100nF DVCC across the corner, pin 1 by U1 pin 1 (DVCC), pin 2 by pin 48 (GND).
-    "C2": (288.7, 109.9, "1", "left"),
+    "C2": (288.35, 111.175, "1", "left"),
     # XT1: XIN / XOUT drop down U1's right side past C2 to Y1, stood on end against the
     # edge (XOUT takes the outside, over the wall band: copper only, nothing tall). C5 on
     # XIN and C6 on XOUT lie beside Y1's two pads (SLASEO5D Figure 10-2).
-    "Y1": (290.5, 113.3, "1", "up"),       # FC-135, pin 1 XIN
-    "C5": (287.8, 112.05, "1", "right"),   # 22pF XIN
-    "C6": (287.8, 114.55, "1", "right"),   # 22pF XOUT
+    "Y1": (290.9, 114.25, "1", "up"),      # FC-135, pin 1 XIN; courtyard 0.24 inside the wall
+    "C5": (288.05, 113.4, "1", "right"),   # 22pF XIN
+    "C6": (288.05, 115.9, "1", "right"),   # 22pF XOUT
     # Where 3V3 and RST arrive from J1 along the gap: bulk first, then the RST RC. RST is a
     # slow net; TI's Figure 10-4 gives the RC no distance.
-    "C1": (278.3, 111.5, "1", "up"),       # 10uF DVCC bulk
-    "C4": (280.3, 111.5, "1", "up"),       # 1nF C0G on RST
-    "R1": (282.2, 111.5, "2", "up"),       # 47k RST pull-up
+    "C1": (278.55, 112.85, "1", "up"),     # 10uF DVCC bulk
+    "C4": (280.725, 112.9, "1", "up"),     # 1nF C0G on RST
+    "R1": (282.775, 112.85, "2", "up"),    # 47k RST pull-up
     # UART pull-ups (SLAU550 3.3.2.1: on the TCK / TMS nets, no distance given) at the end
     # of the test-pad row, where 3V3, TXD and RXD all run past.
     "R2": (263.2, 112.0, "1", "up"),       # 47k TXD
@@ -98,11 +102,11 @@ for k, ref in enumerate(TP_LABEL):
 # Silk: where each reference goes (panel mm, and whether it stands on end), placed by the
 # silk's real extents so no reference lands on a body. None = off the silk, onto B.Fab.
 REF_AT = {
-    "C3": (284.45, 93.35, False),
-    "C2": (285.9, 110.2, False),
-    "Y1": (290.5, 116.5, False),
-    "C5": (285.3, 112.05, False), "C6": (285.3, 114.55, False),
-    "C1": (278.3, 114.3, False), "C4": (280.3, 114.3, False), "R1": (282.2, 114.3, False),
+    "C3": (285.7, 92.975, False),
+    "C2": (285.55, 111.475, False),
+    "Y1": (290.9, 117.45, False),
+    "C5": (285.55, 113.4, False), "C6": (285.55, 115.9, False),
+    "C1": (278.55, 115.65, False), "C4": (280.725, 115.7, False), "R1": (282.775, 115.65, False),
     "R2": (263.2, 114.6, False), "R3": (265.0, 114.6, False),
 }
 REF_AT.update({ref: None for ref in TP_LABEL})
