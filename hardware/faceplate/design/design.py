@@ -126,7 +126,11 @@ part("C6", "C", "C0603", (415, 300))       # 22pF C0G  XOUT
 # to the electrode, pin 2 to GND.
 for _p in range(1, 5):
     _y = 360 + (_p - 1) * 65
-    part(f"E{_p}", "SCRUB_PAD_5SEG", "", (90, _y))
+    # The pad's copper is a generated footprint, one per pad because the vias
+    # and bridges near J1 differ: every bar a pad numbered by this symbol's
+    # pins, from the generator's copper() (design/mkpads.py, which also
+    # places the one via per bar).
+    part(f"E{_p}", "SCRUB_PAD_5SEG", f"SCRUB_PAD_216x10_P{_p}", (90, _y))
     for _n in range(4):
         part(f"D{_p}{_n + 1}", "D_TVS", "X1SON-2_DPY0002A", (180 + _n * 55, _y))
         part(f"R{_p}{_n + 1}", "R", "R0603", (420 + _n * 25, _y))

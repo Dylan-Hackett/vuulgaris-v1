@@ -4,7 +4,7 @@
 the back. Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
 handoff below for the size, which is not what older docs say.
 
-## Status — 2026-09-28: schematic complete; the board is still the skeleton
+## Status — 2026-09-28: schematic complete; pad copper on the board, parts being placed
 
 **Schematic done**, `mksch → netcheck` 145/145 over 41 nets, every block traced to a TI or
 manufacturer figure in `design/design.py`. 54 parts: `U1` MSP430FR2675TPT; `C1`/`C2`
@@ -15,8 +15,10 @@ through a TPD1E10B06 to GND on the electrode side and a 470R series resistor (`D
 `R11`–`R44`, CapTIvate design guide); `E1`–`E4` the pads as symbols (RX0 on pins 1 and 5,
 one net); `TP1`–`TP6` SBW and UART pads; `J1`.
 
-**The board has only the outline and `J1`.** boardcheck's 135 parity mismatches are exactly
-the parts not placed yet. Layout is the next session: `KICKOFF.md`.
+**Pad copper is on the board** (2026-09-28): `E1`–`E4` are generated footprints, one via
+per bar (763 vias, 37 bridges), from `design/mkpads.py`; ADR 0003, "Connecting the bars".
+boardcheck parity is 0 over 145. The other 50 footprints came in from the schematic and are
+being placed; routing is Dylan's.
 
 **`J1` is the hanxia HX JN2.54-2x5P TP H8.9, LCSC C41376028** (chosen 2026-09-28).
 It has to be SMD: `J12`'s through-hole C5665 here would put ten pins through the **front
@@ -38,8 +40,16 @@ From `hardware/kicad/`, with `set -o pipefail` whenever output is piped:
 python3 tools/mksch.py --project faceplate && python3 tools/netcheck.py --project faceplate
 python3 tools/boardcheck.py --project faceplate   # board pads vs netmap parity
 python3 tools/drc.py --project faceplate          # KiCad's own DRC -- the clearance authority
-python3 tools/panelcheck.py --project faceplate   # outline, holes, J1 vs the main board, the cable
+python3 tools/drc.py --project faceplate --unrouted   # while placed but not routed: the ratsnest is not a failure
+python3 tools/panelcheck.py --project faceplate   # outline, holes, J1, the cable, pad copper and vias
 ```
+
+**Pad copper** is regenerated, never hand-edited: change `mockups/generate-faceplate.py`
+(its `--check` must pass), then, under KiCad's Python,
+`hardware/faceplate/design/mkpads.py` rewrites the four `SCRUB_PAD_216x10_Pn` footprints
+and replaces `E1`–`E4` and every via on a `PADp_RXn` net. panelcheck fails if the board's
+pads or vias differ from `copper()` by more than 1µm, or if the generator's via keepouts are
+not exactly `J1`'s pad rows.
 
 - **Intent** is `design/netmap.json`; **symbols, sheet positions, footprints** are
   `design/design.py`; values `design/values.json`. Never hand-edit the `.kicad_sch`.
@@ -267,13 +277,15 @@ design/netmap.json            the intent
 design/design.py              symbols, sheet positions, footprints (read by mksch.py)
 design/values.json            Value fields
 design/mkboard.py             the one-shot board bootstrap
+design/mkpads.py              pad footprints + E1-E4 + their vias, from the generator's copper()
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
                               the pin table twice (Figure 7-1, Table 7-1), checked equal
 DRC.rpt                       from tools/drc.py --project faceplate
 ```
 
-Still to come: `pads.svg` from `../../mockups/generate-faceplate.py` at true mm scale,
-and `pads-ti.dxf`, SLAA891's OpenSCAD output for cross-checking it.
+The SLAA891 cross-check came back as a connectivity finding, not a geometry one: TI's
+elements are single bodies and ours are ratio-encoded islands, so there is no TI pattern to
+diff against (ADR 0003, "Connecting the bars").
 
 ## Pad geometry
 
@@ -331,11 +343,11 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 - [ ] MCU centred on the pad group, trace lengths equalised
 - [ ] No electrode within the edge keepout
 - [ ] Digital lines exit the opposite edge from the electrodes
-- [ ] Minimum copper 0.15mm everywhere, no slivers at ramp ends
+- [x] Minimum copper 0.15mm everywhere, no slivers at ramp ends (0.165mm, bridged)
 - [x] CAPTIVATE-PGMR connection: `J1` itself, by jumpering the ribbon's `J12` end to the
       PGMR (ADR 0005, revised 2026-09-28). No separate connector.
 - [ ] 4 SBW test pads present (TEST, RST, 3V3, GND)
 - [ ] Test points on UART Tx/Rx, RST, TEST (there is no IRQ line — `pin-allocation.md`)
-- [ ] Soldermask opening over all pad copper
+- [x] Soldermask opening over all pad copper (one opening per pad; vias open both sides)
 - [ ] Usable scrub region marked inside the copper, or copper extended past the printed scale
       (endpoint trim eats a few mm at each end)
