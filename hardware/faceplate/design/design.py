@@ -71,7 +71,11 @@ part("C3", "C", "C0805", (210, 300))       # 1uF   VREG
 # driven by the main board's MCP23017 U4, whose GPIO power up high-Z
 # (pin-allocation.md, "MSP430 reset on U4 GPB3").
 part("R1", "R", "R0603", (240, 300))       # 47k   RST pull-up
-part("C4", "C", "C0603", (265, 300))       # 1nF   RST
+part("C4", "C", "C0603", (265, 300))       # 1nF C0G 5%  RST
+# C4's part: Samsung CL10C102JB8NNNC, 1nF C0G +-5%, LCSC C163508 (Extended, 567k at
+# JLC, 2026-09-28) -- the main board's "1nF C0G". Not the Basic 1nF, C1588: it is
+# X7R +-10%, so 1.1nF worst case before any trace or pin capacitance, exactly TI's
+# limit, and X7R adds up to +-15% over temperature. C0G at 5% tops out at 1.05nF.
 # TEST/SBWTCK, pin 3: nothing. Figure 10-4 wires it straight to the tool, and
 # Table 7-4 says an unused TEST is left "Open. This pin always has an internal
 # pulldown enabled" (Table 7-1: reset state PD). MSP_TEST is undriven at J12.
