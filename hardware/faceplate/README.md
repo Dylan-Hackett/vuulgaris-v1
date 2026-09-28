@@ -156,11 +156,14 @@ either way; this was a sensing decision, not a placement one.
 | pots `RV1`–`RV6` | **7.5mm**, centred **0.17mm toward the top edge** of the panel coordinate | M7x0.75, washer ID 7.2 (Alpha drawing); true shaft is (0, −5.00) from the footprint origin, placed at −4.83 — `place.py` |
 | buttons `SW4`–`SW9` | 6.6mm | 6.2mm round plunger; generator `mx_hole_r_mm` |
 | toggles `SW1`/`SW2` | 4.95mm | generator `switch_hole_d_mm` |
-| encoders `ENC1`–`ENC8` (EC12E), `ENC0` (EC11L) | **not sized yet** | EC12 bushing M9x0.75 per `design-state.md`; read the ALPS drawings |
+| encoders `ENC1`–`ENC8` (EC12E) | **9.5mm** | ALPS EC12E2430803 drawing: body 5.5, then 7mm of M9x0.75 -- the static thread passes the faceplate; M9 + 0.5, the pots' margin |
+| encoder `ENC0` (EC11L) | **10.0mm** | ALPS EC11L1525G01 drawing (LE2115L02G): **no thread** -- a 7mm bushing ends 9.5mm up, then a knurled 9.03mm shaft that turns and pushes 1.5mm passes the faceplate. Running clearance |
 | OLED `DS1` | window, **not sized yet** | below |
 
-The generator draws **no pot or encoder holes at all** yet — the r=8 and r=9.2 circles in
-the FAB SVG are knob outlines, not cuts.
+The generator draws **no pot or encoder holes at all** — the r=8 and r=9.2 circles in the FAB
+SVG are knob outlines, not cuts. The board's holes are drawn by `design/mkholes.py` from
+`panelgeo.holes()` (23 of 24, 2026-09-28); only the OLED window is left, waiting on the
+module's final height (§4).
 
 ### 4. OLED
 
@@ -280,6 +283,7 @@ design/values.json            Value fields
 design/mkboard.py             the one-shot board bootstrap
 design/mkpads.py              pad footprints + E1-E4 + their vias, from the generator's copper()
 design/mkplace.py             the one-shot placement of everything else (the table above)
+design/mkholes.py             the panel holes on Edge.Cuts, from panelgeo.holes()
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
                               the pin table twice (Figure 7-1, Table 7-1), checked equal
 DRC.rpt                       from tools/drc.py --project faceplate
