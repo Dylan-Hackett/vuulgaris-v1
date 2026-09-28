@@ -46,5 +46,11 @@
   "D43": "TPD1E10B06DPYR",
   "R43": "470",
   "D44": "TPD1E10B06DPYR",
-  "R44": "470"
+  "R44": "470",
+  "TP1": "SBW TEST",
+  "TP2": "SBW RST",
+  "TP3": "SBW 3V3",
+  "TP4": "SBW GND",
+  "TP5": "TP UART TX",
+  "TP6": "TP UART RX"
 }

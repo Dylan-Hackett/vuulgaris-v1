@@ -21,6 +21,7 @@ STOCK = "/Applications/KiCad/KiCad.app/Contents/SharedSupport/symbols"
 # Must match ksym.py's argument list for this project (faceplate README):
 # stock libraries first, the project library last.
 LIBS = [
+    f"{STOCK}/Connector.kicad_sym",             # TestPoint
     f"{STOCK}/Connector_Generic.kicad_sym",
     f"{STOCK}/Device.kicad_sym",
     f"{MAIN.dir}/lib/vuulgaris.kicad_sym",
@@ -125,3 +126,21 @@ for _p in range(1, 5):
     for _n in range(4):
         part(f"D{_p}{_n + 1}", "D_TVS", "X1SON-2_DPY0002A", (180 + _n * 55, _y))
         part(f"R{_p}{_n + 1}", "R", "R0603", (420 + _n * 25, _y))
+
+# ---------------------------------------------------------------- test pads
+# SBW pads and test points (ADR 0005, pin-allocation.md): the Spy-Bi-Wire
+# recovery path for a LaunchPad eZ-FET or MSP-FET (TEST, RST, 3V3, GND -- the
+# four signals of SLASEO5D Figure 10-4), and scope points on the UART. The SBW
+# TEST and RST pads ARE the RST and TEST test points; a second pad on each net
+# would add nothing, so it is six pads, not eight. Bare 1.5mm SMD pads, the
+# main board's TestPoint_Pad_D1.5mm: never populated, off the BOM and the
+# placement file. SMD because a through-hole pad would show on the front.
+# Not from a reference circuit: TI names the signals, not a pad pattern.
+for _i, (_r, _net) in enumerate((("TP1", "MSP_TEST"), ("TP2", "MSP_RST"),
+                                 ("TP3", "P3V3_MSP430"), ("TP4", "GND"),
+                                 ("TP5", "MSP430_TXD"), ("TP6", "MSP430_RXD"))):
+    part(_r, "TestPoint", "TestPoint_Pad_D1.5mm", (180 + _i * 25, 100))
+
+# Every other U1 pin is left open: 6-22 and 40-45 are unused GPIO, which
+# Table 7-4 terminates in firmware ("Open. Switched to port function, output
+# direction"), not on the board.
