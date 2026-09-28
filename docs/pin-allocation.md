@@ -620,7 +620,7 @@ RX3->E03`.
 | Interface | Module + mapping | PT pins | Verdict |
 |---|---|---|---|
 | **UART** | UCA0 default (P1.4 TXD / P1.5 RXD) | **4 / 5** | **Use this.** Runtime and BSL become the same two wires — see "Inter-board interface". Pin 4 also carries VREF+ and TCK, both idle here. |
-| UART | UCA0 remapped (P5.2 TXD / P5.1 RXD) | 45 / 44 | **Route as a fallback.** No conflicts, but runtime and BSL stop being the same wires. |
+| UART | UCA0 remapped (P5.2 TXD / P5.1 RXD) | 45 / 44 | **Not used.** No conflicts, but runtime and BSL would stop being the same wires. Was a fallback until Q21 closed (2026-09-27). |
 | UART | UCA1 (P2.6 TXD / P2.5 RXD) | 30 / 29 | **Unusable. Collides with CAP1.3 and CAP1.2.** |
 | **I2C** | UCB0 default (P1.2 SDA / P1.3 SCL) | **14 / 15** | **Use this.** No conflicts. |
 | I2C | UCB0 remapped (P4.6 SDA / P4.5 SCL) | 18 / 17 | Also fine. |
@@ -658,21 +658,20 @@ a supply input. Easy to miss.
 | **GND x2-3** | DVSS (pin 48) | More than one. Cheapest noise mitigation there is. |
 | **UART TXD** | **pin 4 (P1.4), DEFAULT UCA0** | **A2** (UART4_RX) |
 | **UART RXD** | **pin 5 (P1.5), DEFAULT UCA0** | **A3** (UART4_TX) |
-| UART TXD alt | pin 45 (P5.2), remapped | route as a fallback |
-| UART RXD alt | pin 44 (P5.1), remapped | route as a fallback |
 | IRQ | footprint only | **Do NOT wire to A8.** Redundant over UART. |
 | **BSL RST** | pin 2 | **Test pad only.** Software BSL invocation instead. |
 | **BSL TEST** | pin 3 | **Test pad only.** |
 
-**Use the DEFAULT UCA0 mapping, pins 4 and 5.** That is the change that probably
-resolves [Q21](notes/open-questions.md): BSL pins are factory-fixed and are almost
-certainly the defaults, so runtime UART and BSL UART become the same two wires.
-Pin 4 also carries TCK and VREF+, but **SBW is 2-wire so TCK is idle**, and
-CapTIvate does not use VREF+. Confirm on the bench, then close Q21.
+**Use the DEFAULT UCA0 mapping, pins 4 and 5.** [Q21](notes/open-questions.md) is
+**closed (2026-09-27)**: SLASEO5D Table 9-4 puts the UART BSL on P1.4 (transmit) and
+P1.5 (receive), so runtime UART and BSL UART are the same two wires. Pin 4 also
+carries TCK and VREF+, but **SBW is 2-wire so TCK is idle**, and CapTIvate does not
+use VREF+. **47k pull-ups on both lines** at the MSP430 (SLAU550 §3.3.2.1: floating
+TCK/TMS invite JTAG mode).
 
-**Route the remapped pins 44/45 as well.** Connector positions are free and a
-respin is not. Spend the rest on extra grounds, since this cable carries digital
-edges into a capacitive sensing front end.
+**The remapped 44/45 fallback is dropped.** It only covered the BSL being on other
+pins, and `J12` as built has no free position for it: five signals and five grounds,
+the grounds because this cable carries digital edges into a capacitive sensing front end.
 
 **No I2C crosses this cable any more.** The expanders are local to the main PCB.
 

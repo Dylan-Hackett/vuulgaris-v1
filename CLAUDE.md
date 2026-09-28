@@ -16,7 +16,7 @@ MSP430FR2675 touch faceplate. Two PCBs:
 |---|---|
 | `docs/design-state.md` | the current state of everything — the handoff doc |
 | `docs/review-packet.md` | what was verified against which source, and every defect found |
-| `docs/decisions/` | ADRs 0001–0010. Read before relitigating anything |
+| `docs/decisions/` | ADRs 0001–0012. Read before relitigating anything |
 | `docs/notes/open-questions.md` | open questions, with what each one blocks |
 | `hardware/kicad/README.md` | the main-board process, and the lessons that cost real work |
 | `hardware/faceplate/README.md` | faceplate constraints and the main-board handoff |
