@@ -25,11 +25,17 @@ symbol name does this, not just that one.
 Running this with NO arguments writes an EMPTY kpins.json and mksch.py then dies
 on a KeyError. kpins.json is generated, not tracked; rebuild it here.
 
+THE FACEPLATE has its own cache (hardware/faceplate/design/kpins.json) and its
+own argument list, which is in hardware/faceplate/README.md; pass
+`--project faceplate` as well. It shares lib/vuulgaris.kicad_sym with the main
+board but not daisy_es.
+
 A pin's (at x y angle) is its CONNECTION point in symbol space, where Y is
 up-positive.  Schematic space is Y down-positive, so placing an instance at
 (ix, iy) with rotation 0 puts the pin at (ix + px, iy - py).
 """
 import re, sys, json, os
+import proj                     # takes --project NAME out of argv; see tools/proj.py
 
 def sexp(text):
     """Minimal S-expression reader -> nested lists of tokens."""
@@ -96,4 +102,5 @@ if __name__ == '__main__':
         xs = [p['x'] for p in v.values()]
         ys = [p['y'] for p in v.values()]
         print(f'{k:32} {len(v):3} pins  x[{min(xs):7.2f},{max(xs):7.2f}] y[{min(ys):7.2f},{max(ys):7.2f}]')
-    json.dump(libs, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'kpins.json'), 'w'))
+    json.dump(libs, open(proj.P.kpins, 'w'))
+    print(f'wrote {proj.P.kpins}')

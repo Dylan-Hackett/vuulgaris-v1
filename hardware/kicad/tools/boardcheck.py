@@ -29,11 +29,11 @@ their bounding box invents ~0.35mm of copper at each corner and manufactured
 113 violations that did not exist.
 """
 import re, math, json, collections, sys, os
+import proj                     # takes --project NAME out of argv; see tools/proj.py
 
-KI = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PCB = sys.argv[1] if len(sys.argv) > 1 else f'{KI}/vuulgaris.kicad_pcb'
-PRO = f'{KI}/vuulgaris.kicad_pro'
-MAP = f'{KI}/tools/netmap.json'
+PCB = sys.argv[1] if len(sys.argv) > 1 else proj.P.pcb
+PRO = proj.P.pro
+MAP = proj.P.netmap
 
 
 def blocks(t, kind='footprint'):
