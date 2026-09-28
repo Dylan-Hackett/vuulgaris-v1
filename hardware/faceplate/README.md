@@ -166,10 +166,11 @@ square inside corners, so the main board's outline is untouched. The cost: a pan
 can no longer sit in the corner — at 3mm in, its head has to clear the arc, so corner
 screws go **at least 9mm along the edge** (`panel_screw_corner_min_mm`, checked).
 
-**Panel screws — 2026-09-28:** ten M3, 3.4mm clearance holes, 3mm in from the edge into
-the wall tops: four along each long edge (x 9.00 / 102.43 / 195.86 / 289.29) and one mid-way
-down each short edge (y 68.91). Generator `panel_screws()`; the enclosure's threaded
-inserts go under them. The panel art draws the M3 pan heads.
+**Panel screws — 2026-09-28:** four M3, 3.4mm clearance holes, one at each corner: on the
+long edges 9mm from the corner (x 9.00 / 289.29) and 3mm in (y 3.00 / 134.81), as close as
+the r6 corner lets an M3 pan head sit. (Ten, along the edges, until the same day.) Generator
+`panel_screws()`; the enclosure's threaded inserts go under them. The panel art draws the
+heads.
 panelcheck checks all four corners.
 
 The generator draws **no pot or encoder holes at all** — the r=8 and r=9.2 circles in the FAB

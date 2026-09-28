@@ -266,13 +266,14 @@ CFG = {
     "panel_corner_r_mm":    6.0,
     "panel_screw_corner_min_mm": 9.0,
     # The panel screws (2026-09-28): M3, clearance 3.4 (ISO 273 medium), down into
-    # the wall tops. Four along each long edge -- the first and last
-    # panel_screw_corner_min_mm from the corners, the rest evenly between -- and one
-    # mid-way down each short edge: ten. The enclosure's inserts go under them.
+    # the wall tops. Four, one at each corner (Dylan: "only needs four, on the corners"):
+    # on the long edges, panel_screw_corner_min_mm from the corner -- as close as the r6
+    # corner lets an M3 pan head sit -- 3mm in. Ten until the same day. The enclosure's
+    # inserts go under them.
     "panel_screw_d_mm":     3.4,
     "panel_screw_head_d_mm": 5.5,   # M3 pan head: the art draws it, the checks clear it
-    "panel_screws_long":    4,
-    "panel_screws_short":   1,
+    "panel_screws_long":    2,
+    "panel_screws_short":   0,
     # What the cavity has to hold along y (design-state "Assembly"): the jack
     # wall's 1mm assembly gap, the main board, and the travel it slides to put
     # its jacks through that wall. --check asserts the panel covers exactly this.

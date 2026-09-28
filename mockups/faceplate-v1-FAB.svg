@@ -5,24 +5,12 @@
 <g id="panel-screws" fill="none" stroke="#888780" stroke-width="0.25">
 <circle cx="9" cy="3" r="2.75"/>
 <circle cx="9" cy="3" r="1.7"/>
-<circle cx="102.429" cy="3" r="2.75"/>
-<circle cx="102.429" cy="3" r="1.7"/>
-<circle cx="195.857" cy="3" r="2.75"/>
-<circle cx="195.857" cy="3" r="1.7"/>
 <circle cx="289.286" cy="3" r="2.75"/>
 <circle cx="289.286" cy="3" r="1.7"/>
-<circle cx="295.286" cy="68.905" r="2.75"/>
-<circle cx="295.286" cy="68.905" r="1.7"/>
 <circle cx="289.286" cy="134.81" r="2.75"/>
 <circle cx="289.286" cy="134.81" r="1.7"/>
-<circle cx="195.857" cy="134.81" r="2.75"/>
-<circle cx="195.857" cy="134.81" r="1.7"/>
-<circle cx="102.429" cy="134.81" r="2.75"/>
-<circle cx="102.429" cy="134.81" r="1.7"/>
 <circle cx="9" cy="134.81" r="2.75"/>
 <circle cx="9" cy="134.81" r="1.7"/>
-<circle cx="3" cy="68.905" r="2.75"/>
-<circle cx="3" cy="68.905" r="1.7"/>
 </g>
 <g id="rules" stroke="#B4B2A9" stroke-width="0.18" fill="none">
 <line x1="15.143" y1="15.358" x2="173.143" y2="15.358"/>
