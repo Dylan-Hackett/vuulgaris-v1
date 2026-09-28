@@ -50,7 +50,10 @@ touch chip is too wedged to answer on the serial link.
 > pullup and capacitor TI specifies on RST/NMI must be on the faceplate. It was
 > good practice before; it is now required.
 
-`MSP_TEST` stays undriven on `J12.1` and still wants a pulldown at the chip end.
+`MSP_TEST` stays undriven on `J12.1`. **No external pulldown** (corrected 2026-09-28; this
+said it "still wants a pulldown at the chip end"): SLASEO5D Table 7-4 says an unused TEST is
+left "Open. This pin always has an internal pulldown enabled", and Figure 10-4, TI's
+Spy-Bi-Wire connection, puts nothing on it.
 
 (J12 pin numbers changed 2026-09-25, when `J12` moved to the back of the main board facing
 down — see `hardware/faceplate/README.md` §5 for the full pin map.)
