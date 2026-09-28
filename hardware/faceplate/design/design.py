@@ -85,3 +85,19 @@ part("C4", "C", "C0603", (265, 300))       # 1nF   RST
 # The pull-ups also hold RXD high while the Daisy boots.
 part("R2", "R", "R0603", (290, 300))       # 47k   P1.4 TXD / TCK
 part("R3", "R", "R0603", (315, 300))       # 47k   P1.5 RXD / TMS
+
+# XT1, 32.768kHz, on P2.1/XIN (47) and P2.0/XOUT (46). Topology from SLASEO5D
+# section 10.1.2, Figure 10-2: crystal across XIN/XOUT, one capacitor from each
+# to ground ("External bypass capacitors for the crystal oscillator pins are
+# required"). Q22: the FLL locks to it, so baud accuracy is not a question.
+# Y1: Epson FC-135 12.5pF (C32346, JLC Basic); C0 1pF against TI's 1.6pF max
+# shunt (8.12.3.1 note 7). NOT from a reference circuit: the capacitor VALUE.
+# TI gives no number, only "meet the effective load capacitance specified by
+# crystal manufacturers" with CL,eff 1pF integrated (8.12.3.1). 12.5pF =
+# C/2 + 1 + board stray puts C near 20pF; 22pF is the nearest Basic C0G 0603
+# (C1653, already on the main board) and lands a pF or so high, which pulls a
+# few ppm -- irrelevant to a UART that needs percent. Q22: fit the footprint;
+# populating it is decided later.
+part("Y1", "Crystal", "XTAL-SMD_FC-135_3.2x1.5mm", (360, 300))
+part("C5", "C", "C0603", (390, 300))       # 22pF C0G  XIN
+part("C6", "C", "C0603", (415, 300))       # 22pF C0G  XOUT

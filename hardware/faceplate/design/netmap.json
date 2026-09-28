@@ -18,7 +18,9 @@
     "2": "MSP_RST",
     "3": "MSP_TEST",
     "4": "MSP430_TXD",
-    "5": "MSP430_RXD"
+    "5": "MSP430_RXD",
+    "47": "MSP_XIN",
+    "46": "MSP_XOUT"
   },
   "C1": {
     "1": "P3V3_MSP430",
@@ -47,5 +49,17 @@
   "R3": {
     "1": "P3V3_MSP430",
     "2": "MSP430_RXD"
+  },
+  "Y1": {
+    "1": "MSP_XIN",
+    "2": "MSP_XOUT"
+  },
+  "C5": {
+    "1": "MSP_XIN",
+    "2": "GND"
+  },
+  "C6": {
+    "1": "MSP_XOUT",
+    "2": "GND"
   }
 }
