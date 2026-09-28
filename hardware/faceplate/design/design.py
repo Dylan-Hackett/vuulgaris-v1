@@ -74,3 +74,14 @@ part("C4", "C", "C0603", (265, 300))       # 1nF   RST
 # TEST/SBWTCK, pin 3: nothing. Figure 10-4 wires it straight to the tool, and
 # Table 7-4 says an unused TEST is left "Open. This pin always has an internal
 # pulldown enabled" (Table 7-1: reset state PD). MSP_TEST is undriven at J12.
+
+# UART on UCA0 at its default pins, P1.4 TXD (4) / P1.5 RXD (5): the runtime
+# link and the UART BSL are the same two wires (SLASEO5D Table 9-4;
+# pin-allocation.md). 47k pull-ups on both, from SLAU550 section 3.3.2.1:
+# "Add a 47-kohm pullup resistor and a 1-nF pulldown capacitor on TCK and TMS"
+# -- P1.4 is TCK and P1.5 is TMS. The 1nF capacitors are left off by decision
+# (README section 6): they serve the hardware BSL entry sequence, which
+# production never uses (blank-device detection, then software invocation).
+# The pull-ups also hold RXD high while the Daisy boots.
+part("R2", "R", "R0603", (290, 300))       # 47k   P1.4 TXD / TCK
+part("R3", "R", "R0603", (315, 300))       # 47k   P1.5 RXD / TMS
