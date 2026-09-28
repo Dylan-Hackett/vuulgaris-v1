@@ -3444,7 +3444,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 00ddb09e-abac-49b9-99a5-954e3ced7bb6)
-    (at 383.95 145.15 -90)
+    (at 383.5 145.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -3777,7 +3777,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 1aa91147-cb58-461e-a264-bc3170e886ed)
-    (at 388.8 143.15)
+    (at 388.35 143.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -3806,7 +3806,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 2169d47c-b287-4923-af86-1b66239d94a3)
-    (at 390.92 137.15 -90)
+    (at 390.92 135.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -3860,7 +3860,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 249026ee-2444-4386-91bf-71a1e87ab48b)
-    (at 383.95 137.15 -90)
+    (at 383.5 135.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -3962,7 +3962,7 @@
     )
     (fp_text user "3V3" (at 0 2.2) (layer "B.SilkS")
         (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror))
-      (tstamp 60f32048-0679-4061-831b-1f1d759a7494)
+      (tstamp c15f6df7-700c-4720-b943-8f5c7798e03f)
     )
     (fp_circle (center 0 0) (end 0 -0.95)
       (stroke (width 0.12) (type solid)) (fill none) (layer "B.SilkS") (tstamp 480883d4-6878-4f4a-9b55-b19cb85e1463))
@@ -3974,7 +3974,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 2a742b24-2aec-4d72-a35e-2e4921cbbee7)
-    (at 384.3 131.15)
+    (at 383.85 128.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4003,7 +4003,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 2cb15f43-7852-4089-917a-e82d0be1406c)
-    (at 388.45 137.15 -90)
+    (at 388 135.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -4057,7 +4057,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 360f23e2-c376-4b6c-8119-6f3233cf2fc0)
-    (at 388.45 141.15 -90)
+    (at 388 140.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -4111,7 +4111,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 3c9f54fd-8d13-4e20-811d-7c52b6ef25b2)
-    (at 383.95 141.15 -90)
+    (at 383.5 140.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -4165,7 +4165,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 3d09d687-80de-4ae6-a30b-4e0d45bcd140)
-    (at 381.1 135.15)
+    (at 380.65 133.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4194,7 +4194,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 4048edcc-39be-4dbb-8b0a-943f04f3d75c)
-    (at 391.27 135.15)
+    (at 391.27 133.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4223,7 +4223,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 44edcf8a-3e4a-4dfc-a689-f97e71aac04f)
-    (at 390.92 141.15 -90)
+    (at 390.92 140.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -4277,7 +4277,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 4630883c-282a-479d-808c-7c0130f31b17)
-    (at 381.1 139.15)
+    (at 380.65 138.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4368,7 +4368,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 5960a159-41d7-4fa5-98a2-0d4abee59bf6)
-    (at 388.8 139.15)
+    (at 388.35 138.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4397,7 +4397,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 5d56fbb9-994e-420f-8450-09b488c40003)
-    (at 384.3 139.15)
+    (at 383.85 138.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4488,7 +4488,7 @@
 
   (footprint "vuulgaris:C0805" (layer "B.Cu")
     (tstamp 68c81e71-32ea-438a-98f4-99061d805120)
-    (at 385.7 145.875 90)
+    (at 385.25 145.875 90)
     (descr "10uF (106) ±10% 25V")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
@@ -4496,7 +4496,7 @@
     (property "ki_keywords" "cap capacitor")
     (path "/e956ff6d-2455-48dc-a28e-f69dada6661b")
     (attr smd)
-    (fp_text reference "C3" (at 2.9 0 180) (layer "B.SilkS")
+    (fp_text reference "C3" (at 3.275 0 180) (layer "B.SilkS")
         (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror))
       (tstamp 2b4eda88-3b9a-4572-929a-2d15c34e0827)
     )
@@ -4551,7 +4551,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 6bf096a8-f1f5-41ad-a24a-8b581df670b9)
-    (at 380.75 137.15 -90)
+    (at 380.3 135.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -4624,7 +4624,7 @@
     )
     (fp_text user "GND" (at 0 2.2) (layer "B.SilkS")
         (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror))
-      (tstamp 5632c54d-70a6-49cc-abdb-64d3ea8182b2)
+      (tstamp 0613de41-b4bd-40a7-8ea1-02bc7b11cd13)
     )
     (fp_circle (center 0 0) (end 0 -0.95)
       (stroke (width 0.12) (type solid)) (fill none) (layer "B.SilkS") (tstamp d84b2b9d-dbde-4af1-a13f-bdf738723bb3))
@@ -4636,7 +4636,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 7f9ccac6-ef7c-463f-aaf1-5cba14dd7a11)
-    (at 380.75 141.15 -90)
+    (at 380.3 140.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -4690,7 +4690,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 8200cfde-d031-4434-b8c1-7e54f48ccf9b)
-    (at 384.3 143.15)
+    (at 383.85 143.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4719,7 +4719,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 842d4f2a-f5c8-4f39-80e2-81b1e937dcde)
-    (at 381.1 131.15)
+    (at 380.65 128.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4748,7 +4748,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 8a200eab-3f58-49bd-b0fb-80150b8b1a7d)
-    (at 390.92 133.15 -90)
+    (at 390.92 130.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -4950,7 +4950,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp 8f612d72-4612-4998-92de-03e4d58e1c88)
-    (at 381.1 143.15)
+    (at 380.65 143.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -4979,7 +4979,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp 907a14e0-cee4-4fc3-b9e1-ff2b89642b8a)
-    (at 388.45 145.15 -90)
+    (at 388 145.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -5052,7 +5052,7 @@
     )
     (fp_text user "TX" (at 0 2.2) (layer "B.SilkS")
         (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror))
-      (tstamp 8e71bcc1-da76-4c42-8d7c-e297393673b7)
+      (tstamp 6b3be497-7ee9-429d-9bd9-a2a3971a6d24)
     )
     (fp_circle (center 0 0) (end 0 -0.95)
       (stroke (width 0.12) (type solid)) (fill none) (layer "B.SilkS") (tstamp eb8cf72e-7836-44e4-8412-39f6b3de2c4a))
@@ -5064,7 +5064,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp aa053c3a-0043-41bd-9ae0-68d7be37b227)
-    (at 391.27 139.15)
+    (at 391.27 138.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -5155,7 +5155,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp b97e3ff5-3b44-4e0b-8867-f76e9c2079cf)
-    (at 384.3 135.15)
+    (at 383.85 133.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -5231,7 +5231,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp c2067c18-a278-4d7f-80ce-177ae07428d9)
-    (at 380.75 133.15 -90)
+    (at 380.3 130.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -5285,7 +5285,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp d4e2a125-fde9-4798-b928-153cf7e72079)
-    (at 391.27 131.15)
+    (at 391.27 128.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -5333,7 +5333,7 @@
     )
     (fp_text user "RST" (at 0 2.2) (layer "B.SilkS")
         (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror))
-      (tstamp 348f1da2-15f9-44ad-9a54-9f537df16cf7)
+      (tstamp 2e1cb239-9451-4ae0-b3eb-9b3624f1317e)
     )
     (fp_circle (center 0 0) (end 0 -0.95)
       (stroke (width 0.12) (type solid)) (fill none) (layer "B.SilkS") (tstamp 3178fdb7-9956-4f29-92c0-6dea16fbf04c))
@@ -5345,7 +5345,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp de071243-44f8-47d6-9d7a-1882c7203958)
-    (at 388.45 133.15 -90)
+    (at 388 130.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -5418,7 +5418,7 @@
     )
     (fp_text user "TEST" (at 0 2.2) (layer "B.SilkS")
         (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror))
-      (tstamp d6445deb-80df-456b-94fd-10995f4cdb66)
+      (tstamp 05d629c2-3096-4ecb-aa8f-d4ef63792430)
     )
     (fp_circle (center 0 0) (end 0 -0.95)
       (stroke (width 0.12) (type solid)) (fill none) (layer "B.SilkS") (tstamp 28dfa850-92ab-4141-8f96-75a6a08fb42f))
@@ -5430,7 +5430,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp e357faab-1c8a-4dae-a601-5b3ff67acdf6)
-    (at 383.95 133.15 -90)
+    (at 383.5 130.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")
@@ -5484,7 +5484,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp e759217a-0ea0-46f0-ab99-68058b3d2e3e)
-    (at 388.8 135.15)
+    (at 388.35 133.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -5575,7 +5575,7 @@
 
   (footprint "vuulgaris:X1SON-2_DPY0002A" (layer "B.Cu")
     (tstamp eb9522b4-192f-4fbb-b68d-1bf26474a455)
-    (at 388.8 131.15)
+    (at 388.35 128.15)
     (descr "TI DPY0002A X1SON-2 (0402), TPD1E10B06DPYR. TI land pattern 4224561/C: openings 0.3 x 0.5, centres 0.7, solder-mask-defined (TI preferred), copper 0.07 under mask")
     (tags "X1SON DPY0002A TPD1E10B06 0402 TVS")
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
@@ -5726,7 +5726,7 @@
     )
     (fp_text user "RX" (at 0 2.2) (layer "B.SilkS")
         (effects (font (size 0.8 0.8) (thickness 0.12)) (justify mirror))
-      (tstamp 87eea4ed-1d0f-4fed-8453-2ab748005b4a)
+      (tstamp 775e6c57-971c-4618-bc3d-751b2de98fe9)
     )
     (fp_circle (center 0 0) (end 0 -0.95)
       (stroke (width 0.12) (type solid)) (fill none) (layer "B.SilkS") (tstamp 8ba6ef8f-3989-4815-bf58-4bfeab02728f))
@@ -5738,7 +5738,7 @@
 
   (footprint "vuulgaris:R0603" (layer "B.Cu")
     (tstamp ff190aff-b650-4f9a-a84b-ca4d101be3ce)
-    (at 380.75 145.15 -90)
+    (at 380.3 145.15 -90)
     (property "Sheetfile" "vuulgaris-faceplate.kicad_sch")
     (property "Sheetname" "")
     (property "ki_description" "Resistor")

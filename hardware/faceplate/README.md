@@ -351,12 +351,13 @@ All parts on B.Cu. The margin strip is panel x 277.14 (copper ends) to 292.29 (t
 inner face, where the faceplate rests on the wall top — panelcheck fails any back-side part
 past it), over the Daisy (~3mm clear; nothing here is over 1.6mm). Positions are Dylan's
 Pcbnew adjustments of 2026-09-28 (grid +1.25 / −0.25, the corner group lowered), with RX3's
-column, `Y1` and `C3` brought back in; `design/mkplace.py` records them.
+column, `Y1` and `C3` brought back in, then columns 0–2 back 0.45 and the rows opened to 5mm
+so every channel and via fits (below); `design/mkplace.py` records them.
 
 | where (panel) | what |
 |---|---|
 | `U1` (284.45, 104.0) | CAP pins 23–39 face **up**, digital corner (46–5) down-right. Pins 1–5 run right to left along the bottom, 46–48 up the right side |
-| the 4 × 4 grid over the CAP pins, rows y 83.15–95.15 | the 16 networks. **Column = CapTIvate block** (RX0–RX3 at x 280.75 / 283.95 / 288.45 / 290.92, each over its own pins: CAP0 = 23–26 … CAP3 = 36–39), **row = pad** (1 at the top). Each cell is the TVS directly on top of its 470R, TVS pin 1 over R pin 1, ground pin to the right (ADR 0004: the order and a short ground are what count, and both sit by the MCU) |
+| the 4 × 4 grid over the CAP pins, rows y 80.15 / 85.15 / 90.15 / 95.15 | the 16 networks. **Column = CapTIvate block** (RX0–RX3 at x 280.30 / 283.50 / 288.00 / 290.92, each over its own pins: CAP0 = 23–26 … CAP3 = 36–39), **row = pad** (1 at the top). Each cell is the TVS directly on top of its 470R, TVS pin 1 over R pin 1, ground pin to the right (ADR 0004: the order and a short ground are what count, and both sit by the MCU) |
 | middle channel, over pin 31 | `C3` 1µF VREG |
 | across the corner by pins 1 / 48 | `C2` 100nF |
 | right edge, y ~112–115 | `Y1` stood on end, `C5` (XIN) / `C6` (XOUT) lying beside its two pads |
@@ -377,10 +378,19 @@ references stand on end beside them; the TVS and test pad references are on B.Fa
    RX1 → under RX3. Nothing crosses under another pad ([Q24](../../docs/notes/open-questions.md)).
    Pad 3's bottom vias under `J1` sit ~2.2mm in from the edge; pad 4's first five zone-4 RX0 bars
    have no via (bridged along the edge). No ground under any of it.
-2. **The grid:** each line lands on its cell's TVS pin 1 / R pin 1 (a via from L2), TVS pin 2
-   takes a short GND via on its right, and the R's pin 2 runs **down the left side of its column**
-   to the pin. Every column does the same, and that order reaches 23–39 round both corners with no
-   crossing: the outermost trace in each column goes to the farthest pin.
+2. **The grid:** each line comes up from L2 on a via **on the column line, 2.9mm above its R's
+   centre** — between the TVS and the R above, inside its own cell, touching no channel — then
+   a short B.Cu stub down to TVS pin 1 and R pin 1. TVS pin 2 takes a short GND via on its right,
+   and the R's pin 2 runs **down the left side of its column** to the pin. Every column does the
+   same, and that order reaches 23–39 round both corners with no crossing: the outermost trace in
+   each column goes to the farthest pin.
+
+   **Netclass `CapTIvate`** (`/PAD*`, `/CAP*`): 0.15mm track, 0.15mm clearance (0.2 to anything
+   in GND or Default), vias 0.5 / 0.3. TI wants sensor traces thin anyway — width is parasitic
+   capacitance. Channels, pad to pad, at the tightest: RX1 1.85, RX2 1.64 past `C3`, RX3 1.57 past
+   the TVS rows; three 0.15 traces need 1.1 there (1.55 even at 0.25). Proven on a scratch copy:
+   all 16 vias at their spots, and three traces down RX3's channel and past `C3`, DRC-clean; one
+   planted 0.06mm off R34 fails.
 3. **The gap between pads 3 and 4, on L4:** `MSP430_TXD`, `MSP430_RXD`, `MSP_RST`, `MSP_TEST`,
    `P3V3_MSP430` from `J1` past the test pads to the margin, over an L3 GND strip ~3mm wide on
    the gap's centreline.
