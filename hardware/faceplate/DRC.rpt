@@ -1,5 +1,5 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/faceplate/vuulgaris-faceplate.kicad_pcb **
-** Created on 2026-09-28 15:39:23 **
+** Created on 2026-09-28 15:42:54 **
 
 ** Found 46 DRC violations **
 [track_dangling]: Track has unconnected end
@@ -149,7 +149,7 @@
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(391.6200 mm, 137.1500 mm): Pad 2 [/GND] of D34 on B.Cu
-    @(388.7839 mm, 137.0661 mm): Track [/GND] on B.Cu, length 0.1187 mm
+    @(388.7839 mm, 131.2339 mm): Track [/GND] on B.Cu, length 5.8322 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(389.4600 mm, 142.3900 mm): Track [/GND] on B.Cu, length 1.0748 mm
