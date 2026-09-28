@@ -35,8 +35,8 @@
 <circle cx="163.143" cy="39.851" r="8"/>
 </g>
 <g id="switches" fill="none" stroke="#5F5E5A" stroke-width="0.3">
-<circle cx="180.643" cy="39.631" r="2.475"/>
-<circle cx="193.643" cy="39.631" r="2.475"/>
+<circle cx="180.643" cy="39.631" r="2.8"/>
+<circle cx="193.643" cy="39.631" r="2.8"/>
 </g>
 <g id="oled" fill="none" stroke="#5F5E5A" stroke-width="0.3"><rect x="208.503" y="15.149" width="60.09" height="33.9" rx="1"/></g>
 <line id="divider-rule" x1="0" y1="56.097" x2="298.286" y2="56.097" stroke="#5F5E5A" stroke-width="0.45"/>
@@ -1652,17 +1652,17 @@
 </g>
 <g id="encoder" fill="none" stroke="#5F5E5A" stroke-width="0.3"><circle cx="33.571" cy="75.453" r="9.2"/></g>
 <g id="ui-buttons" fill="none" stroke="#5F5E5A" stroke-width="0.3">
-<circle cx="25.821" cy="93.953" r="3.3"/>
+<circle cx="25.821" cy="93.953" r="3.6"/>
 <circle cx="25.821" cy="93.953" r="3.1" stroke-dasharray="0.8 0.8"/>
-<circle cx="41.321" cy="93.953" r="3.3"/>
+<circle cx="41.321" cy="93.953" r="3.6"/>
 <circle cx="41.321" cy="93.953" r="3.1" stroke-dasharray="0.8 0.8"/>
-<circle cx="25.821" cy="106.653" r="3.3"/>
+<circle cx="25.821" cy="106.653" r="3.6"/>
 <circle cx="25.821" cy="106.653" r="3.1" stroke-dasharray="0.8 0.8"/>
-<circle cx="41.321" cy="106.653" r="3.3"/>
+<circle cx="41.321" cy="106.653" r="3.6"/>
 <circle cx="41.321" cy="106.653" r="3.1" stroke-dasharray="0.8 0.8"/>
-<circle cx="25.821" cy="119.353" r="3.3"/>
+<circle cx="25.821" cy="119.353" r="3.6"/>
 <circle cx="25.821" cy="119.353" r="3.1" stroke-dasharray="0.8 0.8"/>
-<circle cx="41.321" cy="119.353" r="3.3"/>
+<circle cx="41.321" cy="119.353" r="3.6"/>
 <circle cx="41.321" cy="119.353" r="3.1" stroke-dasharray="0.8 0.8"/>
 </g>
 <g id="pad-marks" stroke="#5F5E5A" stroke-width="0.3" fill="none"><line x1="169.143" y1="60.253" x2="169.143" y2="128.653"/><path d="M162.971 62.453 A6.171 6.171 0 0 1 175.314 62.453"/></g>

@@ -154,8 +154,8 @@ either way; this was a sensing decision, not a placement one.
 | part | hole | source |
 |---|---|---|
 | pots `RV1`–`RV6` | **7.5mm**, centred **0.17mm toward the top edge** of the panel coordinate | M7x0.75, washer ID 7.2 (Alpha drawing); true shaft is (0, −5.00) from the footprint origin, placed at −4.83 — `place.py` |
-| buttons `SW4`–`SW9` | 6.6mm | 6.2mm round plunger; generator `mx_hole_r_mm` |
-| toggles `SW1`/`SW2` | 4.95mm | generator `switch_hole_d_mm` |
+| buttons `SW4`–`SW9` | **7.2mm** | TS1103S drawing: plunger 6.2 ±0.2 at 14mm height; 0.4 a side at the largest, over the faceplate's ±0.25 float. Generator `mx_cut_d_mm` (the layout keeps `mx_hole_r_mm` = 3.3: changing that re-flows the column). Was 6.6 — 0.1 a side, a sticky button |
+| toggles `SW1`/`SW2` | **5.6mm** | Dailywell drawing: 10-48 UNS bushing, 4.83 over the thread. Its 4.95 hole is for a switch hung from the panel by its nut; ours is soldered to the main board too, so the hole takes the bushing's ±0.25 and the faceplate's float. Generator `switch_hole_d_mm` |
 | encoders `ENC1`–`ENC8` (EC12E) | **9.5mm** | ALPS EC12E2430803 drawing: body 5.5, then 7mm of M9x0.75 -- the static thread passes the faceplate; M9 + 0.5, the pots' margin |
 | encoder `ENC0` (EC11L) | **10.0mm** | ALPS EC11L1525G01 drawing (LE2115L02G): **no thread** -- a 7mm bushing ends 9.5mm up, then a knurled 9.03mm shaft that turns and pushes 1.5mm passes the faceplate. Running clearance |
 | OLED `DS1` | **window, 60.09 × 33.90mm**, r 1.0 corners, panel (208.50, 15.15)–(268.59, 49.05) | §4; the generator's `oled_window()` |

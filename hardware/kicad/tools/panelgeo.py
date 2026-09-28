@@ -78,9 +78,9 @@ def holes():
             # ORIGIN_OFFSET: placed at -4.83, true shaft at -5.00).
             out.append((ref, (x, y - 0.17), 7.5, "Alpha RD902F drawing; place.py shaft offset"))
         elif re.fullmatch(r"SW[4-9]", ref):
-            out.append((ref, (x, y), 2 * cfg["mx_hole_r_mm"], "generator mx_hole_r_mm (6.2mm plunger)"))
+            out.append((ref, (x, y), cfg["mx_cut_d_mm"], "generator mx_cut_d_mm (6.2 +-0.2 plunger, TS1103S)"))
         elif re.fullmatch(r"SW[12]", ref):
-            out.append((ref, (x, y), cfg["switch_hole_d_mm"], "generator switch_hole_d_mm (Dailywell DW3)"))
+            out.append((ref, (x, y), cfg["switch_hole_d_mm"], "generator switch_hole_d_mm (10-48 bushing, Dailywell)"))
         elif ref == "ENC0":
             # ALPS EC11L1525G01 drawing (LE2115L02G): no thread. A 7mm bushing ends
             # 9.5mm above the board, then a KNURLED 9.03mm shaft from 10 to 18mm --
@@ -145,3 +145,10 @@ def oled_module_centre():
     m, g = generator()
     c = m.CFG
     return (g["oled_x0"] - c["oled_hdr_to_edge_mm"] + 36.0, g["OLED_Y"] + 21.5)
+
+
+def oled_outlines():
+    """-> {"aa": .., "glass": ..} as (x0, y0, x1, y1), panel mm: the pixels and the glass,
+    from the generator (HS242L01 drawing), for the faceplate's Fab reference drawing."""
+    _, g = generator()
+    return {"aa": tuple(g["OLED_AA"]), "glass": tuple(g["OLED_GLASS"])}
