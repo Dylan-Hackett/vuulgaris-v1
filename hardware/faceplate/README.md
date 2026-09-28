@@ -313,6 +313,9 @@ design/mkboard.py             the one-shot board bootstrap
 design/mkpads.py              pad footprints + E1-E4 + their vias, from the generator's copper()
 design/mkplace.py             the one-shot placement of everything else (the table above)
 design/mkholes.py             the whole Edge.Cuts layer: outline (r 6 corners), panel holes, screws, OLED window
+design/mkbuses.py             the pad buses: every bar's via joined, each net out to the margin (deterministic)
+design/mkzones.py             the L3 GND plane: hatched, in the margin and the pad 3-4 corridor, never under a pad
+design/mkroute.py             everything else, by Freerouting, fenced: no F.Cu, nothing under or between the pads
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
                               the pin table twice (Figure 7-1, Table 7-1), checked equal
 DRC.rpt                       from tools/drc.py --project faceplate

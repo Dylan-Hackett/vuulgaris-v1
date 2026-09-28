@@ -53,12 +53,13 @@ U1_XY = (284.45, 104.0)
 # Dylan moved the grid +1.25 / -0.25 in Pcbnew (2026-09-28, widening the left channel);
 # RX3's column then came back 0.73 so its TVS clear the wall (panelcheck), and columns
 # 0-2 went 0.45 left again so RX3's channel holds its three traces past the TVS (1.57mm).
-# Rows are 5.0 apart, not 4.0: that leaves a via spot in every cell, on the column line
+# Rows are 6.0 apart (5.0 until the autorouter needed room to cross each pad's RX1 and RX2
+# lines between rows; 4.0 before that): that leaves a via spot in every cell, on the column line
 # 2.9 above the R's centre -- between the TVS and the R above -- where the line comes up
 # from L2 without entering any trace channel. Row 4 stays put: the fan-out into U1 is
 # unchanged; the grid grows upward into empty margin.
 COL_X = (280.30, 283.50, 288.00, 290.92)  # RX0..RX3 = CAP0..CAP3
-ROW_Y = {1: 80.15, 2: 85.15, 3: 90.15, 4: 95.15}
+ROW_Y = {1: 77.15, 2: 83.15, 3: 89.15, 4: 95.15}
 VIA_DY = -2.9                             # the electrode's via spot, from the R's centre
 TVS_DY = -2.0                             # TVS centre above its R's centre
 TVS_PIN_DX = 0.35                         # X1SON-2 pads at +-0.35: pin 1 over the R
@@ -95,15 +96,16 @@ PLACE = {
     "R1": (282.775, 112.85, "2", "up"),    # 47k RST pull-up
     # UART pull-ups (SLAU550 3.3.2.1: on the TCK / TMS nets, no distance given) at the end
     # of the test-pad row, where 3V3, TXD and RXD all run past.
-    "R2": (263.2, 112.0, "1", "up"),       # 47k TXD
-    "R3": (265.0, 112.0, "1", "up"),       # 47k RXD
+    "R2": (264.4, 110.0, "1", "left"),     # 47k TXD
+    "R3": (267.4, 110.0, "1", "left"),     # 47k RXD
 }
 # Test pads in the gap between pads 3 and 4, beside J1, where TEST, RST, 3V3, GND and the
-# UART all arrive anyway: one row, labelled on silk by signal (the main board's rule: the
-# silk carries what it is, not TPn).
+# UART all arrive anyway: one row along the corridor's top edge, so J1's lines run clear
+# underneath, labelled on silk by signal (the main board's rule: the silk carries what it
+# is, not TPn). The UART pull-ups lie at the end of the row.
 TP_LABEL = {"TP1": "TEST", "TP2": "RST", "TP3": "3V3", "TP4": "GND", "TP5": "TX", "TP6": "RX"}
 for k, ref in enumerate(TP_LABEL):
-    PLACE[ref] = (242.0 + k * 3.6, 111.2, None, None)
+    PLACE[ref] = (242.0 + k * 3.6, 110.0, None, None)
 
 # Silk: where each reference goes (panel mm, and whether it stands on end), placed by the
 # silk's real extents so no reference lands on a body. None = off the silk, onto B.Fab.
@@ -113,7 +115,7 @@ REF_AT = {
     "Y1": (290.9, 117.45, False),
     "C5": (285.55, 113.4, False), "C6": (285.55, 115.9, False),
     "C1": (278.55, 115.65, False), "C4": (280.725, 115.7, False), "R1": (282.775, 115.65, False),
-    "R2": (263.2, 114.6, False), "R3": (265.0, 114.6, False),
+    "R2": (264.4, 111.9, False), "R3": (267.4, 111.9, False),
 }
 REF_AT.update({ref: None for ref in TP_LABEL})
 for _p in range(1, 5):
