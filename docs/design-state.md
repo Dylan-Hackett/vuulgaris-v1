@@ -877,7 +877,7 @@ was the conclusion — see §11. There is no 16mm TC-1212 at LCSC (it stops at
 12.0H), and 12.0mm stands 0.4mm proud, which is not a button.
 
 **Settled: `TS1103S-12X12X14DIP`, LCSC C54573007.** 14.0mm → **2.4mm proud**, with
-a ∅6.2 round plunger through a 6.6mm panel hole. **No cap** — the plunger is the
+a ∅6.2 round plunger through a **7.2mm** panel hole (6.6 until 2026-09-28; see below). **No cap** — the plunger is the
 button face, and the cap only ever existed to bridge a gap a 7.3mm switch could
 not reach. Same 12×12 body and the same 4 × ∅1.2 at 12.5 × 5.0 pattern, so the
 footprint and placement did not move.
@@ -892,7 +892,7 @@ it can be wider than its own hole.
 | Columns | 15.50mm — the pads splay to 14.7mm, which is the hard floor; 19.05 until 2026-09-06 |
 | Rows | 12.7mm, tightened from 19.05 |
 | Cluster | 22.1 x 32.0mm to the holes; the 12.0mm bodies behind it span 27.5 x 37.4mm |
-| ENC0 | moved to y 73.453 on 2026-09-08 when the caps went away and the column re-centred on a 6.6mm hole instead of a 12mm cap |
+| ENC0 | moved to y 73.453 on 2026-09-08 when the caps went away and the column re-centred on a 6.6mm hole instead of a 12mm cap (the layout still uses 6.6; the cut is 7.2 since 2026-09-28) |
 | GPIO | `BTN5`/`BTN6` onto U4's spare GPA0/GPA1; 7 pins still free |
 | Land pattern | `KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5`, 14.70 x 12.00mm, **identical at every height in the family** |
 
@@ -909,7 +909,8 @@ panel hole"* would change. **Both halves were wrong.**
   never have passed, at any height.
 
 `TS1103S-12X12X14DIP` (CAX) fixes both. **14.0mm tall → 2.4mm proud** of the panel,
-and a **∅6.2 round plunger** through a hole now widened to **6.6mm**. Its PCB
+and a **∅6.2 round plunger** through a hole widened to 6.6mm, then to **7.2mm** on
+2026-09-28 (the plunger is ±0.2, and the faceplate floats ±0.25 on the pots). Its PCB
 pattern is `4 x ∅1.2 at 12.5 x 5.0`, which is what
 `KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5` already is — so the footprint, the netlist and
 the button placement really are unchanged. The series runs 4.3mm to 20mm if the

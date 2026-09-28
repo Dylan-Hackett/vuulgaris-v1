@@ -115,10 +115,15 @@ CFG = {
     # 2026-08-07 after that was described wrongly.
     "n_switches":            2,
     "switch_reserve_slots":  2,   # hold the row where it was; see ui_w
-    # Dailywell 2MD1T1B1M2QES (Thonk DW3): the panel opening is a ROUND 4.95mm
-    # bushing hole, not a slot. switch_w/h stay as the LAYOUT footprint the
-    # switch occupies in the row; switch_hole_d_mm is what actually gets cut.
-    "switch_hole_d_mm":    4.95,
+    # Dailywell 2MD1T1B1M2QES (Thonk DW3): the panel opening is a ROUND bushing
+    # hole, not a slot. switch_w/h stay as the LAYOUT footprint the switch
+    # occupies in the row; switch_hole_d_mm is what actually gets cut.
+    # 5.6, not Dailywell's 4.95 (2026-09-28): the bushing is 10-48 UNS, 4.83mm
+    # over the thread, and 4.95 is the drawing's hole for a switch HUNG from the
+    # panel by its nut. Ours is soldered to the main board AND passes the
+    # faceplate, so the hole takes up the bushing's +-0.25 position tolerance
+    # (drawing) and the faceplate's +-0.25 float on the pots: 0.385 a side.
+    "switch_hole_d_mm":    5.6,
     # Drop the switch pair below rule 3. Centred on R3 their through-holes land
     # inside the 1/4" jack footprints, and J8's pad 5 sits BETWEEN SW2's two pad
     # columns -- nowhere to nudge it, J7 blocks left and DS1/J9 block right.
@@ -188,9 +193,18 @@ CFG = {
     "mx_pitch_mm":        15.50,     # column pitch; floor is ~15.0, the TH pads collide below that
     "mx_row_pitch_mm":    12.7,      # bodies are 12.0 square, so 0.7mm between them
     "mx_rows":               3,
-    # Clearance hole for the plunger. Was 2.25 (4.5mm) when a 3.8mm SQUARE stem
-    # was assumed -- which never fitted anyway, its diagonal is 5.37mm.
-    "mx_hole_r_mm":        3.30,     # 6.6mm, clearing the 6.2mm round plunger
+    # LAYOUT radius of a button opening: the control column's spacing was built
+    # on it, so changing it re-flows SW4-SW9 on the routed main board. Was 2.25
+    # (4.5mm) when a 3.8mm SQUARE stem was assumed. The hole actually cut is
+    # mx_cut_d_mm, below.
+    "mx_hole_r_mm":        3.30,
+    # The cut, 2026-09-28: 7.2mm. TS1103S drawing: the plunger is 6.2 at our
+    # 14mm height, and one-decimal dimensions there are +-0.2, so up to 6.4 --
+    # which left 0.1 a side in the old 6.6 hole, less than the faceplate's own
+    # +-0.25 float on the pots. A plunger that touches its hole is a sticky
+    # button. 0.5 a side nominal, 0.4 at the worst plunger.
+    "mx_cut_d_mm":         7.2,
+    "mx_plunger_tol_mm":   0.2,
 
     # Shift button, directly below the encoder in the right margin. Wired to
     # A9 (PB15) on the Daisy, not to the MSP430. Tactile switch on the MAIN
@@ -872,7 +886,7 @@ def render(c, g):
     # outline, which sits on the panel surface, and the actual HOLE, which only
     # has to pass the stem.
     if c.get("controls_left") and c.get("mx_buttons"):
-        hr, pl = c["mx_hole_r_mm"], c["mx_plunger_mm"]
+        hr, pl = c["mx_cut_d_mm"] / 2.0, c["mx_plunger_mm"]
         A(f'<g id="ui-buttons" fill="none" stroke="{INK}" stroke-width="0.3">')
         for cy in g["MX_CY"]:
             for cx in g["MX_CX"]:
@@ -1108,12 +1122,12 @@ def check(c, g):
             row("control column centred in the left margin",
                 f"{(g['ENC_CX']-er)-_llim:.2f} / {g['PAD_X0']-(g['ENC_CX']+er):.2f}mm",
                 abs(((g["ENC_CX"]-er)-_llim) - (g["PAD_X0"]-(g["ENC_CX"]+er))) < 2.0)
-            btm = (g["MX_CY"][-1] + c["mx_hole_r_mm"]) if c.get("mx_buttons") else \
+            btm = (g["MX_CY"][-1] + c["mx_cut_d_mm"] / 2.0) if c.get("mx_buttons") else \
                   ((g["BTN_CY"][-1] + c["button_r_mm"]) if g["BTN_CY"] else g["SHIFT_CY"])
             row("control column inside the walls (vertical)",
                 f"{g['ENC_CY']-er:.2f} .. {btm:.2f} of {c['enclosure_wall_mm']}..{g['PANEL_H']-c['enclosure_wall_mm']:.1f}",
                 g["ENC_CY"]-er > c["enclosure_wall_mm"] and btm < g["PANEL_H"]-c["enclosure_wall_mm"])
-            _bx = (g["MX_CX"][-1] + c["mx_hole_r_mm"]) if c.get("mx_buttons") \
+            _bx = (g["MX_CX"][-1] + c["mx_cut_d_mm"] / 2.0) if c.get("mx_buttons") \
                   else (g["BTN_CX"] + c["button_r_mm"])
             row("buttons clear the pads", f"{g['PAD_X0']-_bx:.2f}mm", _bx < g["PAD_X0"])
             if c.get("mx_buttons"):
@@ -1136,11 +1150,16 @@ def check(c, g):
                 row("button reaches through the panel",
                     f"{_proud:.2f}mm proud of the {_PANEL_OUTER_MM}mm outer face",
                     1.5 <= _proud <= 5.0)
-                _hgap = 2 * c["mx_hole_r_mm"] - c["mx_plunger_mm"]
+                # a side, at the LARGEST plunger the drawing allows; must beat the
+                # faceplate's +-0.25 float plus 0.1 of hole tolerance
+                _hgap = (c["mx_cut_d_mm"] - c["mx_plunger_mm"] - c["mx_plunger_tol_mm"]) / 2.0
                 row("plunger clears its panel hole",
-                    f"{_hgap:.2f}mm on dia, {c['mx_plunger_mm']}mm in "
-                    f"{2*c['mx_hole_r_mm']:.1f}mm",
-                    _hgap >= 0.2)
+                    f"{_hgap:.2f}mm a side at the largest plunger "
+                    f"({c['mx_plunger_mm'] + c['mx_plunger_tol_mm']:.1f} in {c['mx_cut_d_mm']:.1f})",
+                    _hgap >= 0.35)
+                _hh = c["mx_row_pitch_mm"] - c["mx_cut_d_mm"]
+                row("button holes clear each other", f"{_hh:.2f}mm of panel between rows",
+                    _hh >= 3.0)
                 # Bodies are 12.0 square and sit BEHIND the panel, so this is a
                 # PCB-side fit, not a panel one.
                 _bodygap = c["mx_row_pitch_mm"] - 12.0
@@ -1201,6 +1220,9 @@ def check(c, g):
     row("switch bushing hole fits its slot",
         f'dia {c["switch_hole_d_mm"]}mm in a {c["switch_w_mm"]}mm column',
         c["switch_hole_d_mm"] < c["switch_w_mm"])
+    _tg = (c["switch_hole_d_mm"] - 4.826) / 2.0          # 10-48 UNS major diameter
+    row("toggle bushing clears its hole", f"{_tg:.2f}mm a side on the 10-48 thread",
+        _tg >= 0.35)
     row("switch count", f'{c["n_switches"]} (LPG mode + source, both DPDT '
         f'Dailywell 2MD1T1B1M2QES / Thonk DW3)', c["n_switches"] == 2)
     # At reduced panel depth the OLED is the VERTICAL floor of the upper strip:
