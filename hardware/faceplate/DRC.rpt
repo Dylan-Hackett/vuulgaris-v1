@@ -1,0 +1,13 @@
+** Drc report for /Users/dylanhackett/V1/hardware/faceplate/vuulgaris-faceplate.kicad_pcb **
+** Created on 2026-09-27 20:23:56 **
+
+** Found 1 DRC violations **
+[lib_footprint_issues]: Footprint 'IDC-Header_2x05_P2.54mm_Vertical_SMD' not found in library 'Connector_IDC'.
+    Local override; Severity: warning
+    @(328.9950 mm, 162.5000 mm): Footprint J1
+
+** Found 0 unconnected pads **
+
+** Found 0 Footprint errors **
+
+** End of Report **

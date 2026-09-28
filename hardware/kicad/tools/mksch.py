@@ -101,7 +101,8 @@ for ref in sorted(SYM):
     A(f'    (uuid {U()})')
     A(f'    (property "Reference" "{ref}" (at {x} {y - 12} 0) (effects (font (size 1.27 1.27))))')
     A(f'    (property "Value" "{VALUE.get(ref, name)}" (at {x} {y - 9} 0) (effects (font (size 1.27 1.27))))')
-    A(f'    (property "Footprint" "vuulgaris:{FPMAP[ref]}" (at {x} {y} 0) (effects (font (size 1.27 1.27)) hide))')
+    fp = FPMAP[ref] if ":" in FPMAP[ref] else f"vuulgaris:{FPMAP[ref]}"   # "lib:name" passes through
+    A(f'    (property "Footprint" "{fp}" (at {x} {y} 0) (effects (font (size 1.27 1.27)) hide))')
     A(f'    (property "Datasheet" "" (at {x} {y} 0) (effects (font (size 1.27 1.27)) hide))')
     for pn in pins[name]:
         A(f'    (pin "{pn}" (uuid {U()}))')
