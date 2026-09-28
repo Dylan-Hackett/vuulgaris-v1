@@ -1,46 +1,63 @@
-# Faceplate PCB — session kickoff
+# Faceplate PCB — next session: the schematic
 
 Paste everything below the line into a **new** Claude Code session opened in
-`/Users/dylanhackett/V1`. `CLAUDE.md` loads by itself; this points the session at the rest.
+`/Users/dylanhackett/V1`. `CLAUDE.md` loads by itself. (The previous kickoff — settle the
+four questions, the +2mm offset, the project setup — is in git history, done 2026-09-27.)
 
 ---
 
-We're starting the faceplate PCB for Vuulgaris V1. The main board is finished and ready to
-order. Don't change it unless a faceplate constraint forces it, and tell me before you do.
+We're doing the faceplate schematic for Vuulgaris V1. The KiCad project and its
+verification loop exist and pass on a skeleton (outline + the cable header `J1`). The main
+board is finished; don't change it unless a faceplate constraint forces it, and tell me
+before you do.
 
-**Read first, in this order:**
+**Read first:**
 
-1. `hardware/faceplate/README.md` — it opens with the handoff from the main board. Treat
-   §1–§7 as constraints, not suggestions.
-2. ADRs `0002` (MSP430FR2675), `0003` (comb pads, RX0 wraparound), `0004` (exposed copper,
-   ENIG, no overlay), `0005` (BSL over the Daisy UART) in `docs/decisions/`.
-3. `docs/notes/open-questions.md` — Q1, Q17, Q21, Q22.
-4. `mockups/generate-faceplate.py` and `hardware/placement-panel-facing.txt`.
-5. `docs/design-state.md` §3 (capacitive sensing) and §4 (MSP430 programming); §9 is
-   superseded where the handoff says so.
+1. `hardware/faceplate/README.md` — status, **the loop** (every tool takes
+   `--project faceplate`), then the handoff from the main board. §1–§7 are constraints.
+2. ADRs `0002`–`0005` and `0012` in `docs/decisions/`; `docs/pin-allocation.md`
+   (CapTIvate blocks, UART, system pins); `docs/notes/open-questions.md` Q1, Q7, Q17, Q22.
+3. `hardware/faceplate/design/design.py` and `netmap.json`, and
+   `hardware/kicad/tools/proj.py` / `panelcheck.py`, so you know what the loop checks.
 
-**Before any layout, settle these with me, one at a time, each with your recommendation:**
+**Rule for this phase:** build every IC's support circuit from the manufacturer's
+reference circuit, never from first principles. Datasheets are in `datasheets/`
+(`fetch-datasheets.sh`; ask before downloading anything new). Check pin numbers against
+the datasheet's own table, not a KiCad or LCSC symbol. Say explicitly in the commit which
+parts came from a reference circuit and which did not.
 
-a. **Panel height** — 132.81mm (board + 14, 1mm behind the board) or 137.81mm (the 6mm the
-   board needs to slide in)? Handoff §1.
-b. **Pad geometry** — the README says 12mm wide, 80 teeth, 6mm gap; the generator's SVG says
-   10mm at 18mm pitch, 100 teeth. Which, and why (ADR 0003, Q17)?
-c. **Close Q21** against SLAU550: is the runtime UART on the default UCA0 pins the same pair
-   the BSL uses?
-d. **LEDs, yes or no** (handoff §7). White or RGB would need a 5V pin on `J12`, which is a
-   main-board change — so this one decides whether the main board waits.
+**Settle with me first, one at a time, each with your recommendation:**
 
-**First engineering task after that:** the +2mm offset at the jack edge (handoff §1). A pure
-offset — the regenerated placement file must differ from the old one by +2.000 in y and
-nothing else — with `OY` in `hardware/kicad/tools/place.py` going 7.000 → 9.000 in the same
-commit, and `place.py --check` still reporting all 24 panel parts on their holes.
+a. **ESD count: 16 or 20** series resistors and TVS diodes? ADR 0004 and the README say
+   20 (5 electrode segments x 4 pads); `design-state.md` §3 says 16 (4 nets per pad, since
+   RX0's two ends are one net). It turns on where RX0's two ends join relative to the
+   resistor and the TVS. TI's no-overlay guidance (SLAA843, the CapTIvate design guide) is
+   the source.
+b. **`J1`'s real part.** It must be an SMD 2x5 2.54mm shrouded box header (a through-hole
+   one puts pins through the front face between pads 3 and 4). JLC-stocked, Basic if
+   possible, checked in JLC's parts library in the browser; footprint from the
+   manufacturer drawing. Its key/pin-1 orientation gets confirmed with a real ribbon
+   (README §5); I'll do the mock-up.
+c. **The CAPTIVATE-PGMR connector**: which connector and pinout TI's PGMR expects on the
+   target, from TI's own user guide.
 
-**Then** set `hardware/faceplate/` up as its own KiCad 7 project with the same verification
-loop the main board uses: a `netmap.json` as the intent, a generated schematic, netcheck
-both ways, KiCad's own DRC through pcbnew, a placement check. The main board's tools in
-`hardware/kicad/tools/` hardcode their paths — parametrize them rather than forking copies.
+**Then the schematic**, into `design/netmap.json` + `design/design.py`, with
+`mksch → netcheck` green after each step:
 
-**Rules:** `CLAUDE.md` applies throughout. TI's documents and manufacturer drawings over
-KiCad library parts and anything summarised. Check the source, not the doc describing it.
-Commit per logical step, with no AI co-author trailer. Split into a new session at the next
-phase boundary rather than letting this one run long.
+- MSP430FR2675TPT (LCSC C2052972): symbol + footprint into the shared library, pinout
+  checked against SLASEO5D Figure 7-1 / Table 7-2 (PT), footprint against TI's PT package
+  drawing.
+- Its supply, decoupling, VREG, RST/TEST network (SBW needs a specific RST pull-up and
+  cap — TI's hardware tools guide), from TI's reference schematics.
+- 47k pull-ups on P1.4/P1.5 (README §6). The 32.768kHz crystal on pins 46/47 with its
+  load caps (Q22).
+- The 16 CapTIvate lines, one block per pad, `RX0→E00 … RX3→E03`, through the ESD network
+  from (a). The electrodes themselves as a symbol per pad for now; their copper comes from
+  the generator in the layout phase.
+- SBW pads (TEST, RST, 3V3, GND) and test points on TX, RX, RST, TEST.
+
+Every part on the faceplate goes on the **back** and must be **SMD**: the front is exposed
+ENIG copper under the player's hand. Mind the 10mm gap's height limits (README §2).
+
+**Rules:** `CLAUDE.md` applies throughout. Commit per logical step, no AI co-author
+trailer. Split into a new session before layout.
