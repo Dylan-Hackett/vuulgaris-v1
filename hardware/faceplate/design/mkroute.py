@@ -4,6 +4,7 @@
     $KPY hardware/faceplate/design/mkroute.py [--passes N]
     $KPY hardware/faceplate/design/mkroute.py --ses PATH     # import a session, no re-run
     $KPY hardware/faceplate/design/mkroute.py --dsn-only PATH  # just the fenced DSN
+    $KPY hardware/faceplate/design/mkroute.py --unroute    # strip every track and via
 
 Run after mkbuses.py (the pad buses are deterministic and are NOT left to the router) and
 mkzones.py (the L3 GND plane). Steps:
@@ -156,6 +157,14 @@ def find(node, key):
 
 def main():
     b = pcbnew.LoadBoard(proj.P.pcb)
+    if "--unroute" in sys.argv:              # every track and via off: the start of a rebuild
+        gone = list(b.GetTracks())
+        for t in gone:
+            b.Remove(t)
+        pcbnew.SaveBoard(proj.P.pcb, b)
+        print(f"unrouted: {len(gone)} tracks and vias removed. Rebuild with mkpads, mkbuses, "
+              f"mkcells, mkescape, mkzones, then mkroute.")
+        return
     if "--dsn-only" in sys.argv:             # write the fenced DSN and stop (parallel runs)
         out = os.path.abspath(sys.argv[sys.argv.index("--dsn-only") + 1])
         if not pcbnew.ExportSpecctraDSN(b, out):
