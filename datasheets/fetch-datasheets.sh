@@ -87,5 +87,8 @@ fetch "$LCSC/3e8e97a55d8a459d9476aee8c031bb82.pdf?productCode=C55071"    Bourns-
 #     -- but the pinout is settled: the mki manual states it in words on p25,
 #        and Panasonic-MN3205-datasheet.pdf (fetched above) is the original.
 #        Note the MN3205 scan is CCITT fax-coded with no text layer.
+#   BOOMELE-C5665-2x5-box-header.pdf  jlcpcb.com parts search "C5665" -> datasheet
+#     (main-board J12). LCSC's datasheet link for C5665 is dead, and JLC's is a
+#     signed link that expires in 30 minutes, so it cannot live in this script.
 echo
 echo "One datasheet (CoolAudio V3205SD) cannot be fetched -- see the comment at the end of this script."

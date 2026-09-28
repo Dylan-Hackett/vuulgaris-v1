@@ -165,8 +165,10 @@ def main():
                    ("+y" if dy > 0 else "-y") + (" row" if abs(dx) > abs(dy) else " end")
         a, b = pin1_dir(j1), pin1_dir(j12)
         row(a == b, "J1 pad 1 lies the way J12's does", f"J1 {a}; J12 {b}")
-        todos.append("J1 pin-1 / key orientation: confirm with a real ribbon before ordering "
-                     "(README section 5); this check assumes a flat, untwisted cable")
+        # The key/pin-1 TODO that stood here was closed 2026-09-28 from both
+        # manufacturer drawings (README section 5): hanxia and C5665 both put the
+        # key on the pin-1 row, so J1 and J12 lying the same way (checked above)
+        # means a straight cable, both sockets on one face, maps pin n to pin n.
         if j1["fab"]:
             fb = [to_panel(j1["fab"][:2]), to_panel(j1["fab"][2:])]
             m = min(fb[0][0] - cut[0][0], fb[0][1] - cut[0][1],

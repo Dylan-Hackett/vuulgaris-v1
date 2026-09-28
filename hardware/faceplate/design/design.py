@@ -43,9 +43,9 @@ def part(ref, sym, fp, xy):
 # SMD 2x5 box header). SMD because a through-hole header here puts ten pins
 # through the FRONT face, in the 8mm gap between pads 3 and 4. Footprint from
 # hanxia's drawing; 9.60mm seated, under the 10mm gap. Pin 1 is on the
-# key-side row at the triangle end -- confirm with a real ribbon before
-# ordering (hardware/faceplate/README.md, section 5). It is also the
-# CAPTIVATE-PGMR connection (ADR 0005).
+# key-side row at the triangle end; J12's C5665 drawing shows the same, so a
+# straight cable maps pin n to pin n (hardware/faceplate/README.md, section 5).
+# It is also the CAPTIVATE-PGMR connection (ADR 0005).
 part("J1", "Conn_02x05_Odd_Even", "IDC-SMD_10P-P2.54_C41376028", (100, 100))
 
 # ---------------------------------------------------------------- the MCU
