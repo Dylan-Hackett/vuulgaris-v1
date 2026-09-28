@@ -1,604 +1,55 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/faceplate/vuulgaris-faceplate.kicad_pcb **
-** Created on 2026-09-28 14:52:24 **
+** Created on 2026-09-28 14:54:44 **
 
-** Found 230 DRC violations **
-[via_dangling]: Via is not connected or connected on only one layer
+** Found 47 DRC violations **
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(196.6779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(326.2779 mm, 112.9535 mm): Track [/PAD1_RX0] on In1.Cu, length 51.5150 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(181.5579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(265.7979 mm, 119.4535 mm): Track [/PAD1_RX1] on In1.Cu, length 111.9950 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(209.6379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(319.7979 mm, 113.7535 mm): Track [/PAD1_RX2] on In1.Cu, length 57.9950 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(356.5179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(272.2779 mm, 121.9535 mm): Track [/PAD1_RX3] on In1.Cu, length 105.5150 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(354.3579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(326.2779 mm, 130.9535 mm): Track [/PAD2_RX0] on In1.Cu, length 51.5150 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(365.1579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(265.7979 mm, 137.4535 mm): Track [/PAD2_RX1] on In1.Cu, length 111.9950 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(162.1179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(319.7979 mm, 131.7535 mm): Track [/PAD2_RX2] on In1.Cu, length 57.9950 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(328.4379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(272.2779 mm, 139.9535 mm): Track [/PAD2_RX3] on In1.Cu, length 105.5150 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(352.1979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(326.2779 mm, 148.9535 mm): Track [/PAD3_RX0] on In1.Cu, length 51.5150 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(326.2779 mm, 112.7809 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(265.7979 mm, 155.4535 mm): Track [/PAD3_RX1] on In1.Cu, length 111.9950 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(175.0779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(319.7979 mm, 149.7535 mm): Track [/PAD3_RX2] on In1.Cu, length 57.9950 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(166.4379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(272.2779 mm, 157.9535 mm): Track [/PAD3_RX3] on In1.Cu, length 105.5150 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(211.7979 mm, 112.7809 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(337.0779 mm, 166.9535 mm): Track [/PAD4_RX0] on In1.Cu, length 40.7150 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(203.1579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(265.7979 mm, 173.4535 mm): Track [/PAD4_RX1] on In1.Cu, length 111.9950 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(192.3579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
+    @(319.7979 mm, 167.7535 mm): Track [/PAD4_RX2] on In1.Cu, length 57.9950 mm
+[track_dangling]: Track has unconnected end
     Local override; Severity: warning
-    @(188.0379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(358.6779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(347.8779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(339.2379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(185.8779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(172.9179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(373.7979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(198.8379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(360.8379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(350.0379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(177.2379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(170.7579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(343.5579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(183.7179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(367.3179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(330.5979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(190.1979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(369.4779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(179.3979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(334.9179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(205.3179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(371.6379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(200.9979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(362.9979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(345.7179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(375.9579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(337.0779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(341.3979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(168.5979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(194.5179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(164.2779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(332.7579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(207.4779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(211.7979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(259.3179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(185.8779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(196.6779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(183.7179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(261.4779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(164.2779 mm, 122.1261 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(237.7179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(229.0779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(172.9179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(200.9979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(233.3979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(242.0379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(168.5979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(188.0379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(235.5579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(246.3579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(257.1579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(263.6379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(239.8779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(250.6779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(265.7979 mm, 122.1261 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(181.5579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(194.5179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(170.7579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(222.5979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(179.3979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(252.8379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(207.4779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(254.9979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(224.7579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(231.2379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(216.1179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(192.3579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(213.9579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(203.1579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(175.0779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(220.4379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(177.2379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(218.2779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(190.1979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(209.6379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(226.9179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(166.4379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(205.3179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(198.8379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(248.5179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(244.1979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(257.1579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(252.8379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(263.6379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(283.0779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(265.7979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(267.9579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(220.4379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(285.2379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(287.3979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(239.8779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(233.3979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(229.0779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(311.1579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(274.4379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(293.8779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(259.3179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(261.4779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(218.2779 mm, 112.7809 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(313.3179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(298.1979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(254.9979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(250.6779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(248.5179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(300.3579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(308.9979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(231.2379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(270.1179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(235.5579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(224.7579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(272.2779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(291.7179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(319.7979 mm, 112.7809 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(315.4779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(226.9179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(296.0379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(276.5979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(222.5979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(317.6379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(246.3579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(244.1979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(242.0379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(306.8379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(289.5579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(280.9179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(304.6779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(237.7179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(302.5179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(278.7579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(272.2779 mm, 122.1261 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(274.4379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(291.7179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(306.8379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(345.7179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(293.8779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(308.9979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(362.9979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(317.6379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(365.1579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(313.3179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(287.3979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(330.5979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(326.2779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(315.4779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(321.9579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(341.3979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(332.7579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(302.5179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(343.5579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(360.8379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(280.9179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(339.2379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(337.0779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(328.4379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(373.7979 mm, 122.1261 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(300.3579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(354.3579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(296.0379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(276.5979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(298.1979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(289.5579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(304.6779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(278.7579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(371.6379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(311.1579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(352.1979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(367.3179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(283.0779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(350.0379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(369.4779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(347.8779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(319.7979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(324.1179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(358.6779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(285.2379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(356.5179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(334.9179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(207.4779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(332.7579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(343.5579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(326.2779 mm, 130.7809 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(352.1979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(341.3979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[via_dangling]: Via is not connected or connected on only one layer
-    Local override; Severity: warning
-    @(347.8779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
+    @(272.2779 mm, 175.9535 mm): Track [/PAD4_RX3] on In1.Cu, length 105.5150 mm
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(383.9000 mm, 144.3500 mm): Circle on B.Silkscreen
@@ -693,7 +144,7 @@
     Local override; Severity: warning
     @(380.7000 mm, 144.3500 mm): Circle on B.Silkscreen
 
-** Found 499 unconnected pads **
+** Found 96 unconnected pads **
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(385.2500 mm, 144.8750 mm): Pad 2 [/GND] of C3 on B.Cu
@@ -892,1175 +343,47 @@
     @(380.3000 mm, 128.1500 mm): Pad 1 [/PAD1_RX0] of D11 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(166.4379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(168.5979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(347.8779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(345.7179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(343.5579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(341.3979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(337.0779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(339.2379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(170.7579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(168.5979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(179.3979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(177.2379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(358.6779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(360.8379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(341.3979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(339.2379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(172.9179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(170.7579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(362.9979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(360.8379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(175.0779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(172.9179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(177.2379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(175.0779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(365.1579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(362.9979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(347.8779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(350.0379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(334.9179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(337.0779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(181.5579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(179.3979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(367.3179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(365.1579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(345.7179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(343.5579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(352.1979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(350.0379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(183.7179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(181.5579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(369.4779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(367.3179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(164.2779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(162.1179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(185.8779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(183.7179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(371.6379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(369.4779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(354.3579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(352.1979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(188.0379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(185.8779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(164.2779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(166.4379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(190.1979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(188.0379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(192.3579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(190.1979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(373.7979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(371.6379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(194.5179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(192.3579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(356.5179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(354.3579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(330.5979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(328.4379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(358.6779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(356.5179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(196.6779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(194.5179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(375.9579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(373.7979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(198.8379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(196.6779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(200.9979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(198.8379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(332.7579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(330.5979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(203.1579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(200.9979 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(205.3179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(203.1579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(207.4779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(205.3179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(207.4779 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(209.6379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(334.9179 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-    @(332.7579 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(326.2779 mm, 112.7809 mm): Pad 5 [/PAD1_RX0] of E1 on F.Cu
-    @(328.4379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(211.7979 mm, 112.7809 mm): Pad 1 [/PAD1_RX0] of E1 on F.Cu
-    @(209.6379 mm, 112.9535 mm): Via [/PAD1_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(375.9579 mm, 117.2554 mm): Pad 5 [/PAD1_RX0] of E1 on F.Cu
     @(380.3000 mm, 128.1500 mm): Pad 1 [/PAD1_RX0] of D11 on B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(324.1179 mm, 112.5361 mm): Pad 5 [/PAD1_RX0] of E1 on F.Cu
-    @(213.9579 mm, 112.5361 mm): Pad 1 [/PAD1_RX0] of E1 on F.Cu
+    @(375.9579 mm, 117.2554 mm): Pad 5 [/PAD1_RX0] of E1 on F.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(383.5000 mm, 129.4000 mm): Pad 1 [/PAD1_RX1] of R12 on B.Cu
     @(383.5000 mm, 128.1500 mm): Pad 1 [/PAD1_RX1] of D12 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(203.1579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(205.3179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(205.3179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(207.4779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(233.3979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(231.2379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(213.9579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(211.7979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(207.4779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(209.6379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(216.1179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(213.9579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(229.0779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(231.2379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(209.6379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(211.7979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(218.2779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(216.1179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(220.4379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(218.2779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(222.5979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(220.4379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(224.7579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(222.5979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(226.9179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(229.0779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(226.9179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(224.7579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(200.9979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(203.1579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(235.5579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(233.3979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(237.7179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(235.5579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(239.8779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(237.7179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(242.0379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(239.8779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(198.8379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(200.9979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(244.1979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(242.0379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(196.6779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(198.8379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(246.3579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(244.1979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(194.5179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(196.6779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(248.5179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(246.3579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(192.3579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(194.5179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(250.6779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(248.5179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(190.1979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(192.3579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(252.8379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(250.6779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(188.0379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(190.1979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(254.9979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(252.8379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(185.8779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(188.0379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(257.1579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(254.9979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(183.7179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(185.8779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(259.3179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(257.1579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(181.5579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(183.7179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(261.4779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(259.3179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(179.3979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(181.5579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(263.6379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(261.4779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(177.2379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(179.3979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(175.0779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(177.2379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(172.9179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(175.0779 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(170.7579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(172.9179 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(168.5979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(170.7579 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(168.5979 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(166.4379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(164.2779 mm, 122.1261 mm): Pad 2 [/PAD1_RX1] of E1 on F.Cu
-    @(166.4379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(263.6379 mm, 121.9535 mm): Via [/PAD1_RX1] on F.Cu - B.Cu
-    @(265.7979 mm, 122.1261 mm): Pad 2 [/PAD1_RX1] of E1 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(267.9579 mm, 122.3709 mm): Pad 2 [/PAD1_RX1] of E1 on F.Cu
     @(383.5000 mm, 128.1500 mm): Pad 1 [/PAD1_RX1] of D12 on B.Cu
+    @(265.7979 mm, 119.4535 mm): Track [/PAD1_RX1] on In1.Cu, length 111.9950 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(388.0000 mm, 129.4000 mm): Pad 1 [/PAD1_RX2] of R13 on B.Cu
     @(388.0000 mm, 128.1500 mm): Pad 1 [/PAD1_RX2] of D13 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(267.9579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(265.7979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(300.3579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(298.1979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(291.7179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(289.5579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(306.8379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(304.6779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(263.6379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(265.7979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(267.9579 mm, 117.2554 mm): Pad 3 [/PAD1_RX2] of E1 on F.Cu
-    @(270.1179 mm, 117.2554 mm): Pad 3 [/PAD1_RX2] of E1 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(315.4779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(313.3179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(276.5979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(274.4379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(317.6379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(315.4779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(283.0779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(285.2379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(272.2779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(274.4379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(278.7579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(276.5979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(242.0379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(244.1979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(293.8779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(291.7179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(313.3179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(311.1579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(280.9179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(283.0779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(289.5579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(287.3979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(308.9979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(306.8379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(280.9179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(278.7579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(252.8379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(250.6779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(248.5179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(246.3579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(298.1979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(296.0379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(296.0379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(293.8779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(311.1579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(308.9979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(244.1979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(246.3579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(287.3979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(285.2379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(233.3979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(231.2379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(302.5179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(300.3579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(304.6779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(302.5179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(257.1579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(259.3179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(261.4779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(263.6379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(224.7579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(226.9179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(254.9979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(257.1579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(231.2379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(229.0779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(222.5979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(220.4379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(270.1179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(272.2779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(226.9179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(229.0779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(250.6779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(248.5179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(239.8779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(242.0379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(237.7179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(239.8779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(224.7579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(222.5979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(259.3179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(261.4779 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(252.8379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(254.9979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(235.5579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(237.7179 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(233.3979 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-    @(235.5579 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(218.2779 mm, 112.7809 mm): Pad 3 [/PAD1_RX2] of E1 on F.Cu
-    @(220.4379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(319.7979 mm, 112.7809 mm): Pad 3 [/PAD1_RX2] of E1 on F.Cu
-    @(317.6379 mm, 112.9535 mm): Via [/PAD1_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
     @(388.0000 mm, 128.1500 mm): Pad 1 [/PAD1_RX2] of D13 on B.Cu
-    @(321.9579 mm, 112.5361 mm): Pad 3 [/PAD1_RX2] of E1 on F.Cu
+    @(319.7979 mm, 113.7535 mm): Track [/PAD1_RX2] on In1.Cu, length 57.9950 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(390.9200 mm, 129.4000 mm): Pad 1 [/PAD1_RX3] of R14 on B.Cu
     @(390.9200 mm, 128.1500 mm): Pad 1 [/PAD1_RX3] of D14 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(367.3179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(369.4779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(306.8379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(308.9979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(289.5579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(291.7179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(350.0379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(352.1979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(291.7179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(293.8779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(356.5179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(354.3579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(369.4779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(371.6379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(365.1579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(367.3179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(354.3579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(352.1979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(287.3979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(289.5579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(293.8779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(296.0379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(285.2379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(287.3979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(304.6779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(306.8379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(308.9979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(311.1579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(362.9979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(365.1579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(358.6779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(356.5179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(347.8779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(350.0379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(296.0379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(298.1979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(347.8779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(345.7179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(360.8379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(362.9979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(298.1979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(300.3579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(358.6779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(360.8379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(302.5179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(304.6779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(300.3579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(302.5179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(311.1579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(313.3179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(345.7179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(343.5579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(343.5579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(341.3979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(341.3979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(339.2379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(339.2379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(337.0779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(337.0779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(334.9179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(334.9179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(332.7579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(332.7579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(330.5979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(313.3179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(315.4779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(315.4779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(317.6379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(330.5979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(328.4379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(328.4379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(326.2779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(317.6379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(319.7979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(319.7979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(321.9579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(321.9579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(324.1179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(326.2779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(324.1179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(276.5979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(274.4379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(278.7579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(276.5979 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(283.0779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(285.2379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(280.9179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(278.7579 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(280.9179 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(283.0779 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(274.4379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-    @(272.2779 mm, 122.1261 mm): Pad 4 [/PAD1_RX3] of E1 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(373.7979 mm, 122.1261 mm): Pad 4 [/PAD1_RX3] of E1 on F.Cu
-    @(371.6379 mm, 121.9535 mm): Via [/PAD1_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
     @(390.9200 mm, 128.1500 mm): Pad 1 [/PAD1_RX3] of D14 on B.Cu
-    @(375.9579 mm, 122.3709 mm): Pad 4 [/PAD1_RX3] of E1 on F.Cu
+    @(272.2779 mm, 121.9535 mm): Track [/PAD1_RX3] on In1.Cu, length 105.5150 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(380.3000 mm, 134.4000 mm): Pad 1 [/PAD2_RX0] of R21 on B.Cu
     @(380.3000 mm, 133.1500 mm): Pad 1 [/PAD2_RX0] of D21 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(207.4779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(209.6379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(205.3179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(207.4779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(203.1579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(205.3179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(200.9979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(203.1579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(358.6779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(360.8379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(198.8379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(200.9979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(362.9979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(360.8379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(373.7979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(375.9579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(371.6379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(373.7979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(369.4779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(371.6379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(367.3179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(369.4779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(365.1579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(362.9979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(365.1579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(367.3179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(356.5179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(358.6779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(354.3579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(356.5179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(352.1979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(354.3579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(196.6779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(198.8379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(350.0379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(352.1979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(194.5179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(196.6779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(347.8779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(350.0379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(345.7179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(347.8779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(192.3579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(194.5179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(343.5579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(345.7179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(190.1979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(192.3579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(341.3979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(343.5579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(339.2379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(341.3979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(188.0379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(190.1979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(337.0779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(339.2379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(334.9179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(337.0779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(185.8779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(188.0379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(332.7579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(334.9179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(183.7179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(185.8779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(330.5979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(332.7579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(181.5579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(183.7179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(328.4379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(330.5979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(179.3979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(181.5579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(177.2379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(179.3979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(175.0779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(177.2379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(164.2779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(162.1179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(166.4379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(164.2779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(168.5979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(166.4379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(170.7579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(168.5979 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(172.9179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(170.7579 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(175.0779 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(172.9179 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(209.6379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-    @(211.7979 mm, 130.7809 mm): Pad 1 [/PAD2_RX0] of E2 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(326.2779 mm, 130.7809 mm): Pad 5 [/PAD2_RX0] of E2 on F.Cu
-    @(328.4379 mm, 130.9535 mm): Via [/PAD2_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(375.9579 mm, 135.2554 mm): Pad 5 [/PAD2_RX0] of E2 on F.Cu
-    @(380.3000 mm, 134.4000 mm): Pad 1 [/PAD2_RX0] of R21 on B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(324.1179 mm, 130.5361 mm): Pad 5 [/PAD2_RX0] of E2 on F.Cu
-    @(213.9579 mm, 130.5361 mm): Pad 1 [/PAD2_RX0] of E2 on F.Cu
+    @(380.3000 mm, 133.1500 mm): Pad 1 [/PAD2_RX0] of D21 on B.Cu
+    @(326.2779 mm, 130.9535 mm): Track [/PAD2_RX0] on In1.Cu, length 51.5150 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(383.5000 mm, 134.4000 mm): Pad 1 [/PAD2_RX1] of R22 on B.Cu
     @(383.5000 mm, 133.1500 mm): Pad 1 [/PAD2_RX1] of D22 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(168.5979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(170.7579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(170.7579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(172.9179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(177.2379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(175.0779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(231.2379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(233.3979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(172.9179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(175.0779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(235.5579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(233.3979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(179.3979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(177.2379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(229.0779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(231.2379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(198.8379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(196.6779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(194.5179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(196.6779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(237.7179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(235.5579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(181.5579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(179.3979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(226.9179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(229.0779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(166.4379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(168.5979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(261.4779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(263.6379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(183.7179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(181.5579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(224.7579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(226.9179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(239.8779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(237.7179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(200.9979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(198.8379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(185.8779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(183.7179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(222.5979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(224.7579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(259.3179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(261.4779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(192.3579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(194.5179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(188.0379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(185.8779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(220.4379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(222.5979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(190.1979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(188.0379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(257.1579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(259.3179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(242.0379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(239.8779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(192.3579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(190.1979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(213.9579 mm, 135.6516 mm): Pad 2 [/PAD2_RX1] of E2 on F.Cu
-    @(216.1179 mm, 135.6516 mm): Pad 2 [/PAD2_RX1] of E2 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(254.9979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(257.1579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(218.2779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(220.4379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(244.1979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(242.0379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(246.3579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(244.1979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(248.5179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(246.3579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(216.1179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(218.2779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(252.8379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(254.9979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(203.1579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(200.9979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(250.6779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(248.5179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(205.3179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(203.1579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(250.6779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(252.8379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(211.7979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(213.9579 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(207.4779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(205.3179 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(209.6379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(207.4779 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(209.6379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(211.7979 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(166.4379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-    @(164.2779 mm, 140.1261 mm): Pad 2 [/PAD2_RX1] of E2 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(265.7979 mm, 140.1261 mm): Pad 2 [/PAD2_RX1] of E2 on F.Cu
-    @(263.6379 mm, 139.9535 mm): Via [/PAD2_RX1] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(267.9579 mm, 140.3709 mm): Pad 2 [/PAD2_RX1] of E2 on F.Cu
+    @(265.7979 mm, 137.4535 mm): Track [/PAD2_RX1] on In1.Cu, length 111.9950 mm
     @(383.5000 mm, 134.4000 mm): Pad 1 [/PAD2_RX1] of R22 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
@@ -2068,391 +391,15 @@
     @(388.0000 mm, 133.1500 mm): Pad 1 [/PAD2_RX2] of D23 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(246.3579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(244.1979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(239.8779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(242.0379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(248.5179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(246.3579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(242.0379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(244.1979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(250.6779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(248.5179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(252.8379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(250.6779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(254.9979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(252.8379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(237.7179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(239.8779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(283.0779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(285.2379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(257.1579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(254.9979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(259.3179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(257.1579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(261.4779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(259.3179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(263.6379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(261.4779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(280.9179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(283.0779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(265.7979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(263.6379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(267.9579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(265.7979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(270.1179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(267.9579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(278.7579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(280.9179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(272.2779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(270.1179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(274.4379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(272.2779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(276.5979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(274.4379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(278.7579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(276.5979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(235.5579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(237.7179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(287.3979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(285.2379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(233.3979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(235.5579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(231.2379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(233.3979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(287.3979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(289.5579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(289.5579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(291.7179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(291.7179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(293.8779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(293.8779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(296.0379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(296.0379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(298.1979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(298.1979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(300.3579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(300.3579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(302.5179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(302.5179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(304.6779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(304.6779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(306.8379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(306.8379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(308.9979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(308.9979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(311.1579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(311.1579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(313.3179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(313.3179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(315.4779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(315.4779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(317.6379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(229.0779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(231.2379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(226.9179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(229.0779 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(224.7579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(226.9179 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(222.5979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(224.7579 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(220.4379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(222.5979 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(218.2779 mm, 130.7809 mm): Pad 3 [/PAD2_RX2] of E2 on F.Cu
-    @(220.4379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(317.6379 mm, 130.9535 mm): Via [/PAD2_RX2] on F.Cu - B.Cu
-    @(319.7979 mm, 130.7809 mm): Pad 3 [/PAD2_RX2] of E2 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
     @(388.0000 mm, 133.1500 mm): Pad 1 [/PAD2_RX2] of D23 on B.Cu
-    @(321.9579 mm, 130.5361 mm): Pad 3 [/PAD2_RX2] of E2 on F.Cu
+    @(319.7979 mm, 131.7535 mm): Track [/PAD2_RX2] on In1.Cu, length 57.9950 mm
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(390.9200 mm, 134.4000 mm): Pad 1 [/PAD2_RX3] of R24 on B.Cu
     @(390.9200 mm, 133.1500 mm): Pad 1 [/PAD2_RX3] of D24 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(332.7579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(334.9179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(354.3579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(352.1979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(276.5979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(278.7579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(330.5979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(332.7579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(328.4379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(330.5979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(345.7179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(347.8779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(280.9179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(278.7579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(274.4379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(276.5979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(326.2779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(328.4379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(283.0779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(280.9179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(306.8379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(308.9979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(334.9179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(337.0779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(324.1179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(326.2779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(285.2379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(283.0779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(321.9579 mm, 135.6516 mm): Pad 4 [/PAD2_RX3] of E2 on F.Cu
-    @(324.1179 mm, 135.6516 mm): Pad 4 [/PAD2_RX3] of E2 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(354.3579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(356.5179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(287.3979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(285.2379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(304.6779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(306.8379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(337.0779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(339.2379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(289.5579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(287.3979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(356.5179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(358.6779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(308.9979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(311.1579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(339.2379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(341.3979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(319.7979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(321.9579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(313.3179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(315.4779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(302.5179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(304.6779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(341.3979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(343.5579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(291.7179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(289.5579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(317.6379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(319.7979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(358.6779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(360.8379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(343.5579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(345.7179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(315.4779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(317.6379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(293.8779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(291.7179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(300.3579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(302.5179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(296.0379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(293.8779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(298.1979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(296.0379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(347.8779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(350.0379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(300.3579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(298.1979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(311.1579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(313.3179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(360.8379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(362.9979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(350.0379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(352.1979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(362.9979 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(365.1579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(365.1579 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(367.3179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(367.3179 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(369.4779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(369.4779 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(371.6379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(274.4379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-    @(272.2779 mm, 140.1261 mm): Pad 4 [/PAD2_RX3] of E2 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(373.7979 mm, 140.1261 mm): Pad 4 [/PAD2_RX3] of E2 on F.Cu
-    @(371.6379 mm, 139.9535 mm): Via [/PAD2_RX3] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(375.9579 mm, 140.3709 mm): Pad 4 [/PAD2_RX3] of E2 on F.Cu
+    @(272.2779 mm, 139.9535 mm): Track [/PAD2_RX3] on In1.Cu, length 105.5150 mm
     @(390.9200 mm, 134.4000 mm): Pad 1 [/PAD2_RX3] of R24 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
@@ -2460,236 +407,128 @@
     @(380.3000 mm, 138.1500 mm): Pad 1 [/PAD3_RX0] of D31 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(373.7979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(371.6379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(168.5979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(166.4379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(332.7579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(334.9179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(185.8779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(183.7179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(356.5179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(358.6779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(181.5579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(183.7179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(362.9979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(360.8379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(179.3979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(177.2379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(339.2379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(337.0779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(179.3979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(181.5579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(337.0779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(334.9179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(188.0379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(185.8779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(358.6779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(360.8379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(175.0779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(177.2379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(365.1579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(362.9979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(190.1979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(188.0379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(367.3179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(365.1579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(341.3979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(339.2379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(192.3579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(190.1979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(369.4779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(367.3179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(343.5579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(341.3979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(194.5179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(192.3579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(371.6379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(369.4779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(345.7179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(343.5579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(352.1979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(354.3579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(196.6779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(194.5179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(172.9179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(175.0779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(164.2779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(166.4379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(198.8379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(196.6779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(347.8779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(345.7179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(162.1179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(164.2779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(170.7579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(168.5979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(356.5179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(354.3579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(200.9979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(198.8379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(350.0379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(352.1979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(203.1579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(200.9979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(350.0379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(347.8779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(375.9579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(373.7979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(205.3179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(203.1579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(172.9179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(170.7579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(207.4779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(205.3179 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(207.4779 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(209.6379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(330.5979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(328.4379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(330.5979 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(332.7579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(326.2779 mm, 148.7809 mm): Pad 5 [/PAD3_RX0] of E3 on F.Cu
-    @(328.4379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(209.6379 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-    @(211.7979 mm, 148.7809 mm): Pad 1 [/PAD3_RX0] of E3 on F.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
+    @(326.2779 mm, 148.9535 mm): Track [/PAD3_RX0] on In1.Cu, length 51.5150 mm
     @(380.3000 mm, 139.4000 mm): Pad 1 [/PAD3_RX0] of R31 on B.Cu
-    @(375.9579 mm, 148.9535 mm): Via [/PAD3_RX0] on F.Cu - B.Cu
-[unconnected_items]: Missing connection between items
-    Local override; Severity: error
-    @(324.1179 mm, 148.5361 mm): Pad 5 [/PAD3_RX0] of E3 on F.Cu
-    @(213.9579 mm, 148.5361 mm): Pad 1 [/PAD3_RX0] of E3 on F.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
     @(383.5000 mm, 139.4000 mm): Pad 1 [/PAD3_RX1] of R32 on B.Cu
     @(383.5000 mm, 138.1500 mm): Pad 1 [/PAD3_RX1] of D32 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(168.5979 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(170.7579 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(265.7979 mm, 155.4535 mm): Track [/PAD3_RX1] on In1.Cu, length 111.9950 mm
+    @(383.5000 mm, 139.4000 mm): Pad 1 [/PAD3_RX1] of R32 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(170.7579 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(172.9179 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(388.0000 mm, 139.4000 mm): Pad 1 [/PAD3_RX2] of R33 on B.Cu
+    @(388.0000 mm, 138.1500 mm): Pad 1 [/PAD3_RX2] of D33 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(235.5579 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(233.3979 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(319.7979 mm, 149.7535 mm): Track [/PAD3_RX2] on In1.Cu, length 57.9950 mm
+    @(388.0000 mm, 139.4000 mm): Pad 1 [/PAD3_RX2] of R33 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(175.0779 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(172.9179 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(390.9200 mm, 139.4000 mm): Pad 1 [/PAD3_RX3] of R34 on B.Cu
+    @(390.9200 mm, 138.1500 mm): Pad 1 [/PAD3_RX3] of D34 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(177.2379 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(175.0779 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(272.2779 mm, 157.9535 mm): Track [/PAD3_RX3] on In1.Cu, length 105.5150 mm
+    @(390.9200 mm, 139.4000 mm): Pad 1 [/PAD3_RX3] of R34 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(231.2379 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(233.3979 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(380.3000 mm, 144.4000 mm): Pad 1 [/PAD4_RX0] of R41 on B.Cu
+    @(380.3000 mm, 143.1500 mm): Pad 1 [/PAD4_RX0] of D41 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(198.8379 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(196.6779 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(337.0779 mm, 166.9535 mm): Track [/PAD4_RX0] on In1.Cu, length 40.7150 mm
+    @(380.3000 mm, 144.4000 mm): Pad 1 [/PAD4_RX0] of R41 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(229.0779 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(231.2379 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(383.5000 mm, 144.4000 mm): Pad 1 [/PAD4_RX1] of R42 on B.Cu
+    @(383.5000 mm, 143.1500 mm): Pad 1 [/PAD4_RX1] of D42 on B.Cu
 [unconnected_items]: Missing connection between items
     Local override; Severity: error
-    @(179.3979 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
-    @(177.2379 mm, 157.9535 mm): Via [/PAD3_RX1] on F.Cu - B.Cu
+    @(265.7979 mm, 173.4535 mm): Track [/PAD4_RX1] on In1.Cu, length 111.9950 mm
+    @(383.5000 mm, 144.4000 mm): Pad 1 [/PAD4_RX1] of R42 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(388.0000 mm, 144.4000 mm): Pad 1 [/PAD4_RX2] of R43 on B.Cu
+    @(388.0000 mm, 143.1500 mm): Pad 1 [/PAD4_RX2] of D43 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(319.7979 mm, 167.7535 mm): Track [/PAD4_RX2] on In1.Cu, length 57.9950 mm
+    @(388.0000 mm, 144.4000 mm): Pad 1 [/PAD4_RX2] of R43 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(390.9200 mm, 144.4000 mm): Pad 1 [/PAD4_RX3] of R44 on B.Cu
+    @(390.9200 mm, 143.1500 mm): Pad 1 [/PAD4_RX3] of D44 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(272.2779 mm, 175.9535 mm): Track [/PAD4_RX3] on In1.Cu, length 105.5150 mm
+    @(390.9200 mm, 144.4000 mm): Pad 1 [/PAD4_RX3] of R44 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(380.3000 mm, 130.9000 mm): Pad 2 [/CAP0.0] of R11 on B.Cu
+    @(380.3500 mm, 151.7500 mm): Pad 23 [/CAP0.0] of U1 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(382.7000 mm, 149.9000 mm): Pad 27 [/CAP1.0] of U1 on B.Cu
+    @(383.5000 mm, 130.9000 mm): Pad 2 [/CAP1.0] of R12 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(385.2000 mm, 149.9000 mm): Pad 32 [/CAP2.0] of U1 on B.Cu
+    @(388.0000 mm, 130.9000 mm): Pad 2 [/CAP2.0] of R13 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(387.2000 mm, 149.9000 mm): Pad 36 [/CAP3.0] of U1 on B.Cu
+    @(390.9200 mm, 130.9000 mm): Pad 2 [/CAP3.0] of R14 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(380.3000 mm, 135.9000 mm): Pad 2 [/CAP0.1] of R21 on B.Cu
+    @(380.3500 mm, 151.2500 mm): Pad 24 [/CAP0.1] of U1 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(383.2000 mm, 149.9000 mm): Pad 28 [/CAP1.1] of U1 on B.Cu
+    @(383.5000 mm, 135.9000 mm): Pad 2 [/CAP1.1] of R22 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(385.7000 mm, 149.9000 mm): Pad 33 [/CAP2.1] of U1 on B.Cu
+    @(388.0000 mm, 135.9000 mm): Pad 2 [/CAP2.1] of R23 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(388.5500 mm, 151.2500 mm): Pad 37 [/CAP3.1] of U1 on B.Cu
+    @(390.9200 mm, 135.9000 mm): Pad 2 [/CAP3.1] of R24 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(380.3000 mm, 140.9000 mm): Pad 2 [/CAP0.2] of R31 on B.Cu
+    @(381.7000 mm, 149.9000 mm): Pad 25 [/CAP0.2] of U1 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(383.5000 mm, 140.9000 mm): Pad 2 [/CAP1.2] of R32 on B.Cu
+    @(383.7000 mm, 149.9000 mm): Pad 29 [/CAP1.2] of U1 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(386.2000 mm, 149.9000 mm): Pad 34 [/CAP2.2] of U1 on B.Cu
+    @(388.0000 mm, 140.9000 mm): Pad 2 [/CAP2.2] of R33 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(388.5500 mm, 151.7500 mm): Pad 38 [/CAP3.2] of U1 on B.Cu
+    @(390.9200 mm, 140.9000 mm): Pad 2 [/CAP3.2] of R34 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(380.3000 mm, 145.9000 mm): Pad 2 [/CAP0.3] of R41 on B.Cu
+    @(382.2000 mm, 149.9000 mm): Pad 26 [/CAP0.3] of U1 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(383.5000 mm, 145.9000 mm): Pad 2 [/CAP1.3] of R42 on B.Cu
+    @(384.2000 mm, 149.9000 mm): Pad 30 [/CAP1.3] of U1 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(386.7000 mm, 149.9000 mm): Pad 35 [/CAP2.3] of U1 on B.Cu
+    @(388.0000 mm, 145.9000 mm): Pad 2 [/CAP2.3] of R43 on B.Cu
+[unconnected_items]: Missing connection between items
+    Local override; Severity: error
+    @(388.5500 mm, 152.2500 mm): Pad 39 [/CAP3.3] of U1 on B.Cu
+    @(390.9200 mm, 145.9000 mm): Pad 2 [/CAP3.3] of R44 on B.Cu
 
 ** Found 0 Footprint errors **
 
