@@ -37,11 +37,11 @@ POS = {
 }
 
 FPMAP = {
-    # PLACEHOLDER. It has to be SMD: a through-hole header here puts ten pins
-    # through the FRONT face, in the 8mm gap between pads 3 and 4. This is
-    # KiCad's generic DIN 41651 SMD box header, good enough to prove the loop
-    # and the position; the real part is chosen from its manufacturer drawing
-    # in the schematic phase, and its pin-1 / key orientation is settled with a
-    # real cable (hardware/faceplate/README.md, section 5).
-    "J1": "Connector_IDC:IDC-Header_2x05_P2.54mm_Vertical_SMD",
+    # hanxia HX JN2.54-2x5P TP H8.9, LCSC C41376028 (Extended: JLC has no Basic
+    # SMD 2x5 box header). SMD because a through-hole header here puts ten pins
+    # through the FRONT face, in the 8mm gap between pads 3 and 4. Footprint
+    # from hanxia's drawing; 9.60mm seated, under the 10mm gap. Pin 1 is on the
+    # key-side row at the triangle end -- confirm with a real ribbon before
+    # ordering (hardware/faceplate/README.md, section 5).
+    "J1": "IDC-SMD_10P-P2.54_C41376028",
 }

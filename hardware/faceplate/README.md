@@ -11,10 +11,16 @@ and `J1`, the cable header, on the back over the main board's cutout. `J1` is in
 because it is the one part whose every pin the main board already fixes. The MSP430
 and everything around it are the next phase.
 
-**`J1`'s footprint is a PLACEHOLDER** — KiCad's generic SMD 2x5 box header. It has to be
-SMD: `J12`'s through-hole C5665 here would put ten pins through the **front face**, in
-the 8mm gap between pads 3 and 4. Choose the real part from its manufacturer drawing,
-and settle pin-1 / key orientation with a real ribbon (§5).
+**`J1` is the hanxia HX JN2.54-2x5P TP H8.9, LCSC C41376028** (chosen 2026-09-28).
+It has to be SMD: `J12`'s through-hole C5665 here would put ten pins through the **front
+face**, in the 8mm gap between pads 3 and 4. It is Extended: JLC's Basic filter returns no
+SMD 2x5 box header at all. Footprint `IDC-SMD_10P-P2.54_C41376028` is from hanxia's
+drawing (`datasheets/hanxia-HX-JN2.54-2x5P-TP-H8.9.pdf`): pads 1.02 x 4.65 on 2.54mm,
+11.50 overall; body 20.30 x 8.90, **9.60mm seated**, under the 10mm gap. The runner-up,
+XFCN BH254VS-10P (C492446), is 10.5mm tall. The drawing marks pin 1 only by a triangle
+on the key wall, so the footprint puts pin 1 on the key-side row at that end, as KiCad's
+DIN 41651 footprint and `J12` both do. **Confirm pin 1 and the key with a real ribbon
+before ordering** (§5).
 
 ## The loop
 
@@ -50,8 +56,8 @@ python3 tools/panelcheck.py --project faceplate   # outline, holes, J1 vs the ma
 - The library is **shared** with the main board (`../kicad/lib/`, via this project's
   `sym-lib-table` / `fp-lib-table`). Footprints named `lib:name` in `design.py` come
   from elsewhere; a bare name means `vuulgaris.pretty`.
-- DRC's one warning is `J1`'s stock footprint not resolving in headless pcbnew; it goes
-  when the real part is in the project library.
+- DRC ran with one warning while `J1` was KiCad's stock footprint, which does not
+  resolve in headless pcbnew. With the real part in the project library it is 0 and 0.
 - Every check has been watched failing: a swapped netmap pin (netcheck, panelcheck), a
   track shorting pins 1 and 3 (DRC, boardcheck), `J1` moved 0.5mm or turned 180°, a pot
   hole 0.5mm undersize or 0.3mm off (panelcheck).
