@@ -327,6 +327,7 @@ design/mkroute.py             everything else, by Freerouting, fenced: no F.Cu, 
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
                               the pin table twice (Figure 7-1, Table 7-1), checked equal
 DRC.rpt                       from tools/drc.py --project faceplate
+fab/                          the fab outputs ("Fab package"); zipped to ../vuulgaris-faceplate-fab.zip
 ```
 
 The SLAA891 cross-check came back as a connectivity finding, not a geometry one: TI's
@@ -477,6 +478,50 @@ Place near the MCU with a low-impedance ground path.
 
 Each pad takes **one pin from each CapTIvate block** (`RXn` of pad `p` to `CAPn.(p-1)`), not
 one block; `../../docs/pin-allocation.md` has the table and TI's source.
+
+## Fab package — 2026-09-29
+
+`hardware/vuulgaris-faceplate-fab.zip`: gerbers, the JLC BOM and CPL, and a README with
+the order options (black mask, white silk, ENIG, via covering **Plugged**, **Remove Mark**,
+**bottom-side** assembly). After any board change, in the same commit, from `hardware/kicad/`:
+
+```bash
+CLI=/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli; F=../faceplate
+$CLI sch export python-bom --output $F/fab/vuulgaris-faceplate-bom.xml $F/vuulgaris-faceplate.kicad_sch && python3 tools/mkbom.py --project faceplate
+python3 tools/mkcpl.py --project faceplate
+$CLI pcb export gerbers --output $F/fab/ --no-protel-ext --layers "F.Cu,In1.Cu,In2.Cu,B.Cu,F.Paste,B.Paste,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts" $F/vuulgaris-faceplate.kicad_pcb
+$CLI pcb export drill --output $F/fab/ --format excellon --excellon-separate-th --generate-map --map-format gerberx2 $F/vuulgaris-faceplate.kicad_pcb
+(cd $F/fab && rm -f vuulgaris-faceplate-gerbers.zip && zip -q -X vuulgaris-faceplate-gerbers.zip vuulgaris-faceplate-*.gbr vuulgaris-faceplate-*.drl)   # must hold 15 files
+python3 tools/mkfab.py --project faceplate
+```
+
+**The BOM**, 44 parts on 11 lines, every one JLC's. Stock read off JLC's parts library, not
+LCSC's, on 2026-09-29:
+
+| parts | LCSC | type | JLC stock |
+|---|---|---|---|
+| `U1` MSP430FR2675TPTR | C2052972 | Extended | **10** |
+| `D11`–`D44` TI TPD1E10B06DPYR (X1-SON-2, 12pF) | C48260 | Extended | 287k |
+| `J1` hanxia HX JN2.54-2x5P TP H8.9 | C41376028 | Extended | 4.2k |
+| `C4` 1nF C0G | C163508 | Extended | 521k |
+| `Y1` Epson FC-135 32.768kHz 12.5pF | C32346 | Basic | 470k |
+| `R11`–`R44` 470R, `R1`–`R3` 47k | C23179, C25819 | Basic | millions |
+| `C1` 10µF, `C2` 100nF, `C3` 1µF, `C5` `C6` 22pF C0G | C15850, C14663, C28323, C1653 | Basic | millions |
+
+**U1 is the one to watch:** 10 in stock is every chip a 10-board run needs. The drop-in is
+the MSP430FR2676 in the same PT package and pinout (SLASEO5), with 64KB/8KB:
+TPTR C2053559 (1 in stock) or TPT C1338445 (pre-order, ~9 days).
+
+**Rotations.** Every part is on the back, so `mkcpl.py` sends each as 180 − its angle. Each
+of this board's own footprints was checked against JLC's EasyEDA footprint for its part,
+and all share its frame: U1's (`LQFP-48_…-TL`) has pin 1 top-left like ours, not the −90
+the usual LQFP rule gives; J1's has pin 1, the odd row and the key along its bottom, like
+ours. A half turn on J1 would land 3.3V on GND through a keyed cable. TP1–TP6 and E1–E4 are
+copper, in neither the BOM nor the CPL.
+
+`tools/gerbercheck.py` stays main-board only. It fails any overlap of two flashed pads, and
+here 763 vias sit on their own bars and 37 bridges overlap bars, by design; gerbers carry
+no nets to tell those apart. panelcheck checks the same copper through pcbnew instead.
 
 ## Layout checklist
 

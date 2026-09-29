@@ -6,9 +6,9 @@ MSP430FR2675 touch faceplate. Two PCBs:
 
 - **Main board** — `hardware/kicad/`, KiCad 7, 4-layer, JLC assembly. **Finished:**
   DRC clean, fab package at `hardware/vuulgaris-v1-fab.zip`.
-- **Faceplate** — `hardware/faceplate/`. KiCad project and verification loop set up
-  2026-09-27 on a skeleton (outline + cable header); no circuit yet. Its README has the
-  loop, then the handoff from the main board; `KICKOFF.md` there starts the next session.
+- **Faceplate** — `hardware/faceplate/`. Placed, routed, gold face (ADR 0013), DRC clean;
+  fab package at `hardware/vuulgaris-faceplate-fab.zip`. Every piece of copper comes from
+  a script in `design/`; its README has the pipeline, the checks and the fab commands.
 
 ## Read first
 

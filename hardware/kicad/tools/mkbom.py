@@ -3,6 +3,7 @@ mkbom.py -- build the JLC assembly BOM, preferring Basic parts.
 
     kicad-cli sch export python-bom --output fab/vuulgaris-bom.xml vuulgaris.kicad_sch
     python3 tools/mkbom.py
+    python3 tools/mkbom.py --project faceplate     # hardware/faceplate/fab/, same rules
 
 LCSC numbers come from four places, in order of confidence:
 
@@ -19,10 +20,19 @@ that can be Basic should be.
 
 TP1-TP15 are excluded. They are bare 1.0mm pads -- drilled, never populated --
 and were otherwise showing up as BOM lines named things like "SIGIN L".
+On the faceplate TP1-TP6 are bare pads too, and E1-E4 are the scrub pads' copper.
+
+The designator tables in docs/ describe the main board, so the faceplate does not
+read them: its C1 is not the main board's C1.
 """
 import xml.etree.ElementTree as ET, csv, re, json, collections, os, sys
 
-K = "/Users/dylanhackett/V1/hardware/kicad"
+import proj
+
+K = "/Users/dylanhackett/V1/hardware/kicad"          # the Basic snapshot and the symbol lib
+FAB = os.path.join(proj.P.dir, "fab")
+NAME = proj.P.name
+SKIP = re.compile(r"TP\d+" if proj.KEY == "main" else r"(TP|E)\d+")
 # In the repo, not fetched. This used to point at a download in a scratch
 # directory, and when that was wiped the script still ran -- and silently
 # emitted a BOM with 40 lines' LCSC numbers blank. Missing is now fatal.
@@ -98,6 +108,12 @@ CURATED = {
     # injection get 1.5x worse, about 9mV at the output after U106B's x5.55 at
     # typical J113 off-leakage. Fine on a lo-fi BBD delay.
     "10nF C0G 0805":         "C237168",    # 0805N103J500CT Walsin, 10nF 50V NP0 5%, 149k
+    # --- the faceplate (hardware/faceplate), read off JLC's parts library 2026-09-29 ---
+    "MSP430FR2675TPT":         "C2052972",  # MSP430FR2675TPTR, Extended, 10 in stock (see NOTE)
+    "32.768kHz FC-135 12.5pF": "C32346",    # Epson Q13FC13500004, BASIC, 470k
+    "TPD1E10B06DPYR":          "C48260",    # TI, X1-SON-2 0.6x1, 12pF, Extended, 287k. The
+                                            # clones on the same search are DFN1006 or not TI
+    "HX JN2.54-2x5P TP H8.9":  "C41376028", # hanxia SMD 2x5 box header, Extended, 4.2k
 }
 # Placed but deliberately not populated, or with no LCSC source at all.
 # The four values with no LCSC entry anywhere -- generic R/C symbols, so nothing
@@ -133,6 +149,9 @@ NOTE = {
     # a blank line is what keeps JLC from placing the 10k.
     **{v: POT for v in ("CUTOFF", "RESONANCE", "FILTER CV AMT", "TIME", "WET/DRY")},
     "FEEDBACK": POT10,
+    "MSP430FR2675TPT":       "JLC had 10 on 2026-09-29 (C2052972): a 10-board run takes every one. "
+                             "Drop-in if short: MSP430FR2676TPTR C2053559 or MSP430FR2676TPT C1338445 "
+                             "(pre-order ~9 days) -- same PT pinout (SLASEO5), 64KB/8KB.",
     "HS242L01W4S01":         "BUY FROM LCSC, FIT BY HAND -- C5139768, 27 in stock at $12.22. "
                              "Not in JLC's assembly library, and it is a display module on its "
                              "own 68x43mm PCB with a glass panel: do not reflow or wave solder it",
@@ -247,13 +266,13 @@ def main():
     basic = {"R": {tuple(k.split("|")): v for k, v in b["R"].items()},
              "C": {tuple(k.split("|")): v for k, v in b["C"].items()}}
     bympn = b.get("MPN", {})
-    byref = harvest_docs()
+    byref = harvest_docs() if proj.KEY == "main" else {}
     bysym = harvest_symbols()
-    root = ET.parse(f"{K}/fab/vuulgaris-bom.xml").getroot()
+    root = ET.parse(f"{FAB}/{NAME}-bom.xml").getroot()
     groups = collections.defaultdict(list)
     for c in root.find("components"):
         ref = c.get("ref")
-        if re.fullmatch(r"TP\d+", ref):
+        if SKIP.fullmatch(ref):
             continue
         groups[((c.findtext("value") or "").strip(),
                 (c.findtext("footprint") or "").split(":")[-1])].append(ref)
@@ -344,7 +363,7 @@ def main():
     rows = sorted(merged.values(), key=lambda z: z["Comment"])
     if before != len(rows):
         print(f"merged {before - len(rows)} duplicate part lines")
-    out = f"{K}/fab/vuulgaris-BOM.csv"
+    out = f"{FAB}/{NAME}-BOM.csv"
     with open(out, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["Comment", "Designator", "Footprint",
                                           "LCSC Part #", "Qty", "Note"])
@@ -353,7 +372,7 @@ def main():
     # designators and Note it has nowhere to put. Derived here rather than by
     # hand, because doing it by hand is how the JLC copy went one line stale the
     # moment D3 was added.
-    jlc = f"{K}/fab/vuulgaris-BOM-jlc.csv"
+    jlc = f"{FAB}/{NAME}-BOM-jlc.csv"
     with open(jlc, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["Comment", "Designator", "Footprint",
                                           "LCSC Part #"], extrasaction="ignore")

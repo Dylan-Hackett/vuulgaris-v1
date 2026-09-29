@@ -43,8 +43,8 @@ ratsnest, and say what to route. The board is edited by pcbnew script or by me i
 after a script writes, I File → Revert before touching it. Loop green after each step;
 panelcheck's hole TODOs are for this phase too.
 
-**Open, not blocking layout:** there is no faceplate BOM/CPL tooling yet
-(`mkbom.py` is main-board only) — chosen so far: U1 C2052972, J1 C41376028, Y1 C32346,
+**Done 2026-09-29:** `mkbom.py`, `mkcpl.py` and `mkfab.py` take `--project faceplate`
+(README, "Fab package"). Chosen, and confirmed in JLC's library that day: U1 C2052972, J1 C41376028, Y1 C32346,
 TVS C48260, 22pF C1653, 470R C23179, 47k C25819, 100nF C14663, 10µF C15850, 1µF C28323,
 1nF C0G C163508 (not the Basic X7R C1588 -- see design.py).
 Q1 and Q17 are still open; the faceplate lives with them.
