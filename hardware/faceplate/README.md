@@ -404,11 +404,11 @@ $KPY hardware/faceplate/design/mkroute.py              # the rest, by Freeroutin
 $KPY hardware/faceplate/design/mkface.py               # the front: gold, mask art, silk -- last, it clears the vias
 ```
 
-**Not yet in the scripts (2026-09-29):** Dylan's hand reroute of the corridor's right end.
-The TXD and RXD hops and C4's GND via moved under the via patch, so the gold shows no dots
-there. The RST and TEST lanes and the UART L2 runs follow them, and pad 4's RX0 exit jogs to
-y 117.15. It is on the board, DRC clean. A rebuild from zero would put `mkescape.py`'s and
-`mkfanin.py`'s geometry back until they carry it.
+**The corridor's right end is Dylan's hand reroute** (2026-09-29), now carried by the scripts.
+The TXD and RXD hops and C4's GND via sit under the via patch. `mkescape.py` draws TXD, RXD,
+RST and TEST end to end from its `TAIL` table, including the router's old runs past C4,
+which the reroute kept, so the router finds those four nets complete. `mkfanin.py` jogs pad
+4's RX0 exit to y 117.15.
 
 | script | draws | how |
 |---|---|---|

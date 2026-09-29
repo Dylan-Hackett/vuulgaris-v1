@@ -49,6 +49,9 @@ X_M = G["PAD_X1"]
 # vertical slots: left strip (x rising away from the pad copper) and right strip
 LEFT = (278.0, 278.3, 278.6, 278.9, 279.2, 279.5, 279.8, 280.1)
 RIGHT = (291.6, 291.9, 292.2, 292.5)
+# Pad 4's RX0 runs this low, jogged 45 degrees off its bus exit (Dylan's reroute of the
+# corridor's end, 2026-09-29, mkescape.py TAIL)
+PAD4_RX0_Y = 117.15
 
 
 def exits(p):
@@ -82,7 +85,11 @@ def paths():
     for k, rx in enumerate(order(4)):
         x = RIGHT[k]
         (tx, ty), ey = target(4, rx), exits(4)[rx]
-        out[(4, rx)] = [(bus.EXIT, ey), (x, ey), (x, ty), (tx, ty)]
+        if rx == 0:
+            y = PAD4_RX0_Y
+            out[(4, rx)] = [(bus.EXIT, ey), (bus.EXIT + (y - ey), y), (x, y), (x, ty), (tx, ty)]
+        else:
+            out[(4, rx)] = [(bus.EXIT, ey), (x, ey), (x, ty), (tx, ty)]
     return out
 
 
