@@ -129,12 +129,55 @@ def board(path):
     return {"edges": edges, "fps": fps, "vias": vias, "tracks": tracks, "zones": zones,
             "silk": silk,
             "outer": [T(ob.GetLeft()), T(ob.GetTop()), T(ob.GetRight()), T(ob.GetBottom())]}
-print(json.dumps({"face": board(sys.argv[1]), "main": board(sys.argv[2])}))
+def face_probe(path, req):
+    """the printed face (design/mkface.py): its F.Cu zones, what of each rect in
+    req["no_gold"] the gold covers, and for each point in req["points"] (sheet mm):
+    [inside a board-level F.Mask opening, inside the gold by more than req["inset"]]"""
+    b = pcbnew.LoadBoard(path)
+    mm = pcbnew.FromMM
+    V = lambda x, y: pcbnew.VECTOR2I(mm(x), mm(y))
+    op = pcbnew.SHAPE_POLY_SET()
+    for d in b.GetDrawings():
+        if d.GetLayer() == pcbnew.F_Mask and d.GetShape() == pcbnew.SHAPE_T_POLY:
+            op.Append(d.GetPolyShape())
+    op.Simplify(pcbnew.SHAPE_POLY_SET.PM_FAST)
+    zones, gold = [], pcbnew.SHAPE_POLY_SET()
+    for z in b.Zones():
+        if z.GetLayer() == pcbnew.F_Cu:
+            f = z.GetFilledPolysList(pcbnew.F_Cu).CloneDropTriangulation()
+            f.Simplify(pcbnew.SHAPE_POLY_SET.PM_FAST)
+            zones.append({"name": z.GetZoneName(), "net": z.GetNetname().lstrip("/"),
+                          "pieces": f.OutlineCount(), "area": f.Area() / 1e12})
+            gold.Append(f)
+    covered = []
+    for x0, y0, x1, y1 in req["no_gold"]:
+        ch = pcbnew.SHAPE_LINE_CHAIN()
+        for x, y in ((x0, y0), (x1, y0), (x1, y1), (x0, y1)):
+            ch.Append(V(x, y))
+        ch.SetClosed(True)
+        r = pcbnew.SHAPE_POLY_SET()
+        r.AddOutline(ch)
+        r.BooleanIntersection(gold, pcbnew.SHAPE_POLY_SET.PM_FAST)
+        covered.append(r.Area() / 1e12)
+    deep = gold.CloneDropTriangulation()
+    deep.Deflate(mm(req["inset"]), 16)
+    pts = [[op.Contains(V(x, y)), deep.Contains(V(x, y))] for x, y in req["points"]]
+    return {"zones": zones, "covered": covered, "points": pts}
+req = json.load(open(sys.argv[3])) if len(sys.argv) > 3 else None
+print(json.dumps({"face": board(sys.argv[1]), "main": board(sys.argv[2]),
+                  "probe": face_probe(sys.argv[1], req) if req else None}))
 '''
 
 
-def dump():
-    r = subprocess.run([KPY, "-c", DUMP, PCB, MAIN.pcb], capture_output=True, text=True)
+def dump(req=None):
+    args = [KPY, "-c", DUMP, PCB, MAIN.pcb]
+    if req:
+        import tempfile
+        tf = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+        json.dump(req, tf)
+        tf.close()
+        args.append(tf.name)
+    r = subprocess.run(args, capture_output=True, text=True)
     if r.returncode:
         sys.exit((r.stderr or r.stdout).strip() or "pcbnew dump failed")
     return json.loads(r.stdout.strip().splitlines()[-1])
@@ -147,10 +190,72 @@ def row(ok, label, val):
     (oks if ok else fails).append(f"{label:40} {val}")
 
 
-def main():
-    d = dump()
-    face, mainb = d["face"], d["main"]
+def face_request():
+    """points and rects for the face probe (DUMP), and what each point is for"""
+    import math
     O = pg.FACE_ORG
+    ink = [s for s in pg.panel_ink() if s["on"] == "mask"]
+
+    def samples(s, off):
+        """points along a stroke's centreline, or +-off beside it, panel mm"""
+        if "seg" in s:
+            x1, y1, x2, y2 = s["seg"]
+            L = math.hypot(x2 - x1, y2 - y1)
+            n = max(1, int(L / 0.4))
+            nx, ny = -(y2 - y1) / L, (x2 - x1) / L
+            return [(x1 + (x2 - x1) * k / n + nx * o, y1 + (y2 - y1) * k / n + ny * o)
+                    for k in range(n + 1) for o in ((0.0,) if off == 0 else (off, -off))]
+        cx, cy, r, a0, a1 = s["arc"]
+        n = max(1, int(math.radians(a1 - a0) * r / 0.4))
+        return [(cx + (r + o) * math.cos(math.radians(a0 + (a1 - a0) * k / n)),
+                 cy + (r + o) * math.sin(math.radians(a0 + (a1 - a0) * k / n)))
+                for k in range(n + 1) for o in ((0.0,) if off == 0 else (off, -off))]
+
+    def dist(p, s):
+        if "seg" in s:
+            x1, y1, x2, y2 = s["seg"]
+            dx, dy = x2 - x1, y2 - y1
+            t = max(0.0, min(1.0, ((p[0] - x1) * dx + (p[1] - y1) * dy) / (dx * dx + dy * dy or 1e-12)))
+            return math.hypot(p[0] - x1 - t * dx, p[1] - y1 - t * dy)
+        cx, cy, r, a0, a1 = s["arc"]
+        a = math.degrees(math.atan2(p[1] - cy, p[0] - cx)) % 360
+        if (a - a0) % 360 <= (a1 - a0):
+            return abs(math.hypot(p[0] - cx, p[1] - cy) - r)
+        at = lambda t: (cx + r * math.cos(math.radians(t)), cy + r * math.sin(math.radians(t)))
+        return min(math.hypot(p[0] - q[0], p[1] - q[1]) for q in (at(a0), at(a1)))
+    centre = [p for s in ink for p in samples(s, 0)]
+    # beside a stroke, gold must show -- except where another stroke is that close
+    flank = [p for s in ink for p in samples(s, s["w"] / 2 + 0.12)
+             if all(dist(p, t) > t["w"] / 2 + 0.12 for t in ink if t is not s)]
+    return ink, centre, flank
+
+
+def main():
+    ink, centre, flank = face_request()
+    d0 = dump()
+    O = pg.FACE_ORG
+    cu = [pp["bbox"] for p in range(1, 5) for pp in d0["face"]["fps"].get(f"E{p}", {"pads": []})["pads"]]
+    fr = pg.generator()[0].CFG["pad_frame_mm"]
+    no_gold = []
+    for p in range(1, 5):
+        bb = [pp["bbox"] for pp in d0["face"]["fps"].get(f"E{p}", {"pads": []})["pads"]]
+        if bb:
+            m = fr - 0.1 - 0.01              # the gold stops UNDER (0.1) short of the frame's edge
+            no_gold.append((min(b_[0] for b_ in bb) - m, min(b_[1] for b_ in bb) - m,
+                            max(b_[2] for b_ in bb) + m, max(b_[3] for b_ in bb) + m))
+    # the vias that must be under mask: every other net's, outside the pads' frames (the
+    # bar vias are open, in the pads' own openings -- ADR 0013)
+    inside_ = lambda r, x, y: r[0] <= x <= r[2] and r[1] <= y <= r[3]
+    sig = [v for v in d0["face"]["vias"] if v["net"] != "GND"
+           and not any(inside_(r, *v["xy"]) for r in no_gold)]
+    import math
+    ring = [(v["xy"][0] + (v["d"] / 2 + 0.05) * math.cos(k * math.pi / 4),
+             v["xy"][1] + (v["d"] / 2 + 0.05) * math.sin(k * math.pi / 4)) for v in sig for k in range(8)]
+    ring += [tuple(v["xy"]) for v in sig]
+    sheet = lambda pts: [[x + O[0], y + O[1]] for x, y in pts]
+    d = dump({"no_gold": no_gold, "inset": 0.25,
+              "points": sheet(centre) + sheet(flank) + [list(p) for p in ring]})
+    face, mainb, probe = d["face"], d["main"], d["probe"]
     to_panel = lambda p: (p[0] - O[0], p[1] - O[1])
 
     # ---- outline
@@ -307,12 +412,23 @@ def main():
         if p:
             bad_u.append(f"{v['net']} via under pad {p}")
     for z in face["zones"]:
+        if z["layer"] == "F.Cu":         # the gold face: "gold clear of every pad" below
+            continue
         zb = [*to_panel(z["bbox"][:2]), *to_panel(z["bbox"][2:])]
         for p, r in prect.items():
             if zb[0] < r[2] and zb[2] > r[0] and zb[1] < r[3] and zb[3] > r[1]:
                 bad_u.append(f"{z['net']} zone on {z['layer']} under pad {p}")
     row(not on_top, "nothing routed on F.Cu", f"{len(face['tracks'])} tracks, none on the top layer"
         if not on_top else f"{len(on_top)} tracks on F.Cu")
+    fz = probe["zones"]
+    row(len(fz) == 1 and fz[0]["name"] == "FACE_GOLD" and fz[0]["net"] == "GND" and fz[0]["pieces"] == 1,
+        "F.Cu: the pads and one GND gold face",
+        f"{fz[0]['name']}, {fz[0]['area']:.0f} mm2, one piece" if len(fz) == 1 else
+        f"{len(fz)} F.Cu zones: " + ", ".join(f"{z['name']} ({z['net']}, {z['pieces']} pieces)" for z in fz))
+    row(all(a < 1e-6 for a in probe["covered"]) and len(probe["covered"]) == 4,
+        "gold clear of every pad by its frame",
+        f"{fr - 0.1:.1f}mm copper gap, {fr:g}mm of mask" if all(a < 1e-6 for a in probe["covered"])
+        else "gold inside a frame: " + ", ".join(f"pad {i + 1} {a:.2f}mm2" for i, a in enumerate(probe["covered"]) if a))
     row(not bad_u, "nothing under a pad but its own nets",
         f"{len(face['tracks'])} tracks, {len(face['vias'])} vias, {len(face['zones'])} zones checked"
         if not bad_u else f"{len(bad_u)}: " + "; ".join(sorted(set(bad_u))[:4]))
@@ -399,84 +515,55 @@ def main():
         row(not bad_via and not stray, "one via per bar, where the generator puts it",
             f"{n_via} vias on their bar's net" if not (bad_via or stray)
             else (bad_via[:1] + [f"extra vias on {', '.join(stray)}"])[0])
-    # ---- the printed scale: the generator's strokes, inside the board's own copper
-    scale = [e for e in face["silk"] if e["group"] == "SCRUB_SCALE" and "c" not in e]
-    if not scale:
-        todos.append("scrub scale not on F.SilkS yet -- design/mkscale.py")
-    else:
-        # mkscale draws each butt-ended SVG stroke half its width short, round-ended
-        want = []
-        for _, x1, y1, x2, y2, w in gen.scale_marks(cfg, g):
-            L = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
-            ux, uy = (x2 - x1) / L, (y2 - y1) / L
-            want.append((q(x1 + ux * w / 2), q(y1 + uy * w / 2), q(x2 - ux * w / 2), q(y2 - uy * w / 2), q(w)))
-        have = [(q(e["a"][0] - O[0]), q(e["a"][1] - O[1]), q(e["b"][0] - O[0]), q(e["b"][1] - O[1]), q(e["w"]))
-                for e in scale]
-        close = lambda u, v: all(abs(i - j) <= 0.001 for i, j in zip(u, v))
-        extra = [h for h in have if not any(close(h, w_) for w_ in want)]
-        lost = [w_ for w_ in want if not any(close(h, w_) for h in have)]
-        row(not extra and not lost, "scrub scale == generator scale_marks()",
-            f"{len(have)} strokes on F.SilkS" if not (extra or lost)
-            else f"{len(lost)} missing, {len(extra)} extra")
-        if all(f"E{p}" in face["fps"] for p in range(1, 5)):
-            cu_x0 = min(pp["bbox"][0] for p in range(1, 5) for pp in face["fps"][f"E{p}"]["pads"]) - O[0]
-            cu_x1 = max(pp["bbox"][2] for p in range(1, 5) for pp in face["fps"][f"E{p}"]["pads"]) - O[0]
-            ink_x0 = min(min(h[0], h[2]) - h[4] / 2 for h in have)
-            ink_x1 = max(max(h[0], h[2]) + h[4] / 2 for h in have)
-            ins = (ink_x0 - cu_x0 + 0.1, cu_x1 - ink_x1 + 0.1)     # to the end ticks' centres
-            row(min(ins) >= 3.0, "copper runs past the scale (endpoint trim)",
-                f"{ins[0]:.2f} / {ins[1]:.2f}mm of copper beyond the end ticks")
-    # ---- the rest of the panel art: panel_silk(), i.e. panel_art() less what fab clips
-    art = [e for e in face["silk"] if e["group"] == "PANEL_ART"]
-    if not art:
-        todos.append("panel art not on F.SilkS yet -- design/mkart.py")
-    else:
-        import math
-        strokes, clipped = pg.panel_silk()
-        key = lambda a, b, w: tuple(q(v) for v in (*sorted([tuple(a), tuple(b)])[0],
-                                                   *sorted([tuple(a), tuple(b)])[1], w))
-        want = []
-        for st in strokes:
-            if "seg" in st:
-                x1, y1, x2, y2 = st["seg"]
-            else:
-                cx, cy, r, a0, a1 = st["arc"]
-                x1, y1 = cx + r * math.cos(math.radians(a0)), cy + r * math.sin(math.radians(a0))
-                x2, y2 = cx + r * math.cos(math.radians(a1)), cy + r * math.sin(math.radians(a1))
-            want.append(key((x1, y1), (x2, y2), st["w"]) + (("arc",) if "arc" in st else ()))
-        have = [key((e["a"][0] - O[0], e["a"][1] - O[1]), (e["b"][0] - O[0], e["b"][1] - O[1]), e["w"])
-                + (("arc",) if "c" in e else ()) for e in art]
-        close = lambda u, v: len(u) == len(v) and all(abs(i - j) <= 0.001 for i, j in zip(u[:5], v[:5]))
-        extra = [h for h in have if not any(close(h, w_) for w_ in want)]
-        lost = [w_ for w_ in want if not any(close(h, w_) for h in have)]
-        row(not extra and not lost, "panel art == generator panel_art(), fab-clipped",
-            f"{len(have)} strokes on F.SilkS; clipped {', '.join(f'{k} {v:.1f}mm' for k, v in sorted(clipped.items()))}"
-            if not (extra or lost) else f"{len(lost)} missing, {len(extra)} extra")
+    # ---- the printed face (ADR 0013, design/mkface.py): every mask stroke of the generator's
+    # is mask where it crosses the gold, and gold shows just beside it; signal vias are
+    # under mask; the silk is the generator's
+    res = probe["points"]
+    nc, nf = len(centre), len(flank)
+    bare = [p for p, (op_, deep) in zip(centre, res[:nc]) if deep and op_]
+    shut = [p for p, (op_, deep) in zip(flank, res[nc:nc + nf]) if deep and not op_]
+    judged = sum(1 for _, deep in res[:nc + nf] if deep)
+    row(not bare and not shut, "mask ink == generator strokes, on the gold",
+        f"{len(ink)} strokes; {judged} points on the gold, all ink where drawn and gold beside it"
+        if not (bare or shut) else
+        (f"{len(bare)} points of ink left bare, first ({bare[0][0]:.2f}, {bare[0][1]:.2f}); " if bare else "") +
+        (f"{len(shut)} points beside a stroke masked, first ({shut[0][0]:.2f}, {shut[0][1]:.2f})" if shut else ""))
+    open_sig = sorted({(v["net"], round(v["xy"][0] - O[0], 2), round(v["xy"][1] - O[1], 2))
+                       for k, v in enumerate(sig)
+                       if any(res[nc + nf + 8 * k + m][0] for m in range(8)) or res[nc + nf + 8 * len(sig) + k][0]})
+    row(not open_sig, "every signal via outside the pads under mask",
+        f"{len(sig)} non-GND vias" if not open_sig
+        else f"{len(open_sig)} open: first {open_sig[0]}")
+    want = [tuple(q(v) for v in st["seg"]) + (q(st["w"]),) for st in pg.panel_ink() if st["on"] == "silk"]
+    have = [(q(e["a"][0] - O[0]), q(e["a"][1] - O[1]), q(e["b"][0] - O[0]), q(e["b"][1] - O[1]), q(e["w"]))
+            for e in face["silk"] if e["group"] == "FACE_SILK"]
+    close = lambda u, v: all(abs(i_ - j_) <= 0.001 for i_, j_ in zip(u, v))
+    extra = [h for h in have if not any(close(h, w_) for w_ in want)]
+    lost = [w_ for w_ in want if not any(close(h, w_) for h in have)]
+    row(not extra and not lost, "silk == generator (right-hand numerals)",
+        f"{len(have)} strokes on the masked panel" if not (extra or lost) else f"{len(lost)} missing, {len(extra)} extra")
+    if all(f"E{p}" in face["fps"] for p in range(1, 5)):
+        cu_x0 = min(pp["bbox"][0] for p in range(1, 5) for pp in face["fps"][f"E{p}"]["pads"]) - O[0]
+        cu_x1 = max(pp["bbox"][2] for p in range(1, 5) for pp in face["fps"][f"E{p}"]["pads"]) - O[0]
+        ins = (g["TICK_X"][0] - cu_x0, cu_x1 - g["TICK_X"][-1])
+        row(min(ins) >= 3.0, "copper runs past the scale (endpoint trim)",
+            f"{ins[0]:.2f} / {ins[1]:.2f}mm of copper beyond the end ticks")
+
     # Silk over a via prints, but over its bump: keep all of it off every via's copper.
     def to_stroke(p, e):
         a, b = e["a"], e["b"]
-        if "c" in e:
-            c, r = e["c"], e["r"]
-            ang = lambda v: math.atan2(v[1] - c[1], v[0] - c[0])
-            s0, sm, s1, sp = ang(a), ang(e["mid"]), ang(b), ang(p)
-            within = lambda t, lo, hi: (t - lo) % (2 * math.pi) <= (hi - lo) % (2 * math.pi)
-            ccw = within(sm, s0, s1)
-            if (within(sp, s0, s1) if ccw else within(sp, s1, s0)):
-                return abs(math.hypot(p[0] - c[0], p[1] - c[1]) - r)
-            return min(math.hypot(p[0] - a[0], p[1] - a[1]), math.hypot(p[0] - b[0], p[1] - b[1]))
         dx, dy = b[0] - a[0], b[1] - a[1]
         L2 = dx * dx + dy * dy or 1e-12
         t = max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2))
         return math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy)
-    import math
-    silk_all = [e for e in face["silk"] if e["group"] in ("PANEL_ART", "SCRUB_SCALE")]
+    silk_all = [e for e in face["silk"] if e["group"] == "FACE_SILK"]
     near = [(v, e) for v in face["vias"] for e in silk_all
             if to_stroke(v["xy"], e) < v["d"] / 2 + e["w"] / 2 + 0.1]
     if silk_all:
         row(not near, "silk clear of every via by 0.1",
             f"{len(silk_all)} strokes x {len(face['vias'])} vias" if not near else
             f"{len(near)}: first a {near[0][0]['net']} via at panel "
-            f"({near[0][0]['xy'][0] - O[0]:.2f}, {near[0][0]['xy'][1] - O[1]:.2f}), {near[0][1]['group']}")
+            f"({near[0][0]['xy'][0] - O[0]:.2f}, {near[0][0]['xy'][1] - O[1]:.2f})")
     # The generator's via keepouts must be exactly J1's pads, read off the board.
     if j1:
         rows_ = {}

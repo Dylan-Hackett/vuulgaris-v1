@@ -12,7 +12,8 @@ mkzones.py (the L3 GND plane). Steps:
 
   1. Export the board to Specctra DSN (pcbnew.ExportSpecctraDSN).
   2. Fence it, by editing the DSN -- Freerouting knows clearances, not this board's rules:
-       * no wires on F.Cu, anywhere: the top layer is the scrub pads and nothing else
+       * no wires on F.Cu, anywhere: the top layer is the scrub pads and the gold face
+         (mkface.py), which is dropped from the DSN, not offered as a plane
          (declared a power layer, so the router treats it as a plane);
        * no wires or vias anywhere left of the right margin (under or between the pads, the
          upper panel, the left margin), EXCEPT the corridor between pads 3 and 4 that the
@@ -88,6 +89,15 @@ def fence(dsn):
     # B.Cu alone and could not change layer.)
     for L in ("F.Cu", "In2.Cu"):
         dsn = re.sub(r"(\(layer %s\s*\n\s*\(type )signal" % re.escape(L), r"\1power", dsn, count=1)
+    # The gold face (mkface.py) is a GND plane on F.Cu: not the router's to reach. Left in,
+    # it would drop GND vias onto the face wherever that was short. Its whole block goes.
+    for m in reversed(list(re.finditer(r"\n\s*\(plane \S+ \(polygon F\.Cu ", dsn))):
+        depth, j = 0, dsn.index("(plane", m.start())
+        for j in range(j, len(dsn)):
+            depth += {"(": 1, ")": -1}.get(dsn[j], 0)
+            if depth == 0:
+                break
+        dsn = dsn[:m.start()] + dsn[j + 1:]
     k = []
     for r in NO_ROUTE:
         for L in ("In1.Cu", "In2.Cu", "B.Cu"):
@@ -312,10 +322,12 @@ def main():
     if "--unroute" in sys.argv:              # every track and via off: the start of a rebuild
         gone = list(b.GetTracks())
         for t in gone:
+            if t.GetParentGroup():           # mkface.py's stitch vias live in a group
+                t.GetParentGroup().RemoveItem(t)
             b.Remove(t)
         pcbnew.SaveBoard(proj.P.pcb, b)
         print(f"unrouted: {len(gone)} tracks and vias removed. Rebuild with mkpads, mkbuses, "
-              f"mkcells, mkescape, mkzones, then mkroute.")
+              f"mkcells, mkescape, mkfanin, mkzones, mkroute, then mkface.")
         return
     if "--dsn-only" in sys.argv:             # write the fenced DSN and stop (parallel runs)
         out = os.path.abspath(sys.argv[sys.argv.index("--dsn-only") + 1])
