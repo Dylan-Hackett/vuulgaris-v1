@@ -101,7 +101,7 @@ Configurable. TI: number of discrete positions = the configured resolution. Set 
 The real limit is **jitter, not resolution.** If reported position wanders N counts at rest, usable points = 1000/N. This is the number to measure. Smoothing fixes it at the cost of latency — a direct tradeoff, since scrub position jitter becomes audible warble.
 
 ### Endpoint trim
-TI documents that most slider layouts can't reach 0 and max at the physical extremes, because a finger's centroid doesn't align with the slider endpoint. `Lower_Trim` / `Upper_Trim` parameters correct this, tuned by touching each end and observing. **Plan for a few dead millimetres at each end** — mark the usable scrub region inside the copper, or extend copper past the printed scale.
+TI documents that most slider layouts can't reach 0 and max at the physical extremes, because a finger's centroid doesn't align with the slider endpoint. `Lower_Trim` / `Upper_Trim` parameters correct this, tuned by touching each end and observing. **Plan for a few dead millimetres at each end** — mark the usable scrub region inside the copper, or extend copper past the printed scale. **Done 2026-09-29:** the printed scale stops 6mm inside each copper end (ADR 0003, "Endpoint trim"); its end ticks are the sample's start and end.
 
 ### No overlay — consequences
 Direct finger-to-copper contact. This is outside TI's design assumptions (all their tuning guidance assumes 1.5–4mm of plastic).

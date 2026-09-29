@@ -295,7 +295,8 @@ line.
 - **Longer pads are a gain, not a cost.** 216mm gives more scrub travel than the 150mm that was
   briefly settled on, and is well inside TI's demonstrated 300mm.
 - **Endpoint trim still eats a few mm at each end.** Copper extends past the printed scale per
-  [ADR 0003](decisions/0003-comb-pad-rx0-wraparound.md), so the eleven printed divisions stay
+  [ADR 0003](decisions/0003-comb-pad-rx0-wraparound.md): the scale stops 6mm inside each copper
+  end (`scale_inset_mm`, 204mm of scale, 17mm a division), so all thirteen printed marks stay
   inside the well-behaved middle region. **The tick divisions are exactly what
   [Q1](notes/open-questions.md) repeatability is measured against.**
 - **Resolution is unaffected.** Slider resolution is configurable and the real limit is jitter,
