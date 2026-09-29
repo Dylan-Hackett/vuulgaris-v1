@@ -113,21 +113,23 @@ SEG = [dict(x1=float(m.group(1)), y1=float(m.group(2)), x2=float(m.group(3)), y2
 VIA = [dict(x=float(m.group(1)), y=float(m.group(2)), r=float(m.group(3)) / 2, net=int(m.group(4)))
        for m in re.finditer(r'\(via \(at ([-\d.]+) ([-\d.]+)\) \(size ([\d.]+)\)[\s\S]{0,120}?\(net (\d+)\)', T)]
 
-zi = T.find('(zone (net ')
-zone_outline = []
+# Every In2.Cu zone is a plane: a node of its own, joined to any other zone of its net it
+# overlaps. This took only the FIRST In2 zone, which was all the main board ever had; the
+# faceplate's GND is three (margin, corridor strip, the patch at J1), and every ground
+# reaching the plane through the one it skipped read as an island.
+ZONES = []
 for zb in blocks(T, 'zone'):
     if '"In2.Cu"' in zb[:200]:
         head = zb[:zb.find('(filled_polygon')] if '(filled_polygon' in zb else zb
-        zone_outline = [(float(a), float(b)) for a, b in re.findall(r'\(xy ([-\d.]+) ([-\d.]+)\)', head)]
-        zone_net = int(re.search(r'\(zone \(net (\d+)\)', zb).group(1))
-        break
+        ZONES.append((int(re.search(r'\(zone \(net (\d+)\)', zb).group(1)),
+                      [(float(a), float(b)) for a, b in re.findall(r'\(xy ([-\d.]+) ([-\d.]+)\)', head)]))
 
 
-def inzone(px, py):
+def inpoly(poly, px, py):
     c = False
-    n = len(zone_outline)
+    n = len(poly)
     for i in range(n):
-        x1, y1 = zone_outline[i]; x2, y2 = zone_outline[(i + 1) % n]
+        x1, y1 = poly[i]; x2, y2 = poly[(i + 1) % n]
         if (y1 > py) != (y2 > py) and px < (x2 - x1) * (py - y1) / (y2 - y1) + x1:
             c = not c
     return c
@@ -193,7 +195,8 @@ for net, g in byn.items():
     if net == 0 or 'unconnected-' in nets.get(net, '') or len(g['p']) < 2:
         continue
     items = [('p', x) for x in g['p']] + [('s', x) for x in g['s']] + [('v', x) for x in g['v']]
-    par = list(range(len(items) + 1)); PLANE = len(items)
+    zones = [poly for zn, poly in ZONES if zn == net]
+    par = list(range(len(items) + len(zones))); PLANE = len(items)
     def find(a):
         while par[a] != a: par[a] = par[par[a]]; a = par[a]
         return a
@@ -222,9 +225,12 @@ for net, g in byn.items():
             elif ti == 'p' and tj == 'v': h = inpad(a, b['x'], b['y'], b['r'])
             elif ti == 'v' and tj == 'p': h = inpad(b, a['x'], a['y'], a['r'])
             if h: uni(i, j)
-    if zone_outline and net == zone_net:
+    for k, poly in enumerate(zones):
         for i, (ti, a) in enumerate(items):
-            if (ti == 'v' or (ti == 'p' and a['thru'])) and inzone(a['x'], a['y']): uni(i, PLANE)
+            if (ti == 'v' or (ti == 'p' and a['thru'])) and inpoly(poly, a['x'], a['y']): uni(i, PLANE + k)
+        for k2 in range(k + 1, len(zones)):             # overlapping zones of one net join
+            if any(inpoly(zones[k2], x, y) for x, y in poly) or any(inpoly(poly, x, y) for x, y in zones[k2]):
+                uni(PLANE + k, PLANE + k2)
     grp = collections.defaultdict(list)
     for i, (ti, a) in enumerate(items):
         if ti == 'p': grp[find(i)].append(f"{a['ref']}.{a['pin']}")

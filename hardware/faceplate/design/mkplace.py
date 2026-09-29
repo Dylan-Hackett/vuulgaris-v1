@@ -91,7 +91,9 @@ PLACE = {
     "C6": (288.05, 115.9, "1", "right"),   # 22pF XOUT
     # Where 3V3 and RST arrive from J1 along the gap: bulk first, then the RST RC. RST is a
     # slow net; TI's Figure 10-4 gives the RC no distance.
-    "C1": (278.55, 112.85, "1", "up"),     # 10uF DVCC bulk
+    # 10uF DVCC bulk: above the corridor's mouth, not in it -- there it blocked RST, TXD
+    # and RXD in turn -- 0.6 clear of U1's left pins; 3V3 reaches it from the top line
+    "C1": (278.3, 106.2, "1", "down"),
     "C4": (280.725, 112.9, "1", "up"),     # 1nF C0G on RST
     "R1": (282.775, 112.85, "2", "up"),    # 47k RST pull-up
     # UART pull-ups (SLAU550 3.3.2.1: on the TCK / TMS nets, no distance given). R2 stands
@@ -127,8 +129,8 @@ REF_AT = {
     "C2": (285.55, 111.475, False),
     "Y1": (290.9, 117.45, False),
     "C5": (285.55, 113.4, False), "C6": (285.55, 115.9, False),
-    "C1": (278.55, 115.65, False), "C4": (280.725, 115.7, False), "R1": (282.775, 115.65, False),
-    "R2": (263.6, 111.025, False), "R3": (280.6, 110.2, False),
+    "C1": (278.3, 103.6, False), "C4": (280.725, 115.7, False), "R1": (282.775, 115.65, False),
+    "R2": (263.6, 111.025, False), "R3": (280.0, 110.2, False),
 }
 REF_AT.update({ref: None for ref in TP_LABEL})
 for _p in range(1, 5):
@@ -221,7 +223,7 @@ def main():
         t.SetMirrored(True)
         x, y = PLACE[ref][:2]
         # to its right, a touch high: clear of the next pad's circle, 1.3 lower
-        text_at(t, x + 1.0 + 0.31 * len(label), y - 0.35, False)
+        text_at(t, x + 1.3 + 0.31 * len(label), y - 0.35, False)
         tp.Add(t)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     pcbnew.SaveBoard(P.pcb, b)

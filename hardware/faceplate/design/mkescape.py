@@ -15,6 +15,8 @@ out and along the corridor past the test pads. So all of it is drawn here, on B.
     corridor to CORR_END, just inside the margin. Each test pad sits ON its own line and
     R2 stands across the 3V3 and TXD lines; every line is split at those pads, so each
     pad is on a track end.
+  * RXD and TXD hop under the C1 / C4 / R1 group on L2 (their lines end against C1, and
+    B.Cu round it is taken): RXD to R3's RXD pad, TXD under RXD's hop to U1 pin 4.
   * J1's GND row, joined pad to pad along its centre line (mkboard.py drew that once; it
     lives here now), gets a via just past its end into the L3 GND strip (mkzones.py widens
     it there), and TP4 (SBW GND) a track to that via.
@@ -46,6 +48,11 @@ CORR_END = 277.5              # just inside the margin (pad copper ends at 277.1
 CLR = 0.2                     # Default / Power / GND netclass clearance
 LANES = ("3", "5", "7", "9")  # channel lanes, bottom (nearest the signal row) first
 GND_VIA = (235.9, 109.075)    # just past the GND row's end (pin 2), on its centre line
+RXD_HOP_X0 = 276.9            # RXD's via onto L2, on its line just short of C1
+RXD_HOP_DX = 0.95             # its via back up, this far right of R3's RXD pad
+TXD_HOP_X0 = 276.2            # TXD's via onto L2, left of RXD's
+TXD_L2_Y = 113.8              # ... it runs under RXD's L2 line at this height
+TXD_VIA_Y = 110.9             # ... to a via under U1 pin 4
 VIA_D, VIA_DRILL = 0.6, 0.3
 
 
@@ -94,6 +101,13 @@ def main():
                and t.GetLayer() == pcbnew.B_Cu
                and all(box(pad["2"])[2] - 0.6 <= ToP(q)[0] <= tp4[0] + 0.01
                        and 108.4 <= ToP(q)[1] <= 110.5 for q in (t.GetStart(), t.GetEnd())))]
+    old += [t for t in b.GetTracks() if t.GetNetname() in ("/MSP430_RXD", "/MSP430_TXD")
+            and t not in old and (isinstance(t, pcbnew.PCB_VIA) or t.GetLayer() == pcbnew.In1_Cu)]
+    u1p4_ = next(ToP(p.GetPosition()) for p in fps["U1"].Pads() if p.GetNumber() == "4")
+    old += [t for t in b.GetTracks() if t.GetNetname() == "/MSP430_TXD" and t not in old
+            and not isinstance(t, pcbnew.PCB_VIA) and t.GetLayer() == pcbnew.B_Cu
+            and all(abs(ToP(q)[0] - u1p4_[0]) < 0.01 and u1p4_[1] - 0.01 <= ToP(q)[1] <= TXD_VIA_Y + 0.01
+                    for q in (t.GetStart(), t.GetEnd()))]
     for t in old:
         b.Remove(t)
 
@@ -125,7 +139,9 @@ def main():
         yc = CORRIDOR_Y[net]
         # TXD bends 0.6 after 3V3, the line above it, so their corners never close up
         bend = ESC_X + (0.6 if net == "MSP430_TXD" else 0.0)
-        pts = [(x, y), (bend, y), (FAN_X, yc)] + [(tx, yc) for tx in sorted(taps[net])] + [(CORR_END, yc)]
+        # RXD and TXD stop at their hop vias (below); the rest run to the margin
+        end = {"MSP430_RXD": RXD_HOP_X0, "MSP430_TXD": TXD_HOP_X0}.get(net, CORR_END)
+        pts = [(x, y), (bend, y), (FAN_X, yc)] + [(tx, yc) for tx in sorted(taps[net])] + [(end, yc)]
         return pts
 
     # the channel lanes, bottom up, each CLR clear of the row below it
@@ -141,13 +157,62 @@ def main():
     # TEST straight out to the right of its pad, then down the corridor
     x1 = ToP(pad["1"].GetPosition())[0]
     run(nets["1"], corridor(nets["1"], x1, sig_top + width[nets["1"]] / 2 + 0.3))
+    # RXD's line ends against C1 (3V3 bulk, where the corridor meets the margin), and every
+    # way round it on B.Cu is taken; so it hops: a via on the line just short of C1, L2 --
+    # empty at that height, between pad 3's fan-in above and pad 4's below -- under the C1 /
+    # C4 / R1 group, and a via up beside R3's RXD pad, which the router ties to U1 pin 5.
+    r3 = {p.GetNumber(): ToP(p.GetPosition()) for p in fps["R3"].Pads()}
+    ry = CORRIDOR_Y["MSP430_RXD"]
+    v1, v2 = (RXD_HOP_X0, ry), (r3["2"][0] + RXD_HOP_DX, r3["2"][1])
+    for xy in (v1, v2):
+        vv = pcbnew.PCB_VIA(b)
+        b.Add(vv)
+        vv.SetViaType(pcbnew.VIATYPE_THROUGH)
+        vv.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu)
+        vv.SetPosition(sheet(*xy))
+        vv.SetWidth(mm(VIA_D))
+        vv.SetDrill(mm(VIA_DRILL))
+        vv.SetNet(b.FindNet("/MSP430_RXD"))
+    for a_, z_ in ((v1, (v2[0], ry)), ((v2[0], ry), v2)):
+        t = pcbnew.PCB_TRACK(b)
+        b.Add(t)
+        t.SetLayer(pcbnew.In1_Cu)
+        t.SetWidth(mm(width["MSP430_RXD"]))
+        t.SetNet(b.FindNet("/MSP430_RXD"))
+        t.SetStart(sheet(*a_))
+        t.SetEnd(sheet(*z_))
+    seg("MSP430_RXD", v2, r3["2"], width["MSP430_RXD"])
+    # TXD likewise, and it must pass RXD's hop: its via sits further left, it drops under
+    # RXD's L2 line and runs right past RXD's turn-up, then climbs to a via straight under
+    # U1 pin 4 (between pins 5 and 3), and a stub up into the pad.
+    u1p4 = next(ToP(p.GetPosition()) for p in fps["U1"].Pads() if p.GetNumber() == "4")
+    ty_ = CORRIDOR_Y["MSP430_TXD"]
+    t1, t2 = (TXD_HOP_X0, ty_), (u1p4[0], TXD_VIA_Y)
+    for xy in (t1, t2):
+        vv = pcbnew.PCB_VIA(b)
+        b.Add(vv)
+        vv.SetViaType(pcbnew.VIATYPE_THROUGH)
+        vv.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu)
+        vv.SetPosition(sheet(*xy))
+        vv.SetWidth(mm(VIA_D))
+        vv.SetDrill(mm(VIA_DRILL))
+        vv.SetNet(b.FindNet("/MSP430_TXD"))
+    for a_, z_ in ((t1, (t1[0], TXD_L2_Y)), ((t1[0], TXD_L2_Y), (t2[0], TXD_L2_Y)), ((t2[0], TXD_L2_Y), t2)):
+        t = pcbnew.PCB_TRACK(b)
+        b.Add(t)
+        t.SetLayer(pcbnew.In1_Cu)
+        t.SetWidth(mm(width["MSP430_TXD"]))
+        t.SetNet(b.FindNet("/MSP430_TXD"))
+        t.SetStart(sheet(*a_))
+        t.SetEnd(sheet(*z_))
+    seg("MSP430_TXD", t2, u1p4, width["MSP430_TXD"])
     # J1's GND row joined pad to pad along its centre line (mkboard.py drew this once)
     grow = sorted(ToP(pad[n].GetPosition()) for n in ("2", "4", "6", "8", "10"))
     for a_, z_ in zip(grow, grow[1:]):
         seg("GND", a_, z_, 0.5)
     # grounds: J1's row into the L3 strip, TP4 to the same via
     g2 = box(pad["2"])
-    seg("GND", (g2[2] - 0.5, GND_VIA[1]), GND_VIA, 0.3)
+    seg("GND", ToP(pad["2"].GetPosition()), GND_VIA, 0.3)
     seg("GND", GND_VIA, tp4, 0.3)
     v = pcbnew.PCB_VIA(b)
     b.Add(v)
