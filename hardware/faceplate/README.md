@@ -169,8 +169,8 @@ screws go **at least 9mm along the edge** (`panel_screw_corner_min_mm`, checked)
 **Panel screws — 2026-09-28:** four M3, 3.4mm clearance holes, one at each corner: on the
 long edges 9mm from the corner (x 9.00 / 289.29) and 3mm in (y 3.00 / 134.81), as close as
 the r6 corner lets an M3 pan head sit. (Ten, along the edges, until the same day.) Generator
-`panel_screws()`; the enclosure's threaded inserts go under them. The panel art draws the
-heads.
+`panel_screws()`; the enclosure's threaded inserts go under them. The mockup draws the
+heads; the silkscreen does not.
 panelcheck checks all four corners.
 
 The generator draws **no pot or encoder holes at all** — the r=8 and r=9.2 circles in the FAB
@@ -319,6 +319,7 @@ design/mkcells.py             the network grid's cell vias, TVS/R stubs and TVS 
 design/mkescape.py            J1 out along the pad 3-4 corridor to the test pads, R2, R3 and U1 (deterministic)
 design/mkfanin.py             the L2 fan-in: every bus exit to its cell via, crossing-free (deterministic)
 design/mkscale.py             F.SilkS: the printed scrub scale, 6mm inside each copper end (generator scale_marks())
+design/mkart.py               F.SilkS: the rest of the panel art -- rules, dividers, numerals (generator panel_art(), fab-clipped)
 design/mkzones.py             the L3 GND plane: solid, in the margin and the pad 3-4 corridor, never under a pad
 design/mkroute.py             everything else, by Freerouting, fenced: no F.Cu, nothing under or between the pads
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
@@ -398,6 +399,7 @@ $KPY hardware/faceplate/design/mkroute.py --unroute    # every track and via off
 $KPY hardware/faceplate/design/mkplace.py --force      # the parts (the table above)
 $KPY hardware/faceplate/design/mkholes.py              # Edge.Cuts: outline, holes, screws, OLED window
 $KPY hardware/faceplate/design/mkscale.py              # F.SilkS: the printed scrub scale
+$KPY hardware/faceplate/design/mkart.py                # F.SilkS: the rest of the panel art
 for s in mkpads mkbuses mkcells mkescape mkfanin mkzones; do $KPY hardware/faceplate/design/$s.py; done
 $KPY hardware/faceplate/design/mkroute.py              # the rest, by Freerouting; re-run until DRC is clean
 ```
@@ -405,6 +407,7 @@ $KPY hardware/faceplate/design/mkroute.py              # the rest, by Freeroutin
 | script | draws | how |
 |---|---|---|
 | `mkscale` | the printed scrub scale on F.SilkS, one locked group | the generator's `scale_marks()` |
+| `mkart` | the rest of the panel art on F.SilkS: rules, dividers, their semicircles, the numerals | the generator's `panel_art()`, less what fab cannot print (`panelgeo.panel_silk()`) |
 | `mkpads` | the pad copper, one via per bar | the generator's `copper()` |
 | `mkbuses` | the buses: every bar's via joined, each net out to the margin | exact, L2 (RX0's join on L3); every via on a segment end |
 | `mkcells` | each cell's via and B.Cu down to TVS pin 1 and R pin 1; each TVS's GND via; `C3`'s ground | exact; the vias staggered in height (below) |
@@ -485,6 +488,11 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 - [x] 4 SBW test pads present (TEST, RST, 3V3, GND): `TP1`–`TP4`, beside `J1`
 - [x] Test points on UART Tx/Rx, RST, TEST (there is no IRQ line — `pin-allocation.md`): `TP5`, `TP6`
 - [x] Soldermask opening over all pad copper (one opening per pad; vias open both sides)
+- [x] Panel art on F.SilkS (2026-09-29): everything the mockup prints -- rules, dividers,
+      semicircles, Attic numerals, the scale -- and none of its part outlines (knobs, buttons,
+      switches, OLED, screw heads). Silk breaks 0.3 short of every cut and 0.2 short of every
+      pad's mask opening: the knob-row rules at each knob, the pad divider at each pad
+      (mkart). panelcheck: strokes == generator, and clear of every via by >= 0.1
 - [x] Copper extended past the printed scale (endpoint trim eats a few mm at each end): the
       scale stops 6mm inside each copper end, on F.SilkS (mkscale; ADR 0003, "Endpoint trim").
       Its end ticks are the sample's ends. panelcheck: strokes == generator, copper beyond both

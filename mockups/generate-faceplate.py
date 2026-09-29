@@ -510,6 +510,74 @@ def scale_marks(c, g):
     return out
 
 
+NUMERAL_W = 0.3      # numeral stroke, mm (the sans-serif it replaced drew ~0.3)
+
+
+def numeral_strokes(n, x, y, pt, anchor):
+    """Attic numeral n (I=1, P=5, D=10) as monoline polylines, baseline y, cap height
+    0.71 x pt (what the sans-serif it replaced measured). anchor: "start", "middle" or
+    "end" at x, as SVG text-anchor. Drawn, not typeset, so the silkscreen can carry it."""
+    h = 0.71 * pt
+    letters = "D" * (n // 10) + ("P" if n % 10 >= 5 else "") + "I" * (n % 5)
+    width = {"I": 0.0, "P": 0.62 * h, "D": 0.72 * h}
+    gap = 0.45 * h
+    total = sum(width[ch] for ch in letters) + gap * (len(letters) - 1)
+    x0 = {"start": x, "middle": x - total / 2.0, "end": x - total}[anchor]
+    out = []
+    for ch in letters:
+        w = width[ch]
+        if ch == "I":
+            out.append([(x0, y - h), (x0, y)])
+        elif ch == "P":
+            out.append([(x0, y), (x0, y - h), (x0 + w, y - h), (x0 + w, y)])
+        else:                                   # D, closed
+            out.append([(x0, y), (x0 + w / 2.0, y - h), (x0 + w, y), (x0, y)])
+        x0 += w + gap
+    return out
+
+
+def panel_art(c, g):
+    """Everything printed on the panel but the scale (scale_marks()): rules, dividers,
+    their semicircles, the numerals. [{"id", "ink", "w", and "pts" (a polyline; closed
+    if it ends where it starts) or "arc" (cx, cy, r, a0, a1: degrees, y down, swept
+    a0 -> a1 increasing, i.e. clockwise on screen)}], panel mm. The SVG draws these;
+    hardware/faceplate/design/mkart.py puts them on F.SilkS, less what fab cannot print
+    (panelgeo.panel_silk(): holes, the pads' mask openings, the board edge)."""
+    if c["salamis_marks"]:
+        raise SystemExit("panel_art(): salamis_marks is on, but the inscription is not "
+                         "in panel_art() yet -- add it before turning it on")
+    art = []
+    line = lambda gid, ink, w, *pts: art.append({"id": gid, "ink": ink, "w": w, "pts": list(pts)})
+    arc = lambda gid, ink, w, a: art.append({"id": gid, "ink": ink, "w": w, "arc": a})
+    for ry in g["RULE_Y"]:
+        line("rules", INK3, 0.18, (g["ch_x0"] - 2, ry), (g["env_x0"] + g["ENV_W"] + 2, ry))
+    r12 = 12 * g["S"]
+    line("upper-divider", INK, 0.3, (g["UP_DIV"], g["RULE_Y"][0] - 3), (g["UP_DIV"], g["RULE_Y"][4] + 3))
+    arc("upper-divider", INK, 0.3, (g["UP_DIV"], g["RULE_Y"][4], r12, 0.0, 180.0))       # a bowl
+    for cx, n in zip(g["CH_CX"], range(1, 5)):
+        for pl in numeral_strokes(n, cx, g["RULE_Y"][0] - 1.5, 3.0, "middle"):
+            line("channel-numerals", INK, NUMERAL_W, *pl)
+    if c["straight_divider"]:
+        line("divider-rule", INK, 0.45, (0.0, g["DIV_Y"]), (g["PANEL_W"], g["DIV_Y"]))
+    else:
+        ux = lambda u: (u - 42.0) * g["S"]
+        pts = [(42,150),(112,146),(182,153),(247,147),(312,154),(382,148),(447,155),(512,149),(572,154),(622,148)]
+        line("divider-rule", INK, 0.45, *[(ux(a), g["uy"](b)) for a, b in pts])
+    line("pad-marks", INK, 0.3, (g["PAD_MID"], g["PAD_TOPS"][0] - 2.2),
+         (g["PAD_MID"], g["PAD_TOPS"][3] + g["PW"] + 2.2))
+    arc("pad-marks", INK, 0.3, (g["PAD_MID"], g["PAD_TOPS"][0], r12, 180.0, 360.0))      # a dome
+    pt = c["numeral_pt_mm"]
+    for y0, n in zip(g["PAD_TOPS"], range(1, 5)):
+        for pl in (numeral_strokes(n, g["PAD_X0"] - 2, y0 + g["PW"] * 0.72, pt, "end") +
+                   numeral_strokes(n, g["PAD_X1"] + 2, y0 + g["PW"] * 0.72, pt, "start")):
+            line("numerals", INK, NUMERAL_W, *pl)
+    by = g["PAD_TOPS"][3] + g["PW"] + c["numeral_row_mm"]
+    for m in c["cross_at"]:
+        for pl in numeral_strokes(m, g["TICK_X"][m - 1], by, pt, "middle"):
+            line("numerals", INK, NUMERAL_W, *pl)
+    return art
+
+
 def presences(t):
     return [max(0.0, 1 - t) + max(0.0, t - 3),
             max(0.0, 1 - abs(t - 1)),
@@ -814,14 +882,6 @@ def pi_compound(x, y, h, inner):
     return d
 
 
-def attic(n):
-    """Attic acrophonic numeral. I=1, P(pente)=5, D(deka)=10."""
-    s = "&#916;" * (n // 10)
-    r = n % 10
-    if r >= 5: s += "&#928;"; r -= 5
-    return s + "&#921;" * r
-
-
 def render(c, g):
     f = lambda v: f"{v:.3f}".rstrip("0").rstrip(".")
     L, A = [], None
@@ -863,26 +923,11 @@ def render(c, g):
         A(f'<circle cx="{f(sx)}" cy="{f(sy)}" r="{f(c["panel_screw_d_mm"] / 2)}"/>')
     A('</g>')
 
-    # rules
-    A(f'<g id="rules" stroke="{INK3}" stroke-width="0.18" fill="none">')
-    for ry in g["RULE_Y"]:
-        A(f'<line x1="{f(g["ch_x0"]-2)}" y1="{f(ry)}" x2="{f(g["env_x0"]+g["ENV_W"]+2)}" y2="{f(ry)}"/>')
-    A('</g>')
-    r12 = 12 * g["S"]
-    A(f'<g id="upper-divider" stroke="{INK}" stroke-width="0.3" fill="none">'
-      f'<line x1="{f(g["UP_DIV"])}" y1="{f(g["RULE_Y"][0]-3)}" x2="{f(g["UP_DIV"])}" y2="{f(g["RULE_Y"][4]+3)}"/>'
-      f'<path d="M{f(g["UP_DIV"]-r12)} {f(g["RULE_Y"][4])} A{f(r12)} {f(r12)} 0 0 0 '
-      f'{f(g["UP_DIV"]+r12)} {f(g["RULE_Y"][4])}"/></g>')
-
     # knobs
     A(f'<g id="knobs-channel" fill="none" stroke="{KNOB_INK}" stroke-width="0.3">')
     for cx in g["CH_CX"]:
         for cy in (g["R2"], g["R4"]):
             A(f'<circle cx="{f(cx)}" cy="{f(cy)}" r="{f(c["knob_r_mm"])}"/>')
-    A('</g>')
-    A(f'<g id="channel-numerals" font-family="sans-serif" font-size="3" fill="{INK}" text-anchor="middle">')
-    for cx, n in zip(g["CH_CX"], range(1, 5)):
-        A(f'<text x="{f(cx)}" y="{f(g["RULE_Y"][0]-1.5)}">{attic(n)}</text>')
     A('</g>')
     A(f'<g id="knobs-envelope" fill="none" stroke="{KNOB_INK}" stroke-width="0.3">')
     for cx in g["EN_CX"]:
@@ -904,16 +949,6 @@ def render(c, g):
     A(f'<g id="oled" fill="none" stroke="{INK}" stroke-width="0.3">'
       f'<rect x="{f(w[0])}" y="{f(w[1])}" width="{f(w[2] - w[0])}" '
       f'height="{f(w[3] - w[1])}" rx="{f(c["oled_window_r_mm"])}"/></g>')
-
-    # divider rule
-    if c["straight_divider"]:
-        A(f'<line id="divider-rule" x1="0" y1="{f(g["DIV_Y"])}" x2="{f(PW_)}" y2="{f(g["DIV_Y"])}" '
-          f'stroke="{INK}" stroke-width="0.45"/>')
-    else:
-        ux = lambda u: (u - 42.0) * g["S"]
-        pts = [(42,150),(112,146),(182,153),(247,147),(312,154),(382,148),(447,155),(512,149),(572,154),(622,148)]
-        A('<path id="divider-rule" d="M' + ' L'.join(f'{f(ux(a))} {f(g["uy"](b))}' for a,b in pts) +
-          f'" fill="none" stroke="{INK}" stroke-width="0.45"/>')
 
     # copper, one group per net
     bars = {0: [], 1: [], 2: [], 3: []}
@@ -969,12 +1004,22 @@ def render(c, g):
             A(f'<circle cx="{f(g["BTN_CX"])}" cy="{f(cy)}" r="{f(c["button_r_mm"])}"/>')
         A('</g>')
 
-    # pad divider + semicircle
-    A(f'<g id="pad-marks" stroke="{INK}" stroke-width="0.3" fill="none">'
-      f'<line x1="{f(g["PAD_MID"])}" y1="{f(g["PAD_TOPS"][0]-2.2)}" x2="{f(g["PAD_MID"])}" '
-      f'y2="{f(g["PAD_TOPS"][3]+g["PW"]+2.2)}"/>'
-      f'<path d="M{f(g["PAD_MID"]-r12)} {f(g["PAD_TOPS"][0])} A{f(r12)} {f(r12)} 0 0 1 '
-      f'{f(g["PAD_MID"]+r12)} {f(g["PAD_TOPS"][0])}"/></g>')
+    # the printed art (panel_art(): the silkscreen draws the same strokes)
+    groups = {}
+    for a in panel_art(c, g):
+        if "arc" in a:
+            cx, cy, r, a0, a1 = a["arc"]
+            P = lambda t: (cx + r * math.cos(math.radians(t)), cy + r * math.sin(math.radians(t)))
+            (sx, sy), (ex, ey) = P(a0), P(a1)
+            d = f'M{f(sx)} {f(sy)}A{f(r)} {f(r)} 0 {int(a1 - a0 > 180)} 1 {f(ex)} {f(ey)}'
+        else:
+            pts = a["pts"]
+            d = "M" + "L".join(f"{f(x)} {f(y)}" for x, y in pts)
+            if len(pts) > 2 and pts[0] == pts[-1]:
+                d = "M" + "L".join(f"{f(x)} {f(y)}" for x, y in pts[:-1]) + "Z"
+        groups.setdefault((a["id"], a["ink"], a["w"]), []).append(d)
+    for (gid, ink, w), ds in groups.items():
+        A(f'<g id="{gid}" stroke="{ink}" stroke-width="{f(w)}" fill="none"><path d="{"".join(ds)}"/></g>')
 
     # ticks + crosses: the printed scale, inset from the copper's ends
     tk, cr = [], []
@@ -982,16 +1027,6 @@ def render(c, g):
         (cr if kind == "cross" else tk).append(f'M{f(x1)} {f(y1)}L{f(x2)} {f(y2)}')
     A(f'<g id="ticks" stroke="{INK3}" stroke-width="0.2" fill="none"><path d="{"".join(tk)}"/></g>')
     A(f'<g id="crosses" stroke="{INK}" stroke-width="0.3" fill="none"><path d="{"".join(cr)}"/></g>')
-
-    # numerals
-    A(f'<g id="numerals" font-family="sans-serif" font-size="{c["numeral_pt_mm"]}" fill="{INK}">')
-    for y0, n in zip(g["PAD_TOPS"], range(1, 5)):
-        A(f'<text x="{f(g["PAD_X0"]-2)}" y="{f(y0+g["PW"]*0.72)}" text-anchor="end">{attic(n)}</text>')
-        A(f'<text x="{f(g["PAD_X1"]+2)}" y="{f(y0+g["PW"]*0.72)}">{attic(n)}</text>')
-    by = g["PAD_TOPS"][3] + g["PW"] + c["numeral_row_mm"]
-    for m in c["cross_at"]:
-        A(f'<text x="{f(g["TICK_X"][m-1])}" y="{f(by)}" text-anchor="middle">{attic(m)}</text>')
-    A('</g>')
 
     # ---- Salamis authenticity marks (additive only) -------------------------
     if c["salamis_marks"]:
@@ -1061,7 +1096,8 @@ def check(c, g):
             if y0 + g["PW"] - 1e-9 <= min(y1, y2) <= y0 + g["PITCH"]))
     yb4 = g["PAD_TOPS"][3] + g["PW"]
     cross_bot = max(max(y1, y2) + w / 2 for k, _, y1, _, y2, w in sm if k == "cross" and y1 > yb4)
-    num_top = yb4 + c["numeral_row_mm"] - 0.75 * c["numeral_pt_mm"]    # cap height, generously
+    num_top = min(min(y for _, y in a["pts"]) - a["w"] / 2 for a in panel_art(c, g)
+                  if a["id"] == "numerals" and min(y for _, y in a["pts"]) > yb4)
     row("numerals clear the crosses", f"{num_top - cross_bot:.2f}mm", num_top - cross_bot >= 0.3)
     if c["center_pads_in_region"]:
         region = g["COMP_Y1"] - g["DIV_Y"]

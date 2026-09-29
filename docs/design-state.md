@@ -465,7 +465,7 @@ See `vuulgaris-faceplate-mockup.html` for the current rendering. Note that mocku
 
 **Earlier arrangement (superseded):** two pads each side, two diagonal one way and two the other, forming a separated triangle in the middle of the rectangular enclosure. If revisited, note: 175mm at 45° needs ~124mm per axis, so the enclosure needs ~250mm in the diagonal-spanning direction. Convergence points create worst-case crosstalk exactly where RX0 sits on both pads — keep closest approach ≥10mm with a grounded strip between.
 
-Decoration and instructions in silkscreen. Exposed copper pads, ENIG finish.
+Decoration and instructions in silkscreen. Exposed copper pads, ENIG finish. **On the faceplate board 2026-09-29:** the scrub scale (`hardware/faceplate/design/mkscale.py`) and the rest of the art (`mkart.py`), both drawn from the generator's strokes; silk stops short of every hole and every pad's bare copper.
 
 **LCSC does not stock display modules usefully**, and JLCPCB does not do overlay lamination (that's a membrane-switch/graphic-overlay industry — vendors like JRPanel). Not needed given the no-overlay decision, but noted for the record.
 
