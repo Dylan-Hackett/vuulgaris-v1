@@ -166,8 +166,9 @@ them, not the copper's ends, to 0 and 1. The ink is black soldermask on the gold
   susceptibility. This is why the MCU is on the faceplate.
 - **Do not ground-pour under electrodes or their traces.** Parallel-plate capacitance to a
   nearby pour is the dominant parasitic contributor. Hatched ground at distance if needed.
-  (Still true. The gold face of [ADR 0013](0013-gold-face-mask-ink.md) is ground *beside* the
-  pads, 1.9mm off in the same plane, and over no sensor line.)
+  (Still true under the pads. The gold face of [ADR 0013](0013-gold-face-mask-ink.md) is ground
+  *beside* them, 1.9mm off in the same plane, and over the fan-in lines only under its via
+  patch, on purpose, as a screen against a resting hand: 1-2.5pF a line against the TVS's 12.)
 - Decoupling caps and ESD parts right at the MCU.
 - Route digital lines to the main board away from electrodes, ideally exiting the opposite edge.
   **Not possible here (2026-09-28):** `J1` is fixed by the main board in the gap between pads

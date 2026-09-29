@@ -161,7 +161,7 @@ def panel_ink():
     """-> [{"id", "on", "w", and "seg": (x1, y1, x2, y2) or "arc": (cx, cy, r, a0, a1)}]:
     every printed stroke, panel mm -- the generator's scale_marks() and panel_art() -- arc
     angles in degrees, y down, swept a0 -> a1 increasing (the generator's convention).
-    "on" is "mask" (black soldermask on the gold) or "silk" (white, on the masked panel).
+    "on" is "mask" (black soldermask on the gold) or "silk" (white, on the via patch).
     The art's own free ends are drawn half a width short, so a round-ended stroke ends
     where the SVG's butt end does. Nothing is clipped: mask ink that runs over a frame, a
     hole's edge or the panel is mask on mask (ADR 0013)."""

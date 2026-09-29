@@ -322,7 +322,7 @@ def main():
     if "--unroute" in sys.argv:              # every track and via off: the start of a rebuild
         gone = list(b.GetTracks())
         for t in gone:
-            if t.GetParentGroup():           # mkface.py's stitch vias live in a group
+            if t.GetParentGroup():           # a grouped via leaves its group first
                 t.GetParentGroup().RemoveItem(t)
             b.Remove(t)
         pcbnew.SaveBoard(proj.P.pcb, b)
