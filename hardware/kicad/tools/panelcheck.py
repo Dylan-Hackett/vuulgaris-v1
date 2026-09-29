@@ -28,6 +28,7 @@ that way before plotting the fab package.
 Hole = an NPTH or PTH pad's drill, or a circle on Edge.Cuts. Either is fine.
 """
 import json
+import math
 import os
 import subprocess
 import sys
@@ -150,9 +151,9 @@ def face_probe(path, req):
                           "pieces": f.OutlineCount(), "area": f.Area() / 1e12})
             gold.Append(f)
     covered = []
-    for x0, y0, x1, y1 in req["no_gold"]:
+    for pts in req["no_gold"]:
         ch = pcbnew.SHAPE_LINE_CHAIN()
-        for x, y in ((x0, y0), (x1, y0), (x1, y1), (x0, y1)):
+        for x, y in pts:
             ch.Append(V(x, y))
         ch.SetClosed(True)
         r = pcbnew.SHAPE_POLY_SET()
@@ -229,7 +230,35 @@ def face_request(dots=()):
     flank = [p for s in ink for p in samples(s, s["w"] / 2 + 0.12)
              if all(dist(p, t) > t["w"] / 2 + 0.12 for t in ink if t is not s)
              and all(math.hypot(p[0] - x, p[1] - y) > r + 0.12 for x, y, r in dots)]
-    return ink, centre, flank
+    # the mask block (frames + via patch, filleted): 0.12 inside its outline is mask; 0.12
+    # outside is gold, wherever no stroke or dot is that close. Clockwise on screen, so
+    # (dy, -dx) points out.
+    gen_, g_ = pg.generator()
+    blk = gen_.mask_block(dict(gen_.CFG), g_, 2.0)
+    blk_in, blk_out = [], []
+    # judged whether or not the board has copper there (a block bigger than the generator's
+    # leaves none), so skip only what is near a cut: holes, screws, the window, the edge
+    cuts = [(x, y, d / 2) for _, (x, y), d, _ in pg.holes() if d]
+    sc, sd = pg.screws()
+    cuts += [(x, y, sd / 2) for x, y in sc]
+    wx0, wy0, wx1, wy1, _ = pg.oled_window()
+    near_cut = lambda q: (any(math.hypot(q[0] - x, q[1] - y) < r + 1.0 for x, y, r in cuts) or
+                          wx0 - 1.0 < q[0] < wx1 + 1.0 and wy0 - 1.0 < q[1] < wy1 + 1.0 or
+                          not (1.0 < q[0] < g_["PANEL_W"] - 1.0 and 1.0 < q[1] < g_["PANEL_H"] - 1.0))
+    for (x1, y1), (x2, y2) in zip(blk, blk[1:] + blk[:1]):
+        L = math.hypot(x2 - x1, y2 - y1)
+        if L < 1e-6:
+            continue
+        n = max(1, int(L / 0.5))           # the arcs' short segments too: the fillets are the point
+        nx, ny = (y2 - y1) / L, -(x2 - x1) / L
+        for k in range(n):
+            mx, my = x1 + (x2 - x1) * (k + 0.5) / n, y1 + (y2 - y1) * (k + 0.5) / n
+            blk_in.append((mx - 0.12 * nx, my - 0.12 * ny))
+            q = (mx + 0.12 * nx, my + 0.12 * ny)
+            if all(dist(q, t) > t["w"] / 2 + 0.12 for t in ink) and not near_cut(q) and \
+                    all(math.hypot(q[0] - x, q[1] - y) > r + 0.12 for x, y, r in dots):
+                blk_out.append(q)
+    return ink, centre, flank, blk_in, blk_out
 
 
 def main():
@@ -237,13 +266,16 @@ def main():
     O = pg.FACE_ORG
     cu = [pp["bbox"] for p in range(1, 5) for pp in d0["face"]["fps"].get(f"E{p}", {"pads": []})["pads"]]
     fr = pg.generator()[0].CFG["pad_frame_mm"]
-    no_gold = []
+    no_gold = []                         # each pad's frame as the gold sees it, sheet mm
+    gen_ = pg.generator()[0]
     for p in range(1, 5):
         bb = [pp["bbox"] for pp in d0["face"]["fps"].get(f"E{p}", {"pads": []})["pads"]]
         if bb:
             m = fr - 0.1 - 0.01              # the gold stops UNDER (0.1) short of the frame's edge
             no_gold.append((min(b_[0] for b_ in bb) - m, min(b_[1] for b_ in bb) - m,
                             max(b_[2] for b_ in bb) + m, max(b_[3] for b_ in bb) + m))
+    # filleted as the mask is: round the pad's corners at the same gap (generator mask_block())
+    no_gold_pts = [gen_.round_rect(*r, m, 2.0) for r in no_gold]
     # the vias that must be under mask: every via outside the pads' frames (the bar vias
     # are open, in the pads' own openings -- ADR 0013); outside the via patch, each is a dot
     inside_ = lambda r, x, y: r[0] <= x <= r[2] and r[1] <= y <= r[3]
@@ -251,14 +283,14 @@ def main():
     patch = pg.face()["patch"]
     dots = [(v["xy"][0] - O[0], v["xy"][1] - O[1], v["d"] / 2 + 0.4) for v in sig
             if not inside_(patch, v["xy"][0] - O[0], v["xy"][1] - O[1])]
-    ink, centre, flank = face_request(dots)
-    import math
+    ink, centre, flank, blk_in, blk_out = face_request(dots)
     ring = [(v["xy"][0] + (v["d"] / 2 + 0.05) * math.cos(k * math.pi / 4),
              v["xy"][1] + (v["d"] / 2 + 0.05) * math.sin(k * math.pi / 4)) for v in sig for k in range(8)]
     ring += [tuple(v["xy"]) for v in sig]
     sheet = lambda pts: [[x + O[0], y + O[1]] for x, y in pts]
-    d = dump({"no_gold": no_gold, "inset": 0.25,
-              "points": sheet(centre) + sheet(flank) + [list(p) for p in ring]})
+    d = dump({"no_gold": no_gold_pts, "inset": 0.25,
+              "points": sheet(centre) + sheet(flank) + [list(p) for p in ring] +
+                        sheet(blk_in) + sheet(blk_out)})
     face, mainb, probe = d["face"], d["main"], d["probe"]
     to_panel = lambda p: (p[0] - O[0], p[1] - O[1])
 
@@ -535,6 +567,14 @@ def main():
     open_sig = sorted({(v["net"], round(v["xy"][0] - O[0], 2), round(v["xy"][1] - O[1], 2))
                        for k, v in enumerate(sig)
                        if any(res[nc + nf + 8 * k + m][0] for m in range(8)) or res[nc + nf + 8 * len(sig) + k][0]})
+    nb0 = nc + nf + 9 * len(sig)
+    in_open = [p for p, (op_, _) in zip(blk_in, res[nb0:nb0 + len(blk_in)]) if op_]
+    out_shut = [p for p, (op_, _) in zip(blk_out, res[nb0 + len(blk_in):]) if not op_]
+    row(not in_open and not out_shut, "mask block == generator (frames + patch, filleted)",
+        f"{len(blk_in)} points inside masked, {len(blk_out)} outside open"
+        if not (in_open or out_shut) else
+        f"{len(in_open)} inside open, {len(out_shut)} outside masked; first "
+        f"{(in_open or out_shut)[0][0]:.2f}, {(in_open or out_shut)[0][1]:.2f}")
     row(not open_sig, "every via outside the pads under mask",
         f"{len(sig)} vias: {len(sig) - len(dots)} under the via patch, {len(dots)} dots" if not open_sig
         else f"{len(open_sig)} open: first {open_sig[0]}")

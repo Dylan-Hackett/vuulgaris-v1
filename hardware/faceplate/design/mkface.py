@@ -7,14 +7,16 @@ generator owns the layout (face(), scale_marks(), panel_art()); this builds it.
 
 Run last, after mkroute.py: the gold clears every via, so the vias come first.
 
-  gold    One GND zone on F.Cu, FACE_GOLD, solid: the whole outline less each pad's frame.
-          Its copper stops UNDER 0.1 short of the frame, so the mask overlaps the copper's
-          edge and no bare laminate shows. 0.3 from every cut (the board's copper-to-edge
+  gold    One GND zone on F.Cu, FACE_GOLD, solid: the whole outline less each pad's frame,
+          its corners filleted with the mask's (generator mask_block()). Its copper stops
+          UNDER 0.1 short of the frame, so the mask overlaps the copper's edge and no bare
+          laminate shows. 0.3 from every cut (the board's copper-to-edge
           rule) and from every other net's via. It runs on under the via patch, where it
           screens the fan-in lines from a hand resting there, and it is grounded there: the
           margin's GND vias (the TVS grounds among them) join it. Island removal is "always",
           so if they ever did not, it would fill to nothing rather than float.
-  mask    F.Mask openings = the gold's fill, UNDER in, less the via patch, less a DOT over
+  mask    F.Mask openings = the gold's fill, UNDER in, less the mask block (the frames and
+          the via patch as one filleted outline, generator mask_block()), less a DOT over
           every via outside the pads and the patch, less every mask stroke -- so the art is
           where the mask stays -- less any sliver of gold narrower than 2 x SLIVER. A board
           polygon cannot hold holes, so the openings are fractured into plain outlines.
@@ -93,10 +95,10 @@ def main():
     ol.NewOutline()
     for x, y in ((-1, -1), (W + 1, -1), (W + 1, H + 1), (-1, H + 1)):   # clipped by the fill
         ol.Append(*P(x, y))
-    for x0, y0, x1, y1 in fc["frames"]:
+    R = gen.CFG["mask_fillet_mm"]
+    for x0, y0, x1, y1 in fc["frames"]:          # each frame, UNDER in, filleted to match
         h = ol.NewHole()
-        for x, y in ((x0 + UNDER, y0 + UNDER), (x1 - UNDER, y0 + UNDER),
-                     (x1 - UNDER, y1 - UNDER), (x0 + UNDER, y1 - UNDER)):
+        for x, y in gen.round_rect(x0 + UNDER, y0 + UNDER, x1 - UNDER, y1 - UNDER, R - UNDER, 2.0):
             ol.Append(*P(x, y), 0, h)
     z.SetFillMode(pcbnew.ZONE_FILL_MODE_POLYGONS)
     z.SetMinThickness(mm(0.25))
@@ -132,8 +134,7 @@ def main():
         ch.SetClosed(True)
         return ch
     covers = pcbnew.SHAPE_POLY_SET()
-    x0, y0, x1, y1 = fc["patch"]
-    covers.AddOutline(poly(((x0, y0), (x1, y0), (x1, y1), (x0, y1))))
+    covers.AddOutline(poly(gen.mask_block(dict(gen.CFG), G, 2.0)))
     inside = lambda r, x, y: r[0] <= x <= r[2] and r[1] <= y <= r[3]
     n_dots = 0
     for v in b.GetTracks():

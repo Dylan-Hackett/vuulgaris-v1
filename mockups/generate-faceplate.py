@@ -120,6 +120,12 @@ CFG = {
     # the routing vias, flush with the frames; the right-hand numerals are silk on
     # it. hardware/faceplate/design/mkface.py builds all of it on the board.
     "pad_frame_mm":        2.0,
+    # The frames and the patch are one block of mask, filleted: its outer corners by the
+    # frame's own width, so the frame runs 2mm round each pad's corner too (the arcs
+    # centre on the pad's corners); its inner ones, where the gaps between the pads meet
+    # the patch, by less than half the 4mm gap, or the gap would close.
+    "mask_fillet_mm":      2.0,
+    "mask_fillet_inner_mm": 1.0,
     # the patch's right edge: past the network grid's last vias (their copper ends at
     # x 293.5, hardware/faceplate/design/mkcells.py) and their mask margin
     "via_patch_x1_mm":   294.5,
@@ -521,6 +527,39 @@ def face(c, g):
                        max(x + w for _, x, _, w, _ in r) + fr, max(y + h for _, _, y, _, h in r) + fr))
     return {"frames": frames,
             "patch": (max(f[2] for f in frames), frames[0][1], c["via_patch_x1_mm"], frames[-1][3])}
+
+
+def arc_pts(cx, cy, r, a0, a1, step=3.0):
+    """points on an arc from a0 to a1 degrees (either way; y down), both ends included"""
+    n = max(1, int(math.ceil(abs(a1 - a0) / step)))
+    return [(cx + r * math.cos(math.radians(a0 + (a1 - a0) * i / n)),
+             cy + r * math.sin(math.radians(a0 + (a1 - a0) * i / n))) for i in range(n + 1)]
+
+
+def round_rect(x0, y0, x1, y1, r, step=3.0):
+    """a rectangle with every corner filleted r: a closed point list, clockwise on screen"""
+    return (arc_pts(x1 - r, y0 + r, r, 270, 360, step) + arc_pts(x1 - r, y1 - r, r, 0, 90, step) +
+            arc_pts(x0 + r, y1 - r, r, 90, 180, step) + arc_pts(x0 + r, y0 + r, r, 180, 270, step))
+
+
+def mask_block(c, g, step=3.0):
+    """The pads' frames and the via patch as one filleted outline (face(); mask_fillet_mm
+    outside, mask_fillet_inner_mm where each gap between the pads meets the patch): a closed
+    point list, clockwise on screen, panel mm. Everything inside it is mask."""
+    fc = face(c, g)
+    R, r = c["mask_fillet_mm"], c["mask_fillet_inner_mm"]
+    fr = fc["frames"]
+    px0, py0, px1, py1 = fc["patch"]
+    A = lambda cx, cy, rr, a0, a1: arc_pts(cx, cy, rr, a0, a1, step)
+    pts = (A(fr[0][0] + R, fr[0][1] + R, R, 180, 270) +          # pad 1's frame, top left
+           A(px1 - R, py0 + R, R, 270, 360) + A(px1 - R, py1 - R, R, 0, 90) +   # the patch
+           A(fr[3][0] + R, fr[3][3] - R, R, 90, 180))            # pad 4's frame, bottom left
+    for i in (3, 2, 1):          # up the left side: each frame's top left, then the gap above
+        pts += A(fr[i][0] + R, fr[i][1] + R, R, 180, 270)
+        pts += A(px0 - r, fr[i][1] - r, r, 90, 0)               # the gap meets the patch
+        pts += A(px0 - r, fr[i - 1][3] + r, r, 360, 270)
+        pts += A(fr[i - 1][0] + R, fr[i - 1][3] - R, R, 90, 180)
+    return pts
 
 
 def scale_marks(c, g):
@@ -953,8 +992,8 @@ def render(c, g):
       f'rx="{f(c["panel_corner_r_mm"])}"/></clipPath></defs>')
     A(f'<g id="face" clip-path="url(#outline)">'
       f'<rect x="0" y="0" width="{f(PW_)}" height="{f(PH_)}" fill="{GOLD}"/>')
-    for x0, y0, x1, y1 in fc["frames"] + [fc["patch"]]:
-        A(f'<rect x="{f(x0)}" y="{f(y0)}" width="{f(x1 - x0)}" height="{f(y1 - y0)}" fill="{MASK_INK}"/>')
+    A(f'<polygon fill="{MASK_INK}" points="' +
+      " ".join(f"{f(x)},{f(y)}" for x, y in mask_block(c, g)) + '"/>')
     A('</g>')
     A(f'<rect x="0.4" y="0.4" width="{f(PW_-0.8)}" height="{f(PH_-0.8)}" '
       f'rx="{f(c["panel_corner_r_mm"] - 0.4)}" '
