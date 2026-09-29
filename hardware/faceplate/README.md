@@ -3,7 +3,8 @@
 4-layer, **ENIG**. Carries the four capacitive scrub pads on L1 and the MSP430FR2675 on
 the back. **The front is exposed gold on ground, and every printed mark is black soldermask**
 ([ADR 0013](../../docs/decisions/0013-gold-face-mask-ink.md)): order black mask, white silk,
-ENIG, vias tented (not POFV, which would cap the pads' vias). Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
+ENIG, via covering "Plugged" (JLC's default; they do not offer tented on 4 layers, and POFV
+would cap the pads' vias). 5 boards $79.80 on JLC's instant quote, 2026-09-29. Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
 handoff below for the size, which is not what older docs say.
 
 ## Status — 2026-09-29: placed, routed, gold face (ADR 0013); DRC clean
