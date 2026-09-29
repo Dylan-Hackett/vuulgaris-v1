@@ -153,107 +153,44 @@ def screws():
     return list(g["SCREWS"]), m.CFG["panel_screw_d_mm"]
 
 
-# ---- the silkscreen -----------------------------------------------------------------------
+# ---- the printed face ---------------------------------------------------------------------
 PAD_MASK_MARGIN = 0.25  # each pad's one F.Mask opening, beyond its copper (design/mkpads.py)
-SILK_TO_CUT = 0.3       # silk to the board edge or any hole: the fab trims it anyway
-SILK_TO_MASK = 0.2      # silk to a mask opening: none is printed on bare copper
 
 
-def panel_silk():
-    """-> (strokes, clipped): the generator's panel_art() as the fab can print it, panel mm.
-
-    strokes: [{"id", "w", and "seg": (x1, y1, x2, y2) or "arc": (cx, cy, r, a0, a1)}], arc
+def panel_ink():
+    """-> [{"id", "on", "w", and "seg": (x1, y1, x2, y2) or "arc": (cx, cy, r, a0, a1)}]:
+    every printed stroke, panel mm -- the generator's scale_marks() and panel_art() -- arc
     angles in degrees, y down, swept a0 -> a1 increasing (the generator's convention).
-    Each art stroke loses whatever lies within SILK_TO_CUT (plus its half-width) of the board
-    edge or a hole -- panel holes, screws, the OLED window -- or within SILK_TO_MASK of a
-    pad's mask opening. The rules lose the pots' holes; the pad divider breaks at each pad.
-    The art's own free ends are drawn half a width short, so KiCad's round caps end where the
-    SVG's butt ends do; a clipped end keeps its clearance to the cap's edge.
-    clipped: {art id: mm of centreline removed}."""
+    "on" is "mask" (black soldermask on the gold) or "silk" (white, on the masked panel).
+    The art's own free ends are drawn half a width short, so a round-ended stroke ends
+    where the SVG's butt end does. Nothing is clipped: mask ink that runs over a frame, a
+    hole's edge or the panel is mask on mask (ADR 0013)."""
     import math
     m, g = generator()
     c = dict(m.CFG)
-    W, H, R = g["PANEL_W"], g["PANEL_H"], c["panel_corner_r_mm"]
-    sc, sd = screws()
-    circles = [(x, y, d / 2) for _, (x, y), d, _ in holes() if d] + [(x, y, sd / 2) for x, y in sc]
-    cuts = [oled_window()[:4]]
-    masks = []
-    for yt in g["PAD_TOPS"]:
-        cu = m.copper(c, g, yt)
-        r = cu["bars"] + cu["bridges"]
-        pm = PAD_MASK_MARGIN
-        masks.append((min(x for _, x, _, _, _ in r) - pm, min(y for _, _, y, _, _ in r) - pm,
-                      max(x + w for _, x, _, w, _ in r) + pm, max(y + h for _, _, y, _, h in r) + pm))
-
-    def blocked(x, y, w):
-        d = SILK_TO_CUT + w / 2
-        cx, cy = min(max(x, R), W - R), min(max(y, R), H - R)      # the outline, corners too
-        if not (d <= x <= W - d and d <= y <= H - d) or math.hypot(x - cx, y - cy) > R - d:
-            return True
-        if any(math.hypot(x - hx, y - hy) < hr + d for hx, hy, hr in circles):
-            return True
-        if any(r[0] - d < x < r[2] + d and r[1] - d < y < r[3] + d for r in cuts):
-            return True
-        dm = SILK_TO_MASK + w / 2
-        return any(r[0] - dm < x < r[2] + dm and r[1] - dm < y < r[3] + dm for r in masks)
-
-    def kept(P, L, w):
-        """[(t0, t1)] of t in [0, 1] where P(t) is printable, boundaries to 1e-9"""
-        n = max(2, int(math.ceil(L / 0.02)))
-        ok = [not blocked(*P(i / n), w) for i in range(n + 1)]
-
-        def edge(ta, tb):             # ok(ta) != ok(tb): bisect to the boundary
-            oa = not blocked(*P(ta), w)
-            for _ in range(40):
-                tm = (ta + tb) / 2
-                if (not blocked(*P(tm), w)) == oa:
-                    ta = tm
-                else:
-                    tb = tm
-            return (ta + tb) / 2
-        out, t0 = [], 0.0 if ok[0] else None
-        for i in range(n):
-            if ok[i] != ok[i + 1]:
-                t = edge(i / n, (i + 1) / n)
-                if ok[i]:
-                    out.append((t0, t))
-                else:
-                    t0 = t
-        if ok[n]:
-            out.append((t0, 1.0))
-        return out
-
-    strokes, clipped = [], {}
-    for a in m.panel_art(c, g):
-        w, gid = a["w"], a["id"]
+    art = [{"id": "scale-" + k, "on": "mask", "w": w, "pts": [(x1, y1), (x2, y2)]}
+           for k, x1, y1, x2, y2, w in m.scale_marks(c, g)] + m.panel_art(c, g)
+    out = []
+    for a in art:
+        w = a["w"]
         if "arc" in a:
             cx, cy, r, a0, a1 = a["arc"]
-            P = lambda t: (cx + r * math.cos(math.radians(a0 + t * (a1 - a0))),
-                           cy + r * math.sin(math.radians(a0 + t * (a1 - a0))))
-            parts = [(P, r * math.radians(a1 - a0), True, True,
-                      lambda t0, t1: {"arc": (cx, cy, r, a0 + t0 * (a1 - a0), a0 + t1 * (a1 - a0))})]
-        else:
-            pts = a["pts"]
-            closed = len(pts) > 2 and pts[0] == pts[-1]
-            parts = []
-            for i, ((x1, y1), (x2, y2)) in enumerate(zip(pts, pts[1:])):
-                P = (lambda x1, y1, x2, y2: lambda t: (x1 + t * (x2 - x1), y1 + t * (y2 - y1)))(x1, y1, x2, y2)
-                mk = (lambda P: lambda t0, t1: {"seg": (*P(t0), *P(t1))})(P)
-                parts.append((P, math.hypot(x2 - x1, y2 - y1),
-                              i == 0 and not closed, i == len(pts) - 2 and not closed, mk))
-        for P, L, free0, free1, mk in parts:
-            ks = kept(P, L, w)
-            got = 0.0
-            for t0, t1 in ks:
-                if free0 and t0 == 0.0:
-                    t0 = (w / 2) / L
-                if free1 and t1 == 1.0:
-                    t1 = 1.0 - (w / 2) / L
-                if (t1 - t0) * L < 0.1:          # a sliver is not art
-                    continue
-                strokes.append({"id": gid, "w": w, **mk(t0, t1)})
-                got += (t1 - t0) * L
-            lost = L - got - (w / 2 if free0 else 0) - (w / 2 if free1 else 0)
-            if lost > 1e-6:
-                clipped[gid] = clipped.get(gid, 0.0) + lost
-    return strokes, clipped
+            d = math.degrees((w / 2) / r)
+            out.append({"id": a["id"], "on": a["on"], "w": w, "arc": (cx, cy, r, a0 + d, a1 - d)})
+            continue
+        pts = a["pts"]
+        closed = len(pts) > 2 and pts[0] == pts[-1]
+        for i, ((x1, y1), (x2, y2)) in enumerate(zip(pts, pts[1:])):
+            L = math.hypot(x2 - x1, y2 - y1)
+            ux, uy = (x2 - x1) / L, (y2 - y1) / L
+            s0 = w / 2 if i == 0 and not closed else 0.0
+            s1 = w / 2 if i == len(pts) - 2 and not closed else 0.0
+            out.append({"id": a["id"], "on": a["on"], "w": w,
+                        "seg": (x1 + ux * s0, y1 + uy * s0, x2 - ux * s1, y2 - uy * s1)})
+    return out
+
+
+def face():
+    """-> the generator's face(): {"frames": [(x0, y0, x1, y1)], "panel": (x0, y0, x1, y1)}."""
+    m, g = generator()
+    return m.face(dict(m.CFG), g)

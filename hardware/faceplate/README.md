@@ -1,10 +1,12 @@
 # Faceplate PCB
 
 4-layer, **ENIG**. Carries the four capacitive scrub pads on L1 and the MSP430FR2675 on
-the back. Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
+the back. **The front is exposed gold on ground, and every printed mark is black soldermask**
+([ADR 0013](../../docs/decisions/0013-gold-face-mask-ink.md)): order black mask, white silk,
+ENIG, vias tented (not POFV, which would cap the pads' vias). Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
 handoff below for the size, which is not what older docs say.
 
-## Status — 2026-09-28: placed and routed; DRC clean
+## Status — 2026-09-29: placed, routed, gold face (ADR 0013); DRC clean
 
 **Schematic done**, `mksch → netcheck` 145/145 over 41 nets, every block traced to a TI or
 manufacturer figure in `design/design.py`. 54 parts: `U1` MSP430FR2675TPT; `C1`/`C2`
@@ -170,7 +172,7 @@ screws go **at least 9mm along the edge** (`panel_screw_corner_min_mm`, checked)
 long edges 9mm from the corner (x 9.00 / 289.29) and 3mm in (y 3.00 / 134.81), as close as
 the r6 corner lets an M3 pan head sit. (Ten, along the edges, until the same day.) Generator
 `panel_screws()`; the enclosure's threaded inserts go under them. The mockup draws the
-heads; the silkscreen does not.
+heads; the board does not print them.
 panelcheck checks all four corners.
 
 The generator draws **no pot or encoder holes at all** — the r=8 and r=9.2 circles in the FAB
@@ -318,8 +320,7 @@ design/mkbuses.py             the pad buses: every bar's via joined, each net ou
 design/mkcells.py             the network grid's cell vias, TVS/R stubs and TVS grounds (deterministic)
 design/mkescape.py            J1 out along the pad 3-4 corridor to the test pads, R2, R3 and U1 (deterministic)
 design/mkfanin.py             the L2 fan-in: every bus exit to its cell via, crossing-free (deterministic)
-design/mkscale.py             F.SilkS: the printed scrub scale, 6mm inside each copper end (generator scale_marks())
-design/mkart.py               F.SilkS: the rest of the panel art -- rules, dividers, numerals (generator panel_art(), fab-clipped)
+design/mkface.py              the front (ADR 0013): the GND gold on F.Cu, its stitch vias, the art as black mask, the silk
 design/mkzones.py             the L3 GND plane: solid, in the margin and the pad 3-4 corridor, never under a pad
 design/mkroute.py             everything else, by Freerouting, fenced: no F.Cu, nothing under or between the pads
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
@@ -398,23 +399,21 @@ KPY=/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/
 $KPY hardware/faceplate/design/mkroute.py --unroute    # every track and via off
 $KPY hardware/faceplate/design/mkplace.py --force      # the parts (the table above)
 $KPY hardware/faceplate/design/mkholes.py              # Edge.Cuts: outline, holes, screws, OLED window
-$KPY hardware/faceplate/design/mkscale.py              # F.SilkS: the printed scrub scale
-$KPY hardware/faceplate/design/mkart.py                # F.SilkS: the rest of the panel art
 for s in mkpads mkbuses mkcells mkescape mkfanin mkzones; do $KPY hardware/faceplate/design/$s.py; done
 $KPY hardware/faceplate/design/mkroute.py              # the rest, by Freerouting; re-run until DRC is clean
+$KPY hardware/faceplate/design/mkface.py               # the front: gold, mask art, silk -- last, it clears the vias
 ```
 
 | script | draws | how |
 |---|---|---|
-| `mkscale` | the printed scrub scale on F.SilkS, one locked group | the generator's `scale_marks()` |
-| `mkart` | the rest of the panel art on F.SilkS: rules, dividers, their semicircles, the numerals | the generator's `panel_art()`, less what fab cannot print (`panelgeo.panel_silk()`) |
 | `mkpads` | the pad copper, one via per bar | the generator's `copper()` |
 | `mkbuses` | the buses: every bar's via joined, each net out to the margin | exact, L2 (RX0's join on L3); every via on a segment end |
 | `mkcells` | each cell's via and B.Cu down to TVS pin 1 and R pin 1; each TVS's GND via; `C3`'s ground | exact; the vias staggered in height (below) |
 | `mkescape` | `J1`'s escape, the corridor, its taps; RXD and TXD's hops to `U1`; `J1`'s GND | exact, B.Cu (hops on L2) |
 | `mkfanin` | all 16 electrode lines, bus exit to cell via | exact, L2 |
 | `mkzones` | the L3 GND plane: **solid**, margin + corridor, never under a pad | exact |
-| `mkroute` | everything else: the B.Cu fan-out into `U1`, power, the last grounds, crystal | Freerouting, fenced; then prunes dangling copper and stitches any GND pad with no path to the plane |
+| `mkroute` | everything else: the B.Cu fan-out into `U1`, power, the last grounds, crystal | Freerouting, fenced (the gold is dropped from its DSN); then prunes dangling copper and stitches any GND pad with no path to the plane |
+| `mkface` | the front: one GND zone on F.Cu less each pad's 2mm frame and the right panel; 4 stitch vias in the corridor; F.Mask openings = the gold less every art stroke; the right-hand numerals in silk | the generator's `face()`, `scale_marks()`, `panel_art()` (ADR 0013) |
 
 **The electrode fan-in (`mkfanin`).** Each pad's lines leave its bus as RX0, RX2, RX1, RX3
 (top to bottom) but the columns run RX0, RX1, RX2, RX3. Each cell's via sits at its own height
@@ -475,7 +474,9 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 ## Layout checklist
 
 - [x] No ground under the electrodes: panelcheck, "nothing under a pad but its own nets"
-      (zones included). In the margin the fan-in lines run over the solid L3 plane, ~1.1mm down
+      (zones included). In the margin the fan-in lines run over the solid L3 plane, ~1.1mm down.
+      The gold face is ground **beside** the pads, 1.9mm off all round, and over no sensor
+      line: "gold clear of every pad by its frame" (ADR 0013; part of Q1)
 - [x] RX0 end groups one net: the return runs on **L3** under its own pad's RX2 bars
       (mkbuses; on L2 it would enclose RX2) — same-pad, same-cycle ([Q24](../../docs/notes/open-questions.md))
 - [x] MCU placement: right margin, not centred (ADR 0003, layout rules, 2026-09-28)
@@ -488,11 +489,12 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 - [x] 4 SBW test pads present (TEST, RST, 3V3, GND): `TP1`–`TP4`, beside `J1`
 - [x] Test points on UART Tx/Rx, RST, TEST (there is no IRQ line — `pin-allocation.md`): `TP5`, `TP6`
 - [x] Soldermask opening over all pad copper (one opening per pad; vias open both sides)
-- [x] Panel art on F.SilkS (2026-09-29): everything the mockup prints -- rules, dividers,
-      semicircles, Attic numerals, the scale -- and none of its part outlines (knobs, buttons,
-      switches, OLED, screw heads). Silk breaks 0.3 short of every cut and 0.2 short of every
-      pad's mask opening: the knob-row rules at each knob, the pad divider at each pad
-      (mkart). panelcheck: strokes == generator, and clear of every via by >= 0.1
+- [x] Panel art (2026-09-29, ADR 0013): everything the mockup prints -- rules, dividers,
+      semicircles, Attic numerals, the scale -- as black soldermask on the gold, and none of
+      its part outlines (knobs, buttons, switches, OLED, screw heads). The right-hand numerals
+      are silk, on the masked panel. panelcheck samples every stroke: ink where drawn, gold
+      beside it; every signal via outside the pads under mask; silk == generator
 - [x] Copper extended past the printed scale (endpoint trim eats a few mm at each end): the
-      scale stops 6mm inside each copper end, on F.SilkS (mkscale; ADR 0003, "Endpoint trim").
+      scale stops 6mm inside each copper end (ADR 0003, "Endpoint trim"), hanging from each
+      pad's frame (ADR 0013).
       Its end ticks are the sample's ends. panelcheck: strokes == generator, copper beyond both

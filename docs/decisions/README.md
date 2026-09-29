@@ -22,3 +22,4 @@ reasoning is usually the useful part.
 | [0010](0010-usb-source-5v-3a-no-cc-sensing.md) | USB source is a stated requirement: 5V/3A and a data-grade cable, no CC sensing | Accepted |
 | [0011](0011-ext-input-also-feeds-the-analog-chain.md) | The external input also feeds the analog chain | Accepted |
 | [0012](0012-no-leds-on-the-faceplate.md) | No LEDs on the faceplate, no 5V on its cable | Accepted |
+| [0013](0013-gold-face-mask-ink.md) | The faceplate's front is exposed gold on ground; the art is black soldermask | Accepted |

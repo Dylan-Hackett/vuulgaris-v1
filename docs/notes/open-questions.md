@@ -154,7 +154,11 @@ Then the **repeatability** test, which is now a pass criterion because of the pr
 6. Repeat near each end, where trim is finger-size dependent, to find how much of the pad has
    to be excluded from the printed scale. **Drawn at 6mm a side** (generator `scale_inset_mm`,
    2026-09-29); if a large finger centred on an end tick reads short, raise it and re-run
-   `hardware/faceplate/design/mkscale.py`. It moves only silkscreen.
+   `hardware/faceplate/design/mkface.py`. It moves only the printed marks.
+7. **The gold face** ([ADR 0013](../decisions/0013-gold-face-mask-ink.md)) is ground 1.9mm
+   from every pad edge. Compare a pad's baseline, sensitivity and noise with the face grounded
+   and with its stitch vias cut. If it costs too much, widen `pad_frame_mm` (one number in the
+   generator; `mkface.py` and the checks follow).
 
 **Pass:** spread under ~2mm mid-pad, and monotonic and continuous throughout. Bend in the
 curve does not matter; scatter does.
@@ -579,7 +583,8 @@ expensive than it looked. The faceplate does not answer this question; it only h
 with it.
 
 **Still worth measuring**, because a grounded guard strip might permit tighter spacing if the
-layout ever wants it back, and because nobody has confirmed the >=10mm figure applies to
+layout ever wants it back (the faceplate now has one: 4mm of grounded gold between the pads'
+frames, [ADR 0013](../decisions/0013-gold-face-mask-ink.md)), and because nobody has confirmed the >=10mm figure applies to
 parallel pads at all (it was written for the diagonal layout where pads converge at a point).
 See [../panel-budget.md](../panel-budget.md).
 

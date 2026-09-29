@@ -59,6 +59,7 @@ every position and both placement flags live there. Nothing in the drawing code 
 | Pad spacing | `pad_gap_mm` |
 | Tick count, cross positions | `n_ticks`, `cross_at` |
 | How far the scale stops inside the copper | `scale_inset_mm` (ink only: the copper never moves) |
+| The gap between each pad and the gold face | `pad_frame_mm` (ADR 0013; the scale hangs from it) |
 | Knob size or spacing | `knob_r_mm`, `knob_pitch_mm`, `offset_knob_r_mm` |
 | Switch openings | `switch_w_mm`, `switch_h_mm` |
 | Encoder position | `encoder_lower_right` (True = beside pads, False = upper strip) |
@@ -146,8 +147,8 @@ keeps every letter under the divider rule. Both asserted in `--check`.
   from `cross_at`** by `numeral_strokes(n)`, so labels cannot drift out of sync with marks.
 - **Everything printed is strokes, not text** (2026-09-29): `scale_marks()` and `panel_art()`
   hold every printed mark, the numerals drawn as monoline Ι / Π / Δ rather than typeset. The
-  SVG draws them, and the faceplate's silkscreen prints the same strokes
-  (`hardware/faceplate/design/mkscale.py`, `mkart.py`). Knob, button and screw outlines are
+  SVG draws them, and the faceplate prints the same strokes in black soldermask on its gold
+  face (`hardware/faceplate/design/mkface.py`, ADR 0013). Knob, button and screw outlines are
   drawings of parts, not art, and are not printed.
 
 ### What it is NOT, yet
@@ -175,7 +176,7 @@ foot as drawn.
 Knobs on the rules is faithful rather than convenient: the Salamis Tablet is a counting board
 and the rules are where the pebbles sat.
 
-**Channel numerals I, II, III, IIII are silkscreened above the four knob columns**, matching the
+**Channel numerals I, II, III, IIII are printed above the four knob columns**, matching the
 pad numerals in the margins. Channels run as columns in the knob block but as rows in the pad
 group, so without the numerals the mapping is not legible.
 

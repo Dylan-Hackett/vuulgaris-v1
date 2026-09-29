@@ -198,8 +198,8 @@ knob block but as *horizontal rows* in the pad group, so channel I's knobs are t
 channel I's pad is the top row. Nothing about the geometry makes that mapping obvious.
 
 The composition already solves this: the Greek acrophonic numerals **I, II, III, IIII** label
-the four pads in the margins. **Carry the same numerals above the four knob columns.** Free in
-silkscreen, and it makes the mapping legible without adding any element foreign to the design.
+the four pads in the margins. **Carry the same numerals above the four knob columns.** Free to
+print, and it makes the mapping legible without adding any element foreign to the design.
 
 ### Tick divisions
 
@@ -230,7 +230,7 @@ marks, so they cannot drift out of sync again.
 
 Attic acrophonic system, verified: **Ι = 1, Π = 5** (from ΠΕΝΤΕ), **Δ = 10** (from ΔΕΚΑ). The
 generator draws them from n with `numeral_strokes(n)` -- monoline strokes, no font -- and the
-faceplate's silkscreen prints the same strokes.
+faceplate prints the same strokes in black soldermask on its gold face (ADR 0013).
 
 **The crosses moved from 3/6/9 to 4/7/10, and that is the faithful translation, not a change.**
 The reference put crosses at centre and centre plus/minus 3 (marks 3, 6, 9 of 11, where 6 was

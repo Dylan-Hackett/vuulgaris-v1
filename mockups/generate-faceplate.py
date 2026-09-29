@@ -108,11 +108,20 @@ CFG = {
     # mark sits in the well-behaved middle. The scale's ends are the sample's.
     # 216 - 2 x 6 = 204mm, 17mm a division. Moves only the ink, never the copper.
     "scale_inset_mm":      6.0,
-    # Pad bottom to the top of the scale's ink (a cross's upright). The pad's
-    # F.Mask opening runs 0.25 past its copper (hardware/faceplate/design/
-    # mkpads.py); silk over an opening is clipped at fab, so the marks start
-    # below it: 0.65 less the 0.15 half-stroke leaves 0.25 clear.
-    "scale_top_mm":        0.65,
+    # Pad bottom to the top of the scale's ink (a cross's upright): the crosses
+    # hang from the pad's mask frame, and the ticks start 0.5 below, on the gold.
+    "scale_top_mm":        2.0,
+
+    # ---- the face (2026-09-29, ADR 0013) --------------------------------------
+    # The front is exposed ENIG on a GND copper face, and every printed mark is
+    # black soldermask on it (the fab prints no silk on bare copper). Each pad sits
+    # in a mask frame this wide, from its copper to the gold: the gap between the
+    # sensors and the grounded face. Right of the pads, from the divider rule down,
+    # one masked panel hides the routing vias; the right-hand numerals are silk on
+    # it. hardware/faceplate/design/mkface.py builds all of it on the board.
+    "pad_frame_mm":        2.0,
+    "numeral_side_mm":     2.8,   # pad end to the side numerals: clear of the frame,
+                                  # and on the right of the TVS grounds' vias (x 281.55)
 
     # ---- upper region controls ----------------------------------------------
     "knob_r_mm":           8.0,   # 16mm knob
@@ -302,8 +311,8 @@ CFG = {
     # The numeral row then sits in the space below rather than being reserved
     # out of the centring, which is what was pushing the pads high.
     "center_pads_in_region": True,
-    "numeral_row_mm":      6.4,   # pad bottom to numeral baseline (was 3.6: the
-                                  # glyphs sat on the crosses' uprights)
+    "numeral_row_mm":      7.8,   # pad bottom to numeral baseline: under the crosses,
+                                  # which hang from the pad's frame
     "numeral_pt_mm":       2.7,   # glyph size (was a hardcoded 3.2)
     "bottom_margin_mm":    8.0,
     "below_divider_mm":    5.5,
@@ -312,6 +321,7 @@ CFG = {
 NET_COLOR = {0: "#D85A30", 1: "#1D9E75", 2: "#378ADD", 3: "#7F77DD"}
 NET_NAME = {0: "RX0", 1: "RX1", 2: "RX2", 3: "RX3"}
 INK, INK2, INK3 = "#5F5E5A", "#888780", "#B4B2A9"
+GOLD, MASK_INK, SILK_INK = "#D8B868", "#161616", "#F2EFE6"   # ENIG, black mask, white silk
 KNOB_INK, OFFSET_INK = "#534AB7", "#993C1D"
 
 
@@ -494,10 +504,25 @@ def oled_window(c, g):
                      aa[3] + min(t(c["oled_view_player_deg"]), gl[3] - m - aa[3]))
 
 
+def face(c, g):
+    """The front's layout (ADR 0013), panel mm, each (x0, y0, x1, y1): "frames", each pad's
+    copper bounding box grown by pad_frame_mm, all mask; "panel", the masked strip right of
+    the pads from the divider rule down. Everything else inside the outline is gold."""
+    fr = c["pad_frame_mm"]
+    frames = []
+    for yt in g["PAD_TOPS"]:
+        r = copper(c, g, yt)
+        r = r["bars"] + r["bridges"]
+        frames.append((min(x for _, x, _, _, _ in r) - fr, min(y for _, _, y, _, _ in r) - fr,
+                       max(x + w for _, x, _, w, _ in r) + fr, max(y + h for _, _, y, _, h in r) + fr))
+    return {"frames": frames,
+            "panel": (max(f[2] for f in frames), g["DIV_Y"], g["PANEL_W"], g["PANEL_H"])}
+
+
 def scale_marks(c, g):
     """The printed scale under each pad: [(kind, x1, y1, x2, y2, stroke)], panel mm,
-    kind "tick" or "cross". The SVG draws these and hardware/faceplate/design/
-    mkscale.py puts the same strokes on the faceplate's F.SilkS."""
+    kind "tick" or "cross". The SVG draws these and hardware/faceplate/design/mkface.py
+    prints the same strokes in black mask on the gold."""
     out, top = [], c["scale_top_mm"]
     for y0 in g["PAD_TOPS"]:
         yb = y0 + g["PW"]
@@ -538,43 +563,47 @@ def numeral_strokes(n, x, y, pt, anchor):
 
 def panel_art(c, g):
     """Everything printed on the panel but the scale (scale_marks()): rules, dividers,
-    their semicircles, the numerals. [{"id", "ink", "w", and "pts" (a polyline; closed
+    their semicircles, the numerals. [{"id", "on", "w", and "pts" (a polyline; closed
     if it ends where it starts) or "arc" (cx, cy, r, a0, a1: degrees, y down, swept
-    a0 -> a1 increasing, i.e. clockwise on screen)}], panel mm. The SVG draws these;
-    hardware/faceplate/design/mkart.py puts them on F.SilkS, less what fab cannot print
-    (panelgeo.panel_silk(): holes, the pads' mask openings, the board edge)."""
+    a0 -> a1 increasing, i.e. clockwise on screen)}], panel mm. "on" is "mask" (black
+    soldermask on the gold) or "silk" (white, on the masked right panel: only the
+    right-hand numerals). The SVG draws these and hardware/faceplate/design/mkface.py
+    prints them."""
     if c["salamis_marks"]:
         raise SystemExit("panel_art(): salamis_marks is on, but the inscription is not "
                          "in panel_art() yet -- add it before turning it on")
     art = []
-    line = lambda gid, ink, w, *pts: art.append({"id": gid, "ink": ink, "w": w, "pts": list(pts)})
-    arc = lambda gid, ink, w, a: art.append({"id": gid, "ink": ink, "w": w, "arc": a})
+    line = lambda gid, on, w, *pts: art.append({"id": gid, "on": on, "w": w, "pts": list(pts)})
+    arc = lambda gid, on, w, a: art.append({"id": gid, "on": on, "w": w, "arc": a})
     for ry in g["RULE_Y"]:
-        line("rules", INK3, 0.18, (g["ch_x0"] - 2, ry), (g["env_x0"] + g["ENV_W"] + 2, ry))
+        line("rules", "mask", 0.18, (g["ch_x0"] - 2, ry), (g["env_x0"] + g["ENV_W"] + 2, ry))
     r12 = 12 * g["S"]
-    line("upper-divider", INK, 0.3, (g["UP_DIV"], g["RULE_Y"][0] - 3), (g["UP_DIV"], g["RULE_Y"][4] + 3))
-    arc("upper-divider", INK, 0.3, (g["UP_DIV"], g["RULE_Y"][4], r12, 0.0, 180.0))       # a bowl
+    line("upper-divider", "mask", 0.3, (g["UP_DIV"], g["RULE_Y"][0] - 3), (g["UP_DIV"], g["RULE_Y"][4] + 3))
+    arc("upper-divider", "mask", 0.3, (g["UP_DIV"], g["RULE_Y"][4], r12, 0.0, 180.0))       # a bowl
     for cx, n in zip(g["CH_CX"], range(1, 5)):
         for pl in numeral_strokes(n, cx, g["RULE_Y"][0] - 1.5, 3.0, "middle"):
-            line("channel-numerals", INK, NUMERAL_W, *pl)
+            line("channel-numerals", "mask", NUMERAL_W, *pl)
     if c["straight_divider"]:
-        line("divider-rule", INK, 0.45, (0.0, g["DIV_Y"]), (g["PANEL_W"], g["DIV_Y"]))
+        line("divider-rule", "mask", 0.45, (0.0, g["DIV_Y"]), (g["PANEL_W"], g["DIV_Y"]))
     else:
         ux = lambda u: (u - 42.0) * g["S"]
         pts = [(42,150),(112,146),(182,153),(247,147),(312,154),(382,148),(447,155),(512,149),(572,154),(622,148)]
-        line("divider-rule", INK, 0.45, *[(ux(a), g["uy"](b)) for a, b in pts])
-    line("pad-marks", INK, 0.3, (g["PAD_MID"], g["PAD_TOPS"][0] - 2.2),
-         (g["PAD_MID"], g["PAD_TOPS"][3] + g["PW"] + 2.2))
-    arc("pad-marks", INK, 0.3, (g["PAD_MID"], g["PAD_TOPS"][0], r12, 180.0, 360.0))      # a dome
+        line("divider-rule", "mask", 0.45, *[(ux(a), g["uy"](b)) for a, b in pts])
+    fr = c["pad_frame_mm"]          # the divider stands 2.2 proud of the pads' frames
+    line("pad-marks", "mask", 0.3, (g["PAD_MID"], g["PAD_TOPS"][0] - fr - 2.2),
+         (g["PAD_MID"], g["PAD_TOPS"][3] + g["PW"] + fr + 2.2))
+    arc("pad-marks", "mask", 0.3, (g["PAD_MID"], g["PAD_TOPS"][0], r12, 180.0, 360.0))      # a dome
     pt = c["numeral_pt_mm"]
     for y0, n in zip(g["PAD_TOPS"], range(1, 5)):
-        for pl in (numeral_strokes(n, g["PAD_X0"] - 2, y0 + g["PW"] * 0.72, pt, "end") +
-                   numeral_strokes(n, g["PAD_X1"] + 2, y0 + g["PW"] * 0.72, pt, "start")):
-            line("numerals", INK, NUMERAL_W, *pl)
+        ns = c["numeral_side_mm"]
+        for pl in numeral_strokes(n, g["PAD_X0"] - ns, y0 + g["PW"] * 0.72, pt, "end"):
+            line("numerals-left", "mask", NUMERAL_W, *pl)
+        for pl in numeral_strokes(n, g["PAD_X1"] + ns, y0 + g["PW"] * 0.72, pt, "start"):
+            line("numerals-right", "silk", NUMERAL_W, *pl)
     by = g["PAD_TOPS"][3] + g["PW"] + c["numeral_row_mm"]
     for m in c["cross_at"]:
         for pl in numeral_strokes(m, g["TICK_X"][m - 1], by, pt, "middle"):
-            line("numerals", INK, NUMERAL_W, *pl)
+            line("numerals-scale", "mask", NUMERAL_W, *pl)
     return art
 
 
@@ -914,6 +943,15 @@ def render(c, g):
       f'and the OLED at the right. {c["n_ticks"]} tick divisions per pad '
       f'with crosses at marks {", ".join(str(m) for m in c["cross_at"])}, Greek acrophonic '
       f'numerals in the margins, and the rotary encoder in the right margin beside the pads.</desc>')
+    # the face (ADR 0013): gold, each pad's mask frame, the masked right panel
+    fc = face(c, g)
+    A(f'<defs><clipPath id="outline"><rect x="0" y="0" width="{f(PW_)}" height="{f(PH_)}" '
+      f'rx="{f(c["panel_corner_r_mm"])}"/></clipPath></defs>')
+    A(f'<g id="face" clip-path="url(#outline)">'
+      f'<rect x="0" y="0" width="{f(PW_)}" height="{f(PH_)}" fill="{GOLD}"/>')
+    for x0, y0, x1, y1 in fc["frames"] + [fc["panel"]]:
+        A(f'<rect x="{f(x0)}" y="{f(y0)}" width="{f(x1 - x0)}" height="{f(y1 - y0)}" fill="{MASK_INK}"/>')
+    A('</g>')
     A(f'<rect x="0.4" y="0.4" width="{f(PW_-0.8)}" height="{f(PH_-0.8)}" '
       f'rx="{f(c["panel_corner_r_mm"] - 0.4)}" '
       f'fill="none" stroke="{INK2}" stroke-width="0.3"/>')
@@ -1017,7 +1055,7 @@ def render(c, g):
             d = "M" + "L".join(f"{f(x)} {f(y)}" for x, y in pts)
             if len(pts) > 2 and pts[0] == pts[-1]:
                 d = "M" + "L".join(f"{f(x)} {f(y)}" for x, y in pts[:-1]) + "Z"
-        groups.setdefault((a["id"], a["ink"], a["w"]), []).append(d)
+        groups.setdefault((a["id"], MASK_INK if a["on"] == "mask" else SILK_INK, a["w"]), []).append(d)
     for (gid, ink, w), ds in groups.items():
         A(f'<g id="{gid}" stroke="{ink}" stroke-width="{f(w)}" fill="none"><path d="{"".join(ds)}"/></g>')
 
@@ -1025,8 +1063,8 @@ def render(c, g):
     tk, cr = [], []
     for kind, x1, y1, x2, y2, _ in scale_marks(c, g):
         (cr if kind == "cross" else tk).append(f'M{f(x1)} {f(y1)}L{f(x2)} {f(y2)}')
-    A(f'<g id="ticks" stroke="{INK3}" stroke-width="0.2" fill="none"><path d="{"".join(tk)}"/></g>')
-    A(f'<g id="crosses" stroke="{INK}" stroke-width="0.3" fill="none"><path d="{"".join(cr)}"/></g>')
+    A(f'<g id="ticks" stroke="{MASK_INK}" stroke-width="0.2" fill="none"><path d="{"".join(tk)}"/></g>')
+    A(f'<g id="crosses" stroke="{MASK_INK}" stroke-width="0.3" fill="none"><path d="{"".join(cr)}"/></g>')
 
     # ---- Salamis authenticity marks (additive only) -------------------------
     if c["salamis_marks"]:
@@ -1089,15 +1127,31 @@ def check(c, g):
         f"{ins[0]:.2f} / {ins[1]:.2f}mm, scale {g['SCALE_L']:.1f}mm",
         min(ins) >= 3.0 and abs(ins[0] - ins[1]) < 1e-6)
     sm = scale_marks(c, g)
-    row("scale ink clear of the pads' mask openings",
-        f"{min(y1 - w / 2 for _, _, y1, _, _, w in sm) - (g['PAD_TOPS'][0] + g['PW']):.2f}mm below the copper",
-        all(min(y1, y2) - w / 2 >= y0 + g["PW"] + 0.25 + 0.15 - 1e-9
-            for y0 in g["PAD_TOPS"] for _, _, y1, _, y2, w in sm
-            if y0 + g["PW"] - 1e-9 <= min(y1, y2) <= y0 + g["PITCH"]))
+    fc = face(c, g)
+    # every mark on the gold below its pad's frame (a cross's upright starts on the frame's
+    # edge, so it hangs from it), and clear of the next pad's frame by 0.3
+    bad = [(x1, y1) for x1, y1, x2, y2 in ((a, b_, c_, d) for _, a, b_, c_, d, _ in sm)
+           if not any(fr[1] <= y1 and min(y1, y2) >= fr[3] - 1e-9 and
+                      all(max(y1, y2) + 0.15 + 0.3 <= nf[1] for nf in fc["frames"] if nf[1] > fr[3])
+                      for fr in fc["frames"])]
+    row("scale on the gold, hanging from each pad's frame",
+        f"{len(sm)} strokes, from {c['scale_top_mm']:.2f}mm below the copper (frame {c['pad_frame_mm']:g})",
+        not bad and c["scale_top_mm"] >= c["pad_frame_mm"] - 1e-9)
+    art = panel_art(c, g)
+    ink = lambda gid: [(x, y, a["w"]) for a in art if a["id"] == gid for x, y in a.get("pts", [])]
+    lx = max(x + w / 2 for x, _, w in ink("numerals-left"))
+    rx = min(x - w / 2 for x, _, w in ink("numerals-right"))
+    p0 = fc["panel"]
+    row("side numerals clear of the frames",
+        f"left {min(fr[0] for fr in fc['frames']) - lx:.2f}mm, right on the panel by {rx - p0[0]:.2f}mm",
+        min(fr[0] for fr in fc["frames"]) - lx >= 0.5 and rx - p0[0] >= 0.5)
+    row("silk only on the masked panel", f"{len(ink('numerals-right'))} points",
+        all(a["on"] == "mask" or all(p0[0] + a["w"] / 2 <= x <= p0[2] and p0[1] <= y <= p0[3]
+                                     for x, y in a["pts"]) for a in art))
     yb4 = g["PAD_TOPS"][3] + g["PW"]
     cross_bot = max(max(y1, y2) + w / 2 for k, _, y1, _, y2, w in sm if k == "cross" and y1 > yb4)
     num_top = min(min(y for _, y in a["pts"]) - a["w"] / 2 for a in panel_art(c, g)
-                  if a["id"] == "numerals" and min(y for _, y in a["pts"]) > yb4)
+                  if a["id"] == "numerals-scale" and min(y for _, y in a["pts"]) > yb4)
     row("numerals clear the crosses", f"{num_top - cross_bot:.2f}mm", num_top - cross_bot >= 0.3)
     if c["center_pads_in_region"]:
         region = g["COMP_Y1"] - g["DIV_Y"]
@@ -1299,11 +1353,11 @@ def check(c, g):
         else:
             row("shift clears the pads", f"{g['SHIFT_CX']-sr-g['PAD_X1']:.2f}mm",
                 g["SHIFT_CX"] - sr > g["PAD_X1"])
-        # Right-side pad numerals: x from PAD_X1+2, baseline pad_top + PW*0.72.
+        # Right-side pad numerals: x from PAD_X1 + numeral_side_mm, baseline pad_top + PW*0.72.
         # Only meaningful when the controls are on the right; the left column is
         # nowhere near them.
         if not c.get("controls_left"):
-            num_x0 = g["PAD_X1"] + 2.0
+            num_x0 = g["PAD_X1"] + c["numeral_side_mm"]
             num_x1 = num_x0 + 4 * 0.45 * 3.2
             gapx = (g["SHIFT_CX"] - sr) - num_x1
             rows_near = [t + g["PW"] * 0.72 for t in g["PAD_TOPS"]

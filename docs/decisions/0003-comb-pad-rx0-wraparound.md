@@ -146,8 +146,8 @@ main board, so the scale moved in instead: the generator's `scale_inset_mm` stop
 scale **6mm inside each copper end**, a large fingertip's contact radius, so a finger centred on
 an end mark is wholly on copper and reads true. 13 marks over 204mm, 17mm a division, crosses on
 1/4, 1/2 and 3/4 of the scale. **The end ticks are the sample's start and end**: firmware maps
-them, not the copper's ends, to 0 and 1. The ink is on the faceplate's F.SilkS
-(`hardware/faceplate/design/mkscale.py`). The 6 is an estimate until
+them, not the copper's ends, to 0 and 1. The ink is black soldermask on the gold face
+([ADR 0013](0013-gold-face-mask-ink.md), `hardware/faceplate/design/mkface.py`). The 6 is an estimate until
 [Q1](../notes/open-questions.md)'s end-of-pad test measures it; changing it moves only ink.
 
 ## Tools
@@ -166,6 +166,8 @@ them, not the copper's ends, to 0 and 1. The ink is on the faceplate's F.SilkS
   susceptibility. This is why the MCU is on the faceplate.
 - **Do not ground-pour under electrodes or their traces.** Parallel-plate capacitance to a
   nearby pour is the dominant parasitic contributor. Hatched ground at distance if needed.
+  (Still true. The gold face of [ADR 0013](0013-gold-face-mask-ink.md) is ground *beside* the
+  pads, 1.9mm off in the same plane, and over no sensor line.)
 - Decoupling caps and ESD parts right at the MCU.
 - Route digital lines to the main board away from electrodes, ideally exiting the opposite edge.
   **Not possible here (2026-09-28):** `J1` is fixed by the main board in the gap between pads
