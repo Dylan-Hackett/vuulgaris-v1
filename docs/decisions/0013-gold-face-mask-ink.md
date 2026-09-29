@@ -91,9 +91,11 @@ pad-to-pad crosstalk.
 
 ## Consequences
 
-- **Order black soldermask** (JLC, about +$8), white silk, ENIG, vias tented. JLC's "plugged"
-  default should also do: every dot is 0.4 beyond its via, past the 0.35 its plugging needs,
-  and it leaves vias with openings (the pads') open. Not POFV: that would cap the pads' vias.
+- **Order black soldermask** (JLC, +$8), white silk, ENIG, via covering **Plugged**, JLC's
+  default for 4 layers; tented is not offered there. It fills vias under mask (every dot is
+  0.4 beyond its via, past the 0.35 plugging needs) and leaves vias with openings (the pads')
+  open. Not POFV: it would cap the pads' vias. 5 boards, 4 layers, 298.4 x 137.9mm, 1.6mm:
+  **$79.80** on JLC's instant quote (2026-09-29), plus shipping; the gerbers' own quote is final.
 - **The knob, encoder and switch nuts and washers sit on the gold** and bond their bushings to
   GND. The panel screws bond to it too, into brass inserts in the printed case, which are
   isolated.
