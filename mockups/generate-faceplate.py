@@ -116,12 +116,15 @@ CFG = {
     # The front is exposed ENIG on a GND copper face, and every printed mark is
     # black soldermask on it (the fab prints no silk on bare copper). Each pad sits
     # in a mask frame this wide, from its copper to the gold: the gap between the
-    # sensors and the grounded face. Right of the pads, from the divider rule down,
-    # one masked panel hides the routing vias; the right-hand numerals are silk on
+    # sensors and the grounded face. Right of the pads one small masked patch covers
+    # the routing vias, flush with the frames; the right-hand numerals are silk on
     # it. hardware/faceplate/design/mkface.py builds all of it on the board.
     "pad_frame_mm":        2.0,
-    "numeral_side_mm":     2.8,   # pad end to the side numerals: clear of the frame,
-                                  # and on the right of the TVS grounds' vias (x 281.55)
+    # the patch's right edge: past the network grid's last vias (their copper ends at
+    # x 293.5, hardware/faceplate/design/mkcells.py) and their mask margin
+    "via_patch_x1_mm":   294.5,
+    "numeral_side_mm":     2.8,   # pad end to the side numerals: clear of the frame;
+                                  # the right-hand ones, silk on the patch, clear of its vias
 
     # ---- upper region controls ----------------------------------------------
     "knob_r_mm":           8.0,   # 16mm knob
@@ -506,8 +509,9 @@ def oled_window(c, g):
 
 def face(c, g):
     """The front's layout (ADR 0013), panel mm, each (x0, y0, x1, y1): "frames", each pad's
-    copper bounding box grown by pad_frame_mm, all mask; "panel", the masked strip right of
-    the pads from the divider rule down. Everything else inside the outline is gold."""
+    copper bounding box grown by pad_frame_mm, all mask; "patch", the mask over the routing
+    vias right of the pads, from the top of pad 1's frame to the bottom of pad 4's.
+    Everything else inside the outline is gold."""
     fr = c["pad_frame_mm"]
     frames = []
     for yt in g["PAD_TOPS"]:
@@ -516,7 +520,7 @@ def face(c, g):
         frames.append((min(x for _, x, _, _, _ in r) - fr, min(y for _, _, y, _, _ in r) - fr,
                        max(x + w for _, x, _, w, _ in r) + fr, max(y + h for _, _, y, _, h in r) + fr))
     return {"frames": frames,
-            "panel": (max(f[2] for f in frames), g["DIV_Y"], g["PANEL_W"], g["PANEL_H"])}
+            "patch": (max(f[2] for f in frames), frames[0][1], c["via_patch_x1_mm"], frames[-1][3])}
 
 
 def scale_marks(c, g):
@@ -566,7 +570,7 @@ def panel_art(c, g):
     their semicircles, the numerals. [{"id", "on", "w", and "pts" (a polyline; closed
     if it ends where it starts) or "arc" (cx, cy, r, a0, a1: degrees, y down, swept
     a0 -> a1 increasing, i.e. clockwise on screen)}], panel mm. "on" is "mask" (black
-    soldermask on the gold) or "silk" (white, on the masked right panel: only the
+    soldermask on the gold) or "silk" (white, on the via patch: only the
     right-hand numerals). The SVG draws these and hardware/faceplate/design/mkface.py
     prints them."""
     if c["salamis_marks"]:
@@ -943,13 +947,13 @@ def render(c, g):
       f'and the OLED at the right. {c["n_ticks"]} tick divisions per pad '
       f'with crosses at marks {", ".join(str(m) for m in c["cross_at"])}, Greek acrophonic '
       f'numerals in the margins, and the rotary encoder in the right margin beside the pads.</desc>')
-    # the face (ADR 0013): gold, each pad's mask frame, the masked right panel
+    # the face (ADR 0013): gold, each pad's mask frame, the via patch
     fc = face(c, g)
     A(f'<defs><clipPath id="outline"><rect x="0" y="0" width="{f(PW_)}" height="{f(PH_)}" '
       f'rx="{f(c["panel_corner_r_mm"])}"/></clipPath></defs>')
     A(f'<g id="face" clip-path="url(#outline)">'
       f'<rect x="0" y="0" width="{f(PW_)}" height="{f(PH_)}" fill="{GOLD}"/>')
-    for x0, y0, x1, y1 in fc["frames"] + [fc["panel"]]:
+    for x0, y0, x1, y1 in fc["frames"] + [fc["patch"]]:
         A(f'<rect x="{f(x0)}" y="{f(y0)}" width="{f(x1 - x0)}" height="{f(y1 - y0)}" fill="{MASK_INK}"/>')
     A('</g>')
     A(f'<rect x="0.4" y="0.4" width="{f(PW_-0.8)}" height="{f(PH_-0.8)}" '
@@ -1141,11 +1145,11 @@ def check(c, g):
     ink = lambda gid: [(x, y, a["w"]) for a in art if a["id"] == gid for x, y in a.get("pts", [])]
     lx = max(x + w / 2 for x, _, w in ink("numerals-left"))
     rx = min(x - w / 2 for x, _, w in ink("numerals-right"))
-    p0 = fc["panel"]
+    p0 = fc["patch"]
     row("side numerals clear of the frames",
-        f"left {min(fr[0] for fr in fc['frames']) - lx:.2f}mm, right on the panel by {rx - p0[0]:.2f}mm",
+        f"left {min(fr[0] for fr in fc['frames']) - lx:.2f}mm, right on the patch by {rx - p0[0]:.2f}mm",
         min(fr[0] for fr in fc["frames"]) - lx >= 0.5 and rx - p0[0] >= 0.5)
-    row("silk only on the masked panel", f"{len(ink('numerals-right'))} points",
+    row("silk only on the via patch", f"{len(ink('numerals-right'))} points",
         all(a["on"] == "mask" or all(p0[0] + a["w"] / 2 <= x <= p0[2] and p0[1] <= y <= p0[3]
                                      for x, y in a["pts"]) for a in art))
     yb4 = g["PAD_TOPS"][3] + g["PW"]

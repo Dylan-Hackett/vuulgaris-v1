@@ -156,8 +156,9 @@ Then the **repeatability** test, which is now a pass criterion because of the pr
    2026-09-29); if a large finger centred on an end tick reads short, raise it and re-run
    `hardware/faceplate/design/mkface.py`. It moves only the printed marks.
 7. **The gold face** ([ADR 0013](../decisions/0013-gold-face-mask-ink.md)) is ground 1.9mm
-   from every pad edge. Compare a pad's baseline, sensitivity and noise with the face grounded
-   and with its stitch vias cut. If it costs too much, widen `pad_frame_mm` (one number in the
+   from every pad edge, and over the fan-in lines under the via patch. Compare a pad's
+   baseline, sensitivity and noise against the bare test pad, and try a hand resting on the
+   right margin while a pad is played. If it costs too much, widen `pad_frame_mm` (one number in the
    generator; `mkface.py` and the checks follow).
 
 **Pass:** spread under ~2mm mid-pad, and monotonic and continuous throughout. Bend in the

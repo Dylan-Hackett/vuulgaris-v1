@@ -320,7 +320,7 @@ design/mkbuses.py             the pad buses: every bar's via joined, each net ou
 design/mkcells.py             the network grid's cell vias, TVS/R stubs and TVS grounds (deterministic)
 design/mkescape.py            J1 out along the pad 3-4 corridor to the test pads, R2, R3 and U1 (deterministic)
 design/mkfanin.py             the L2 fan-in: every bus exit to its cell via, crossing-free (deterministic)
-design/mkface.py              the front (ADR 0013): the GND gold on F.Cu, its stitch vias, the art as black mask, the silk
+design/mkface.py              the front (ADR 0013): the GND gold on F.Cu, the art as black mask, the via patch and dots, the silk
 design/mkzones.py             the L3 GND plane: solid, in the margin and the pad 3-4 corridor, never under a pad
 design/mkroute.py             everything else, by Freerouting, fenced: no F.Cu, nothing under or between the pads
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
@@ -413,7 +413,7 @@ $KPY hardware/faceplate/design/mkface.py               # the front: gold, mask a
 | `mkfanin` | all 16 electrode lines, bus exit to cell via | exact, L2 |
 | `mkzones` | the L3 GND plane: **solid**, margin + corridor, never under a pad | exact |
 | `mkroute` | everything else: the B.Cu fan-out into `U1`, power, the last grounds, crystal | Freerouting, fenced (the gold is dropped from its DSN); then prunes dangling copper and stitches any GND pad with no path to the plane |
-| `mkface` | the front: one GND zone on F.Cu less each pad's 2mm frame and the right panel; 4 stitch vias in the corridor; F.Mask openings = the gold less every art stroke; the right-hand numerals in silk | the generator's `face()`, `scale_marks()`, `panel_art()` (ADR 0013) |
+| `mkface` | the front: one GND zone on F.Cu less each pad's 2mm frame; F.Mask openings = the gold less the via patch, a dot over every other via outside the pads, and every art stroke; the right-hand numerals in silk on the patch | the generator's `face()`, `scale_marks()`, `panel_art()` (ADR 0013) |
 
 **The electrode fan-in (`mkfanin`).** Each pad's lines leave its bus as RX0, RX2, RX1, RX3
 (top to bottom) but the columns run RX0, RX1, RX2, RX3. Each cell's via sits at its own height
@@ -475,8 +475,9 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 
 - [x] No ground under the electrodes: panelcheck, "nothing under a pad but its own nets"
       (zones included). In the margin the fan-in lines run over the solid L3 plane, ~1.1mm down.
-      The gold face is ground **beside** the pads, 1.9mm off all round, and over no sensor
-      line: "gold clear of every pad by its frame" (ADR 0013; part of Q1)
+      The gold face is ground **beside** the pads, 1.9mm off all round ("gold clear of every
+      pad by its frame"), and over the fan-in lines only under the via patch, as a screen
+      (ADR 0013; part of Q1)
 - [x] RX0 end groups one net: the return runs on **L3** under its own pad's RX2 bars
       (mkbuses; on L2 it would enclose RX2) — same-pad, same-cycle ([Q24](../../docs/notes/open-questions.md))
 - [x] MCU placement: right margin, not centred (ADR 0003, layout rules, 2026-09-28)
@@ -492,8 +493,8 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 - [x] Panel art (2026-09-29, ADR 0013): everything the mockup prints -- rules, dividers,
       semicircles, Attic numerals, the scale -- as black soldermask on the gold, and none of
       its part outlines (knobs, buttons, switches, OLED, screw heads). The right-hand numerals
-      are silk, on the masked panel. panelcheck samples every stroke: ink where drawn, gold
-      beside it; every signal via outside the pads under mask; silk == generator
+      are silk, on the via patch. panelcheck samples every stroke: ink where drawn, gold
+      beside it; every via outside the pads under the patch or a dot; silk == generator
 - [x] Copper extended past the printed scale (endpoint trim eats a few mm at each end): the
       scale stops 6mm inside each copper end (ADR 0003, "Endpoint trim"), hanging from each
       pad's frame (ADR 0013).

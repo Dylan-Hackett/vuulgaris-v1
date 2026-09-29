@@ -190,8 +190,9 @@ def row(ok, label, val):
     (oks if ok else fails).append(f"{label:40} {val}")
 
 
-def face_request():
-    """points and rects for the face probe (DUMP), and what each point is for"""
+def face_request(dots=()):
+    """points for the face probe (DUMP): along every mask stroke, and beside it -- where no
+    other stroke and no via's dot (dots: [(x, y, r)], panel mm) is that close"""
     import math
     O = pg.FACE_ORG
     ink = [s for s in pg.panel_ink() if s["on"] == "mask"]
@@ -226,12 +227,12 @@ def face_request():
     centre = [p for s in ink for p in samples(s, 0)]
     # beside a stroke, gold must show -- except where another stroke is that close
     flank = [p for s in ink for p in samples(s, s["w"] / 2 + 0.12)
-             if all(dist(p, t) > t["w"] / 2 + 0.12 for t in ink if t is not s)]
+             if all(dist(p, t) > t["w"] / 2 + 0.12 for t in ink if t is not s)
+             and all(math.hypot(p[0] - x, p[1] - y) > r + 0.12 for x, y, r in dots)]
     return ink, centre, flank
 
 
 def main():
-    ink, centre, flank = face_request()
     d0 = dump()
     O = pg.FACE_ORG
     cu = [pp["bbox"] for p in range(1, 5) for pp in d0["face"]["fps"].get(f"E{p}", {"pads": []})["pads"]]
@@ -243,11 +244,14 @@ def main():
             m = fr - 0.1 - 0.01              # the gold stops UNDER (0.1) short of the frame's edge
             no_gold.append((min(b_[0] for b_ in bb) - m, min(b_[1] for b_ in bb) - m,
                             max(b_[2] for b_ in bb) + m, max(b_[3] for b_ in bb) + m))
-    # the vias that must be under mask: every other net's, outside the pads' frames (the
-    # bar vias are open, in the pads' own openings -- ADR 0013)
+    # the vias that must be under mask: every via outside the pads' frames (the bar vias
+    # are open, in the pads' own openings -- ADR 0013); outside the via patch, each is a dot
     inside_ = lambda r, x, y: r[0] <= x <= r[2] and r[1] <= y <= r[3]
-    sig = [v for v in d0["face"]["vias"] if v["net"] != "GND"
-           and not any(inside_(r, *v["xy"]) for r in no_gold)]
+    sig = [v for v in d0["face"]["vias"] if not any(inside_(r, *v["xy"]) for r in no_gold)]
+    patch = pg.face()["patch"]
+    dots = [(v["xy"][0] - O[0], v["xy"][1] - O[1], v["d"] / 2 + 0.4) for v in sig
+            if not inside_(patch, v["xy"][0] - O[0], v["xy"][1] - O[1])]
+    ink, centre, flank = face_request(dots)
     import math
     ring = [(v["xy"][0] + (v["d"] / 2 + 0.05) * math.cos(k * math.pi / 4),
              v["xy"][1] + (v["d"] / 2 + 0.05) * math.sin(k * math.pi / 4)) for v in sig for k in range(8)]
@@ -531,8 +535,8 @@ def main():
     open_sig = sorted({(v["net"], round(v["xy"][0] - O[0], 2), round(v["xy"][1] - O[1], 2))
                        for k, v in enumerate(sig)
                        if any(res[nc + nf + 8 * k + m][0] for m in range(8)) or res[nc + nf + 8 * len(sig) + k][0]})
-    row(not open_sig, "every signal via outside the pads under mask",
-        f"{len(sig)} non-GND vias" if not open_sig
+    row(not open_sig, "every via outside the pads under mask",
+        f"{len(sig)} vias: {len(sig) - len(dots)} under the via patch, {len(dots)} dots" if not open_sig
         else f"{len(open_sig)} open: first {open_sig[0]}")
     want = [tuple(q(v) for v in st["seg"]) + (q(st["w"]),) for st in pg.panel_ink() if st["on"] == "silk"]
     have = [(q(e["a"][0] - O[0]), q(e["a"][1] - O[1]), q(e["b"][0] - O[0]), q(e["b"][1] - O[1]), q(e["w"]))
@@ -541,7 +545,7 @@ def main():
     extra = [h for h in have if not any(close(h, w_) for w_ in want)]
     lost = [w_ for w_ in want if not any(close(h, w_) for h in have)]
     row(not extra and not lost, "silk == generator (right-hand numerals)",
-        f"{len(have)} strokes on the masked panel" if not (extra or lost) else f"{len(lost)} missing, {len(extra)} extra")
+        f"{len(have)} strokes on the via patch" if not (extra or lost) else f"{len(lost)} missing, {len(extra)} extra")
     if all(f"E{p}" in face["fps"] for p in range(1, 5)):
         cu_x0 = min(pp["bbox"][0] for p in range(1, 5) for pp in face["fps"][f"E{p}"]["pads"]) - O[0]
         cu_x1 = max(pp["bbox"][2] for p in range(1, 5) for pp in face["fps"][f"E{p}"]["pads"]) - O[0]

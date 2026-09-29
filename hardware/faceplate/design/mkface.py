@@ -7,22 +7,21 @@ generator owns the layout (face(), scale_marks(), panel_art()); this builds it.
 
 Run last, after mkroute.py: the gold clears every via, so the vias come first.
 
-  gold    One GND zone on F.Cu, FACE_GOLD, solid: the whole outline less each pad's frame
-          and the masked right panel. Its copper stops UNDER 0.1 short of the frame and the
-          panel, so the mask overlaps the copper's edge and no bare laminate shows. 0.3 from
-          every cut (the board's copper-to-edge rule) and from every other net's via, which
-          the mask then covers as a dot.
-  ground  STITCH vias: the gold's only way to GND. The one place it lies over the L3 plane
-          with room on B.Cu is the corridor between pads 3 and 4, between the TXD and RXD
-          lanes (mkescape.py); a scan along that line takes the first free spot past each
-          STITCH_X. Open, like every via (ADR 0013).
-  mask    F.Mask openings = the gold's fill, UNDER in, less every mask stroke -- so the art is
+  gold    One GND zone on F.Cu, FACE_GOLD, solid: the whole outline less each pad's frame.
+          Its copper stops UNDER 0.1 short of the frame, so the mask overlaps the copper's
+          edge and no bare laminate shows. 0.3 from every cut (the board's copper-to-edge
+          rule) and from every other net's via. It runs on under the via patch, where it
+          screens the fan-in lines from a hand resting there, and it is grounded there: the
+          margin's GND vias (the TVS grounds among them) join it. Island removal is "always",
+          so if they ever did not, it would fill to nothing rather than float.
+  mask    F.Mask openings = the gold's fill, UNDER in, less the via patch, less a DOT over
+          every via outside the pads and the patch, less every mask stroke -- so the art is
           where the mask stays -- less any sliver of gold narrower than 2 x SLIVER. A board
           polygon cannot hold holes, so the openings are fractured into plain outlines.
-  silk    The right-hand numerals, white on the masked panel.
+  silk    The right-hand numerals, white on the via patch.
 
-Each part is its own locked group -- FACE_MASK, FACE_SILK, FACE_STITCH -- and the zone is
-named FACE_GOLD; the script removes all four and rebuilds them, and touches nothing else.
+Each part is its own locked group -- FACE_MASK, FACE_SILK -- and the zone is named
+FACE_GOLD; the script removes all three and rebuilds them, and touches nothing else.
 tools/panelcheck.py checks the result against the generator.
 
 After this writes the board, File -> Revert in Pcbnew before touching it.
@@ -44,10 +43,8 @@ UNDER = 0.1            # gold copper runs this far under the mask at each of its
 EDGE = 0.3             # copper to any cut: the board's rule (.kicad_pro), JLC wants 0.2
 CLEAR = 0.3            # the gold to another net
 SLIVER = 0.05          # openings narrower than 2 x this close up
-STITCH_Y = 112.325     # between the corridor's TXD (111.675) and RXD (112.975) lanes
-STITCH_X = (242.0, 252.0, 262.0, 270.0)
-STITCH_D, STITCH_DRILL = 0.6, 0.3
-GROUPS = ("FACE_MASK", "FACE_SILK", "FACE_STITCH")
+DOT = CLEAR + UNDER    # a via's mask dot, beyond its copper: 0.4, past JLC's 0.35 for plugging
+GROUPS = ("FACE_MASK", "FACE_SILK")
 ARC_STEP = 5.0         # degrees per point on an arc stroke's outline
 
 
@@ -88,15 +85,13 @@ def main():
     # ---- the gold: made before anything is removed (a ZONE made after a removal hands
     # back an opaque Outline(); mkzones.py)
     W, H = G["PANEL_W"], G["PANEL_H"]
-    px, py = fc["panel"][0], fc["panel"][1]
     z = pcbnew.ZONE(b)
     z.SetLayer(pcbnew.F_Cu)
     z.SetNet(gnd)
     z.SetZoneName("FACE_GOLD")
     ol = z.Outline()
     ol.NewOutline()
-    for x, y in ((-1, -1), (W + 1, -1), (W + 1, py + UNDER), (px + UNDER, py + UNDER),
-                 (px + UNDER, H + 1), (-1, H + 1)):       # the fill clips it to the outline
+    for x, y in ((-1, -1), (W + 1, -1), (W + 1, H + 1), (-1, H + 1)):   # clipped by the fill
         ol.Append(*P(x, y))
     for x0, y0, x1, y1 in fc["frames"]:
         h = ol.NewHole()
@@ -117,36 +112,6 @@ def main():
     for oz in old_zones:
         b.Remove(oz)
 
-    # ---- ground it: stitch vias in the corridor, each at the first free spot
-    stitch = pcbnew.PCB_GROUP(b)
-    stitch.SetName("FACE_STITCH")
-    b.Add(stitch)
-    others = [t for t in b.GetTracks() if t.GetNetname() != "/GND"] + \
-             [p for f in b.GetFootprints() for p in f.Pads() if p.GetNetname() != "/GND"]
-    placed = []
-    for x0 in STITCH_X:
-        x = x0
-        while x < x0 + 6.0:
-            v = pcbnew.PCB_VIA(b)
-            v.SetViaType(pcbnew.VIATYPE_THROUGH)
-            v.SetLayerPair(pcbnew.F_Cu, pcbnew.B_Cu)
-            v.SetPosition(P(x, STITCH_Y))
-            v.SetWidth(mm(STITCH_D))
-            v.SetDrill(mm(STITCH_DRILL))
-            v.SetNet(gnd)
-            vs = v.GetEffectiveShape()
-            hit = any(o.GetEffectiveShape(ly).Collide(vs, mm(0.2))
-                      for o in others for ly in (pcbnew.B_Cu, pcbnew.In1_Cu, pcbnew.In2_Cu)
-                      if o.IsOnLayer(ly))
-            if not hit:
-                b.Add(v)
-                stitch.AddItem(v)
-                placed.append(x)
-                break
-            x += 0.25
-    if len(placed) < 2:
-        sys.exit(f"mkface: only {len(placed)} stitch vias found room -- the gold needs a ground")
-
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     fill = z.GetFilledPolysList(pcbnew.F_Cu)
     if fill.OutlineCount() == 0:
@@ -159,6 +124,30 @@ def main():
     # the edge. A union first turns the cuts back into holes.
     op.Simplify(pcbnew.SHAPE_POLY_SET.PM_STRICTLY_SIMPLE)
     op.Deflate(mm(UNDER), 32)
+
+    def poly(pts):
+        ch = pcbnew.SHAPE_LINE_CHAIN()
+        for x, y in pts:
+            ch.Append(*P(x, y))
+        ch.SetClosed(True)
+        return ch
+    covers = pcbnew.SHAPE_POLY_SET()
+    x0, y0, x1, y1 = fc["patch"]
+    covers.AddOutline(poly(((x0, y0), (x1, y0), (x1, y1), (x0, y1))))
+    inside = lambda r, x, y: r[0] <= x <= r[2] and r[1] <= y <= r[3]
+    n_dots = 0
+    for v in b.GetTracks():
+        if not isinstance(v, pcbnew.PCB_VIA):
+            continue
+        vx, vy = (pcbnew.ToMM(c) - o for c, o in zip((v.GetPosition().x, v.GetPosition().y), pg.FACE_ORG))
+        if any(inside(r, vx, vy) for r in fc["frames"] + [fc["patch"]]):
+            continue
+        rd = pcbnew.ToMM(v.GetWidth()) / 2 + DOT
+        covers.AddOutline(poly([(vx + rd * math.cos(k * math.pi / 16), vy + rd * math.sin(k * math.pi / 16))
+                                for k in range(32)]))
+        n_dots += 1
+    covers.Simplify(pcbnew.SHAPE_POLY_SET.PM_FAST)
+    op.BooleanSubtract(covers, pcbnew.SHAPE_POLY_SET.PM_STRICTLY_SIMPLE)
     marks = pcbnew.SHAPE_POLY_SET()
     for s in ink:
         if s["on"] != "mask":
@@ -188,7 +177,7 @@ def main():
         b.Add(d)
         mask.AddItem(d)
 
-    # ---- the silk: what prints on the masked panel
+    # ---- the silk: what prints on the via patch
     silk = pcbnew.PCB_GROUP(b)
     silk.SetName("FACE_SILK")
     b.Add(silk)
@@ -206,13 +195,12 @@ def main():
         b.Add(d)
         silk.AddItem(d)
         n_silk += 1
-    for g in (stitch, mask, silk):
+    for g in (mask, silk):
         g.SetLocked(True)
     z.SetLocked(True)
     pcbnew.SaveBoard(proj.P.pcb, b)
     area = sum(op.Outline(i).Area() for i in range(op.OutlineCount())) / 1e12
-    print(f"face: gold {fill.OutlineCount()} piece(s), {len(placed)} stitch vias at x "
-          f"{', '.join(f'{x:.2f}' for x in placed)}; {op.OutlineCount()} mask openings, "
+    print(f"face: gold {fill.OutlineCount()} piece(s); {n_dots} via dots; {op.OutlineCount()} mask openings, "
           f"{area:.0f} mm2 of gold showing, {sum(s['on'] == 'mask' for s in ink)} strokes of "
           f"mask ink; {n_silk} silk strokes (replaced {len(items)} items). "
           f"File -> Revert in Pcbnew before touching it.")
