@@ -1,0 +1,1104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="E">
+  <design>
+    <source>/Users/dylanhackett/V1/hardware/faceplate/vuulgaris-faceplate.kicad_sch</source>
+    <date>2026 September 29, Tuesday 15:25:06</date>
+    <tool>Eeschema 7.0.8</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title/>
+        <company/>
+        <rev/>
+        <date/>
+        <source>vuulgaris-faceplate.kicad_sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+        <comment number="5" value=""/>
+        <comment number="6" value=""/>
+        <comment number="7" value=""/>
+        <comment number="8" value=""/>
+        <comment number="9" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="C1">
+      <value>10uF</value>
+      <footprint>vuulgaris:C0805</footprint>
+      <libsource lib="vuulgaris" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9e864b9a-fd73-48dd-be7c-48d459a0501e</tstamps>
+    </comp>
+    <comp ref="C2">
+      <value>100nF</value>
+      <footprint>vuulgaris:C0603</footprint>
+      <libsource lib="vuulgaris" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>902efcb8-fb81-4ade-92c1-7a223e175e76</tstamps>
+    </comp>
+    <comp ref="C3">
+      <value>1uF</value>
+      <footprint>vuulgaris:C0805</footprint>
+      <libsource lib="vuulgaris" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cf209603-ad05-400b-ae9c-312323cf9af2</tstamps>
+    </comp>
+    <comp ref="C4">
+      <value>1nF C0G</value>
+      <footprint>vuulgaris:C0603</footprint>
+      <libsource lib="vuulgaris" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f8aac1cb-ee85-4162-a0c5-8844b454e1a4</tstamps>
+    </comp>
+    <comp ref="C5">
+      <value>22pF C0G</value>
+      <footprint>vuulgaris:C0603</footprint>
+      <libsource lib="vuulgaris" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cbd52859-02db-4059-b2cb-22fe9dee3d7f</tstamps>
+    </comp>
+    <comp ref="C6">
+      <value>22pF C0G</value>
+      <footprint>vuulgaris:C0603</footprint>
+      <libsource lib="vuulgaris" part="C" description="Unpolarized capacitor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Unpolarized capacitor"/>
+      <property name="ki_keywords" value="cap capacitor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5de69ab2-7a93-4833-ac8f-e27da5c7a82c</tstamps>
+    </comp>
+    <comp ref="D11">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>2eb4f041-fd3e-4d0d-9300-4cf08ec8e17e</tstamps>
+    </comp>
+    <comp ref="D12">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>317ecf96-1a23-48ce-ae2c-4ee9815faf8a</tstamps>
+    </comp>
+    <comp ref="D13">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c346a313-6217-42ae-8551-daa920d86b25</tstamps>
+    </comp>
+    <comp ref="D14">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0a1c8b17-7d63-43bc-bffc-ece3c8bbde3b</tstamps>
+    </comp>
+    <comp ref="D21">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>3091a628-a6cd-4d3d-9d24-e2297b89bc56</tstamps>
+    </comp>
+    <comp ref="D22">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>db11d941-035b-47a9-aa9a-dc921afea372</tstamps>
+    </comp>
+    <comp ref="D23">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>edcceaac-4923-48c9-9822-5af852dec96d</tstamps>
+    </comp>
+    <comp ref="D24">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>33aa6e55-c65a-4b88-ad01-af63addffc2f</tstamps>
+    </comp>
+    <comp ref="D31">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>99616818-1443-44b0-a3dd-88166407d893</tstamps>
+    </comp>
+    <comp ref="D32">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ba3583d0-1121-4109-927f-42196096797c</tstamps>
+    </comp>
+    <comp ref="D33">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7c19a7a9-6d5b-4fe0-9fe0-fff739f95105</tstamps>
+    </comp>
+    <comp ref="D34">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>cff1b8f0-5b7b-4f2d-84d1-159e3826831d</tstamps>
+    </comp>
+    <comp ref="D41">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>75d4dac9-5fcb-4f3e-afcf-33a55186b550</tstamps>
+    </comp>
+    <comp ref="D42">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>12d5c3d6-2e1f-4bba-a10c-7ee0a07e8457</tstamps>
+    </comp>
+    <comp ref="D43">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>dfc69352-dec3-41e8-a72a-37fc45c16dc8</tstamps>
+    </comp>
+    <comp ref="D44">
+      <value>TPD1E10B06DPYR</value>
+      <footprint>vuulgaris:X1SON-2_DPY0002A</footprint>
+      <libsource lib="vuulgaris" part="D_TVS" description="Bidirectional transient-voltage-suppression diode"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Bidirectional transient-voltage-suppression diode"/>
+      <property name="ki_keywords" value="diode TVS thyrector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ff088a6c-1b7f-418e-8081-c0ac194ae8bd</tstamps>
+    </comp>
+    <comp ref="E1">
+      <value>scrub pad 1</value>
+      <footprint>vuulgaris:SCRUB_PAD_216x10_P1</footprint>
+      <libsource lib="vuulgaris" part="SCRUB_PAD_5SEG" description="One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>aaf46f86-6331-46d4-9886-71edc8366d52</tstamps>
+    </comp>
+    <comp ref="E2">
+      <value>scrub pad 2</value>
+      <footprint>vuulgaris:SCRUB_PAD_216x10_P2</footprint>
+      <libsource lib="vuulgaris" part="SCRUB_PAD_5SEG" description="One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8a42a897-a159-4a5e-8e1d-ba5f924b6e1f</tstamps>
+    </comp>
+    <comp ref="E3">
+      <value>scrub pad 3</value>
+      <footprint>vuulgaris:SCRUB_PAD_216x10_P3</footprint>
+      <libsource lib="vuulgaris" part="SCRUB_PAD_5SEG" description="One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>127b7aec-df64-42f1-a9b7-d85d709bf660</tstamps>
+    </comp>
+    <comp ref="E4">
+      <value>scrub pad 4</value>
+      <footprint>vuulgaris:SCRUB_PAD_216x10_P4</footprint>
+      <libsource lib="vuulgaris" part="SCRUB_PAD_5SEG" description="One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>93caa019-a5fe-427c-bec3-5c855c08ee5a</tstamps>
+    </comp>
+    <comp ref="J1">
+      <value>HX JN2.54-2x5P TP H8.9</value>
+      <footprint>vuulgaris:IDC-SMD_10P-P2.54_C41376028</footprint>
+      <libsource lib="vuulgaris" part="Conn_02x05_Odd_Even" description="Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)"/>
+      <property name="ki_keywords" value="connector"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>da0c3ed3-e4d3-469f-932b-80e2bc8a6388</tstamps>
+    </comp>
+    <comp ref="R1">
+      <value>47k</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>7aefb5ef-cea1-4a6a-824c-821b60b69d9a</tstamps>
+    </comp>
+    <comp ref="R2">
+      <value>47k</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c0e0743b-40cd-4d01-bb63-cb22452ba414</tstamps>
+    </comp>
+    <comp ref="R3">
+      <value>47k</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>c1edfde9-5909-491d-99c9-4412c251ee08</tstamps>
+    </comp>
+    <comp ref="R11">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>beb7c3a3-69a9-46b7-a54d-410bbc437434</tstamps>
+    </comp>
+    <comp ref="R12">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>954a6e36-3776-4da0-a72b-dce143e86069</tstamps>
+    </comp>
+    <comp ref="R13">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>9843bd89-3d4e-4591-9c74-87df6f5b36e4</tstamps>
+    </comp>
+    <comp ref="R14">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>0274cd9c-ae18-4c67-bc31-0ba4cca0a166</tstamps>
+    </comp>
+    <comp ref="R21">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e1879977-1443-4523-b9c2-40a147b8dd07</tstamps>
+    </comp>
+    <comp ref="R22">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>e6603e40-c773-4626-a4b5-bad87087d983</tstamps>
+    </comp>
+    <comp ref="R23">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8538f7a4-3fc5-4065-baee-00b9830bab61</tstamps>
+    </comp>
+    <comp ref="R24">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>68338843-a9b0-435c-b6e1-30b2f60d686d</tstamps>
+    </comp>
+    <comp ref="R31">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>beb85456-6004-4d12-9d01-34db9fabb6a9</tstamps>
+    </comp>
+    <comp ref="R32">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>bd41f893-846e-4b3c-af20-e71bb72dc8af</tstamps>
+    </comp>
+    <comp ref="R33">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5e98ec64-1868-4e63-a8cb-dbbfc918015c</tstamps>
+    </comp>
+    <comp ref="R34">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>09d1ed5b-37c3-4728-8924-ed45d0b37da5</tstamps>
+    </comp>
+    <comp ref="R41">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>5b93d44d-5ccd-4d28-9281-70a09cc82909</tstamps>
+    </comp>
+    <comp ref="R42">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>f2230fe9-1636-431f-bb3d-ced85b99a064</tstamps>
+    </comp>
+    <comp ref="R43">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>8b7f4ac0-86d5-4247-aca6-96f6af091f95</tstamps>
+    </comp>
+    <comp ref="R44">
+      <value>470</value>
+      <footprint>vuulgaris:R0603</footprint>
+      <libsource lib="vuulgaris" part="R" description="Resistor"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Resistor"/>
+      <property name="ki_keywords" value="R res resistor"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>11dc63fb-851c-4349-81c8-46f1879f273a</tstamps>
+    </comp>
+    <comp ref="TP1">
+      <value>SBW TEST</value>
+      <footprint>vuulgaris:TestPoint_Pad_D1.5mm</footprint>
+      <libsource lib="vuulgaris" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="test point"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>afaac1ce-f1b0-4657-8c46-8c3a2a4d38b6</tstamps>
+    </comp>
+    <comp ref="TP2">
+      <value>SBW RST</value>
+      <footprint>vuulgaris:TestPoint_Pad_D1.5mm</footprint>
+      <libsource lib="vuulgaris" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="test point"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>129f5b1e-a4d1-4892-9b41-e0700910aa2d</tstamps>
+    </comp>
+    <comp ref="TP3">
+      <value>SBW 3V3</value>
+      <footprint>vuulgaris:TestPoint_Pad_D1.5mm</footprint>
+      <libsource lib="vuulgaris" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="test point"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>b21d35f1-cfc4-46f2-a323-4eef521e612b</tstamps>
+    </comp>
+    <comp ref="TP4">
+      <value>SBW GND</value>
+      <footprint>vuulgaris:TestPoint_Pad_D1.5mm</footprint>
+      <libsource lib="vuulgaris" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="test point"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>d6ddef1c-50b5-4b15-9e00-5e336fcf3e18</tstamps>
+    </comp>
+    <comp ref="TP5">
+      <value>TP UART TX</value>
+      <footprint>vuulgaris:TestPoint_Pad_D1.5mm</footprint>
+      <libsource lib="vuulgaris" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="test point"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>35747bf4-52ea-42f1-bbde-90d3bdc6d667</tstamps>
+    </comp>
+    <comp ref="TP6">
+      <value>TP UART RX</value>
+      <footprint>vuulgaris:TestPoint_Pad_D1.5mm</footprint>
+      <libsource lib="vuulgaris" part="TestPoint" description="test point"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="test point"/>
+      <property name="ki_keywords" value="test point tp"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>ff7a76ca-9709-4baa-b0db-806523b70fc4</tstamps>
+    </comp>
+    <comp ref="U1">
+      <value>MSP430FR2675TPT</value>
+      <footprint>vuulgaris:LQFP-48_7x7mm_P0.5mm_PT0048A</footprint>
+      <libsource lib="vuulgaris" part="MSP430FR2675TPT" description="MSP430FR2675 CapTIvate MCU, LQFP-48 (PT). Pins from SLASEO5D Figure 7-1, cross-checked against Table 7-1 by hardware/faceplate/design/mklib_msp430.py"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="MSP430FR2675 CapTIvate MCU, LQFP-48 (PT). Pins from SLASEO5D Figure 7-1, cross-checked against Table 7-1 by hardware/faceplate/design/mklib_msp430.py"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>34bfa4bd-8cf3-4df5-9515-df42680aacc3</tstamps>
+    </comp>
+    <comp ref="Y1">
+      <value>32.768kHz FC-135 12.5pF</value>
+      <footprint>vuulgaris:XTAL-SMD_FC-135_3.2x1.5mm</footprint>
+      <libsource lib="vuulgaris" part="Crystal" description="Two pin crystal"/>
+      <property name="Sheetname" value=""/>
+      <property name="Sheetfile" value="vuulgaris-faceplate.kicad_sch"/>
+      <property name="ki_description" value="Two pin crystal"/>
+      <property name="ki_keywords" value="quartz ceramic resonator oscillator"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamps>6d1cc4e0-dce3-4d5c-b90f-d017bef6a5d0</tstamps>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="vuulgaris" part="C">
+      <description>Unpolarized capacitor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>C_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">C</field>
+        <field name="Value">C</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="vuulgaris" part="Conn_02x05_Odd_Even">
+      <description>Generic connector, double row, 02x05, odd/even pin numbering scheme (row 1 odd numbers, row 2 even numbers), script generated (kicad-library-utils/schlib/autogen/connector/)</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Connector*:*_2x??_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">Conn_02x05_Odd_Even</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="Pin_1" type="passive"/>
+        <pin num="2" name="Pin_2" type="passive"/>
+        <pin num="3" name="Pin_3" type="passive"/>
+        <pin num="4" name="Pin_4" type="passive"/>
+        <pin num="5" name="Pin_5" type="passive"/>
+        <pin num="6" name="Pin_6" type="passive"/>
+        <pin num="7" name="Pin_7" type="passive"/>
+        <pin num="8" name="Pin_8" type="passive"/>
+        <pin num="9" name="Pin_9" type="passive"/>
+        <pin num="10" name="Pin_10" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="vuulgaris" part="Crystal">
+      <description>Two pin crystal</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Crystal*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">Y</field>
+        <field name="Value">Crystal</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="vuulgaris" part="D_TVS">
+      <description>Bidirectional transient-voltage-suppression diode</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>TO-???*</fp>
+        <fp>*_Diode_*</fp>
+        <fp>*SingleDiode*</fp>
+        <fp>D_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">D_TVS</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="A1" type="passive"/>
+        <pin num="2" name="A2" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="vuulgaris" part="MSP430FR2675TPT">
+      <description>MSP430FR2675 CapTIvate MCU, LQFP-48 (PT). Pins from SLASEO5D Figure 7-1, cross-checked against Table 7-1 by hardware/faceplate/design/mklib_msp430.py</description>
+      <docs>https://www.ti.com/lit/gpn/msp430fr2675</docs>
+      <fields>
+        <field name="Reference">U</field>
+        <field name="Value">MSP430FR2675TPT</field>
+        <field name="Footprint">vuulgaris:LQFP-48_7x7mm_P0.5mm_PT0048A</field>
+        <field name="Datasheet">https://www.ti.com/lit/gpn/msp430fr2675</field>
+        <field name="LCSC Part">C2052972</field>
+      </fields>
+      <pins>
+        <pin num="1" name="DVCC" type="power_in"/>
+        <pin num="2" name="~{RST}/NMI/SBWTDIO" type="bidirectional"/>
+        <pin num="3" name="TEST/SBWTCK" type="input"/>
+        <pin num="4" name="P1.4/UCA0TXD/UCA0SIMO/TA1.2/TCK/A4/VREF+" type="bidirectional"/>
+        <pin num="5" name="P1.5/UCA0RXD/UCA0SOMI/TA1.1/TMS/A5" type="bidirectional"/>
+        <pin num="6" name="P1.6/UCA0CLK/TA1CLK/TDI/TCLK/A6" type="bidirectional"/>
+        <pin num="7" name="P1.7/UCA0STE/SMCLK/TDO/A7" type="bidirectional"/>
+        <pin num="8" name="P4.3/UCB1SOMI/UCB1SCL/TB0.5/A8" type="bidirectional"/>
+        <pin num="9" name="P4.4/UCB1SIMO/UCB1SDA/TB0.6/A9" type="bidirectional"/>
+        <pin num="10" name="P5.3/UCB1CLK/TA3.0/A10" type="bidirectional"/>
+        <pin num="11" name="P5.4/UCB1STE/TA3CLK/A11" type="bidirectional"/>
+        <pin num="12" name="P1.0/UCB0STE/TA0CLK/A0/Veref+" type="bidirectional"/>
+        <pin num="13" name="P1.1/UCB0CLK/TA0.1/COMP0.0/A1" type="bidirectional"/>
+        <pin num="14" name="P1.2/UCB0SIMO/UCB0SDA/TA0.2/A2/Veref-" type="bidirectional"/>
+        <pin num="15" name="P1.3/UCB0SOMI/UCB0SCL/MCLK/A3" type="bidirectional"/>
+        <pin num="16" name="P2.2/SYNC/ACLK/COMP0.1" type="bidirectional"/>
+        <pin num="17" name="P4.5/UCB0SOMI/UCB0SCL/TA3.2" type="bidirectional"/>
+        <pin num="18" name="P4.6/UCB0SIMO/UCB0SDA/TA3.1" type="bidirectional"/>
+        <pin num="19" name="P5.5/UCB0CLK/TA2CLK" type="bidirectional"/>
+        <pin num="20" name="P5.6/UCB0STE/TA2.0" type="bidirectional"/>
+        <pin num="21" name="P5.7/TA2.1/COMP0.2" type="bidirectional"/>
+        <pin num="22" name="P6.0/TA2.2/COMP0.3" type="bidirectional"/>
+        <pin num="23" name="P3.0/TA2.2/CAP0.0" type="bidirectional"/>
+        <pin num="24" name="P3.3/TA2.1/CAP0.1" type="bidirectional"/>
+        <pin num="25" name="P2.3/TA2.0/CAP0.2" type="bidirectional"/>
+        <pin num="26" name="P3.4/TA2CLK/COMP0OUT/CAP0.3" type="bidirectional"/>
+        <pin num="27" name="P3.1/UCA1STE/CAP1.0" type="bidirectional"/>
+        <pin num="28" name="P2.4/UCA1CLK/CAP1.1" type="bidirectional"/>
+        <pin num="29" name="P2.5/UCA1RXD/UCA1SOMI/CAP1.2" type="bidirectional"/>
+        <pin num="30" name="P2.6/UCA1TXD/UCA1SIMO/CAP1.3" type="bidirectional"/>
+        <pin num="31" name="VREG" type="passive"/>
+        <pin num="32" name="P3.7/TA3.2/CAP2.0" type="bidirectional"/>
+        <pin num="33" name="P4.0/TA3.1/CAP2.1" type="bidirectional"/>
+        <pin num="34" name="P4.1/TA3.0/CAP2.2" type="bidirectional"/>
+        <pin num="35" name="P4.2/TA3CLK/CAP2.3" type="bidirectional"/>
+        <pin num="36" name="P2.7/UCB1STE/CAP3.0" type="bidirectional"/>
+        <pin num="37" name="P3.5/UCB1CLK/TB0TRG/CAP3.1" type="bidirectional"/>
+        <pin num="38" name="P3.2/UCB1SIMO/UCB1SDA/CAP3.2" type="bidirectional"/>
+        <pin num="39" name="P3.6/UCB1SOMI/UCB1SCL/CAP3.3" type="bidirectional"/>
+        <pin num="40" name="P6.1/TB0CLK" type="bidirectional"/>
+        <pin num="41" name="P6.2/TB0.0" type="bidirectional"/>
+        <pin num="42" name="P4.7/UCA0STE/TB0.1" type="bidirectional"/>
+        <pin num="43" name="P5.0/UCA0CLK/TB0.2" type="bidirectional"/>
+        <pin num="44" name="P5.1/UCA0RXD/UCA0SOMI/TB0.3" type="bidirectional"/>
+        <pin num="45" name="P5.2/UCA0TXD/UCA0SIMO/TB0.4" type="bidirectional"/>
+        <pin num="46" name="P2.0/XOUT" type="bidirectional"/>
+        <pin num="47" name="P2.1/XIN" type="bidirectional"/>
+        <pin num="48" name="DVSS" type="power_in"/>
+      </pins>
+    </libpart>
+    <libpart lib="vuulgaris" part="R">
+      <description>Resistor</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="" type="passive"/>
+        <pin num="2" name="" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="vuulgaris" part="SCRUB_PAD_5SEG">
+      <description>One Vuulgaris scrub pad, 5 segments RX0 RX1 RX2 RX3 RX0 (ADR 0003); pins 1 and 5 are the two RX0 ends. Copper from mockups/generate-faceplate.py</description>
+      <fields>
+        <field name="Reference">E</field>
+        <field name="Value">SCRUB_PAD_5SEG</field>
+      </fields>
+      <pins>
+        <pin num="1" name="RX0" type="passive"/>
+        <pin num="2" name="RX1" type="passive"/>
+        <pin num="3" name="RX2" type="passive"/>
+        <pin num="4" name="RX3" type="passive"/>
+        <pin num="5" name="RX0" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="vuulgaris" part="TestPoint">
+      <description>test point</description>
+      <docs>~</docs>
+      <footprints>
+        <fp>Pin*</fp>
+        <fp>Test*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">TP</field>
+        <field name="Value">TestPoint</field>
+        <field name="Datasheet">~</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="vuulgaris">
+      <uri>/Users/dylanhackett/V1/hardware/faceplate/../kicad/lib/vuulgaris.kicad_sym</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="/CAP0.0">
+      <node ref="R11" pin="2" pintype="passive"/>
+      <node ref="U1" pin="23" pinfunction="P3.0/TA2.2/CAP0.0" pintype="bidirectional"/>
+    </net>
+    <net code="2" name="/CAP0.1">
+      <node ref="R21" pin="2" pintype="passive"/>
+      <node ref="U1" pin="24" pinfunction="P3.3/TA2.1/CAP0.1" pintype="bidirectional"/>
+    </net>
+    <net code="3" name="/CAP0.2">
+      <node ref="R31" pin="2" pintype="passive"/>
+      <node ref="U1" pin="25" pinfunction="P2.3/TA2.0/CAP0.2" pintype="bidirectional"/>
+    </net>
+    <net code="4" name="/CAP0.3">
+      <node ref="R41" pin="2" pintype="passive"/>
+      <node ref="U1" pin="26" pinfunction="P3.4/TA2CLK/COMP0OUT/CAP0.3" pintype="bidirectional"/>
+    </net>
+    <net code="5" name="/CAP1.0">
+      <node ref="R12" pin="2" pintype="passive"/>
+      <node ref="U1" pin="27" pinfunction="P3.1/UCA1STE/CAP1.0" pintype="bidirectional"/>
+    </net>
+    <net code="6" name="/CAP1.1">
+      <node ref="R22" pin="2" pintype="passive"/>
+      <node ref="U1" pin="28" pinfunction="P2.4/UCA1CLK/CAP1.1" pintype="bidirectional"/>
+    </net>
+    <net code="7" name="/CAP1.2">
+      <node ref="R32" pin="2" pintype="passive"/>
+      <node ref="U1" pin="29" pinfunction="P2.5/UCA1RXD/UCA1SOMI/CAP1.2" pintype="bidirectional"/>
+    </net>
+    <net code="8" name="/CAP1.3">
+      <node ref="R42" pin="2" pintype="passive"/>
+      <node ref="U1" pin="30" pinfunction="P2.6/UCA1TXD/UCA1SIMO/CAP1.3" pintype="bidirectional"/>
+    </net>
+    <net code="9" name="/CAP2.0">
+      <node ref="R13" pin="2" pintype="passive"/>
+      <node ref="U1" pin="32" pinfunction="P3.7/TA3.2/CAP2.0" pintype="bidirectional"/>
+    </net>
+    <net code="10" name="/CAP2.1">
+      <node ref="R23" pin="2" pintype="passive"/>
+      <node ref="U1" pin="33" pinfunction="P4.0/TA3.1/CAP2.1" pintype="bidirectional"/>
+    </net>
+    <net code="11" name="/CAP2.2">
+      <node ref="R33" pin="2" pintype="passive"/>
+      <node ref="U1" pin="34" pinfunction="P4.1/TA3.0/CAP2.2" pintype="bidirectional"/>
+    </net>
+    <net code="12" name="/CAP2.3">
+      <node ref="R43" pin="2" pintype="passive"/>
+      <node ref="U1" pin="35" pinfunction="P4.2/TA3CLK/CAP2.3" pintype="bidirectional"/>
+    </net>
+    <net code="13" name="/CAP3.0">
+      <node ref="R14" pin="2" pintype="passive"/>
+      <node ref="U1" pin="36" pinfunction="P2.7/UCB1STE/CAP3.0" pintype="bidirectional"/>
+    </net>
+    <net code="14" name="/CAP3.1">
+      <node ref="R24" pin="2" pintype="passive"/>
+      <node ref="U1" pin="37" pinfunction="P3.5/UCB1CLK/TB0TRG/CAP3.1" pintype="bidirectional"/>
+    </net>
+    <net code="15" name="/CAP3.2">
+      <node ref="R34" pin="2" pintype="passive"/>
+      <node ref="U1" pin="38" pinfunction="P3.2/UCB1SIMO/UCB1SDA/CAP3.2" pintype="bidirectional"/>
+    </net>
+    <net code="16" name="/CAP3.3">
+      <node ref="R44" pin="2" pintype="passive"/>
+      <node ref="U1" pin="39" pinfunction="P3.6/UCB1SOMI/UCB1SCL/CAP3.3" pintype="bidirectional"/>
+    </net>
+    <net code="17" name="/GND">
+      <node ref="C1" pin="2" pintype="passive"/>
+      <node ref="C2" pin="2" pintype="passive"/>
+      <node ref="C3" pin="2" pintype="passive"/>
+      <node ref="C4" pin="2" pintype="passive"/>
+      <node ref="C5" pin="2" pintype="passive"/>
+      <node ref="C6" pin="2" pintype="passive"/>
+      <node ref="D11" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D12" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D13" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D14" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D21" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D22" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D23" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D24" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D31" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D32" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D33" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D34" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D41" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D42" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D43" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="D44" pin="2" pinfunction="A2" pintype="passive"/>
+      <node ref="J1" pin="10" pinfunction="Pin_10" pintype="passive"/>
+      <node ref="J1" pin="2" pinfunction="Pin_2" pintype="passive"/>
+      <node ref="J1" pin="4" pinfunction="Pin_4" pintype="passive"/>
+      <node ref="J1" pin="6" pinfunction="Pin_6" pintype="passive"/>
+      <node ref="J1" pin="8" pinfunction="Pin_8" pintype="passive"/>
+      <node ref="TP4" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="U1" pin="48" pinfunction="DVSS" pintype="power_in"/>
+    </net>
+    <net code="18" name="/MSP430_RXD">
+      <node ref="J1" pin="5" pinfunction="Pin_5" pintype="passive"/>
+      <node ref="R3" pin="2" pintype="passive"/>
+      <node ref="TP6" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="U1" pin="5" pinfunction="P1.5/UCA0RXD/UCA0SOMI/TA1.1/TMS/A5" pintype="bidirectional"/>
+    </net>
+    <net code="19" name="/MSP430_TXD">
+      <node ref="J1" pin="7" pinfunction="Pin_7" pintype="passive"/>
+      <node ref="R2" pin="2" pintype="passive"/>
+      <node ref="TP5" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="U1" pin="4" pinfunction="P1.4/UCA0TXD/UCA0SIMO/TA1.2/TCK/A4/VREF+" pintype="bidirectional"/>
+    </net>
+    <net code="20" name="/MSP_RST">
+      <node ref="C4" pin="1" pintype="passive"/>
+      <node ref="J1" pin="3" pinfunction="Pin_3" pintype="passive"/>
+      <node ref="R1" pin="2" pintype="passive"/>
+      <node ref="TP2" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="U1" pin="2" pinfunction="~{RST}/NMI/SBWTDIO" pintype="bidirectional"/>
+    </net>
+    <net code="21" name="/MSP_TEST">
+      <node ref="J1" pin="1" pinfunction="Pin_1" pintype="passive"/>
+      <node ref="TP1" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="U1" pin="3" pinfunction="TEST/SBWTCK" pintype="input"/>
+    </net>
+    <net code="22" name="/MSP_VREG">
+      <node ref="C3" pin="1" pintype="passive"/>
+      <node ref="U1" pin="31" pinfunction="VREG" pintype="passive"/>
+    </net>
+    <net code="23" name="/MSP_XIN">
+      <node ref="C5" pin="1" pintype="passive"/>
+      <node ref="U1" pin="47" pinfunction="P2.1/XIN" pintype="bidirectional"/>
+      <node ref="Y1" pin="1" pinfunction="1" pintype="passive"/>
+    </net>
+    <net code="24" name="/MSP_XOUT">
+      <node ref="C6" pin="1" pintype="passive"/>
+      <node ref="U1" pin="46" pinfunction="P2.0/XOUT" pintype="bidirectional"/>
+      <node ref="Y1" pin="2" pinfunction="2" pintype="passive"/>
+    </net>
+    <net code="25" name="/P3V3_MSP430">
+      <node ref="C1" pin="1" pintype="passive"/>
+      <node ref="C2" pin="1" pintype="passive"/>
+      <node ref="J1" pin="9" pinfunction="Pin_9" pintype="passive"/>
+      <node ref="R1" pin="1" pintype="passive"/>
+      <node ref="R2" pin="1" pintype="passive"/>
+      <node ref="R3" pin="1" pintype="passive"/>
+      <node ref="TP3" pin="1" pinfunction="1" pintype="passive"/>
+      <node ref="U1" pin="1" pinfunction="DVCC" pintype="power_in"/>
+    </net>
+    <net code="26" name="/PAD1_RX0">
+      <node ref="D11" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E1" pin="1" pinfunction="RX0" pintype="passive"/>
+      <node ref="E1" pin="5" pinfunction="RX0" pintype="passive"/>
+      <node ref="R11" pin="1" pintype="passive"/>
+    </net>
+    <net code="27" name="/PAD1_RX1">
+      <node ref="D12" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E1" pin="2" pinfunction="RX1" pintype="passive"/>
+      <node ref="R12" pin="1" pintype="passive"/>
+    </net>
+    <net code="28" name="/PAD1_RX2">
+      <node ref="D13" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E1" pin="3" pinfunction="RX2" pintype="passive"/>
+      <node ref="R13" pin="1" pintype="passive"/>
+    </net>
+    <net code="29" name="/PAD1_RX3">
+      <node ref="D14" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E1" pin="4" pinfunction="RX3" pintype="passive"/>
+      <node ref="R14" pin="1" pintype="passive"/>
+    </net>
+    <net code="30" name="/PAD2_RX0">
+      <node ref="D21" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E2" pin="1" pinfunction="RX0" pintype="passive"/>
+      <node ref="E2" pin="5" pinfunction="RX0" pintype="passive"/>
+      <node ref="R21" pin="1" pintype="passive"/>
+    </net>
+    <net code="31" name="/PAD2_RX1">
+      <node ref="D22" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E2" pin="2" pinfunction="RX1" pintype="passive"/>
+      <node ref="R22" pin="1" pintype="passive"/>
+    </net>
+    <net code="32" name="/PAD2_RX2">
+      <node ref="D23" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E2" pin="3" pinfunction="RX2" pintype="passive"/>
+      <node ref="R23" pin="1" pintype="passive"/>
+    </net>
+    <net code="33" name="/PAD2_RX3">
+      <node ref="D24" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E2" pin="4" pinfunction="RX3" pintype="passive"/>
+      <node ref="R24" pin="1" pintype="passive"/>
+    </net>
+    <net code="34" name="/PAD3_RX0">
+      <node ref="D31" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E3" pin="1" pinfunction="RX0" pintype="passive"/>
+      <node ref="E3" pin="5" pinfunction="RX0" pintype="passive"/>
+      <node ref="R31" pin="1" pintype="passive"/>
+    </net>
+    <net code="35" name="/PAD3_RX1">
+      <node ref="D32" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E3" pin="2" pinfunction="RX1" pintype="passive"/>
+      <node ref="R32" pin="1" pintype="passive"/>
+    </net>
+    <net code="36" name="/PAD3_RX2">
+      <node ref="D33" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E3" pin="3" pinfunction="RX2" pintype="passive"/>
+      <node ref="R33" pin="1" pintype="passive"/>
+    </net>
+    <net code="37" name="/PAD3_RX3">
+      <node ref="D34" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E3" pin="4" pinfunction="RX3" pintype="passive"/>
+      <node ref="R34" pin="1" pintype="passive"/>
+    </net>
+    <net code="38" name="/PAD4_RX0">
+      <node ref="D41" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E4" pin="1" pinfunction="RX0" pintype="passive"/>
+      <node ref="E4" pin="5" pinfunction="RX0" pintype="passive"/>
+      <node ref="R41" pin="1" pintype="passive"/>
+    </net>
+    <net code="39" name="/PAD4_RX1">
+      <node ref="D42" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E4" pin="2" pinfunction="RX1" pintype="passive"/>
+      <node ref="R42" pin="1" pintype="passive"/>
+    </net>
+    <net code="40" name="/PAD4_RX2">
+      <node ref="D43" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E4" pin="3" pinfunction="RX2" pintype="passive"/>
+      <node ref="R43" pin="1" pintype="passive"/>
+    </net>
+    <net code="41" name="/PAD4_RX3">
+      <node ref="D44" pin="1" pinfunction="A1" pintype="passive"/>
+      <node ref="E4" pin="4" pinfunction="RX3" pintype="passive"/>
+      <node ref="R44" pin="1" pintype="passive"/>
+    </net>
+    <net code="42" name="unconnected-(U1-P1.0{slash}UCB0STE{slash}TA0CLK{slash}A0{slash}Veref+-Pad12)">
+      <node ref="U1" pin="12" pinfunction="P1.0/UCB0STE/TA0CLK/A0/Veref+" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="43" name="unconnected-(U1-P1.1{slash}UCB0CLK{slash}TA0.1{slash}COMP0.0{slash}A1-Pad13)">
+      <node ref="U1" pin="13" pinfunction="P1.1/UCB0CLK/TA0.1/COMP0.0/A1" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="44" name="unconnected-(U1-P1.2{slash}UCB0SIMO{slash}UCB0SDA{slash}TA0.2{slash}A2{slash}Veref--Pad14)">
+      <node ref="U1" pin="14" pinfunction="P1.2/UCB0SIMO/UCB0SDA/TA0.2/A2/Veref-" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="45" name="unconnected-(U1-P1.3{slash}UCB0SOMI{slash}UCB0SCL{slash}MCLK{slash}A3-Pad15)">
+      <node ref="U1" pin="15" pinfunction="P1.3/UCB0SOMI/UCB0SCL/MCLK/A3" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="46" name="unconnected-(U1-P1.6{slash}UCA0CLK{slash}TA1CLK{slash}TDI{slash}TCLK{slash}A6-Pad6)">
+      <node ref="U1" pin="6" pinfunction="P1.6/UCA0CLK/TA1CLK/TDI/TCLK/A6" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="47" name="unconnected-(U1-P1.7{slash}UCA0STE{slash}SMCLK{slash}TDO{slash}A7-Pad7)">
+      <node ref="U1" pin="7" pinfunction="P1.7/UCA0STE/SMCLK/TDO/A7" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="48" name="unconnected-(U1-P2.2{slash}SYNC{slash}ACLK{slash}COMP0.1-Pad16)">
+      <node ref="U1" pin="16" pinfunction="P2.2/SYNC/ACLK/COMP0.1" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="49" name="unconnected-(U1-P4.3{slash}UCB1SOMI{slash}UCB1SCL{slash}TB0.5{slash}A8-Pad8)">
+      <node ref="U1" pin="8" pinfunction="P4.3/UCB1SOMI/UCB1SCL/TB0.5/A8" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="50" name="unconnected-(U1-P4.4{slash}UCB1SIMO{slash}UCB1SDA{slash}TB0.6{slash}A9-Pad9)">
+      <node ref="U1" pin="9" pinfunction="P4.4/UCB1SIMO/UCB1SDA/TB0.6/A9" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="51" name="unconnected-(U1-P4.5{slash}UCB0SOMI{slash}UCB0SCL{slash}TA3.2-Pad17)">
+      <node ref="U1" pin="17" pinfunction="P4.5/UCB0SOMI/UCB0SCL/TA3.2" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="52" name="unconnected-(U1-P4.6{slash}UCB0SIMO{slash}UCB0SDA{slash}TA3.1-Pad18)">
+      <node ref="U1" pin="18" pinfunction="P4.6/UCB0SIMO/UCB0SDA/TA3.1" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="53" name="unconnected-(U1-P4.7{slash}UCA0STE{slash}TB0.1-Pad42)">
+      <node ref="U1" pin="42" pinfunction="P4.7/UCA0STE/TB0.1" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="54" name="unconnected-(U1-P5.0{slash}UCA0CLK{slash}TB0.2-Pad43)">
+      <node ref="U1" pin="43" pinfunction="P5.0/UCA0CLK/TB0.2" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="55" name="unconnected-(U1-P5.1{slash}UCA0RXD{slash}UCA0SOMI{slash}TB0.3-Pad44)">
+      <node ref="U1" pin="44" pinfunction="P5.1/UCA0RXD/UCA0SOMI/TB0.3" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="56" name="unconnected-(U1-P5.2{slash}UCA0TXD{slash}UCA0SIMO{slash}TB0.4-Pad45)">
+      <node ref="U1" pin="45" pinfunction="P5.2/UCA0TXD/UCA0SIMO/TB0.4" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="57" name="unconnected-(U1-P5.3{slash}UCB1CLK{slash}TA3.0{slash}A10-Pad10)">
+      <node ref="U1" pin="10" pinfunction="P5.3/UCB1CLK/TA3.0/A10" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="58" name="unconnected-(U1-P5.4{slash}UCB1STE{slash}TA3CLK{slash}A11-Pad11)">
+      <node ref="U1" pin="11" pinfunction="P5.4/UCB1STE/TA3CLK/A11" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="59" name="unconnected-(U1-P5.5{slash}UCB0CLK{slash}TA2CLK-Pad19)">
+      <node ref="U1" pin="19" pinfunction="P5.5/UCB0CLK/TA2CLK" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="60" name="unconnected-(U1-P5.6{slash}UCB0STE{slash}TA2.0-Pad20)">
+      <node ref="U1" pin="20" pinfunction="P5.6/UCB0STE/TA2.0" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="61" name="unconnected-(U1-P5.7{slash}TA2.1{slash}COMP0.2-Pad21)">
+      <node ref="U1" pin="21" pinfunction="P5.7/TA2.1/COMP0.2" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="62" name="unconnected-(U1-P6.0{slash}TA2.2{slash}COMP0.3-Pad22)">
+      <node ref="U1" pin="22" pinfunction="P6.0/TA2.2/COMP0.3" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="63" name="unconnected-(U1-P6.1{slash}TB0CLK-Pad40)">
+      <node ref="U1" pin="40" pinfunction="P6.1/TB0CLK" pintype="bidirectional+no_connect"/>
+    </net>
+    <net code="64" name="unconnected-(U1-P6.2{slash}TB0.0-Pad41)">
+      <node ref="U1" pin="41" pinfunction="P6.2/TB0.0" pintype="bidirectional+no_connect"/>
+    </net>
+  </nets>
+</export>

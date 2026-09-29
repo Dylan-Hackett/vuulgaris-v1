@@ -30,12 +30,24 @@ corrections are needed before the numbers mean the same thing.
 
 Composing both:   top     phi = t + d
                   bottom  phi = 180 - t + d
-"""
-import csv, os, subprocess, sys
 
-KI   = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PCB  = os.path.join(KI, 'vuulgaris.kicad_pcb')
-OUT  = os.path.join(KI, 'fab', 'vuulgaris-CPL-jlc.csv')
+THE FACEPLATE (--project faceplate).  Every part is on the back, so every one takes
+the bottom correction.  Its own footprints were checked, 2026-09-29, against the
+EasyEDA footprint JLC holds for each part (easyeda.com/api/products/<LCSC>/components,
+the source easyeda2kicad reads): U1's is LQFP-48_...-TL, pin 1 top-left with 1-12 down
+the left side, exactly ours -- NOT the -90 the usual LQFP rule would give; J1's has pin 1
+bottom-left, odd row along the bottom and the key on it, as ours; the TVS and the
+crystal lie along X as ours.  So d = 0 for all of them.  The test pads and the scrub
+pads are copper, not parts, and are left out.
+"""
+import csv, os, re, subprocess, sys
+
+import proj
+
+KI   = proj.P.dir
+PCB  = proj.P.pcb
+OUT  = os.path.join(KI, 'fab', f'{proj.P.name}-CPL-jlc.csv')
+SKIP = re.compile(r'(TP|E)\d+') if proj.KEY == 'faceplate' else None
 CLI  = '/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli'
 
 # footprint -> degrees the KiCad drawing sits ahead of the LCSC reference.
@@ -63,6 +75,8 @@ def main():
     tmp = os.path.join(KI, 'fab', '.pos-raw.csv')
     rows = raw_positions(tmp)
     os.remove(tmp)
+    if SKIP:
+        rows = [r for r in rows if not SKIP.fullmatch(r['Ref'])]
     changed = 0
     with open(OUT, 'w', newline='') as f:
         w = csv.writer(f)

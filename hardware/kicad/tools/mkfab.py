@@ -12,18 +12,22 @@ the gerber zip is older than the board, because a stale package is worse than
 no package.
 
     python3 tools/mkfab.py
+    python3 tools/mkfab.py --project faceplate    # hardware/vuulgaris-faceplate-fab.zip
 """
 import os, sys, re, time, zipfile, subprocess
 
-KI = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import proj
+
+KI = proj.P.dir
 HW = os.path.dirname(KI)
 FAB = f"{KI}/fab"
-PCB = f"{KI}/vuulgaris.kicad_pcb"
-OUT = f"{HW}/vuulgaris-v1-fab.zip"
+PCB = proj.P.pcb
+N = proj.P.name
+OUT = f"{HW}/vuulgaris-v1-fab.zip" if proj.KEY == "main" else f"{HW}/{N}-fab.zip"
 
-GERBERS = f"{FAB}/vuulgaris-gerbers.zip"
-BOM = f"{FAB}/vuulgaris-BOM-jlc.csv"
-CPL = f"{FAB}/vuulgaris-CPL-jlc.csv"
+GERBERS = f"{FAB}/{N}-gerbers.zip"
+BOM = f"{FAB}/{N}-BOM-jlc.csv"
+CPL = f"{FAB}/{N}-CPL-jlc.csv"
 
 README = """Vuulgaris V1 -- JLCPCB fab package
 Generated {stamp} from hardware/kicad/vuulgaris.kicad_pcb ({commit})
@@ -81,6 +85,57 @@ rotation mirrored about Y; the four SOIC-14s carry a further -90 because their
 footprint is KiCad-library rather than LCSC. Do not "fix" these by hand.
 """
 
+README_FACE = """Vuulgaris V1 faceplate -- JLCPCB fab package
+Generated {stamp} from hardware/faceplate/vuulgaris-faceplate.kicad_pcb ({commit})
+
+WHAT TO UPLOAD WHERE
+--------------------
+  {name}-gerbers.zip          -> PCB tab, "Add gerber file"
+  assembly/{name}-BOM-jlc.csv -> Assembly, BOM file
+  assembly/{name}-CPL-jlc.csv -> Assembly, CPL / pick-and-place file
+
+Upload the gerber zip AS-IS: 11 gerbers, 2 drill files and their 2 maps, flat.
+
+BOARD AND ORDER OPTIONS -- the front of this board is the instrument's front panel
+------------------------------------------------------------------------------------
+  {size}, 4 layers, 1.6mm
+  Solder mask BLACK, silkscreen WHITE, surface finish ENIG.
+  Via covering: PLUGGED (JLC's default on 4 layers; it offers no tented there).
+    NOT "Epoxy Filled & Capped": that caps the scrub pads' 763 vias, which are
+    meant to stay open. Plugged fills only vias under mask.
+  Mark on PCB: REMOVE MARK. An order number printed on the front lands on the
+    gold face.
+  Assembly: BOTTOM SIDE ONLY. Every part is on the back; the top is the face.
+  {placements} placements.
+
+THE FRONT IS EXPOSED GOLD ON PURPOSE (docs/decisions/0013)
+----------------------------------------------------------
+  F.Mask opens the whole face but the black markings, the 2mm frames round the
+  pads and the via patch; each pad's openings are exactly its copper. The face
+  copper is ground. If JLC's engineering review asks about large exposed copper
+  or unusual mask openings, confirm: as designed.
+  F.Paste is empty: no paste on the scrub pads.
+
+BEFORE YOU ORDER
+----------------
+1. U1, MSP430FR2675TPTR (C2052972): JLC had 10 in stock on 2026-09-29, so a
+   10-board run takes every one. Drop-in if short: MSP430FR2676TPTR (C2053559)
+   or MSP430FR2676TPT (C1338445, pre-order): same PT package and pinout, twice
+   the memory.
+2. U1 arrives blank. JLC does not program it: the Daisy flashes it over the
+   ribbon (ADR 0005), or the CAPTIVATE-PGMR through J1.
+
+NOTES
+-----
+The CPL carries rotation corrections: every part is on the bottom and is sent
+as 180 - angle, because KiCad's flip mirrors about X while JLC reads a bottom
+rotation mirrored about Y. Every footprint here was checked against JLC's own
+footprint for its part (2026-09-29) and shares its frame, so nothing further.
+Do not "fix" these by hand.
+TP1-TP6 (bare test pads) and E1-E4 (the scrub pads) are copper, not parts:
+they are in neither the BOM nor the CPL.
+"""
+
 
 def main():
     for f in (GERBERS, BOM, CPL):
@@ -95,7 +150,7 @@ def main():
     placements = sum(1 for _ in open(CPL)) - 1
     uns = []
     import csv
-    for r in csv.DictReader(open(f"{FAB}/vuulgaris-BOM.csv")):
+    for r in csv.DictReader(open(f"{FAB}/{N}-BOM.csv")):
         if not r["LCSC Part #"] and not r["Note"].startswith("NOT FROM JLC"):
             uns.append(f"     {r['Designator']:26}{r['Comment']}")
     # Derived, not typed. It read "284.30 x 116.81 mm" for a day after the top
@@ -111,16 +166,23 @@ def main():
                       r'\(layer "Edge\.Cuts"\)', _pcb, re.S)]
     _x = [float(v) for g in _e for v in (g[0], g[2])]
     _y = [float(v) for g in _e for v in (g[1], g[3])]
-    size = (f"{max(_x)-min(_x):.2f} x {max(_y)-min(_y):.2f} mm overall envelope "
-            f"-- NOT a rectangle, the top edge steps out at the USB-C; JLC quotes "
-            f"on the envelope")
-    readme = README.format(stamp=time.strftime("%Y-%m-%d"), commit=commit, size=size,
-                           placements=placements, unsourced="\n".join(uns) + "\n")
+    if proj.KEY == "main":
+        size = (f"{max(_x)-min(_x):.2f} x {max(_y)-min(_y):.2f} mm overall envelope "
+                f"-- NOT a rectangle, the top edge steps out at the USB-C; JLC quotes "
+                f"on the envelope")
+        readme = README.format(stamp=time.strftime("%Y-%m-%d"), commit=commit, size=size,
+                               placements=placements, unsourced="\n".join(uns) + "\n")
+    else:
+        if uns:
+            sys.exit("unsourced faceplate BOM lines -- every part here is JLC's:\n" + "\n".join(uns))
+        size = f"{max(_x)-min(_x):.2f} x {max(_y)-min(_y):.2f} mm, r6 corners"
+        readme = README_FACE.format(stamp=time.strftime("%Y-%m-%d"), commit=commit, size=size,
+                                    placements=placements, name=N)
 
     with zipfile.ZipFile(OUT, "w", zipfile.ZIP_DEFLATED) as z:
-        z.write(GERBERS, "vuulgaris-gerbers.zip")
-        z.write(BOM, "assembly/vuulgaris-BOM-jlc.csv")
-        z.write(CPL, "assembly/vuulgaris-CPL-jlc.csv")
+        z.write(GERBERS, f"{N}-gerbers.zip")
+        z.write(BOM, f"assembly/{N}-BOM-jlc.csv")
+        z.write(CPL, f"assembly/{N}-CPL-jlc.csv")
         z.writestr("README.txt", readme)
     print(f"{OUT}  ({os.path.getsize(OUT)/1024:.0f} KB)")
     print(f"  {placements} placements, {len(uns)} unsourced BOM lines, board at {commit}")
