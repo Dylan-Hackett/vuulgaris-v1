@@ -413,7 +413,7 @@ $KPY hardware/faceplate/design/mkface.py               # the front: gold, mask a
 | `mkfanin` | all 16 electrode lines, bus exit to cell via | exact, L2 |
 | `mkzones` | the L3 GND plane: **solid**, margin + corridor, never under a pad | exact |
 | `mkroute` | everything else: the B.Cu fan-out into `U1`, power, the last grounds, crystal | Freerouting, fenced (the gold is dropped from its DSN); then prunes dangling copper and stitches any GND pad with no path to the plane |
-| `mkface` | the front: one GND zone on F.Cu less each pad's 2mm frame; F.Mask openings = the gold less the via patch, a dot over every other via outside the pads, and every art stroke; the right-hand numerals in silk on the patch | the generator's `face()`, `scale_marks()`, `panel_art()` (ADR 0013) |
+| `mkface` | the front: one GND zone on F.Cu less each pad's 2mm frame; F.Mask openings = the gold less the mask block (frames + via patch as one filleted outline), a dot over every other via outside the pads, and every art stroke; the right-hand numerals in silk on the patch | the generator's `face()`, `mask_block()`, `scale_marks()`, `panel_art()` (ADR 0013) |
 
 **The electrode fan-in (`mkfanin`).** Each pad's lines leave its bus as RX0, RX2, RX1, RX3
 (top to bottom) but the columns run RX0, RX1, RX2, RX3. Each cell's via sits at its own height
@@ -493,8 +493,10 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 - [x] Panel art (2026-09-29, ADR 0013): everything the mockup prints -- rules, dividers,
       semicircles, Attic numerals, the scale -- as black soldermask on the gold, and none of
       its part outlines (knobs, buttons, switches, OLED, screw heads). The right-hand numerals
-      are silk, on the via patch. panelcheck samples every stroke: ink where drawn, gold
-      beside it; every via outside the pads under the patch or a dot; silk == generator
+      are silk, on the via patch. The frames and the patch are one block, filleted 2mm out,
+      1mm in. panelcheck samples every stroke (ink where drawn, gold beside it) and the
+      block's outline (mask 0.12 inside, gold 0.12 outside); every via outside the pads under
+      the patch or a dot; silk == generator
 - [x] Copper extended past the printed scale (endpoint trim eats a few mm at each end): the
       scale stops 6mm inside each copper end (ADR 0003, "Endpoint trim"), hanging from each
       pad's frame (ADR 0013).

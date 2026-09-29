@@ -60,6 +60,7 @@ every position and both placement flags live there. Nothing in the drawing code 
 | Tick count, cross positions | `n_ticks`, `cross_at` |
 | How far the scale stops inside the copper | `scale_inset_mm` (ink only: the copper never moves) |
 | The gap between each pad and the gold face | `pad_frame_mm` (ADR 0013; the scale hangs from it) |
+| The mask block's fillets | `mask_fillet_mm` (outer), `mask_fillet_inner_mm` (where the gaps meet the via patch) |
 | Knob size or spacing | `knob_r_mm`, `knob_pitch_mm`, `offset_knob_r_mm` |
 | Switch openings | `switch_w_mm`, `switch_h_mm` |
 | Encoder position | `encoder_lower_right` (True = beside pads, False = upper strip) |

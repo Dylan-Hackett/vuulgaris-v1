@@ -2,7 +2,7 @@
 
 **Status:** Accepted
 **Date:** 2026-09-29 (revised the same day: the masked right panel shrank to a small via
-patch, and the corridor stitch vias went)
+patch, the corridor stitch vias went, and the mask block was filleted)
 
 ## Decision
 
@@ -22,6 +22,12 @@ separated from the surrounding copper.
   numerals print on it in **white silk**, the only silk on the face. Gold shows above it,
   below it and past its right edge. (It was a panel from the divider rule to the board's
   bottom and right edges. Dylan: too much of a block.)
+- **The frames and the patch are one block of mask, filleted** (Dylan): 2mm on its outer
+  corners, the frame's own width, so the frame runs 2mm round each pad's corner too (the arcs
+  centre on the pad's corners). 1mm on its inner corners, where each gap between the pads
+  meets the patch; it has to be under half the 4mm gap, or the gap would close. The gold's
+  copper follows it, 0.1 under the mask. (`mask_block()`, `mask_fillet_mm`,
+  `mask_fillet_inner_mm`.)
 - **Every other via outside the pads gets a black dot** of mask, 0.4 beyond its copper.
   That covers three vias, all at the right end of the gap between pads 3 and 4: the two UART
   hops and one GND via. The pads' own bar vias stay open, as ADR 0003 has them, and no via is
