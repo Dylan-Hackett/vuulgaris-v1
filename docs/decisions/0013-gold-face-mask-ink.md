@@ -2,7 +2,8 @@
 
 **Status:** Accepted
 **Date:** 2026-09-29 (revised the same day: the masked right panel shrank to a small via
-patch, the corridor stitch vias went, and the mask block was filleted)
+patch, the corridor stitch vias went, the mask block was filleted, and the pads' openings
+became their copper)
 
 ## Decision
 
@@ -28,6 +29,13 @@ separated from the surrounding copper.
   meets the patch; it has to be under half the 4mm gap, or the gap would close. The gold's
   copper follows it, 0.1 under the mask. (`mask_block()`, `mask_fillet_mm`,
   `mask_fillet_inner_mm`.)
+- **The pads' own openings are their copper, 1:1** (Dylan): every bar and bridge is its own
+  opening, so black mask stands in every gap between the teeth, and the pads read as gold
+  teeth on black instead of on bare laminate. JLC's LDI has made 1:1 openings since June
+  2025. The narrowest dam is 0.20 (a tooth's top/bottom gap), over the 0.13 black mask needs.
+  The pad-wide opening it replaces (0.25 past the copper) dated from the old expansion, which
+  would have left 0.01mm dams. A dam across a tooth gap is dielectric between two electrodes
+  and adds a hair of capacitance between them, nothing a baseline does not absorb.
 - **Every other via outside the pads gets a black dot** of mask, 0.4 beyond its copper.
   That covers three vias, all at the right end of the gap between pads 3 and 4: the two UART
   hops and one GND via. The pads' own bar vias stay open, as ADR 0003 has them, and no via is
