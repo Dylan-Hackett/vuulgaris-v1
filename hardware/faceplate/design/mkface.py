@@ -10,8 +10,8 @@ Run last, after mkroute.py: the gold clears every via, so the vias come first.
   gold    One GND zone on F.Cu, FACE_GOLD, solid: the whole outline less each pad's frame,
           its corners filleted with the mask's (generator mask_block()). Its copper stops
           UNDER 0.1 short of the frame, so the mask overlaps the copper's edge and no bare
-          laminate shows. 0.3 from every cut (the board's copper-to-edge
-          rule) and from every other net's via. It runs on under the via patch, where it
+          laminate shows. 0.3 from every cut (the board's copper-to-edge rule), CLEAR from
+          every other net's via. It runs on under the via patch, where it
           screens the fan-in lines from a hand resting there, and it is grounded there: the
           margin's GND vias (the TVS grounds among them) join it. Island removal is "always",
           so if they ever did not, it would fill to nothing rather than float.
@@ -43,9 +43,11 @@ import pcbnew          # noqa: E402
 mm = pcbnew.FromMM
 UNDER = 0.1            # gold copper runs this far under the mask at each of its edges
 EDGE = 0.3             # copper to any cut: the board's rule (.kicad_pro), JLC wants 0.2
-CLEAR = 0.3            # the gold to another net
+CLEAR = 0.25           # the gold to another net (the board's rule is 0.2): at 0.3, the TXD
+                       # hop under the patch nicked the gold's corner at the pad 3-4 gap
 SLIVER = 0.05          # openings narrower than 2 x this close up
-DOT = CLEAR + UNDER    # a via's mask dot, beyond its copper: 0.4, past JLC's 0.35 for plugging
+DOT = 0.4              # a via's mask dot, beyond its copper: past CLEAR + UNDER, and JLC's
+                       # 0.35 for plugging
 GROUPS = ("FACE_MASK", "FACE_SILK")
 ARC_STEP = 5.0         # degrees per point on an arc stroke's outline
 
