@@ -154,7 +154,6 @@ def screws():
 
 
 # ---- the printed face ---------------------------------------------------------------------
-PAD_MASK_MARGIN = 0.25  # each pad's one F.Mask opening, beyond its copper (design/mkpads.py)
 
 
 def panel_ink():

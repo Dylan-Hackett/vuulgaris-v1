@@ -489,7 +489,10 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
       PGMR (ADR 0005, revised 2026-09-28). No separate connector.
 - [x] 4 SBW test pads present (TEST, RST, 3V3, GND): `TP1`–`TP4`, beside `J1`
 - [x] Test points on UART Tx/Rx, RST, TEST (there is no IRQ line — `pin-allocation.md`): `TP5`, `TP6`
-- [x] Soldermask opening over all pad copper (one opening per pad; vias open both sides)
+- [x] Soldermask opening over all pad copper: every bar and bridge its own opening, exactly
+      its copper (1:1; mask stands in the tooth gaps, 0.20 at the least; 2026-09-29), vias
+      open both sides. panelcheck "pad mask openings == their copper"; KiCad DRC checks no
+      opening spans two nets
 - [x] Panel art (2026-09-29, ADR 0013): everything the mockup prints -- rules, dividers,
       semicircles, Attic numerals, the scale -- as black soldermask on the gold, and none of
       its part outlines (knobs, buttons, switches, OLED, screw heads). The right-hand numerals

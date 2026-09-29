@@ -1177,6 +1177,22 @@ def check(c, g):
            if not any(fr[1] <= y1 and min(y1, y2) >= fr[3] - 1e-9 and
                       all(max(y1, y2) + 0.15 + 0.3 <= nf[1] for nf in fc["frames"] if nf[1] > fr[3])
                       for fr in fc["frames"])]
+    # Each bar and bridge is its own mask opening, exactly its copper (hardware/faceplate/
+    # design/mkpads.py), so mask stands in every gap between them: none may be under JLC's
+    # 0.13mm for black mask. Rect-to-rect, which the bars' rounded corners only widen.
+    web = 9.0
+    for yt in g["PAD_TOPS"]:
+        cu = copper(c, g, yt)
+        rs = sorted((x, y, x + w, y + h) for _, x, y, w, h in cu["bars"] + cu["bridges"])
+        for i, a in enumerate(rs):
+            for b_ in rs[i + 1:]:
+                if b_[0] - a[2] > web:
+                    break
+                dx, dy = max(0.0, b_[0] - a[2], a[0] - b_[2]), max(0.0, b_[1] - a[3], a[1] - b_[3])
+                d = math.hypot(dx, dy)
+                if d > 1e-6:
+                    web = min(web, d)
+    row("pad mask webs >= 0.13 (1:1 openings, black mask)", f"{web:.3f}mm", web >= 0.13)
     row("scale on the gold, hanging from each pad's frame",
         f"{len(sm)} strokes, from {c['scale_top_mm']:.2f}mm below the copper (frame {c['pad_frame_mm']:g})",
         not bad and c["scale_top_mm"] >= c["pad_frame_mm"] - 1e-9)

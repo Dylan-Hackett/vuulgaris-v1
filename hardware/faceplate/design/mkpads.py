@@ -13,19 +13,23 @@ Two steps, both derived from mockups/generate-faceplate.py copper(), never typed
      two bars it joins. Pads are numbered by E's symbol pins: RX0 is pin 1 at
      the start of the pad (x < centre) and pin 5 at the end, RX1-RX3 pins 2-4,
      so boardcheck sees every bar on its PADp_RXn net. No F.Paste: the stencil
-     would otherwise paste the whole scrub surface. One F.Mask opening over the
-     whole pad (per-pad openings would leave 0.01mm mask dams in the 0.21mm
-     tooth gaps), and a B.Mask opening at every via so the vias are open at both
-     ends (ADR 0003: not filled, not capped, and not tented on one side, which
-     would trap plating chemistry). Excluded from BOM and placement files, and
-     allowed to bridge its own nets under that one mask opening -- which is
-     the point of it.
+     would otherwise paste the whole scrub surface. F.Mask: every bar and bridge
+     is its own opening, exactly its copper (the board's pad-to-mask clearance is
+     0, and JLC's LDI has made 1:1 openings since June 2025), so the mask stands
+     in every tooth gap: 0.20 at the least, the top/bottom gap, over JLC's 0.13
+     for black mask (generator --check, "pad mask webs"). Until 2026-09-29 one
+     opening covered the whole pad, 0.25 past its copper, because the fab's old
+     expansion would have left 0.01mm dams. A B.Mask opening at every via, so the
+     vias are open at both ends (ADR 0003: not filled, not capped, and not tented
+     on one side, which would trap plating chemistry). Excluded from BOM and
+     placement files. No opening spans two nets, so KiCad's DRC checks that.
 
   2. The board, through pcbnew. E1-E4 on F.Cu at the generator's pad centres,
      every pad's net from netmap.json, and one through via per bar at the
-     generator's via point, on that bar's net. Idempotent: removes E1-E4 and
-     every via on a PADp_RXn net first. Vias are board items because KiCad 7
-     footprints cannot hold them.
+     generator's via point, on that bar's net. Idempotent: removes E1-E4 and the
+     vias inside them first -- only those, so it re-runs on a routed board (the
+     network cells' vias, mkcells.py, are on the same nets). Vias are board items
+     because KiCad 7 footprints cannot hold them.
 
 After this writes the board, File -> Revert in Pcbnew before touching it.
 """
@@ -46,8 +50,6 @@ P = proj.P
 LIB = os.path.join(proj.PROJECTS["main"].dir, "lib", "vuulgaris.pretty")
 NAME = lambda p: f"SCRUB_PAD_216x10_P{p}"
 FP_PATH = lambda p: os.path.join(LIB, NAME(p) + ".kicad_mod")
-MASK_MARGIN = pg.PAD_MASK_MARGIN   # F.Mask opening beyond the copper, all round (0.25;
-                                   # the gold face's frame is measured from the copper, ADR 0013)
 VIA_MASK = 0.1          # B.Mask opening beyond the via pad, on diameter
 
 gen, G = pg.generator()
@@ -83,7 +85,7 @@ def footprint(p):
          f'mockups/generate-faceplate.py copper(); do not edit. Bars are pads numbered by the '
          f'SCRUB_PAD_5SEG pins (RX0 = 1 and 5, RX1-RX3 = 2-4); each takes an open via placed on '
          f'the board by mkpads.py.")',
-         '  (attr smd exclude_from_pos_files exclude_from_bom allow_soldermask_bridges)',
+         '  (attr smd exclude_from_pos_files exclude_from_bom)',
          f'  (fp_text reference "REF**" (at 0 {f(-PW / 2 - 1.5)}) (layer "F.Fab") hide'
          '\n    (effects (font (size 1 1) (thickness 0.15))))',
          f'  (fp_text value "{NAME(p)}" (at 0 {f(PW / 2 + 1.5)}) (layer "F.Fab") hide'
@@ -91,11 +93,7 @@ def footprint(p):
     hx, hy = PL / 2.0, PW / 2.0
     L.append(f'  (fp_rect (start {f(-hx)} {f(-hy)}) (end {f(hx)} {f(hy)}) '
              '(stroke (width 0.1) (type solid)) (fill none) (layer "F.Fab"))')
-    m = MASK_MARGIN
-    L.append(f'  (fp_rect (start {f(-hx - m)} {f(-hy - m)}) (end {f(hx + m)} {f(hy + m)}) '
-             '(stroke (width 0) (type solid)) (fill solid) (layer "F.Mask"))')
-    L.append(f'  (fp_rect (start {f(-hx - m - 0.25)} {f(-hy - m - 0.25)}) '
-             f'(end {f(hx + m + 0.25)} {f(hy + m + 0.25)}) '
+    L.append(f'  (fp_rect (start {f(-hx - 0.5)} {f(-hy - 0.5)}) (end {f(hx + 0.5)} {f(hy + 0.5)}) '
              '(stroke (width 0.05) (type solid)) (fill none) (layer "F.CrtYd"))')
     vd = C["via_dia_mm"] + VIA_MASK
     for _, x, y in cu["vias"]:
@@ -133,9 +131,11 @@ def place():
     padnets = {f"/{n}" for r in refs for n in nm[r].values()}
     # Collect before removing anything: in KiCad 7's bindings b.Tracks() stops
     # being iterable once a footprint has been removed from the board.
-    old_vias = [t for t in b.GetTracks()
-                if isinstance(t, pcbnew.PCB_VIA) and t.GetNetname() in padnets]
     old_fps = [fp for fp in b.GetFootprints() if fp.GetReference() in refs]
+    boxes = [fp.GetBoundingBox(False, False) for fp in old_fps]
+    old_vias = [t for t in b.GetTracks()
+                if isinstance(t, pcbnew.PCB_VIA) and t.GetNetname() in padnets
+                and any(bb.Contains(t.GetPosition()) for bb in boxes)]
     for t in old_vias:
         b.Remove(t)
     for fp in old_fps:

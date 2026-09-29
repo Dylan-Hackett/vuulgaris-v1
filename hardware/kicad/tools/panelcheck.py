@@ -97,6 +97,9 @@ def board(path):
                                          max(cy[2], box[2]), max(cy[3], box[3])]
         fps[f.GetReference()] = {
             "layer": f.GetLayerName(),
+            "fmask": sum(1 for d in f.GraphicalItems() if d.GetLayer() == pcbnew.F_Mask),
+            "mask_exp": max([abs(T(p.GetSolderMaskExpansion())) for p in f.Pads()] or [0.0]),
+            "on_fmask": sum(1 for p in f.Pads() if p.IsOnLayer(pcbnew.F_Mask)),
             "fab": bb,
             "extent": cy,
             "pads": [{"n": p.GetNumber(), "xy": pt(p.GetPosition()),
@@ -546,6 +549,12 @@ def main():
                 n_via += 1
         stray = [f"{n} ({len(s)})" for n, s in board_vias.items()
                  if n.startswith("PAD") and s]
+        bad_m = [f"E{p}" for p in range(1, 5) if face["fps"][f"E{p}"]["fmask"]
+                 or face["fps"][f"E{p}"]["mask_exp"] > 1e-6
+                 or face["fps"][f"E{p}"]["on_fmask"] != len(face["fps"][f"E{p}"]["pads"])]
+        row(not bad_m, "pad mask openings == their copper (1:1)",
+            "every bar and bridge its own opening, 0 expansion, no pad-wide opening"
+            if not bad_m else "not 1:1: " + ", ".join(bad_m))
         row(not bad_cu, "scrub pad copper == generator copper()",
             f"{n_cu} bars + bridges on E1-E4, F.Cu" if not bad_cu else bad_cu[0])
         row(not bad_via and not stray, "one via per bar, where the generator puts it",
