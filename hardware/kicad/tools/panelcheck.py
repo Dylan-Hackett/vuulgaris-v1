@@ -120,9 +120,12 @@ def board(path):
         zones.append({"net": z.GetNetname().lstrip("/"), "layer": b.GetLayerName(z.GetLayer()),
                       "bbox": [T(q.GetLeft()), T(q.GetTop()), T(q.GetRight()), T(q.GetBottom())]})
     silk = [{"a": pt(d.GetStart()), "b": pt(d.GetEnd()), "w": T(d.GetWidth()),
-             "group": d.GetParentGroup().GetName() if d.GetParentGroup() else ""}
+             "group": d.GetParentGroup().GetName() if d.GetParentGroup() else "",
+             **({"c": pt(d.GetCenter()), "r": T(d.GetRadius()), "mid": pt(d.GetArcMid())}
+                if d.GetShape() == pcbnew.SHAPE_T_ARC else {})}
             for d in b.GetDrawings()
-            if d.GetLayer() == pcbnew.F_SilkS and d.GetShape() == pcbnew.SHAPE_T_SEGMENT]
+            if d.GetLayer() == pcbnew.F_SilkS
+            and d.GetShape() in (pcbnew.SHAPE_T_SEGMENT, pcbnew.SHAPE_T_ARC)]
     return {"edges": edges, "fps": fps, "vias": vias, "tracks": tracks, "zones": zones,
             "silk": silk,
             "outer": [T(ob.GetLeft()), T(ob.GetTop()), T(ob.GetRight()), T(ob.GetBottom())]}
@@ -397,7 +400,7 @@ def main():
             f"{n_via} vias on their bar's net" if not (bad_via or stray)
             else (bad_via[:1] + [f"extra vias on {', '.join(stray)}"])[0])
     # ---- the printed scale: the generator's strokes, inside the board's own copper
-    scale = [e for e in face["silk"] if e["group"] == "SCRUB_SCALE"]
+    scale = [e for e in face["silk"] if e["group"] == "SCRUB_SCALE" and "c" not in e]
     if not scale:
         todos.append("scrub scale not on F.SilkS yet -- design/mkscale.py")
     else:
@@ -423,6 +426,57 @@ def main():
             ins = (ink_x0 - cu_x0 + 0.1, cu_x1 - ink_x1 + 0.1)     # to the end ticks' centres
             row(min(ins) >= 3.0, "copper runs past the scale (endpoint trim)",
                 f"{ins[0]:.2f} / {ins[1]:.2f}mm of copper beyond the end ticks")
+    # ---- the rest of the panel art: panel_silk(), i.e. panel_art() less what fab clips
+    art = [e for e in face["silk"] if e["group"] == "PANEL_ART"]
+    if not art:
+        todos.append("panel art not on F.SilkS yet -- design/mkart.py")
+    else:
+        import math
+        strokes, clipped = pg.panel_silk()
+        key = lambda a, b, w: tuple(q(v) for v in (*sorted([tuple(a), tuple(b)])[0],
+                                                   *sorted([tuple(a), tuple(b)])[1], w))
+        want = []
+        for st in strokes:
+            if "seg" in st:
+                x1, y1, x2, y2 = st["seg"]
+            else:
+                cx, cy, r, a0, a1 = st["arc"]
+                x1, y1 = cx + r * math.cos(math.radians(a0)), cy + r * math.sin(math.radians(a0))
+                x2, y2 = cx + r * math.cos(math.radians(a1)), cy + r * math.sin(math.radians(a1))
+            want.append(key((x1, y1), (x2, y2), st["w"]) + (("arc",) if "arc" in st else ()))
+        have = [key((e["a"][0] - O[0], e["a"][1] - O[1]), (e["b"][0] - O[0], e["b"][1] - O[1]), e["w"])
+                + (("arc",) if "c" in e else ()) for e in art]
+        close = lambda u, v: len(u) == len(v) and all(abs(i - j) <= 0.001 for i, j in zip(u[:5], v[:5]))
+        extra = [h for h in have if not any(close(h, w_) for w_ in want)]
+        lost = [w_ for w_ in want if not any(close(h, w_) for h in have)]
+        row(not extra and not lost, "panel art == generator panel_art(), fab-clipped",
+            f"{len(have)} strokes on F.SilkS; clipped {', '.join(f'{k} {v:.1f}mm' for k, v in sorted(clipped.items()))}"
+            if not (extra or lost) else f"{len(lost)} missing, {len(extra)} extra")
+    # Silk over a via prints, but over its bump: keep all of it off every via's copper.
+    def to_stroke(p, e):
+        a, b = e["a"], e["b"]
+        if "c" in e:
+            c, r = e["c"], e["r"]
+            ang = lambda v: math.atan2(v[1] - c[1], v[0] - c[0])
+            s0, sm, s1, sp = ang(a), ang(e["mid"]), ang(b), ang(p)
+            within = lambda t, lo, hi: (t - lo) % (2 * math.pi) <= (hi - lo) % (2 * math.pi)
+            ccw = within(sm, s0, s1)
+            if (within(sp, s0, s1) if ccw else within(sp, s1, s0)):
+                return abs(math.hypot(p[0] - c[0], p[1] - c[1]) - r)
+            return min(math.hypot(p[0] - a[0], p[1] - a[1]), math.hypot(p[0] - b[0], p[1] - b[1]))
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        L2 = dx * dx + dy * dy or 1e-12
+        t = max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L2))
+        return math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy)
+    import math
+    silk_all = [e for e in face["silk"] if e["group"] in ("PANEL_ART", "SCRUB_SCALE")]
+    near = [(v, e) for v in face["vias"] for e in silk_all
+            if to_stroke(v["xy"], e) < v["d"] / 2 + e["w"] / 2 + 0.1]
+    if silk_all:
+        row(not near, "silk clear of every via by 0.1",
+            f"{len(silk_all)} strokes x {len(face['vias'])} vias" if not near else
+            f"{len(near)}: first a {near[0][0]['net']} via at panel "
+            f"({near[0][0]['xy'][0] - O[0]:.2f}, {near[0][0]['xy'][1] - O[1]:.2f}), {near[0][1]['group']}")
     # The generator's via keepouts must be exactly J1's pads, read off the board.
     if j1:
         rows_ = {}

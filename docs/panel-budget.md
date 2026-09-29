@@ -229,7 +229,8 @@ Now **ΙΙΙΙ (4), ΠΙΙ (7), Δ (10)**, generated directly from `CROSS_AT` an
 marks, so they cannot drift out of sync again.
 
 Attic acrophonic system, verified: **Ι = 1, Π = 5** (from ΠΕΝΤΕ), **Δ = 10** (from ΔΕΚΑ). The
-generator has an `attic(n)` helper rather than hardcoded glyph strings.
+generator draws them from n with `numeral_strokes(n)` -- monoline strokes, no font -- and the
+faceplate's silkscreen prints the same strokes.
 
 **The crosses moved from 3/6/9 to 4/7/10, and that is the faithful translation, not a change.**
 The reference put crosses at centre and centre plus/minus 3 (marks 3, 6, 9 of 11, where 6 was

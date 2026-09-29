@@ -143,7 +143,12 @@ keeps every letter under the divider rule. Both asserted in `--check`.
 - **The encoder sits in the lower region**, right margin beside the pads, below the OLED.
 - **The two switch openings are vertical** (9 x 20mm), crossing rules 2 to 4.
 - **13 tick divisions**, crosses at 4/7/10 rather than 3/6/9 of 11. Numerals are **generated
-  from `cross_at`** via an `attic(n)` helper, so labels cannot drift out of sync with marks.
+  from `cross_at`** by `numeral_strokes(n)`, so labels cannot drift out of sync with marks.
+- **Everything printed is strokes, not text** (2026-09-29): `scale_marks()` and `panel_art()`
+  hold every printed mark, the numerals drawn as monoline Ι / Π / Δ rather than typeset. The
+  SVG draws them, and the faceplate's silkscreen prints the same strokes
+  (`hardware/faceplate/design/mkscale.py`, `mkart.py`). Knob, button and screw outlines are
+  drawings of parts, not art, and are not printed.
 
 ### What it is NOT, yet
 

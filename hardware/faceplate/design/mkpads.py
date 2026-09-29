@@ -46,7 +46,8 @@ P = proj.P
 LIB = os.path.join(proj.PROJECTS["main"].dir, "lib", "vuulgaris.pretty")
 NAME = lambda p: f"SCRUB_PAD_216x10_P{p}"
 FP_PATH = lambda p: os.path.join(LIB, NAME(p) + ".kicad_mod")
-MASK_MARGIN = 0.25      # F.Mask opening beyond the copper, all round
+MASK_MARGIN = pg.PAD_MASK_MARGIN   # F.Mask opening beyond the copper, all round (0.25;
+                                   # the silkscreen keeps clear of it, panelgeo.panel_silk())
 VIA_MASK = 0.1          # B.Mask opening beyond the via pad, on diameter
 
 gen, G = pg.generator()
