@@ -95,7 +95,8 @@ def main():
                 else:                               # walked in to clear J1: stub to it
                     nodes.append((x, line))
                     n += seg(net(rx), pcbnew.In1_Cu, (x, line), (x, y))
-            if out:
+            if out:          # the last run into the margin dead level on the line,
+                nodes.append((G["PAD_X1"] - 0.5, line))   # where the router's stub lies
                 nodes.append((EXIT, line))
             for a, z in zip(nodes, nodes[1:]):
                 n += seg(net(rx), pcbnew.In1_Cu, a, z)

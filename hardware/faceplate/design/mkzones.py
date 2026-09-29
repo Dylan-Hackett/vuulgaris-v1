@@ -1,9 +1,9 @@
-"""The faceplate's GND on L3: hatched, and never under a pad. Re-runnable.
+"""The faceplate's GND on L3: solid, and never under a pad. Re-runnable.
 
     KPY=/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3
     $KPY hardware/faceplate/design/mkzones.py
 
-Two areas, both In2.Cu, net GND (ADR 0003: L3 hatched ground, none under the electrodes):
+Three areas, all In2.Cu, net GND (ADR 0003: L3 ground, none under the electrodes):
 
   * the right margin, from just past the pad copper to the board edge -- under U1, the
     network grid and the corner group, so every ground there is one short via away;
@@ -11,8 +11,11 @@ Two areas, both In2.Cu, net GND (ADR 0003: L3 hatched ground, none under the ele
     the corridor's lines (ADR 0003, "Route digital lines..."), 0.75 clear of both pads'
     copper, widened at J1's end to take its GND via.
 
-Hatched, not solid: under the sensor lines crossing the margin on L2 a solid pour would
-add more capacitance to them than it needs to shield them.
+Solid, not hatched (2026-09-28). Hatched first, to keep capacitance off the L2 sensor
+lines crossing the margin; but a via that lands in a hatch hole touches nothing, and the
+router takes the plane for solid, so grounds it thought done were open. L2 is ~1.1mm above
+L3 (the 4-layer core), so solid adds under 1pF to a fan-in line against the tens of pF of
+its pad, and it shields the digital lines on L4 properly. It is still never under a pad.
 Idempotent: removes every GND zone on In2.Cu first.
 
 After this writes the board, File -> Revert in Pcbnew before touching it.
@@ -67,9 +70,7 @@ def main():
         for x, y in pts:
             sx, sy = pg.face_sheet((x, y))
             ol.Append(mm(sx), mm(sy))
-        z.SetFillMode(pcbnew.ZONE_FILL_MODE_HATCH_PATTERN)
-        z.SetHatchThickness(mm(0.25))
-        z.SetHatchGap(mm(0.75))
+        z.SetFillMode(pcbnew.ZONE_FILL_MODE_POLYGONS)          # solid: see the docstring
         z.SetMinThickness(mm(0.2))
         z.SetLocalClearance(mm(0.2))
         z.SetPadConnection(pcbnew.ZONE_CONNECTION_FULL)
@@ -79,7 +80,7 @@ def main():
         b.Remove(z)
     pcbnew.ZONE_FILLER(b).Fill(b.Zones())
     pcbnew.SaveBoard(proj.P.pcb, b)
-    print(f"{len(AREAS)} GND zones on In2.Cu, hatched. File -> Revert in Pcbnew before touching it.")
+    print(f"{len(AREAS)} GND zones on In2.Cu, solid. File -> Revert in Pcbnew before touching it.")
 
 
 if __name__ == "__main__":

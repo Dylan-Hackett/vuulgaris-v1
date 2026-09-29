@@ -160,11 +160,17 @@ players at once. Keep the marks away from it.
 - Decoupling caps and ESD parts right at the MCU.
 - Route digital lines to the main board away from electrodes, ideally exiting the opposite edge.
   **Not possible here (2026-09-28):** `J1` is fixed by the main board in the gap between pads
-  3 and 4. The UART, 3V3, RST and TEST run from it along that gap on L4, over a narrow L3
-  ground strip kept ~2.5mm off both pads' copper, into the right margin. The gap carries
-  nothing else. Firmware keeps the UART quiet during scans ([Q23](../notes/open-questions.md)).
-- Stackup: L1 electrodes, L2 traces, L3 hatched ground, L4 MCU + components. RX0's
+  3 and 4. The UART, 3V3, RST and TEST run from it along that gap on L4, fanned 1.3mm apart
+  with the test pads on them, over an L3 ground strip under all five lines, 0.75mm clear of
+  both pads' copper (it was to be ~3mm wide and 2.5mm clear, before the lines spread to take
+  the test pads), into the right margin. The gap carries nothing else. Firmware keeps the UART
+  quiet during scans ([Q23](../notes/open-questions.md)).
+- Stackup: L1 electrodes, L2 traces, L3 ground, L4 MCU + components. RX0's
   full-length return cannot run under the electrodes on the same layer.
+  **As built (2026-09-28):** L3 is a **solid** GND plane in the margin and the pad 3–4
+  corridor only, never under a pad; under the pads L3 carries only the RX0 joins. Hatched
+  first, but a via in a hatch hole touches nothing; L2 is ~1.1mm above L3, so solid adds
+  under 1pF to a fan-in line.
 - MCU placement: centre of the pad group, to equalise trace length across all four pads.
   Unequal lengths give unequal baselines.
   **Superseded for this board (2026-09-28): the MCU is in the right margin.** The rule assumes

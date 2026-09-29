@@ -4,7 +4,7 @@
 the back. Panel geometry comes from `../../mockups/generate-faceplate.py` — see the
 handoff below for the size, which is not what older docs say.
 
-## Status — 2026-09-28: placed, ready for routing
+## Status — 2026-09-28: placed and routed; DRC clean
 
 **Schematic done**, `mksch → netcheck` 145/145 over 41 nets, every block traced to a TI or
 manufacturer figure in `design/design.py`. 54 parts: `U1` MSP430FR2675TPT; `C1`/`C2`
@@ -17,9 +17,9 @@ one net); `TP1`–`TP6` SBW and UART pads; `J1`.
 
 **Pad copper is on the board** (2026-09-28): `E1`–`E4` are generated footprints, one via
 per bar (763 vias, 37 bridges), from `design/mkpads.py`; ADR 0003, "Connecting the bars".
-boardcheck parity is 0 over 145. **Every part is placed** (`design/mkplace.py`, one-shot; see
-"Layout" below) and DRC is 0 errors apart from the ratsnest (`drc.py --unrouted`). **Routing
-is Dylan's.**
+boardcheck parity is 0 over 145. **Placed and routed** — every piece of copper from a script,
+rebuildable from zero ("Layout" below); DRC 0 errors, nothing unconnected; nothing on the top
+layer but the pads, nothing under a pad but its own nets.
 
 **`J1` is the hanxia HX JN2.54-2x5P TP H8.9, LCSC C41376028** (chosen 2026-09-28).
 It has to be SMD: `J12`'s through-hole C5665 here would put ten pins through the **front
@@ -315,7 +315,10 @@ design/mkpads.py              pad footprints + E1-E4 + their vias, from the gene
 design/mkplace.py             the one-shot placement of everything else (the table above)
 design/mkholes.py             the whole Edge.Cuts layer: outline (r 6 corners), panel holes, screws, OLED window
 design/mkbuses.py             the pad buses: every bar's via joined, each net out to the margin (deterministic)
-design/mkzones.py             the L3 GND plane: hatched, in the margin and the pad 3-4 corridor, never under a pad
+design/mkcells.py             the network grid's cell vias, TVS/R stubs and TVS grounds (deterministic)
+design/mkescape.py            J1 out along the pad 3-4 corridor to the test pads, R2, R3 and U1 (deterministic)
+design/mkfanin.py             the L2 fan-in: every bus exit to its cell via, crossing-free (deterministic)
+design/mkzones.py             the L3 GND plane: solid, in the margin and the pad 3-4 corridor, never under a pad
 design/mkroute.py             everything else, by Freerouting, fenced: no F.Cu, nothing under or between the pads
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
                               the pin table twice (Figure 7-1, Table 7-1), checked equal
@@ -357,62 +360,93 @@ net.
 
 **Cross-check against TI's own SLAA891 OpenSCAD output before committing copper.**
 
-## Layout — placed 2026-09-28
+## Layout — placed and routed 2026-09-28
 
 Settled with Dylan, in order: (a) one open via per bar (ADR 0003, "Connecting the bars");
 (b) `U1` and its networks in the **right margin**, not the centre (ADR 0003, layout rules);
-(c) the UART, 3V3, RST and TEST from `J1` along the **gap between pads 3 and 4**.
+(c) the UART, 3V3, RST and TEST from `J1` along the **gap between pads 3 and 4**. Then:
+route everything, **nothing on the top layer** (it is the scrub pads and nothing else).
 
 All parts on B.Cu. The margin strip is panel x 277.14 (copper ends) to 292.29 (the wall's
 inner face, where the faceplate rests on the wall top — panelcheck fails any back-side part
-past it), over the Daisy (~3mm clear; nothing here is over 1.6mm). Positions are Dylan's
-Pcbnew adjustments of 2026-09-28 (grid +1.25 / −0.25, the corner group lowered), with RX3's
-column, `Y1` and `C3` brought back in, then columns 0–2 back 0.45 and the rows opened to 5mm
-so every channel and via fits (below); `design/mkplace.py` records them.
+past it), over the Daisy (~3mm clear; nothing here is over 1.6mm).
 
 | where (panel) | what |
 |---|---|
 | `U1` (284.45, 104.0) | CAP pins 23–39 face **up**, digital corner (46–5) down-right. Pins 1–5 run right to left along the bottom, 46–48 up the right side |
-| the 4 × 4 grid over the CAP pins, rows y 80.15 / 85.15 / 90.15 / 95.15 | the 16 networks. **Column = CapTIvate block** (RX0–RX3 at x 280.30 / 283.50 / 288.00 / 290.92, each over its own pins: CAP0 = 23–26 … CAP3 = 36–39), **row = pad** (1 at the top). Each cell is the TVS directly on top of its 470R, TVS pin 1 over R pin 1, ground pin to the right (ADR 0004: the order and a short ground are what count, and both sit by the MCU) |
+| the 4 × 4 grid over the CAP pins, rows y 77.15 / 83.15 / 89.15 / 95.15 (6mm apart) | the 16 networks. **Column = CapTIvate block** (RX0–RX3 at x 280.30 / 283.50 / 288.00 / 290.92, each over its own pins: CAP0 = 23–26 … CAP3 = 36–39), **row = pad** (1 at the top). Each cell: its via, the TVS on top of its 470R (pin 1 over pin 1, ground to the right; ADR 0004: the order and a short ground are what count) |
 | middle channel, over pin 31 | `C3` 1µF VREG |
 | across the corner by pins 1 / 48 | `C2` 100nF |
-| right edge, y ~112–115 | `Y1` stood on end, `C5` (XIN) / `C6` (XOUT) lying beside its two pads |
-| where the lines from `J1` enter the margin | `C1` 10µF, then `C4` / `R1` (RST RC) |
-| in the gap by `J1`, x 242–265 | `TP1`–`TP6` in one row, silk-labelled `TEST RST 3V3 GND TX RX`; then `R2` / `R3` (UART pull-ups) |
+| right edge, y ~112–116 | `Y1` stood on end, `C5` (XIN) / `C6` (XOUT) beside its two pads |
+| above the corridor's mouth, (278.3, 106.2) | `C1` 10µF 3V3 bulk — in the mouth it blocked RST, TXD and RXD in turn |
+| under `U1`'s bottom-left | `C4` / `R1` (RST RC), `R3` (RXD pull-up, beside pin 5) |
+| the corridor, x 240–262 | `TP1`–`TP6`, each ON its own line, staggered; `R2` (TXD pull-up) across the 3V3 and TXD lines; `TP4` (SBW GND) by `J1`'s GND via |
 
-Pitches come from the silk (R0603's box is 1.47 × 2.93), not the library's small courtyards,
-so no reference or body overlaps another: 0 silk overlaps. The 31 silk-over-copper warnings
-are the library's R/C pin-1 dots, clipped by the mask, as on the main board. The 470Rs'
-references stand on end beside them; the TVS and test pad references are on B.Fab.
+Pitches come from the silk (R0603's box is 1.47 × 2.93), not the library's small courtyards:
+0 silk overlaps. The 31 silk-over-copper warnings are the library's R/C pin-1 dots, clipped
+by the mask, as on the main board. The 470Rs' references stand on end beside them; the TVS
+and test pad references are on B.Fab.
 
-**What to route:**
+### How it is routed — rebuildable from zero
 
-1. **Pads → margin, on L2.** Each net's vias are collinear: top-bar vias 0.5mm below the pad's
-   top edge, bottom-bar vias 0.5mm above its bottom edge (shorter bars at mid-bar). Run each net's
-   bus straight under its own bars, then carry it on to the pad's right end under the same pad:
-   top edge RX0 (zone 1) → under RX2 → joins RX0 (zone 4); RX2 → under zone-4 RX0; bottom edge
-   RX1 → under RX3. Nothing crosses under another pad ([Q24](../../docs/notes/open-questions.md)).
-   Pad 3's bottom vias under `J1` sit ~2.2mm in from the edge; pad 4's first five zone-4 RX0 bars
-   have no via (bridged along the edge). No ground under any of it.
-2. **The grid:** each line comes up from L2 on a via **on the column line, 2.9mm above its R's
-   centre** — between the TVS and the R above, inside its own cell, touching no channel — then
-   a short B.Cu stub down to TVS pin 1 and R pin 1. TVS pin 2 takes a short GND via on its right,
-   and the R's pin 2 runs **down the left side of its column** to the pin. Every column does the
-   same, and that order reaches 23–39 round both corners with no crossing: the outermost trace in
-   each column goes to the farthest pin.
+Every piece of copper comes from a script, in this order (KiCad's Python, from the repo root):
 
-   **Netclass `CapTIvate`** (`/PAD*`, `/CAP*`): 0.15mm track, 0.15mm clearance (0.2 to anything
-   in GND or Default), vias 0.5 / 0.3. TI wants sensor traces thin anyway — width is parasitic
-   capacitance. Channels, pad to pad, at the tightest: RX1 1.85, RX2 1.64 past `C3`, RX3 1.57 past
-   the TVS rows; three 0.15 traces need 1.1 there (1.55 even at 0.25). Proven on a scratch copy:
-   all 16 vias at their spots, and three traces down RX3's channel and past `C3`, DRC-clean; one
-   planted 0.06mm off R34 fails.
-3. **The gap between pads 3 and 4, on L4:** `MSP430_TXD`, `MSP430_RXD`, `MSP_RST`, `MSP_TEST`,
-   `P3V3_MSP430` from `J1` past the test pads to the margin, over an L3 GND strip ~3mm wide on
-   the gap's centreline.
-4. **Crystal:** XIN (47) and XOUT (46) down `U1`'s right side, XOUT on the outside (over the wall
-   band is fine: copper only).
-5. GND: L3, hatched in the margin, and **not under the pads**.
+```bash
+KPY=/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/3.9/bin/python3
+$KPY hardware/faceplate/design/mkroute.py --unroute    # every track and via off
+$KPY hardware/faceplate/design/mkplace.py --force      # the parts (the table above)
+$KPY hardware/faceplate/design/mkholes.py              # Edge.Cuts: outline, holes, screws, OLED window
+for s in mkpads mkbuses mkcells mkescape mkfanin mkzones; do $KPY hardware/faceplate/design/$s.py; done
+$KPY hardware/faceplate/design/mkroute.py              # the rest, by Freerouting; re-run until DRC is clean
+```
+
+| script | draws | how |
+|---|---|---|
+| `mkpads` | the pad copper, one via per bar | the generator's `copper()` |
+| `mkbuses` | the buses: every bar's via joined, each net out to the margin | exact, L2 (RX0's join on L3); every via on a segment end |
+| `mkcells` | each cell's via and B.Cu down to TVS pin 1 and R pin 1; each TVS's GND via; `C3`'s ground | exact; the vias staggered in height (below) |
+| `mkescape` | `J1`'s escape, the corridor, its taps; RXD and TXD's hops to `U1`; `J1`'s GND | exact, B.Cu (hops on L2) |
+| `mkfanin` | all 16 electrode lines, bus exit to cell via | exact, L2 |
+| `mkzones` | the L3 GND plane: **solid**, margin + corridor, never under a pad | exact |
+| `mkroute` | everything else: the B.Cu fan-out into `U1`, power, the last grounds, crystal | Freerouting, fenced; then prunes dangling copper and stitches any GND pad with no path to the plane |
+
+**The electrode fan-in (`mkfanin`).** Each pad's lines leave its bus as RX0, RX2, RX1, RX3
+(top to bottom) but the columns run RX0, RX1, RX2, RX3. Each cell's via sits at its own height
+in the cell band, 0.5 apart, in the order the lines arrive, so each line runs level to its own
+column and passes the others' vias at ≥ 0.5 — never another line. Pads 1–3 come in from the
+strip left of the grid (column 0's via steps 0.4 right to open a fourth slot); pad 4's would
+jam it, so they run under the corner group, up a strip at the right edge, and in from the
+right, its via order reversed.
+
+**The corridor (`mkescape`).** `J1`'s inner four signals climb into the 2.2mm channel between
+its rows in pin order; past `J1` all five fan out to 1.3mm (RXD straight, the rest diverging
+from it — fanned about a common point, the lines' corners came 0.197 apart) and run to the
+margin. `J1`'s pins read TEST, RST, RXD, TXD, 3V3 but `U1`'s read DVCC, RST, TEST, TXD, RXD,
+so RXD and TXD hop on L2 under the `C4`/`R1` group, TXD's under RXD's.
+
+**The router's fences (`mkroute`).** F.Cu and In2.Cu are declared power layers, so it lays no
+trace on either (a keepout over F.Cu also banned every via); no copper left of the margin
+but the corridor, and there B.Cu only; everything already drawn locked; the buses handed over
+only as a stub at each exit (it merges collinear locked segments and loses the vias between).
+Its results vary run to run: re-run it (it is incremental -- what is routed stays) until DRC
+shows nothing unconnected. With everything above scripted, the last rebuilds closed on the
+first pass.
+
+**Grounds.** Each TVS's ground pin gets a via beside it at its own height, where L2 is clear
+of the fan-in lanes; in row 4 column 2 it goes up into the gap between rows 3 and 4, and
+`C3` ties to column 1's. The router grounds the last few (row 4, columns 0 and 3; `C1`...),
+and `mkroute` then stitches any GND pad still without a path to the plane: the nearest
+spot where a via and a straight stub clear every other net (pcbnew's own shapes), never in
+a pad. **The plane is solid**, not hatched: a via in a hatch hole touches nothing, and the
+router takes the plane for solid; L2 is ~1.1mm above L3, so solid adds under 1pF to a
+fan-in line.
+
+**Netclass `CapTIvate`** (`/PAD*`, `/CAP*`): 0.15mm track, 0.15mm clearance (0.2 to anything
+in GND or Default), vias 0.5 / 0.3 — TI wants sensor traces thin anyway. GND and Power 0.3mm,
+all other vias 0.6 / 0.3: every net fits `U1`'s 0.5mm pitch.
+
+panelcheck proves the fences held: nothing routed on F.Cu, and nothing — track, via or zone —
+under a pad but that pad's own nets.
 
 ## Pin order is load-bearing
 
@@ -434,10 +468,12 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 
 ## Layout checklist
 
-- [ ] No ground pour under electrodes or their traces
-- [ ] RX0 end groups connected as one net, return on L2, not under electrodes
+- [x] No ground under the electrodes: panelcheck, "nothing under a pad but its own nets"
+      (zones included). In the margin the fan-in lines run over the solid L3 plane, ~1.1mm down
+- [x] RX0 end groups one net: the return runs on **L3** under its own pad's RX2 bars
+      (mkbuses; on L2 it would enclose RX2) — same-pad, same-cycle ([Q24](../../docs/notes/open-questions.md))
 - [x] MCU placement: right margin, not centred (ADR 0003, layout rules, 2026-09-28)
-- [ ] No electrode within the edge keepout
+- [x] No electrode near an edge: pad copper x 61–277, y 62–126; walls are 6mm
 - [x] Digital lines: along the gap between pads 3 and 4 to `J1`, which the main board fixes
       (ADR 0003); UART quiet during scans ([Q23](../../docs/notes/open-questions.md))
 - [x] Minimum copper 0.15mm everywhere, no slivers at ramp ends (0.165mm, bridged)
