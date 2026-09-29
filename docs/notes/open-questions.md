@@ -152,7 +152,9 @@ Then the **repeatability** test, which is now a pass criterion because of the pr
 5. Repeat with a damp finger, with light and firm pressure, and with **at least two different
    people** (finger size is the variable that does not cancel in the ratio).
 6. Repeat near each end, where trim is finger-size dependent, to find how much of the pad has
-   to be excluded from the printed scale.
+   to be excluded from the printed scale. **Drawn at 6mm a side** (generator `scale_inset_mm`,
+   2026-09-29); if a large finger centred on an end tick reads short, raise it and re-run
+   `hardware/faceplate/design/mkscale.py`. It moves only silkscreen.
 
 **Pass:** spread under ~2mm mid-pad, and monotonic and continuous throughout. Bend in the
 curve does not matter; scatter does.

@@ -318,6 +318,7 @@ design/mkbuses.py             the pad buses: every bar's via joined, each net ou
 design/mkcells.py             the network grid's cell vias, TVS/R stubs and TVS grounds (deterministic)
 design/mkescape.py            J1 out along the pad 3-4 corridor to the test pads, R2, R3 and U1 (deterministic)
 design/mkfanin.py             the L2 fan-in: every bus exit to its cell via, crossing-free (deterministic)
+design/mkscale.py             F.SilkS: the printed scrub scale, 6mm inside each copper end (generator scale_marks())
 design/mkzones.py             the L3 GND plane: solid, in the margin and the pad 3-4 corridor, never under a pad
 design/mkroute.py             everything else, by Freerouting, fenced: no F.Cu, nothing under or between the pads
 design/mklib_faceplate.py     the faceplate's own library parts (U1, Y1, the TVS, the pad symbol);
@@ -396,12 +397,14 @@ KPY=/Applications/KiCad/KiCad.app/Contents/Frameworks/Python.framework/Versions/
 $KPY hardware/faceplate/design/mkroute.py --unroute    # every track and via off
 $KPY hardware/faceplate/design/mkplace.py --force      # the parts (the table above)
 $KPY hardware/faceplate/design/mkholes.py              # Edge.Cuts: outline, holes, screws, OLED window
+$KPY hardware/faceplate/design/mkscale.py              # F.SilkS: the printed scrub scale
 for s in mkpads mkbuses mkcells mkescape mkfanin mkzones; do $KPY hardware/faceplate/design/$s.py; done
 $KPY hardware/faceplate/design/mkroute.py              # the rest, by Freerouting; re-run until DRC is clean
 ```
 
 | script | draws | how |
 |---|---|---|
+| `mkscale` | the printed scrub scale on F.SilkS, one locked group | the generator's `scale_marks()` |
 | `mkpads` | the pad copper, one via per bar | the generator's `copper()` |
 | `mkbuses` | the buses: every bar's via joined, each net out to the margin | exact, L2 (RX0's join on L3); every via on a segment end |
 | `mkcells` | each cell's via and B.Cu down to TVS pin 1 and R pin 1; each TVS's GND via; `C3`'s ground | exact; the vias staggered in height (below) |
@@ -482,5 +485,6 @@ one block; `../../docs/pin-allocation.md` has the table and TI's source.
 - [x] 4 SBW test pads present (TEST, RST, 3V3, GND): `TP1`–`TP4`, beside `J1`
 - [x] Test points on UART Tx/Rx, RST, TEST (there is no IRQ line — `pin-allocation.md`): `TP5`, `TP6`
 - [x] Soldermask opening over all pad copper (one opening per pad; vias open both sides)
-- [ ] Usable scrub region marked inside the copper, or copper extended past the printed scale
-      (endpoint trim eats a few mm at each end)
+- [x] Copper extended past the printed scale (endpoint trim eats a few mm at each end): the
+      scale stops 6mm inside each copper end, on F.SilkS (mkscale; ADR 0003, "Endpoint trim").
+      Its end ticks are the sample's ends. panelcheck: strokes == generator, copper beyond both

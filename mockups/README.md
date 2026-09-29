@@ -58,6 +58,7 @@ every position and both placement flags live there. Nothing in the drawing code 
 | Panel depth | `panel_top_extra_mm` / `panel_bottom_extra_mm` — pure extensions. **Not** `composition_h_mm`, which re-flows every panel part |
 | Pad spacing | `pad_gap_mm` |
 | Tick count, cross positions | `n_ticks`, `cross_at` |
+| How far the scale stops inside the copper | `scale_inset_mm` (ink only: the copper never moves) |
 | Knob size or spacing | `knob_r_mm`, `knob_pitch_mm`, `offset_knob_r_mm` |
 | Switch openings | `switch_w_mm`, `switch_h_mm` |
 | Encoder position | `encoder_lower_right` (True = beside pads, False = upper strip) |
@@ -73,8 +74,9 @@ design:
 ```
   OK  pads centred on panel width          margins 41.143 / 41.143mm
   OK  centre tick == pad divider           149.143 vs 149.143
-  OK  tick spacing even                    [18.0] mm
-  OK  crosses on clean fractions           [0.25, 0.5, 0.75]
+  OK  tick spacing even                    [17.0] mm
+  OK  crosses on clean fractions of the scale [0.25, 0.5, 0.75]
+  OK  scale inside the copper (endpoint trim) 6.00 / 6.00mm, scale 204.0mm
   OK  pad block fits lower region          75.0 in 75.2mm
   OK  min copper bar >= fab floor          0.2360 vs 0.15mm
   OK  every tooth pair sums to pad width   11.80mm

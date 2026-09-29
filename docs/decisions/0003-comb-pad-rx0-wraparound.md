@@ -141,6 +141,15 @@ because a large finger's centroid cannot reach as close to the pad edge as a sma
 the one error term that does not cancel in the ratio and cannot be calibrated away for all
 players at once. Keep the marks away from it.
 
+**As built (2026-09-29):** the copper was already fixed at 216mm by the panel and the routed
+main board, so the scale moved in instead: the generator's `scale_inset_mm` stops the printed
+scale **6mm inside each copper end**, a large fingertip's contact radius, so a finger centred on
+an end mark is wholly on copper and reads true. 13 marks over 204mm, 17mm a division, crosses on
+1/4, 1/2 and 3/4 of the scale. **The end ticks are the sample's start and end**: firmware maps
+them, not the copper's ends, to 0 and 1. The ink is on the faceplate's F.SilkS
+(`hardware/faceplate/design/mkscale.py`). The 6 is an estimate until
+[Q1](../notes/open-questions.md)'s end-of-pad test measures it; changing it moves only ink.
+
 ## Tools
 
 - `mockups/generate-faceplate.py` - **the source of the copper.** Draws the pads in place on

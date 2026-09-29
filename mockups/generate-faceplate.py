@@ -100,6 +100,19 @@ CFG = {
     # ---- pad markings -------------------------------------------------------
     "n_ticks":              13,   # 13 marks = 12 intervals = a TRUE centre mark
     "cross_at":     (4, 7, 10),   # 1-indexed. Centre +/-3, lands on 1/4, 1/2, 3/4.
+    # The printed scale stops this far inside each end of the copper (ADR 0003,
+    # "Endpoint trim": extend the copper past the printed scale). A finger's
+    # centroid cannot reach the copper's end, and how far it falls short depends
+    # on the finger. 6 is a large fingertip's contact radius: a finger centred on
+    # the first or last mark is wholly on copper, so it reads true, and every
+    # mark sits in the well-behaved middle. The scale's ends are the sample's.
+    # 216 - 2 x 6 = 204mm, 17mm a division. Moves only the ink, never the copper.
+    "scale_inset_mm":      6.0,
+    # Pad bottom to the top of the scale's ink (a cross's upright). The pad's
+    # F.Mask opening runs 0.25 past its copper (hardware/faceplate/design/
+    # mkpads.py); silk over an opening is clipped at fab, so the marks start
+    # below it: 0.65 less the 0.15 half-stroke leaves 0.25 clear.
+    "scale_top_mm":        0.65,
 
     # ---- upper region controls ----------------------------------------------
     "knob_r_mm":           8.0,   # 16mm knob
@@ -289,7 +302,8 @@ CFG = {
     # The numeral row then sits in the space below rather than being reserved
     # out of the centring, which is what was pushing the pads high.
     "center_pads_in_region": True,
-    "numeral_row_mm":      3.6,   # pad bottom to numeral baseline (was 4.5)
+    "numeral_row_mm":      6.4,   # pad bottom to numeral baseline (was 3.6: the
+                                  # glyphs sat on the crosses' uprights)
     "numeral_pt_mm":       2.7,   # glyph size (was a hardcoded 3.2)
     "bottom_margin_mm":    8.0,
     "below_divider_mm":    5.5,
@@ -357,7 +371,10 @@ def derive(c):
     g["T_WIDTH"] = g["T_PITCH"] - c["tooth_gap_mm"]
 
     # ticks
-    g["TICK_X"] = [g["PAD_X0"] + k * (PL / (c["n_ticks"] - 1)) for k in range(c["n_ticks"])]
+    SL = PL - 2.0 * c["scale_inset_mm"]
+    g["SCALE_L"] = SL
+    g["TICK_X"] = [g["PAD_X0"] + c["scale_inset_mm"] + k * (SL / (c["n_ticks"] - 1))
+                   for k in range(c["n_ticks"])]
 
     # upper region: four groups, equal gaps, symmetric outer margins
     KR, KP, UG = c["knob_r_mm"], c["knob_pitch_mm"], c["group_gap_mm"]
@@ -475,6 +492,22 @@ def oled_window(c, g):
                      aa[1] - min(t(c["oled_view_side_deg"]), aa[1] - gl[1] - m),
                      aa[2] + min(t(c["oled_view_side_deg"]), gl[2] - m - aa[2]),
                      aa[3] + min(t(c["oled_view_player_deg"]), gl[3] - m - aa[3]))
+
+
+def scale_marks(c, g):
+    """The printed scale under each pad: [(kind, x1, y1, x2, y2, stroke)], panel mm,
+    kind "tick" or "cross". The SVG draws these and hardware/faceplate/design/
+    mkscale.py puts the same strokes on the faceplate's F.SilkS."""
+    out, top = [], c["scale_top_mm"]
+    for y0 in g["PAD_TOPS"]:
+        yb = y0 + g["PW"]
+        for k, x in enumerate(g["TICK_X"]):
+            if (k + 1) in c["cross_at"]:
+                out += [("cross", x - 1.6, yb + top + 1.6, x + 1.6, yb + top + 1.6, 0.3),
+                        ("cross", x, yb + top, x, yb + top + 3.2, 0.3)]
+            else:
+                out.append(("tick", x, yb + top + 0.5, x, yb + top + 1.9, 0.2))
+    return out
 
 
 def presences(t):
@@ -943,15 +976,10 @@ def render(c, g):
       f'<path d="M{f(g["PAD_MID"]-r12)} {f(g["PAD_TOPS"][0])} A{f(r12)} {f(r12)} 0 0 1 '
       f'{f(g["PAD_MID"]+r12)} {f(g["PAD_TOPS"][0])}"/></g>')
 
-    # ticks + crosses
+    # ticks + crosses: the printed scale, inset from the copper's ends
     tk, cr = [], []
-    for y0 in g["PAD_TOPS"]:
-        yb = y0 + g["PW"]
-        for k, x in enumerate(g["TICK_X"]):
-            if (k + 1) in c["cross_at"]:
-                cr.append(f'M{f(x-1.6)} {f(yb+1.4)}h3.2M{f(x)} {f(yb-0.2)}v3.2')
-            else:
-                tk.append(f'M{f(x)} {f(yb+0.3)}v1.4')
+    for kind, x1, y1, x2, y2, _ in scale_marks(c, g):
+        (cr if kind == "cross" else tk).append(f'M{f(x1)} {f(y1)}L{f(x2)} {f(y2)}')
     A(f'<g id="ticks" stroke="{INK3}" stroke-width="0.2" fill="none"><path d="{"".join(tk)}"/></g>')
     A(f'<g id="crosses" stroke="{INK}" stroke-width="0.3" fill="none"><path d="{"".join(cr)}"/></g>')
 
@@ -1019,8 +1047,22 @@ def check(c, g):
         abs(mid_tick - g["PAD_MID"]) < 0.01 and c["n_ticks"] % 2 == 1)
     sp = {round(g["TICK_X"][i+1] - g["TICK_X"][i], 6) for i in range(len(g["TICK_X"])-1)}
     row("tick spacing even", f"{sorted(sp)} mm", len(sp) == 1)
-    fr = [round((g["TICK_X"][m-1] - g["PAD_X0"]) / PL, 4) for m in c["cross_at"]]
-    row("crosses on clean fractions", f"{fr}", fr == [0.25, 0.5, 0.75])
+    fr = [round((g["TICK_X"][m-1] - g["TICK_X"][0]) / g["SCALE_L"], 4) for m in c["cross_at"]]
+    row("crosses on clean fractions of the scale", f"{fr}", fr == [0.25, 0.5, 0.75])
+    ins = (g["TICK_X"][0] - g["PAD_X0"], g["PAD_X1"] - g["TICK_X"][-1])
+    row("scale inside the copper (endpoint trim)",
+        f"{ins[0]:.2f} / {ins[1]:.2f}mm, scale {g['SCALE_L']:.1f}mm",
+        min(ins) >= 3.0 and abs(ins[0] - ins[1]) < 1e-6)
+    sm = scale_marks(c, g)
+    row("scale ink clear of the pads' mask openings",
+        f"{min(y1 - w / 2 for _, _, y1, _, _, w in sm) - (g['PAD_TOPS'][0] + g['PW']):.2f}mm below the copper",
+        all(min(y1, y2) - w / 2 >= y0 + g["PW"] + 0.25 + 0.15 - 1e-9
+            for y0 in g["PAD_TOPS"] for _, _, y1, _, y2, w in sm
+            if y0 + g["PW"] - 1e-9 <= min(y1, y2) <= y0 + g["PITCH"]))
+    yb4 = g["PAD_TOPS"][3] + g["PW"]
+    cross_bot = max(max(y1, y2) + w / 2 for k, _, y1, _, y2, w in sm if k == "cross" and y1 > yb4)
+    num_top = yb4 + c["numeral_row_mm"] - 0.75 * c["numeral_pt_mm"]    # cap height, generously
+    row("numerals clear the crosses", f"{num_top - cross_bot:.2f}mm", num_top - cross_bot >= 0.3)
     if c["center_pads_in_region"]:
         region = g["COMP_Y1"] - g["DIV_Y"]
         need = g["BLOCK_H"] + c["numeral_row_mm"]

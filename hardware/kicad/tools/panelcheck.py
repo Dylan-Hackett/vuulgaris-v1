@@ -119,7 +119,12 @@ def board(path):
         q = z.GetBoundingBox()
         zones.append({"net": z.GetNetname().lstrip("/"), "layer": b.GetLayerName(z.GetLayer()),
                       "bbox": [T(q.GetLeft()), T(q.GetTop()), T(q.GetRight()), T(q.GetBottom())]})
+    silk = [{"a": pt(d.GetStart()), "b": pt(d.GetEnd()), "w": T(d.GetWidth()),
+             "group": d.GetParentGroup().GetName() if d.GetParentGroup() else ""}
+            for d in b.GetDrawings()
+            if d.GetLayer() == pcbnew.F_SilkS and d.GetShape() == pcbnew.SHAPE_T_SEGMENT]
     return {"edges": edges, "fps": fps, "vias": vias, "tracks": tracks, "zones": zones,
+            "silk": silk,
             "outer": [T(ob.GetLeft()), T(ob.GetTop()), T(ob.GetRight()), T(ob.GetBottom())]}
 print(json.dumps({"face": board(sys.argv[1]), "main": board(sys.argv[2])}))
 '''
@@ -391,6 +396,33 @@ def main():
         row(not bad_via and not stray, "one via per bar, where the generator puts it",
             f"{n_via} vias on their bar's net" if not (bad_via or stray)
             else (bad_via[:1] + [f"extra vias on {', '.join(stray)}"])[0])
+    # ---- the printed scale: the generator's strokes, inside the board's own copper
+    scale = [e for e in face["silk"] if e["group"] == "SCRUB_SCALE"]
+    if not scale:
+        todos.append("scrub scale not on F.SilkS yet -- design/mkscale.py")
+    else:
+        # mkscale draws each butt-ended SVG stroke half its width short, round-ended
+        want = []
+        for _, x1, y1, x2, y2, w in gen.scale_marks(cfg, g):
+            L = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+            ux, uy = (x2 - x1) / L, (y2 - y1) / L
+            want.append((q(x1 + ux * w / 2), q(y1 + uy * w / 2), q(x2 - ux * w / 2), q(y2 - uy * w / 2), q(w)))
+        have = [(q(e["a"][0] - O[0]), q(e["a"][1] - O[1]), q(e["b"][0] - O[0]), q(e["b"][1] - O[1]), q(e["w"]))
+                for e in scale]
+        close = lambda u, v: all(abs(i - j) <= 0.001 for i, j in zip(u, v))
+        extra = [h for h in have if not any(close(h, w_) for w_ in want)]
+        lost = [w_ for w_ in want if not any(close(h, w_) for h in have)]
+        row(not extra and not lost, "scrub scale == generator scale_marks()",
+            f"{len(have)} strokes on F.SilkS" if not (extra or lost)
+            else f"{len(lost)} missing, {len(extra)} extra")
+        if all(f"E{p}" in face["fps"] for p in range(1, 5)):
+            cu_x0 = min(pp["bbox"][0] for p in range(1, 5) for pp in face["fps"][f"E{p}"]["pads"]) - O[0]
+            cu_x1 = max(pp["bbox"][2] for p in range(1, 5) for pp in face["fps"][f"E{p}"]["pads"]) - O[0]
+            ink_x0 = min(min(h[0], h[2]) - h[4] / 2 for h in have)
+            ink_x1 = max(max(h[0], h[2]) + h[4] / 2 for h in have)
+            ins = (ink_x0 - cu_x0 + 0.1, cu_x1 - ink_x1 + 0.1)     # to the end ticks' centres
+            row(min(ins) >= 3.0, "copper runs past the scale (endpoint trim)",
+                f"{ins[0]:.2f} / {ins[1]:.2f}mm of copper beyond the end ticks")
     # The generator's via keepouts must be exactly J1's pads, read off the board.
     if j1:
         rows_ = {}
