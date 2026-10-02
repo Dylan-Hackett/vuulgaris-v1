@@ -1,7 +1,7 @@
 # Datasheets
 
-Canonical documents for Vuulgaris V1. PDFs are **not committed** (TI redistribution terms,
-and they are large). Run `./fetch-datasheets.sh` on your own machine to populate this folder.
+Canonical documents for Vuulgaris V1. PDFs are **committed** as of 2026-10-02,
+unaltered, so a fresh clone has them; `./fetch-datasheets.sh` records each source and re-fetches any that are missing.
 
 Text extracts of what could be pulled during scaffolding live in `extracts/`. They are
 searchable but lose all tables, figures and pinout drawings. Treat them as a grep index,

@@ -49,8 +49,8 @@ fallback if the question is ever revisited.
 | Daisy Patch SM | U1 | `design-state.md` | n/a | Patch SM v1.0.5 ✓ + pinout extract |
 | MSP430 touch | MSP430FR2675 | `design-state.md`, ADRs 0002–0005 | n/a | 5 docs ✓ |
 
-PDFs live in `datasheets/` and are **gitignored** — run
-`datasheets/fetch-datasheets.sh` to populate. 35 fetch cleanly; only the
+PDFs live in `datasheets/` and are **committed** — `datasheets/fetch-datasheets.sh`
+records their sources. 35 fetch cleanly; only the
 CoolAudio V3205SD sheet 403s, and the MN3205 original covers that pinout.
 `datasheets/REVIEW-INDEX.md` maps every reference designator to its datasheet
 and every block to its source schematic.

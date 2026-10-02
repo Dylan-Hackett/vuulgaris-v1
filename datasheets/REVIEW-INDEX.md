@@ -11,11 +11,7 @@ nothing checks it against the documents below. That gap is where U8 came from.
 
 ## Populate this folder
 
-PDFs are gitignored. On a fresh checkout:
-
-```bash
-cd datasheets && ./fetch-datasheets.sh
-```
+The PDFs are committed. The review copies below are not; on a fresh checkout:
 
 ```bash
 cp "../docs/BBD_MANUAL_250228 (3).pdf" BBD-mki-manual-250228.pdf

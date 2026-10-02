@@ -85,7 +85,7 @@ python3 tools/mkfab.py
 - **The main board fixes the panel.** Its 24 panel parts are placed from
   `hardware/placement-panel-facing.txt`. Any regeneration of that file must leave
   `place.py --check` at "all 24 on their holes".
-- Datasheet PDFs are gitignored; `datasheets/fetch-datasheets.sh` fetches them.
+- Datasheet PDFs are committed in `datasheets/`; `fetch-datasheets.sh` records their sources.
   `pdftoppm` is not installed: render pages with macOS PDFKit (a short Swift
   script) or `brew install poppler`. Scanned drawings have no text layer — read
   them as images at 4–6x and crop to the detail.
