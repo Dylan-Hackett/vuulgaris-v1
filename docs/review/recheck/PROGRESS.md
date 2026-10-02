@@ -3,12 +3,12 @@
 Runbook: `docs/notes/recheck-prompts.md`. One line per section, updated in each commit.
 
 Branch: `claude/epic-lamport-gbvvd4` (the session's assigned branch; the runbook
-names `recheck/2026-10`, which this cloud session cannot push to).
+names `recheck/2026-10`, which is not the branch this cloud session was assigned).
 
 | section | status | defects | blocked | notes |
 |---|---|---|---|---|
 | 01 inventory and chain integrity | done | 2 doc | 2 | gate passed: 944/944 main, 145/145 faceplate (runbook's 942 is stale) |
-| 02 power | | | | |
+| 02 power | done | 1 doc | 4 | +12 V vs DKM 416 mA per output is a QUESTION (potentially fatal); AMS1117 ceramic-cap stability QUESTION |
 | 03 Patch SM | | | | |
 | 04 digital IO | | | | |
 | 05 BBD | | | | |
