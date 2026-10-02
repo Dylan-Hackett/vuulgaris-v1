@@ -180,7 +180,7 @@ wiper 2 opposite, 2.9 mm between rows, wiper pad 2.0 wide; circuit "CCW 1 ...
 
 | trim | 1 (CCW) | 2 | 3 (CW) | clockwise does |
 |---|---|---|---|---|
-| RT301/RT401 | `LPG_SUM` | `LPG_T1` | `LPG_T1` | more resistance in series with R307 (the gate-open threshold rises toward its top, section 6) |
+| RT301/RT401 | `LPG_SUM` | `LPG_T1` | `LPG_T1` | more resistance in series with R307, which lowers the current needed to reach the zener knee (section 6) |
 | RT501/RT502 | `HP_DIV` | `HP_W` | GND | **less** headphone level |
 | RT503/RT504 | `EXT_AMP_OUT` | `EXT_FB` | `EXT_FB` | more resistance: more EXT gain |
 
