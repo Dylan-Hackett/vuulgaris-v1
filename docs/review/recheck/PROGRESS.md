@@ -11,7 +11,7 @@ names `recheck/2026-10`, which is not the branch this cloud session was assigned
 | 02 power | done | 1 doc | 4 | +12 V vs DKM 416 mA per output is a QUESTION (potentially fatal); AMS1117 ceramic-cap stability QUESTION |
 | 03 Patch SM | done | 1 silkscreen, 3 fw comment, 4 doc | 0 | header orientation clean (matches p15 and the KAD footprint); U1 silk letters A/B/C/D on the wrong headers |
 | 04 digital IO | done | 2 doc | 1 | GPA7/GPB7 BLOCKED (3 inputs); ENC0 contact current under ALPS minimum; U4 has no local decoupling; buttons and encoders otherwise clean |
-| 05 BBD | | | | |
+| 05 BBD | done | 1 (X7R where film specified), 1 doc | 1 | all 36 manual nets match channel 1; ch2 = ch1 exactly; CD4046 drive vs MN3205 clock spec is an inherited QUESTION |
 | 06 LPG | | | | |
 | 07 audio IO | | | | |
 | 08 footprints | | | | |
