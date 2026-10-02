@@ -15,8 +15,10 @@ on the MCP23017 (I2C part; the SPI MCP23S17 is not affected):
 - The change first appeared in Revision D (June 2022). Revision E keeps it.
 
 The reason Microchip gave, as relayed in [Adafruit issue
-#57](https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/issues/57):
-used as inputs, these pins can corrupt the I2C **SDA** signal. The silicon
+#57](https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/issues/57)
+and [Hackaday](https://hackaday.com/2023/02/03/mcp23017-went-through-shortage-hell-lost-two-inputs/):
+transitions on these pins while they are inputs can corrupt the I2C **SDA**
+signal. Microchip has published no detailed mechanism. The silicon
 was not changed; only the document was. Every MCP23017 you can buy has the
 problem.
 
@@ -58,8 +60,14 @@ reverse steps on a fast turn. Five signals, five usable pins: an exact fit.
 | `ENC8_B` | U3.8 GPB7 | **U4.6 GPB5** | |
 | `BTN4` | U4.28 GPA7 | **U4.7 GPB6** | GPB row faces SW7 (south side of U4) |
 
-After the move, U3.7, U3.8, U3.27, U3.28, U4.8 and U4.28 are unconnected. U4
-then has no free GPIO left.
+After the move, U3.7 and U3.27 are unconnected. The four GPA7/GPB7 pins
+(U3.8, U3.28, U4.8 and U4.28) must **not** be left floating; tie them to
+`GND`. The reported trigger is a *transition* on one of these pins while it is
+an input, and every MCP23017 pin is an input from power-up until firmware
+writes IODIR. A floating pin can toggle in that window, and later too if
+firmware ever leaves it an input. Tied to ground it cannot move. U4.8 is
+already floating on the current board, so this applies even to the pin
+nothing uses today. U4 then has no free GPIO left.
 
 Board geometry for the routing (sheet mm): U3 at (151.0, 105.0) and U4 at
 (183.2, 120.0), both on F.Cu. ENC4 is at (140.1, 84.6) and ENC8 at (184.1,
@@ -75,7 +83,8 @@ Whichever way, each pair stays on one port.
    DS20001952E and update the URL in `datasheets/fetch-datasheets.sh` (ask
    before downloading, per CLAUDE.md).
 2. **Netmap.** In `hardware/kicad/tools/netmap.json`, reassign the five nets
-   per the table and remove U3.7, U3.8, U3.27, U3.28 and U4.28 from their nets.
+   per the table, remove U3.7 and U3.27 from their nets, and put U3.8, U3.28,
+   U4.8 and U4.28 on `GND`.
 3. **Schematic.** From `hardware/kicad/`, run
    `python3 tools/mksch.py && python3 tools/netcheck.py` (with `set -o
    pipefail` if piped). Then F8 in Pcbnew to pull the new nets in.
@@ -89,8 +98,10 @@ Whichever way, each pair stays on one port.
    `hardware/vuulgaris-v1-fab.zip` in the same commit (CLAUDE.md's command
    list).
 7. **Firmware**, when written:
-   - Set U3 GPA7/GPB7 and U4 GPA7/GPB7 as **outputs** (IODIR bit 0), driven
-     low. Microchip calls them output only, and an unconnected input floats.
+   - Set U3 GPA7/GPB7 and U4 GPA7/GPB7 as **outputs driven low** (IODIR bit
+     0, OLAT bit 0), matching their ground tie. **Never drive them high**: that
+     would short a driven output to GND. Leaving them as inputs is also safe
+     once they are tied, because a grounded input never transitions.
    - Read ENC4 from U4 port A, ENC8 and BTN4 from U4 port B.
    - Poll U4 port B at 2 kHz as before (it now carries ENC0, ENC8 and BTN4).
      U4 port A at 500 Hz is enough for ENC4, as for the other parameter
@@ -109,8 +120,10 @@ Whichever way, each pair stays on one port.
 ## If boards are already built
 
 There is no fix without a rework.
-- **Firmware only:** configure the three pins as outputs. The bus is then
-  safe, but ENC4 and ENC8 lose direction sensing and BTN4 is dead.
+- **Firmware only:** configure the three pins (and U4 GPB7) as outputs. The
+  bus is then safe once firmware runs, though not during the power-up
+  window before it does. ENC4 and ENC8 lose direction sensing and BTN4 is
+  dead.
 - **Bodge:** cut the three traces at U3.28, U3.8 and U4.28, and wire them to
   U4.24, U4.6 and U4.7 (GPA3, GPB5, GPB6). That leaves each encoder split
   across two chips: acceptable for slow turns, and it can miss steps on fast
