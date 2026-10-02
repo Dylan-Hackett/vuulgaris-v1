@@ -17,5 +17,5 @@ names `recheck/2026-10`, which is not the branch this cloud session was assigned
 | 08 footprints | done | 2 land pattern (low), 3 doc | 3 | all 370 footprints match their libraries and every back-side part is a true flip; 24/24 panel parts on their holes; Patch SM seated height under the MSP430 BLOCKED (must stay under 7.9 mm) |
 | 09 interconnect | done | 1 doc | 0 | pin n meets pin n (computed from both boards: same orientation, key on the same wall); TX into RX both ways; RST one driver, TEST undriven; power-down back-feed on MSP430_RXD is a QUESTION |
 | 10 faceplate MCU | done | 6 doc (5 fw-touch, 1 Q22) | 1 | every U1 pin matches Figure 7-1 and Table 7-2; each pad spans all four CapTIvate blocks; crystal load and drive clean; only own-pad copper under each pad; TVS 12 pF against sensitivity is a QUESTION |
-| 11 board level | | | | |
+| 11 board level | done | 3 (GND plane to the edge, VBUS 0.25 mm neck, U7/DS1 LCSC numbers) | 2 | DRC fresh and clean on both; jlcpcb.com blocked so JLC limits unverified; CPL matches the board and its rule on all 360 rows; pin 1 vs JLC models needs the preview |
 | 12 synthesis | | | | |
