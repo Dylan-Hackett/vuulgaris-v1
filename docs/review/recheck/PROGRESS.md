@@ -15,7 +15,7 @@ names `recheck/2026-10`, which is not the branch this cloud session was assigned
 | 06 LPG | done | 1 (vactrol LED reverse voltage), 1 doc | 0 | every node matches Bergman; 4xx = 3xx; ADR 0011 headroom quoted against the wrong limit |
 | 07 audio IO | done | 1 naming | 0 | pots clean against the Alpha drawing; PJ-603 contacts settled by its own drawing; U9 thermal at 16 ohm full trim is a low QUESTION |
 | 08 footprints | done | 2 land pattern (low), 3 doc | 3 | all 370 footprints match their libraries and every back-side part is a true flip; 24/24 panel parts on their holes; Patch SM seated height under the MSP430 BLOCKED (must stay under 7.9 mm) |
-| 09 interconnect | | | | |
+| 09 interconnect | done | 1 doc | 0 | pin n meets pin n (computed from both boards: same orientation, key on the same wall); TX into RX both ways; RST one driver, TEST undriven; power-down back-feed on MSP430_RXD is a QUESTION |
 | 10 faceplate MCU | | | | |
 | 11 board level | | | | |
 | 12 synthesis | | | | |
