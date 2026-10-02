@@ -1,27 +1,45 @@
-# Full recheck — prompts for a cloud session
+# Full recheck — runbook for a cloud session
 
 A second, independent pass over the netlist, the pinouts and the electrical
-decisions, both boards. Paste prompt 0 first, then 1–12 in order, one at a time.
-They also work as parallel sessions: prompt 0 plus one block each.
+decisions, both boards.
 
-## Before starting — on the Mac, not in the cloud
+## If you are the session that was pointed at this file
 
-The cloud session clones GitHub and has no KiCad. The datasheet PDFs are
-committed, so it needs no network for them. Three things it cannot make for
-itself:
+This file is your instructions; the text inside each code block is addressed to
+you. Section 0 is the ground rules and applies throughout. Then do sections 1
+to 12 **in order, without stopping to ask between them**:
 
-1. **Push.** A session only sees what is on `origin/main`.
-2. **Fresh evidence.** Run the loop from `CLAUDE.md` on both boards so the
-   tracked `hardware/kicad/DRC.rpt` and `hardware/faceplate/DRC.rpt` are current,
-   and commit them. The cloud reads DRC, it cannot run it.
-3. **The CoolAudio V3205SD sheet** (never obtained; the MN3205 original and the
-   mki manual cover it) and `~/Documents/origin2.2.eprj` do not exist there.
-   The ±12V filter's source check (`edapower.py`) stays a local job; prompt 2
-   says so.
+- One section at a time. Finish it, write its findings file, commit, push,
+  then start the next. Do not batch the commits: a session that dies at
+  section 7 must leave 1–6 on GitHub.
+- If Dylan named specific sections ("do 5 and 6"), do section 0's reading and
+  only those.
+- Section 1 is the gate. If your own parse of the schematic and board does not
+  reproduce the main board's 942 connections, stop there and report why --
+  everything after it leans on that parser.
+- Do not stop for a BLOCKED item or a defect. Record it and carry on. Stop
+  only if the repo is missing something every section needs.
+- Keep a running `docs/review/recheck/PROGRESS.md`: one line per section with
+  its status and defect count, updated in each commit. If you are resumed
+  after a context reset, read it and the existing findings files and pick up
+  at the first section not marked done.
+- Do not spawn subagents for the datasheet reading. Read the pages yourself;
+  a summary of a pinout is how defects get through.
+- When 12 is done, say so with the defect count by severity and the branch
+  name. Nothing else.
+
+## State of the repo this runs against
+
+Prepared on the Mac 2026-10-02: `origin/main` is current, both `DRC.rpt` files
+were regenerated that day (0 errors on each), and the datasheet PDFs are
+committed. Not available in the cloud: KiCad itself; the CoolAudio V3205SD
+sheet (never obtained; the MN3205 original and the mki manual cover it); and
+`~/Documents/origin2.2.eprj`, so the ±12V filter's source check
+(`edapower.py`) stays a local job, as section 2 says.
 
 ---
 
-## 0. Ground rules (paste first, every session)
+## 0. Ground rules
 
 ```
 You are doing an independent recheck of the Vuulgaris V1 hardware: main board
