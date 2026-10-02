@@ -18,4 +18,4 @@ names `recheck/2026-10`, which is not the branch this cloud session was assigned
 | 09 interconnect | done | 1 doc | 0 | pin n meets pin n (computed from both boards: same orientation, key on the same wall); TX into RX both ways; RST one driver, TEST undriven; power-down back-feed on MSP430_RXD is a QUESTION |
 | 10 faceplate MCU | done | 6 doc (5 fw-touch, 1 Q22) | 1 | every U1 pin matches Figure 7-1 and Table 7-2; each pad spans all four CapTIvate blocks; crystal load and drive clean; only own-pad copper under each pad; TVS 12 pF against sensitivity is a QUESTION |
 | 11 board level | done | 3 (GND plane to the edge, VBUS 0.25 mm neck, U7/DS1 LCSC numbers) | 2 | DRC fresh and clean on both; jlcpcb.com blocked so JLC limits unverified; CPL matches the board and its rule on all 360 rows; pin 1 vs JLC models needs the preview |
-| 12 synthesis | | | | |
+| 12 synthesis | done | 0 kill, 8 degrade, 22 cosmetic/doc | 12 | 00-summary.md: defects with fixes and target files, 20 open questions, blocked items with what unblocks each, coverage complete (TP1-TP15 explained) |
