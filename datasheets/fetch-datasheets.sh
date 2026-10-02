@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Populate datasheets/ with the real PDFs. Run from this directory.
-# These are public documents; not committed to keep the repo light and
-# to avoid redistributing TI literature.
+# These are public documents, committed unaltered since 2026-10-02; this script
+# is the record of where each came from and re-fetches any that are missing.
 set -u
 cd "$(dirname "$0")"
 

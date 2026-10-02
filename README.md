@@ -26,7 +26,7 @@ the synth engine.
 |---|---|
 | [`docs/`](docs/) | `design-state.md` (source of truth), ADRs, open questions, pin allocation, panel budget |
 | [`mockups/`](mockups/) | Parametric comb pad generator, Salamis faceplate reference + dimensioned |
-| [`datasheets/`](datasheets/) | Manifest + fetch script. PDFs are not committed. |
+| [`datasheets/`](datasheets/) | Manifest, fetch script and the datasheet PDFs. |
 | [`hardware/`](hardware/) | Faceplate and main PCB, gerbers, BOM spreadsheet |
 | [`fw-daisy/`](fw-daisy/) | Daisy Patch SM firmware. libDaisy + DaisySP as submodules. |
 | [`fw-touch/`](fw-touch/) | MSP430FR2675 firmware. CCS + CapTIvate Design Center. |
@@ -57,7 +57,7 @@ the synth engine.
 git -C fw-daisy submodule update --init --recursive
 cd fw-daisy && make libs && make
 
-# Datasheets (not committed)
+# Datasheets are committed; this re-fetches any that are missing
 cd datasheets && ./fetch-datasheets.sh
 ```
 

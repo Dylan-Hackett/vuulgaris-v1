@@ -1,5 +1,8 @@
-# Real datasheets are fetched, not committed. See fetch-datasheets.sh
-*.pdf
+# Datasheet PDFs are committed (2026-10-02) so a fresh clone or a cloud session
+# has the sources without network access. fetch-datasheets.sh still records
+# where each one came from. The mki manual is the one exception: it is a
+# byte-identical copy of docs/BBD_MANUAL_250228 (3).pdf, 43MB, tracked there.
+BBD-mki-manual-250228.pdf
 
 # Review copies, regenerated per REVIEW-INDEX.md. The originals are tracked
 # elsewhere (docs/reference/, hardware/kicad/) and these go stale silently.
