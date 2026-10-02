@@ -13,7 +13,7 @@ names `recheck/2026-10`, which is not the branch this cloud session was assigned
 | 04 digital IO | done | 2 doc | 1 | GPA7/GPB7 BLOCKED (3 inputs); ENC0 contact current under ALPS minimum; U4 has no local decoupling; buttons and encoders otherwise clean |
 | 05 BBD | done | 1 (X7R where film specified), 1 doc | 1 | all 36 manual nets match channel 1; ch2 = ch1 exactly; CD4046 drive vs MN3205 clock spec is an inherited QUESTION |
 | 06 LPG | done | 1 (vactrol LED reverse voltage), 1 doc | 0 | every node matches Bergman; 4xx = 3xx; ADR 0011 headroom quoted against the wrong limit |
-| 07 audio IO | | | | |
+| 07 audio IO | done | 1 naming | 0 | pots clean against the Alpha drawing; PJ-603 contacts settled by its own drawing; U9 thermal at 16 ohm full trim is a low QUESTION |
 | 08 footprints | | | | |
 | 09 interconnect | | | | |
 | 10 faceplate MCU | | | | |
