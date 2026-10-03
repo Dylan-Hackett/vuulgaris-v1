@@ -6,11 +6,27 @@ BLOCKED item (U3.28, U3.8, U4.28) and should count as a DEFECT in
 
 ## Status, 2026-10-03
 
-Done in the repo: steps 2 and 3 (netmap, schematic regenerated and checked
-956/956 against the netmap with an independent netlister), and step 8's docs
-(`pin-allocation.md`, the generator and `placement-panel-facing.txt`,
-`design-state.md`). Not done: step 1 (datasheet download, yours to approve),
-steps 4-6 (F8 in Pcbnew, routing, checks, fab), step 7 (firmware).
+Done: steps 2-6 and step 8's docs. The schematic is regenerated and checked
+956/956 with KiCad's own netlister (`netcheck.py`); the board is routed, DRC
+has 0 errors, `boardcheck.py` has 0 parity mismatches, and the fab package is
+rebuilt. Not done: step 1 (the Rev E datasheet is still not in `datasheets/`;
+the download is yours to approve) and step 7 (firmware).
+
+How the board got there, since none of it was routed by hand in one sitting:
+
+- `ENC4_A`, `ENC4_B`, `ENC8_A`, `ENC8_B`: Freerouting 2.4.1, headless, every
+  other track protected. It could not get all four out of U4 with the board's
+  0.8/0.4 vias (0.05 mm short between two vias under the north row), so these
+  four nets use **0.6/0.3 vias**, eight of them. That is inside the board's
+  own minimum (0.5/0.3) and the faceplate already uses 0.5 and 0.6. About
+  1.5 mm of `ENC8_B` at U4.6 is necked to 0.1874 mm by the router.
+- `BTN4`: placed by hand after the router failed it. South out of U4.7, a
+  0.6/0.3 via, B.Cu west at y 127.3, a second via beside its old In1 trunk.
+- Ground ties: U3.8 and U3.28 by `gndvias.py`. U4.8 by a track under pad 9 to
+  U4.10's existing via. U4.28 by a track to a 0.8/0.4 via at (172.25, 116.5),
+  3.1 mm out, just past `gndvias.py`'s 3.0 mm reach.
+- ENC8 stayed on GPB4/GPB5 and ENC4 on GPA2/GPA3. The swap this note offers
+  below was trial-routed and did no better.
 
 ## What is wrong
 

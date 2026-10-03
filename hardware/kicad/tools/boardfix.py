@@ -8,7 +8,9 @@
    letters A/B/C/D at the library positions with Y negated, which puts A by
    the D header and B by C (recheck section 03; since commit 4467882). They
    are set back to lib/vuulgaris.pretty/DAISY_PATCH_SM.kicad_mod's positions,
-   read from that file, not typed in here. Only the four positions change.
+   read from that file, not typed in here. The board's copies also carry
+   `(justify mirror)` on F.SilkS, which the library does not, so they would
+   print backwards; that is cleared too. Nothing else on U1 changes.
 
 2. Copper to edge. vuulgaris.kicad_pro now sets min_copper_edge_clearance to
    0.3 (it was 0, and the In2 GND plane was poured onto the routed edge all
@@ -18,8 +20,7 @@
 Close the board in KiCad first, or File -> Revert after this runs: Pcbnew
 holds the design in memory and its next save would wipe the change.
 
-Written in a cloud session without KiCad, so it has not been run. --check
-first, then diff the saved board against HEAD: only U1's four text positions
+--check first, then diff the saved board against HEAD: only U1's four texts
 and the zone fills should move.
 """
 import os, re, sys, subprocess
@@ -49,9 +50,13 @@ for it in fp.GraphicalItems():
     p0 = it.GetPos0()
     now = (round(pcbnew.ToMM(p0.x), 3), round(pcbnew.ToMM(p0.y), 3))
     print(f"U1 {t}: local {now} -> {(x, y)}")
+    if it.IsMirrored():
+        print(f"U1 {t}: mirrored on {it.GetLayerName()} -> not mirrored")
     if not CHECK:
-        it.SetPos0(pcbnew.VECTOR2I(pcbnew.FromMM(x), pcbnew.FromMM(y)))
+        # FromMM truncates: -16.002 came out as -16.001999
+        it.SetPos0(pcbnew.VECTOR2I(round(x * 1e6), round(y * 1e6)))
         it.SetDrawCoord()
+        it.SetMirrored(False)
     done.add(t)
 missing = set(LETTERS) - done
 if missing:

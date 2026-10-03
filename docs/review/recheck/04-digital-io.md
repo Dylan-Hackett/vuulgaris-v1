@@ -52,6 +52,11 @@ unused GPIO (GPB4-GPB7 and GPA2/GPA3, all open), so `ENC4_B`, `ENC8_B` and
 `BTN4` can move to U4 pins that are not bit 7. Unblock by committing
 DS20001952 revision D or later and reading its Table 2-1 and revision history.
 
+**2026-10-03: moved.** ENC4 and ENC8 (both lines each) and `BTN4` now sit on
+U4 GPA2/GPA3, GPB4/GPB5 and GPB6, and all four GPA7/GPB7 pins are tied to
+ground (`fix-mcp23017-gpa7-gpb7.md`). The pin table above is the board as
+reviewed, not as it is now. The datasheet is still not in the repo.
+
 Pull-ups: no external pull-ups on any encoder or button line, so every one
 depends on firmware setting GPPU. Weak pull-up current is 40-115 uA at
 VDD = 5 V (D070); the sheet gives no 3.3 V figure, and the current will be lower

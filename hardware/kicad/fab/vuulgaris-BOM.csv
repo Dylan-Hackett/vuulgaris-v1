@@ -10,12 +10,12 @@ Comment,Designator,Footprint,LCSC Part #,Qty,Note
 150k,"R303,R403",R0603,C22807,2,
 15k,"R311,R312,R411,R412",R0603,C22809,4,
 1M,"R501,R502",R0603,C22935,2,
-1N4148W,"D103,D104,D105,D106,D107,D203,D204,D205,D206,D207",SOD-123_L2.8-W1.8-LS3.7-RD,C81598,10,
+1N4148W,"D103,D104,D105,D106,D107,D203,D204,D205,D206,D207,D302,D402",SOD-123_L2.8-W1.8-LS3.7-RD,C81598,12,
 1k,"R107,R207,R315,R415,R503,R504,R514,R516,R517,R518",R0603,C21190,10,
 1k2,"R513,R515",R0603,C22765,2,
 1nF C0G,"C114,C214,C309,C409",C0603,C163508,4,
 1uF X7R 50V / CC0805KKX7R9BB105,"C30,C113,C120,C213,C220,C306,C406,C501,C502,C503,C504,C505,C506,C511,C512",C0805,C28323,15,
-2.2M,"R121,R221",R0603,C22938,2,
+2.2M,"R121,R221,R334,R434",R0603,C22938,4,
 20k trim,"RT301,RT401,RT501,RT502,RT503,RT504",RES-ADJ-SMD_3224W,C55071,6,
 220pF C0G,"C116,C216,C307,C407",C0603,C27675,4,
 22k,"R110,R111,R129,R210,R211,R229",R0603,C31850,6,
@@ -45,13 +45,13 @@ CC0603JRNPO9BN103,C28,C0603,C57112,1,
 CD4046B,"U104,U204",SO-16_L10.3-W5.3-P1.27-LS7.8-BL,C2651237,2,
 CL05B104KO5NNNC,"C21,C23,C26,C27",C0402,C1525,4,
 CUTOFF / FILTER CV AMT / RESONANCE / TIME / WET/DRY,"RV1,RV2,RV3,RV4,RV6",RES-ADJ-TH_RK09L1240A12,,5,"NOT FROM JLC -- FIT BY HAND. Alpha RD902F-40-15R1-B100K, dual B100K 9mm vertical, Tayda A-5440. Pad-for-pad with the RK09L footprint per Alpha's drawing RD902F-40-(L)R1-XXX-00D70. M7x0.75 bushing, 6.35mm round shaft. Do not substitute C380211 -- that is the 10k ALPS this replaced."
-DKM10E-12,U7,PWRM-TH_DKMW30F-12,C6934792,1,"NOT PLACEABLE -- PRE-ORDER ONLY. JLC returns 'No Result Found' for C6934792 in the in-stock library: 0 stock, pre-order at $15.10, MOQ 1. This is the power converter for the entire board, so it is the one shortage that stops a build. Source it outside LCSC (Mouser/Digi-Key/Arrow all list it) and hand-fit -- it is a through-hole 1x1in module, trivial to solder."
+DKM10E-12,U7,PWRM-TH_DKMW30F-12,,1,"NOT PLACEABLE -- PRE-ORDER ONLY. JLC returns 'No Result Found' for C6934792 in the in-stock library: 0 stock, pre-order at $15.10, MOQ 1. This is the power converter for the entire board, so it is the one shortage that stops a build. Source it outside LCSC (Mouser/Digi-Key/Arrow all list it) and hand-fit -- it is a through-hole 1x1in module, trivial to solder."
 EC11L1525G01,ENC0,SW-TH_ALPS_EC11L1525G01,C2991196,1,
 EC12E2430803,"ENC1,ENC2,ENC3,ENC4,ENC5,ENC6,ENC7,ENC8",SW-TH_EC12EXXXX,C470684,8,
 ES_DAISY_PATCH_SM_REV1,U1,DAISY_PATCH_SM,,1,"module, socketed or hand soldered"
 FACEPLATE 2x5 IDC,J12,IDC-TH_10P-P2.54_C5665,C5665,1,
 FEEDBACK,RV5,RES-ADJ-TH_RK09L1240A12,,1,"NOT FROM JLC -- FIT BY HAND. Alpha RD902F-40-15R1-B10K, dual B10K 9mm vertical, Tayda A-6433. Pad-for-pad with the RK09L footprint per Alpha's drawing RD902F-40-(L)R1-XXX-00D70. M7x0.75 bushing, 6.35mm round shaft. Do not substitute C380211 -- that is the 10k ALPS this replaced."
-HS242L01W4S01,DS1,LCD-TH_HS242L01W4S01,C5139768,1,"BUY FROM LCSC, FIT BY HAND -- C5139768, 27 in stock at $12.22. Not in JLC's assembly library, and it is a display module on its own 68x43mm PCB with a glass panel: do not reflow or wave solder it"
+HS242L01W4S01,DS1,LCD-TH_HS242L01W4S01,,1,"BUY FROM LCSC, FIT BY HAND -- C5139768, 27 in stock at $12.22. Not in JLC's assembly library, and it is a display module on its own 68x43mm PCB with a glass panel: do not reflow or wave solder it"
 J113 / MMBFJ113,"Q1,Q2",SOT-23-3_L2.9-W1.3-P1.90-LS2.4-BR,C891686,2,
 MCP23017-E_SO,"U3,U4",SOIC-28_L18.0-W7.5-P1.27-LS10.3-BL,C47023,2,
 OPA1688_FLAT,"U9,U10",SOP-8_L4.9-W3.9-P1.27-LS6.0-BL,C206212,2,

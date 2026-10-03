@@ -168,8 +168,14 @@ circuit does the same with DEEP off. Fix:
   leakage times 2.2M, about 55mV at 25nA. Forward it takes about 1.4uA at 3V,
   negligible against milliamps of LED drive.
 
-Cost: one diode drop of LED drive, about 1.5mA off the 9.1mA worst-case maximum
-(recheck section 06). `RT301`/`RT401` absorb it.
+Cost: one diode drop off the ceiling of the LED drive, about 1.5mA off the 9.1mA
+worst-case maximum (recheck section 06). Below the ceiling nothing changes: the
+diode is inside `U1-B`'s loop, which regulates the LED anode node, so pin 7 just
+sits a diode drop lower for the same LED current. `RT301`/`RT401` cannot give
+the 1.5mA back; they set feedback depth, not the ceiling, which is
+(Vsat - Vz - 2Vf - Vdiode) / `R306`. `R306`/`R406` stay at Bergman's 470R, so
+every state is at or below his circuit's LED current. If the gate does not open
+far enough on the bench, 390R there restores the ceiling (worst case 9.2mA).
 
 ## CV section — `U2` TL074
 
