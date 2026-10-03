@@ -349,6 +349,12 @@ for _b, _S in ((300, "L"), (400, "R")):
     # Tp2 500K is NOT fitted: it only does anything with the DEEP switch closed,
     # and DEEP is not fitted either.
     LPG_SYM[f"D{_b+1}"]  = "BZT52C3V9_C2891408"  # 3V9 clamp on the LED node
+    # Series diode between the LED string and R306/R406 (anode on LPG_LEDK).
+    # With CV inverted and CUTOFF low, U301B/U401B saturates positive and the
+    # LEDs would sit about 10 V in reverse against the VTL5C3's 3.0 V rating.
+    # The diode blocks that; R334/R434 (2.2M across the LED pair) holds the
+    # LEDs near 0 V so the diode, not the LEDs, takes it. Recheck section 06.
+    LPG_SYM[f"D{_b+2}"]  = "1N4148WT4"
     LPG_SYM[f"U{_b+2}"] = "TL074_FLAT"           # Bergman U2, CV chain, one per channel
 LPG_FP = {"TL074_FLAT": "SOIC-14_3.9x8.7mm_P1.27mm",
           "VTL5C3":     "VACTROL-TH_VTL5C3",
@@ -359,7 +365,8 @@ LPG_FP = {"TL074_FLAT": "SOIC-14_3.9x8.7mm_P1.27mm",
           # not negotiable here: this sets the vactrol LED drive depth by ear
           # against a scope, and a single-turn part puts 20k into 270 degrees.
           "TRIMPOT_3T": "RES-ADJ-SMD_3224W",
-          "BZT52C3V9_C2891408": "SOD-123_L2.7-W1.6-LS3.7-RD-1"}
+          "BZT52C3V9_C2891408": "SOD-123_L2.7-W1.6-LS3.7-RD-1",
+          "1N4148WT4":          "SOD-123_L2.8-W1.8-LS3.7-RD"}
 
 for _ref, _sym in LPG_SYM.items():
     if _ref in NET:

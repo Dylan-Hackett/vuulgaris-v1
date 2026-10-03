@@ -151,6 +151,26 @@ With the switch permanently open that path never exists, so **`Tp2` has nothing
 to do and is not fitted either.** `RT302`/`RT402` removed. `Tp1` (`RT301`/`RT401`)
 stays: it is in the main loop and is still the LED-drive depth trim.
 
+**LED reverse-voltage protection, added 2026-10.** Without DEEP's path, nothing
+holds pin 7 in when the summing node goes negative (an inverted CV with CUTOFF
+low), so `U1-B` saturates positive, about +10V, while the LED node sits near 0V
+through `R317`. The two LEDs then take about 10V in reverse against the VTL5C3's
+3.0V absolute maximum ("LED Reverse Breakdown Voltage", Xvive p1). Bergman's
+circuit does the same with DEEP off. Fix:
+
+- `D302`/`D402`, a 1N4148W in series between the LED string and `R306`/`R406`:
+  anode on `LPG_LEDK_L`/`_R`, cathode on the new `LPG_LEDD_L`/`_R`, which is
+  `R306.2`/`R406.2`. It carries the LED current forward and blocks the reverse
+  voltage (VR 75V; 25nA max at 20V, `datasheets/1N4148W.pdf`).
+- `R334`/`R434`, 2.2M across the LED pair (`LPG_LED` to `LPG_LEDK`). Two parts in
+  series in reverse share the voltage by their leakage, so on its own the diode
+  could leave the LEDs most of it. The resistor holds the LEDs at the diode's
+  leakage times 2.2M, about 55mV at 25nA. Forward it takes about 1.4uA at 3V,
+  negligible against milliamps of LED drive.
+
+Cost: one diode drop of LED drive, about 1.5mA off the 9.1mA worst-case maximum
+(recheck section 06). `RT301`/`RT401` absorb it.
+
 ## CV section — `U2` TL074
 
 `CV1 IN` through a **Level 100K** pot, its wiper into `R28` 100K; `CV2 IN`
@@ -253,7 +273,8 @@ Matching, and including the three things this drawing is easy to get wrong:
 Zero dangling nets anywhere in the block.
 
 Deviations that are deliberate and recorded above: CV1 and `R28` dropped, `Tp2`
-and the DEEP switch not fitted, ±12V rails instead of ±15V — and, since
+and the DEEP switch not fitted, ±12V rails instead of ±15V, the LED
+reverse-voltage diode and its 2.2M (2026-10), and, since
 2026-09-25, the **input mix** below.
 
 ### The input is a mix of the Daisy and EXT — added 2026-09-25, ADR 0011

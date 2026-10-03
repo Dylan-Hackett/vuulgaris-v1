@@ -39,7 +39,7 @@ ten-second time-out without power-cycling the module.
 
 **On an expander GPIO, not a Daisy pin**, for three reasons. Every Daisy candidate
 is gone — `B5` is the gate out jack, `B6` the BBD inhibit, `A9` the OLED reset,
-`A8` reserved. U4 uses 9 of 16. And the expander runs on `P3V3_DAISY` against an
+`A8` reserved. U4 had GPIO to spare (it is full now, see "GPA7 and GPB7" below). And the expander runs on `P3V3_DAISY` against an
 MSP430 absolute max of 3.6V, so it is a **direct wire with no divider** — which
 is precisely what [Q13](notes/open-questions.md) called a day lost with a logic
 analyser. Being on I2C rather than the UART also means it still works when the
@@ -70,7 +70,7 @@ and eight of its GPIO are still free after them.
 | SW4 | `BTN1` | 25 (GPA4) |
 | SW5 | `BTN2` | 26 (GPA5) |
 | SW6 | `BTN3` | 27 (GPA6) |
-| SW7 | `BTN4` | 28 (GPA7) |
+| SW7 | `BTN4` | 7 (GPB6), was 28 (GPA7) until 2026-10 |
 
 Wired **button to ground with the MCP23017's internal pull-ups enabled** — the same
 arrangement as the encoders, so no external resistors. Polled with everything else at
@@ -124,6 +124,33 @@ knobs are turned deliberately and never flicked through a list.
 
 **U4's Port B is polled at 2kHz** because ENC0 lives there and ENC0 is the one encoder
 that does get spun hard. One GPIOB read is about 100us, so that is roughly 20% more bus.
+
+### GPA7 and GPB7 are output only, moved 2026-10
+
+Microchip's MCP23017 datasheet, since Revision D (June 2022) and still in
+Revision E (DS20001952E, July 2026), says "Pins GPA7, GPB7 are output only for
+MCP23017" (Features, and Table 2-1). The reason Microchip gave publicly: a
+transition on either pin while it is an input can corrupt SDA, i.e. the whole
+bus both expanders share. The silicon did not change; every part has it. The
+copy in `datasheets/` is Revision C, which predates the note, and this board
+had `ENC4_B` on U3 GPA7, `ENC8_B` on U3 GPB7 and `BTN4` on U4 GPA7.
+
+| net | was | now |
+|---|---|---|
+| `ENC4_A` | U3.27 GPA6 | U4.23 GPA2 |
+| `ENC4_B` | U3.28 GPA7 | U4.24 GPA3 |
+| `ENC8_A` | U3.7 GPB6 | U4.5 GPB4 |
+| `ENC8_B` | U3.8 GPB7 | U4.6 GPB5 |
+| `BTN4` | U4.28 GPA7 | U4.7 GPB6 |
+
+Both lines of each encoder moved, so a quadrature pair is still read from one
+port in one I2C transaction. All four GPA7/GPB7 pins (U3.8, U3.28, U4.8, U4.28)
+are tied to `GND`: every pin is an input from power-up until firmware writes
+IODIR, and a grounded pin cannot transition in that window. **Firmware sets
+them as outputs driven low and never drives them high.** ENC8 and BTN4 now share
+U4 port B with ENC0, so they get its 2kHz poll; ENC4 on port A is read at 500Hz
+like the other parameter encoders. U3 GPA6 and GPB6 are now free; U4 has none.
+Plan and sources: `docs/review/recheck/fix-mcp23017-gpa7-gpb7.md`.
 
 *An earlier revision of this document claimed hands produce "20-30 transitions per
 second". That is about 0.25 rev/sec — too slow even for a deliberate twist, and it is

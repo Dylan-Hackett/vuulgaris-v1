@@ -1638,7 +1638,9 @@ def panel_rows(c, g):
         rows.append(("SW3", "tactile, SHIFT", g["SHIFT_CX"], g["SHIFT_CY"], "-> Daisy A9"))
     if c.get("mx_buttons"):
         # GPA4-7 were the original four; BTN5/BTN6 went onto U4's spare GPA0/GPA1.
-        GPIO = ["GPA4", "GPA5", "GPA6", "GPA7", "GPA0", "GPA1"]
+        # BTN4 left GPA7 for GPB6 in 2026-10: GPA7/GPB7 are output only on the
+        # MCP23017 (DS20001952D/E), see docs/pin-allocation.md.
+        GPIO = ["GPA4", "GPA5", "GPA6", "GPB6", "GPA0", "GPA1"]
         n = 0
         for cy in g["MX_CY"]:
             for cx in g["MX_CX"]:

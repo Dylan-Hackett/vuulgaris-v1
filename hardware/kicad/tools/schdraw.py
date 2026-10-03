@@ -352,6 +352,9 @@ def lpg_left(netmap, values):
     put("R317", resistor(620, 430, "R317", V("R317"), vert=True, flip_label=True))
     put("D301", zener(790, 504, "D301", V("D301"), anode_up=True))
     put("R306", resistor(840, 220, "R306", V("R306")))
+    # LED reverse-voltage protection, 2026-10: D302 in series, R334 across the pair
+    put("D302", diode(1420, 400, "D302", V("D302"), cathode_up=True))
+    put("R334", resistor(1150, 400, "R334", V("R334")))
     put("VT301", vactrol(820, 560, "VT301"))
     put("VT302", vactrol(1120, 560, "VT302"))
 
@@ -642,7 +645,10 @@ def lpg_left_wires():
         ("GND",         [("R317", "2"), ("GND", 620, 480)]),
         ("GND",         [("D301", "1"), ("GND", 790, 536)]),
         ("LPG_BOUT_L",  [("U301", "7"), ("R306", "1")]),
-        ("LPG_LEDK_L",  [("R306", "2"), (1420, 220), (1420, 602), ("VT302", "2")]),
+        ("LPG_LEDD_L",  [("R306", "2"), (1420, 220), ("D302", "1")]),
+        ("LPG_LEDK_L",  [("D302", "2"), (1420, 602), ("VT302", "2")]),
+        ("LPG_LEDK_L",  [("R334", "2"), (1360, 400), (1360, 520), (1420, 520)]),
+        ("LPG_LED_L",   [(700, 400), ("R334", "1")]),
         ("LPG_LEDM_L",  [("VT301", "2"), ("VT302", "1")]),
 
         # ---- audio in ----

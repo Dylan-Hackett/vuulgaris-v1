@@ -129,6 +129,13 @@ POT = _POT.format(v="B100K", sku="A-5440")
 # with about 23% less feedback at mid-rotation -- docs/bbd-mki.md -- but it is
 # hand-fit from the same shop at the same price, so it gets the real value.
 POT10 = _POT.format(v="B10K", sku="A-6433")
+# Hand-fit parts that still have an LCSC number somewhere (CURATED, the symbol
+# library's "LCSC Part" field, a doc table). Blanked in the JLC BOM regardless:
+# U7 is pre-order only at JLC and is sourced elsewhere; DS1 is not in JLC's
+# assembly library and must not be soldered by machine. Their NOTEs say where to
+# buy them. Recheck section 11, 2026-10.
+HANDFIT = {"DKM10E-12", "HS242L01W4S01"}
+
 NOTE = {
     # Stock and placeability below were read off JLC's parts library in a
     # browser on 2026-09-11, not inferred from LCSC. The two are different
@@ -336,6 +343,10 @@ def main():
                         if k in basic["C"]:
                             code, why = basic["C"][k][0], "basic"
                             break
+        # Hand-fit parts leave the JLC BOM with no LCSC number, whatever the
+        # symbol library or a doc table says, so JLC cannot try to place them.
+        if val in HANDFIT:
+            code, why = "", "hand-fit"
         how[why or "UNSOURCED"] += 1
         rows.append({"Comment": val, "Designator": ",".join(sorted(refs, key=natkey)),
                      "Footprint": fp, "LCSC Part #": code, "Qty": len(refs),
