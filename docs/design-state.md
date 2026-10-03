@@ -893,7 +893,7 @@ it can be wider than its own hole.
 | Rows | 12.7mm, tightened from 19.05 |
 | Cluster | 22.1 x 32.0mm to the holes; the 12.0mm bodies behind it span 27.5 x 37.4mm |
 | ENC0 | moved to y 73.453 on 2026-09-08 when the caps went away and the column re-centred on a 6.6mm hole instead of a 12mm cap (the layout still uses 6.6; the cut is 7.2 since 2026-09-28) |
-| GPIO | `BTN5`/`BTN6` onto U4's spare GPA0/GPA1; 7 pins still free |
+| GPIO | `BTN5`/`BTN6` onto U4's spare GPA0/GPA1; since 2026-10 U4 is full (ENC4, ENC8 and BTN4 moved onto it off GPA7/GPB7, which are output only, see pin-allocation.md) |
 | Land pattern | `KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5`, 14.70 x 12.00mm, **identical at every height in the family** |
 
 ### CLOSED 2026-09-08: `TS1103S-12X12X14DIP`, LCSC **C54573007**

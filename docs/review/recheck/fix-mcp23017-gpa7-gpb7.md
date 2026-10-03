@@ -4,6 +4,14 @@
 BLOCKED item (U3.28, U3.8, U4.28) and should count as a DEFECT in
 `00-summary.md`.
 
+## Status, 2026-10-03
+
+Done in the repo: steps 2 and 3 (netmap, schematic regenerated and checked
+956/956 against the netmap with an independent netlister), and step 8's docs
+(`pin-allocation.md`, the generator and `placement-panel-facing.txt`,
+`design-state.md`). Not done: step 1 (datasheet download, yours to approve),
+steps 4-6 (F8 in Pcbnew, routing, checks, fab), step 7 (firmware).
+
 ## What is wrong
 
 Microchip's current MCP23017 datasheet says GPA7 and GPB7 are **output only**
