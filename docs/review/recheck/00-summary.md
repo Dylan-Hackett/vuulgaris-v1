@@ -13,6 +13,9 @@ Gate (section 1): netmap = schematic = board on both boards, 944/944 main
 against the DKM10E-12's per-output rating (bench), and three inputs on
 MCP23017 GPA7/GPB7 (a missing datasheet).
 
+The second is closed (2026-10-04): Rev E is in `datasheets/`, it says the pins
+are output only, and the inputs were moved off them the day before.
+
 ## 1. Defects, deduplicated
 
 ### Kills the board
@@ -90,7 +93,7 @@ Count: **0 kill, 8 degrade, 22 cosmetic/doc.**
 
 | item | section | unblocks it |
 |---|---|---|
-| MCP23017 GPA7/GPB7 as inputs (`ENC4_B`, `ENC8_B`, `BTN4`) | 01, 04 | the current MCP23017 datasheet revision (Rev D or later) in `datasheets/`. **Moved off those pins 2026-10-03** (`fix-mcp23017-gpa7-gpb7.md`), so the board no longer depends on the answer; the datasheet is still not in the repo |
+| MCP23017 GPA7/GPB7 as inputs (`ENC4_B`, `ENC8_B`, `BTN4`) | 01, 04 | the current MCP23017 datasheet revision (Rev D or later) in `datasheets/`. **Moved off those pins 2026-10-03** (`fix-mcp23017-gpa7-gpb7.md`), so the board no longer depends on the answer. **Unblocked 2026-10-04:** DS20001952E is in `datasheets/` and says output only (p1 Features; Table 2-1, p11) |
 | F1 ASMD1812-300 ratings and land | 02, 08 | its datasheet PDF |
 | L1/L2 BLM18PG121SN1D and FB1/FB2 current ratings | 02 | their datasheet PDFs |
 | Patch SM, OLED module and MN3205 supply currents | 02 | bench measurement (none published) |

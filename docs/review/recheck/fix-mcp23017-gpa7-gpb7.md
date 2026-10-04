@@ -9,8 +9,10 @@ BLOCKED item (U3.28, U3.8, U4.28) and should count as a DEFECT in
 Done: steps 2-6 and step 8's docs. The schematic is regenerated and checked
 956/956 with KiCad's own netlister (`netcheck.py`); the board is routed, DRC
 has 0 errors, `boardcheck.py` has 0 parity mismatches, and the fab package is
-rebuilt. Not done: step 1 (the Rev E datasheet is still not in `datasheets/`;
-the download is yours to approve) and step 7 (firmware).
+rebuilt. Step 1 was done on 2026-10-04: `datasheets/` now holds DS20001952E,
+downloaded from Microchip, and the three places quoted below were read in that
+PDF (p1 Features; Table 2-1 on p11, rows GPB7 and GPA7; the Revision D entry in
+the history on p39). They say what this note says. Not done: step 7 (firmware).
 
 How the board got there, since none of it was routed by hand in one sitting:
 
@@ -46,9 +48,10 @@ signal. Microchip has published no detailed mechanism. The silicon
 was not changed; only the document was. Every MCP23017 you can buy has the
 problem.
 
-The repo's copy, `datasheets/Microchip-MCP23017-datasheet.pdf`, is Revision C
-(`fetch-datasheets.sh` fetches `20001952c.pdf`), which predates the note.
-That is why the design used these pins.
+The repo's copy, `datasheets/Microchip-MCP23017-datasheet.pdf`, was Revision C
+until 2026-10-04 (`fetch-datasheets.sh` fetched `20001952c.pdf`), which
+predates the note. That is why the design used these pins. It is Revision E
+now.
 
 ## Why it is worse than three dead inputs
 

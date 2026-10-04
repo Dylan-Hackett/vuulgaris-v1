@@ -55,7 +55,10 @@ DS20001952 revision D or later and reading its Table 2-1 and revision history.
 **2026-10-03: moved.** ENC4 and ENC8 (both lines each) and `BTN4` now sit on
 U4 GPA2/GPA3, GPB4/GPB5 and GPB6, and all four GPA7/GPB7 pins are tied to
 ground (`fix-mcp23017-gpa7-gpb7.md`). The pin table above is the board as
-reviewed, not as it is now. The datasheet is still not in the repo.
+reviewed, not as it is now. DS20001952E went into `datasheets/` on 2026-10-04
+and confirms it: p1 Features, "Pins GPA7, GPB7 are output only for MCP23017";
+Table 2-1 (p11), rows GPB7 and GPA7, "Output only (MCP23017)"; changed in
+Revision D, June 2022 (p39). The rest of this section was checked against Rev C.
 
 Pull-ups: no external pull-ups on any encoder or button line, so every one
 depends on firmware setting GPPU. Weak pull-up current is 40-115 uA at
@@ -222,7 +225,7 @@ pitch (8 x 1.10 = 8.80), with the contact row at the top; four shell pads; two
 | item | verdict |
 |---|---|
 | U3/U4 pinout, addresses, RESET, INT, NC | CLEAN |
-| U3.28 / U3.8 / U4.28 on GPA7/GPB7 | **BLOCKED** (Rev D not in repo) |
+| U3.28 / U3.8 / U4.28 on GPA7/GPB7 | **BLOCKED** (Rev D not in repo). Confirmed against Rev E and moved, 2026-10-04 |
 | U4 decoupling | QUESTION |
 | ENC1-ENC8 pins and lugs | CLEAN |
 | ENC0 pins, switch and lugs | CLEAN |

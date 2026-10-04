@@ -159,7 +159,8 @@ equal netmap ref sets minus those.
   whose Table 2-1 calls GPA7 and GPB7 "Bidirectional I/O". The runbook itself
   refers to an output-only caveat on GPA7/GPB7 "in the current datasheet
   revision"; that revision is not in the repo. Three inputs sit on those pins
-  (section 4 takes this up).
+  (section 4 takes this up). **Closed 2026-10-04:** the committed sheet is now
+  DS20001952E (July 2026), which says output only for both.
 - CoolAudio V3205SD: never obtained, known; MN3205 original plus manual p25.
 
 **Doc drift found here:** `REVIEW-INDEX.md` maps `C29` to the Lelon RVT

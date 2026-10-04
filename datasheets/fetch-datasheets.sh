@@ -42,7 +42,8 @@ fetch "https://www.ti.com/lit/gpn/tl072"         TI-TL072-datasheet.pdf
 fetch "https://www.ti.com/lit/gpn/tl074"         TI-TL074-datasheet.pdf
 fetch "https://www.ti.com/lit/gpn/tl084"         TI-TL084-datasheet.pdf
 fetch "https://www.ti.com/lit/gpn/opa1688"       TI-OPA1688-datasheet.pdf
-fetch "https://ww1.microchip.com/downloads/en/devicedoc/20001952c.pdf" Microchip-MCP23017-datasheet.pdf
+# DS20001952E (July 2026). Rev D (2022) made GPA7/GPB7 output only on the MCP23017; Rev C, kept here until 2026-10-04, predates that.
+fetch "https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP23017-MCP23S17-16-Bit-IO-Expander-with-Serial-Interface-DS20001952.pdf" Microchip-MCP23017-datasheet.pdf
 fetch "http://www.meanwelljapan.com/upload/pdf/DKM10/SKM10,DKM10-spec.pdf" MeanWell-SKM10-DKM10-spec.pdf
 
 echo
