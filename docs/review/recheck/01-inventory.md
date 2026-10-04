@@ -36,15 +36,15 @@ repo (scratch dir, never committed) that parses the files directly:
 
 The runbook, `review-packet.md`, `REVIEW-INDEX.md` and `tools/blockview.py`
 expect **942 connections, 309 refs, 219 nets**. That figure is from
-`11b8c99` (2026-09-10). netmap history since:
+`87e5df6` (2026-09-10). netmap history since:
 
 | commit | date | refs / conns / nets | change |
 |---|---|---|---|
-| `11b8c99` | 09-10 | 309 / 942 / 219 | D3 TVS added (the quoted figure) |
-| `7a0c519` | 09-16 | 309 / 942 / 221 | LPG LED drive fix |
-| `df50b67` | 09-18 | 310 / 944 / 221 | C29 to ceramic, 100nF added at the connector |
-| `e9a5e16` | 09-22 | 310 / 932 / 221 | SW4-SW9 un-shorted, one diagonal per switch net-less |
-| `ebace39` | 09-25 | 316 / 944 / 223 | ADR 0011 EXT feed into the LPG |
+| `87e5df6` | 09-10 | 309 / 942 / 219 | D3 TVS added (the quoted figure) |
+| `30da82a` | 09-16 | 309 / 942 / 221 | LPG LED drive fix |
+| `b6f0c0a` | 09-18 | 310 / 944 / 221 | C29 to ceramic, 100nF added at the connector |
+| `cf63396` | 09-22 | 310 / 932 / 221 | SW4-SW9 un-shorted, one diagonal per switch net-less |
+| `9aa2c7b` | 09-25 | 316 / 944 / 223 | ADR 0011 EXT feed into the LPG |
 
 So 944 is the right number for today's intent, and an independent parse
 reproduces it three ways with zero disagreement. The gate is treated as passed.
@@ -163,7 +163,7 @@ equal netmap ref sets minus those.
 - CoolAudio V3205SD: never obtained, known; MN3205 original plus manual p25.
 
 **Doc drift found here:** `REVIEW-INDEX.md` maps `C29` to the Lelon RVT
-electrolytic (it is a 10uF 0805 MLCC, CL21A106KAYNNNE, since `df50b67`) and `RV1`-`RV6`
+electrolytic (it is a 10uF 0805 MLCC, CL21A106KAYNNNE, since `b6f0c0a`) and `RV1`-`RV6`
 to the ALPS RK09L sheet (the fitted part is the Alpha RD902F; the RK09L sheet
 now only documents the footprint's origin). The BOM footprint name
 `PWRM-TH_DKMW30F-12` on U7 names a different Mean Well module (DKMW30F); a

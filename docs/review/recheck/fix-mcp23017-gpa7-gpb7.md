@@ -158,4 +158,4 @@ There is no fix without a rework.
 - [MCP23017/MCP23S17 datasheet DS20001952E](https://ww1.microchip.com/downloads/aemDocuments/documents/APID/ProductDocuments/DataSheets/MCP23017-MCP23S17-16-Bit-IO-Expander-with-Serial-Interface-DS20001952.pdf), page 1 and Table 2-1, revision history
 - [Adafruit_CircuitPython_MCP230xx issue #57](https://github.com/adafruit/Adafruit_CircuitPython_MCP230xx/issues/57) (Microchip's SDA explanation, relayed)
 - [RobTillaart/MCP23017_RT issue #40](https://github.com/RobTillaart/MCP23017_RT/issues/40)
-- Board and netmap positions read from `hardware/kicad/vuulgaris.kicad_pcb` and `hardware/kicad/tools/netmap.json` at commit c1c81b4.
+- Board and netmap positions read from `hardware/kicad/vuulgaris.kicad_pcb` and `hardware/kicad/tools/netmap.json` at commit 95a5074.

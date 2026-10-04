@@ -545,7 +545,7 @@ Set 2026-09-09, from IPC-2221 against the real stackup: **1oz outer (35um),
 | `GND` | `GND` | 0.5mm | 0.20mm | 0.8/0.4 |
 | `Default` | everything else, audio included | 0.25mm | 0.20mm | 0.8/0.4 |
 
-Clearance is 0.20mm in every class (commit `9b0df9d` relaxed the two that were
+Clearance is 0.20mm in every class (commit `5141496` relaxed the two that were
 wider). Ten vias are **0.6/0.3**, not the class size: `ENC4_A/B`, `ENC8_A/B` and
 `BTN4`, where U4's pins would not escape with 0.8/0.4 (2026-10-03,
 `docs/review/recheck/fix-mcp23017-gpa7-gpb7.md`). The board minimum is 0.5/0.3.

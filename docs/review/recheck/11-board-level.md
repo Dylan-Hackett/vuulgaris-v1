@@ -18,8 +18,8 @@ tightest instance of each rule is measured either way, ready to compare.
 
 | board | report created | last board commit | errors | unconnected | warnings by type | verdict |
 |---|---|---|---|---|---|---|
-| main | 2026-10-02 12:23:08 | 2026-09-26 22:56 (5cf3909) | 0 | 0 | 199 silk_over_copper, 27 silk_overlap, 24 silk_edge_clearance, 6 lib_footprint_mismatch (U1, D3, U101, U201, J1, C30) | CLEAN: every bucket is silk or library override |
-| faceplate | 2026-10-02 12:23:09 | 2026-09-29 14:55 (2d764e5) | 0 | 0 | 31 silk_over_copper | CLEAN |
+| main | 2026-10-02 12:23:08 | 2026-09-26 22:56 (620d78c) | 0 | 0 | 199 silk_over_copper, 27 silk_overlap, 24 silk_edge_clearance, 6 lib_footprint_mismatch (U1, D3, U101, U201, J1, C30) | CLEAN: every bucket is silk or library override |
+| faceplate | 2026-10-02 12:23:09 | 2026-09-29 14:55 (e18c367) | 0 | 0 | 31 silk_over_copper | CLEAN |
 
 Both reports are newer than their boards, so they are trusted. The six
 library mismatches are not pad changes: section 8 found every board pad
@@ -134,10 +134,10 @@ Faceplate: section 10 (C2 3.1 mm, C1 9.0 mm, C3 3.1 mm).
 | files in the gerber zip | 15: F/B Cu, In1, GND (In2), F/B Mask, F/B Paste, F/B Silkscreen, Edge_Cuts, PTH.drl, NPTH.drl, two drill maps | 15, same set with In2_Cu | CLEAN |
 | layer identification | X2 FileFunction L1 Top, L2 Inr, L3 Inr (`GND.gbr`), L4 Bot; job file agrees | same | CLEAN |
 | drills | plated and non-plated separate | same | CLEAN |
-| generated after the last board change | gerbers 2026-09-26 22:56:27, in the board's own commit 5cf3909 | package 3ef52f1 at 15:26, after the board's 2d764e5 at 14:55 | CLEAN |
+| generated after the last board change | gerbers 2026-09-26 22:56:27, in the board's own commit 620d78c | package 4d12b9d at 15:26, after the board's e18c367 at 14:55 | CLEAN |
 | package zip vs `fab/` zip | byte-identical | byte-identical | CLEAN |
 
-The main fab README names 744f16b, the parent of 5cf3909: `mkfab.py` records
+The main fab README names 27ba528, the parent of 620d78c: `mkfab.py` records
 HEAD before the commit it lands in. Harmless.
 
 ## 8. BOM against board
