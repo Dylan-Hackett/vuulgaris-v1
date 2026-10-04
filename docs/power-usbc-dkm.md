@@ -306,6 +306,25 @@ absolute maximum ratings and what the module can *supply* (5V out 800mA, 3V3 out
 whole table wants a bench-supply measurement before anything is ordered in
 quantity.
 
+**2026-10-04: the estimate is probably high.** ModularGrid's entry for
+Electrosmith's patch.Init(), a module that is the Patch SM plus pots, jacks and
+an LED, lists **90mA on +12V and 5mA on −12V**, firmware dependent
+(https://modulargrid.net/e/electrosmith-patch-init). That is the module alone,
+without what this board hangs on its 5V and 3V3 outputs. Redone on that basis,
+arithmetic not measurement:
+
+- Patch SM itself, about 90mA.
+- Its exports (OLED through `U5`, the MSP430 through `U6`, both MCP23017s, the
+  microSD): 60–120mA at 5V typical and up to about 280mA with the OLED full
+  white and a card write, costing roughly half that at 12V if the module's 5V
+  regulator is a switcher, which its 800mA rating implies.
+- Everything else on +12V: about 90mA at typical op-amp currents and average
+  headphone level, about 145mA at datasheet maxima and headphone peaks.
+
+That is roughly **200–250mA typical, about 375mA with every load at its maximum
+at once**, against the DKM10E-12's 416mA per output. The measurement is still
+owed; the OLED module's own draw is the unknown.
+
 Three things depend on the number:
 
 - **The fuse, since changed.** A PPTC's hold current derates with ambient --

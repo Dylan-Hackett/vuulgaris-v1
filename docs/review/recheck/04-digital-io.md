@@ -226,7 +226,7 @@ pitch (8 x 1.10 = 8.80), with the contact row at the top; four shell pads; two
 |---|---|
 | U3/U4 pinout, addresses, RESET, INT, NC | CLEAN |
 | U3.28 / U3.8 / U4.28 on GPA7/GPB7 | **BLOCKED** (Rev D not in repo). Confirmed against Rev E and moved, 2026-10-04 |
-| U4 decoupling | QUESTION |
+| U4 decoupling | QUESTION. `C44` added at U4, 2026-10-04 |
 | ENC1-ENC8 pins and lugs | CLEAN |
 | ENC0 pins, switch and lugs | CLEAN |
 | ENC0 contact current vs ALPS minimum | **QUESTION** |

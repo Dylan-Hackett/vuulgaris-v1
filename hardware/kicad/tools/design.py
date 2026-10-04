@@ -69,6 +69,9 @@ SYM = {
     "C22": "CL21A106KAYNNNE", "C23": "CL05B104KO5NNNC",
     "C24": "CL21A106KAYNNNE", "C25": "CL21A106KAYNNNE",
     "C26": "CL05B104KO5NNNC", "C27": "CL05B104KO5NNNC",
+    # U4's own 100nF. C27 is drawn beside U4 but sits at the Daisy's 3V3 pin, 185mm
+    # away on the board, and C26 is U3's; U4 had nothing within 33mm (recheck Q-E).
+    "C44": "CL05B104KO5NNNC",
     # ---- power input stage: USB-C 5V -> DKM10E-12 -> +/-12V.
     # Transcribed pad-for-pad from the routed EasyEDA board `postpcb` in
     # origin2.2.eprj -- see docs/power-usbc-dkm.md. The parts are the same LCSC
@@ -208,7 +211,7 @@ POS = {
     # --- top band: the digital core -------------------------------------
     "U1":  (150, 170),
     "U3":  (340,  95), "U4":  (340, 235),
-    "C26": (430,  95), "C27": (430, 235),
+    "C26": (430,  95), "C27": (430, 235), "C44": (500, 235),
     "R20": (500,  60), "R21": (570,  60),
     "TP1": (860, 60), "TP2": (920, 60), "TP3": (980, 60),
     "TP4": (1040, 60), "TP5": (1100, 60),
@@ -302,7 +305,7 @@ FPMAP = {
     "SW6": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5", "SW7": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5",
     "SW8": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5", "SW9": "KEY-TH_4P-L12.0-W12.0-P5.00-LS12.5",
     "C20": "C0805", "C22": "C0805", "C24": "C0805", "C25": "C0805",
-    "C21": "C0402", "C23": "C0402", "C26": "C0402", "C27": "C0402",
+    "C21": "C0402", "C23": "C0402", "C26": "C0402", "C27": "C0402", "C44": "C0402",
     "FB1": "R0805", "FB2": "R0805",
 
 

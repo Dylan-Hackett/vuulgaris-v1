@@ -546,9 +546,10 @@ Set 2026-09-09, from IPC-2221 against the real stackup: **1oz outer (35um),
 | `Default` | everything else, audio included | 0.25mm | 0.20mm | 0.8/0.4 |
 
 Clearance is 0.20mm in every class (commit `5141496` relaxed the two that were
-wider). Ten vias are **0.6/0.3**, not the class size: `ENC4_A/B`, `ENC8_A/B` and
-`BTN4`, where U4's pins would not escape with 0.8/0.4 (2026-10-03,
-`docs/review/recheck/fix-mcp23017-gpa7-gpb7.md`). The board minimum is 0.5/0.3.
+wider). Eleven vias are **0.6/0.3**, not the class size: ten on `ENC4_A/B`,
+`ENC8_A/B` and `BTN4`, where U4's pins would not escape with 0.8/0.4 (2026-10-03,
+`docs/review/recheck/fix-mcp23017-gpa7-gpb7.md`), and the one that feeds `C44`
+from U4.9's track, between the two legs of `ENC8_B`. The board minimum is 0.5/0.3.
 
 **`VBUS` is the only rail ampacity actually constrains.** It feeds the DKM10E-12
 through a 2.0A PTC, and IPC wants **0.78mm** for that. 1.5mm carries 3.21A at 10C

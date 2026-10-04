@@ -43,7 +43,7 @@ BEAD0805S601A20T,"FB1,FB2",R0805,C1017,2,
 BLM18PG121SN1D_C14709,"L1,L2",L0603,C14709,2,
 CC0603JRNPO9BN103,C28,C0603,C57112,1,
 CD4046B,"U104,U204",SO-16_L10.3-W5.3-P1.27-LS7.8-BL,C2651237,2,
-CL05B104KO5NNNC,"C21,C23,C26,C27",C0402,C1525,4,
+CL05B104KO5NNNC,"C21,C23,C26,C27,C44",C0402,C1525,5,
 CUTOFF / FILTER CV AMT / RESONANCE / TIME / WET/DRY,"RV1,RV2,RV3,RV4,RV6",RES-ADJ-TH_RK09L1240A12,,5,"NOT FROM JLC -- FIT BY HAND. Alpha RD902F-40-15R1-B100K, dual B100K 9mm vertical, Tayda A-5440. Pad-for-pad with the RK09L footprint per Alpha's drawing RD902F-40-(L)R1-XXX-00D70. M7x0.75 bushing, 6.35mm round shaft. Do not substitute C380211 -- that is the 10k ALPS this replaced."
 DKM10E-12,U7,PWRM-TH_DKMW30F-12,,1,"NOT PLACEABLE -- PRE-ORDER ONLY. JLC returns 'No Result Found' for C6934792 in the in-stock library: 0 stock, pre-order at $15.10, MOQ 1. This is the power converter for the entire board, so it is the one shortage that stops a build. Source it outside LCSC (Mouser/Digi-Key/Arrow all list it) and hand-fit -- it is a through-hole 1x1in module, trivial to solder."
 EC11L1525G01,ENC0,SW-TH_ALPS_EC11L1525G01,C2991196,1,

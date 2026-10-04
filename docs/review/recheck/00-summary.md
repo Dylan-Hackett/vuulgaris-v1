@@ -68,11 +68,11 @@ Count: **0 kill, 8 degrade, 22 cosmetic/doc.**
 
 | # | question | section | how it closes |
 |---|---|---|---|
-| Q-A | +12 V load 395-445 mA against the DKM10E-12's 416 mA per output; the Patch SM's draw is unpublished | 02 | measure +12 V on the first board before a production order |
+| Q-A | +12 V load 395-445 mA against the DKM10E-12's 416 mA per output; the Patch SM's draw is unpublished | 02 | measure +12 V on the first board before a production order. **2026-10-04:** the 395-445 rests on a guessed 250-300 mA for the Patch SM. ModularGrid lists Electrosmith's patch.Init(), a module that is the Patch SM plus panel parts, at 90 mA on +12 V and 5 mA on -12 V. With that the sum is roughly 200-250 mA typical and about 375 mA with every load at its maximum at once (`power-usbc-dkm.md`). Still measure it |
 | Q-B | AMS1117 (U5, U6, U8) on all-ceramic outputs; the sheet guarantees 22 uF tantalum. U8's caps also sit 10-14 mm away | 02, 11 | scope each output under load step; tantalum or a series resistor if it rings |
 | Q-C | CD4046B drive against the MN3205's 500 ns edge and cross-point limits; S&H trigger margin on the same edge | 05 | V3205 sheet, or scope CP1/CP2 and TP-F |
 | Q-D | ENC0 contacts run at about a tenth of ALPS's minimum current | 04 | 3.3k pull-ups on `ENC0_A/B/PUSH` (netmap, values) |
-| Q-E | U4 has no capacitor within 33 mm | 04, 11 | a 100 nF at U4 VDD (netmap, board) |
+| Q-E | U4 has no capacitor within 33 mm | 04, 11 | a 100 nF at U4 VDD (netmap, board). **Done 2026-10-04:** `C44`, 100 nF 0402 on B.Cu under U4.9/U4.10, fed by a via on pin 9's track, returning to pin 10's via |
 | Q-F | LPG common-mode: U301C/D and U102A exceed the TL07x/TL08x C-grade common-mode range on +-12 V when both sources run hot; ADR 0011 quotes output swing instead | 06, 05 | keep levels per ADR 0011 and correct its stated limit |
 | Q-G | U101 pin 7 below -0.3 V with dry above 8.7 V peak at full feedback | 05 | level discipline, as Q-F |
 | Q-H | `VBUS_F` reaches U7 through one 0.4 mm via and 59.5 mm of inner copper of unstated weight | 11 | add vias; confirm the stack-up ordered. **2026-10-03:** a second via, 1.0/0.5, is beside the first; the inner copper weight is still to confirm at order time |

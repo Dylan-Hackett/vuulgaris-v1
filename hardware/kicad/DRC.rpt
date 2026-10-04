@@ -1,5 +1,5 @@
 ** Drc report for /Users/dylanhackett/V1/hardware/kicad/vuulgaris.kicad_pcb **
-** Created on 2026-10-03 17:53:18 **
+** Created on 2026-10-04 02:17:42 **
 
 ** Found 267 DRC violations **
 [silk_edge_clearance]: Silkscreen clipped by board edge
@@ -697,6 +697,9 @@
     @(225.0590 mm, 108.2470 mm): Circle on B.Silkscreen
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
+    @(185.3000 mm, 124.3500 mm): Circle on B.Silkscreen
+[silk_over_copper]: Silkscreen clipped by solder mask
+    Local override; Severity: warning
     @(366.8950 mm, 64.9200 mm): Reference 'C43'
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
@@ -710,9 +713,6 @@
 [silk_over_copper]: Silkscreen clipped by solder mask
     Local override; Severity: warning
     @(159.7950 mm, 150.1950 mm): Circle on B.Silkscreen
-[silk_over_copper]: Silkscreen clipped by solder mask
-    Local override; Severity: warning
-    @(351.1900 mm, 60.4950 mm): Circle on B.Silkscreen
 [silk_overlap]: Silkscreen overlap
     Rule: board setup constraints silk; Severity: warning
     @(233.7700 mm, 155.9450 mm): Reference 'D402'
